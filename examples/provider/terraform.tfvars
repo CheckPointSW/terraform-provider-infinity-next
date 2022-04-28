@@ -1,0 +1,1 @@
+schema_validation_file_name = "oasschema"

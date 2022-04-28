@@ -1,0 +1,6 @@
+{
+    "go.testEnvVars": {
+        "TF_ACC": "1"
+    },
+    "go.testTimeout": "20m"
+}
