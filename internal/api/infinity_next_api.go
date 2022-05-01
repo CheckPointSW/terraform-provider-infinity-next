@@ -32,6 +32,12 @@ type GraphResponse struct {
 	Errors []GraphError `json:"errors,omitempty"`
 }
 
+type RetryErrorResponse struct {
+	Stop          any `json:"stop"`
+	RC            any `json:"rc"`
+	ReqDidTimeout any `json:"reqDidTimeout"`
+}
+
 func (c *Client) InfinityPortalAuthentication(clientId string, secretKey string) error {
 	timeout := clientTimeout * time.Second
 	client := http.Client{
@@ -197,51 +203,6 @@ func parseGraphQLResponse(response *http.Response) (*GraphResponse, error) {
 
 func (c *Client) PublishChanges() (bool, error) {
 	return true, nil
-	// graphqlResponse, err := c.MakeGraphQLRequest(`
-	// 	   mutation publishChanges {
-	// 		publishChanges {
-	// 		  isValid
-	// 		  errors {
-	// 			message
-	// 		  }
-	// 		  warnings {
-	// 			message
-	// 		  }
-	// 		}
-	// 	  }
-	// `)
-
-	// if err != nil {
-	// 	return false, err
-	// }
-
-	// graphqlResponseMap, ok := graphqlResponse.(map[string]any)
-	// if !ok {
-	// 	return false, fmt.Errorf("invalid graphql response %#v", graphqlResponse)
-	// }
-
-	// publishChanges, ok := graphqlResponseMap["publishChanges"]
-	// if !ok {
-	// 	return false, fmt.Errorf("invalid graphql response %#v", graphqlResponse)
-	// }
-
-	// publishChangesMap, ok := publishChanges.(map[string]any)
-	// if !ok {
-	// 	return false, fmt.Errorf("invalid graphql response %#v", graphqlResponse)
-	// }
-
-	// var isValid bool
-	// if publishChangesMap["isValid"] == true {
-	// 	isValid = true
-	// } else {
-	// 	msgs := publishChanges.(map[string]any)["errors"].([]any)
-	// 	if msgs != nil {
-	// 		msg := (msgs[0].(map[string]any)["message"]).(string)
-	// 		err = errors.New(msg)
-	// 	}
-	// }
-
-	// return isValid, err
 }
 
 func (c *Client) DiscardChanges() (bool, error) {

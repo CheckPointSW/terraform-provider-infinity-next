@@ -185,15 +185,15 @@ func (sourceIdentifier SourceIdentifier) ToSchema() SchemaSourceIdentifier {
 // SchemaPracticeWrapper to be saved in the state file
 func (wrappers PracticesWrappers) ToSchema() []SchemaPracticeWrapper {
 	mapFunc := func(wrapper PracticeWrapper) SchemaPracticeWrapper {
-		return wrapper.toSchema()
+		return wrapper.ToSchema()
 	}
 
 	return utils.Map(wrappers, mapFunc)
 }
 
-// toSchema converts a single PracticeWrapper as returned from the API to a single
+// ToSchema converts a single PracticeWrapper as returned from the API to a single
 // SchemaPracticeWrapper to be saved in the state file
-func (practiceWrapper PracticeWrapper) toSchema() SchemaPracticeWrapper {
+func (practiceWrapper PracticeWrapper) ToSchema() SchemaPracticeWrapper {
 	triggers := make([]string, len(practiceWrapper.Triggers))
 	for j, trigger := range practiceWrapper.Triggers {
 		triggers[j] = trigger.ID

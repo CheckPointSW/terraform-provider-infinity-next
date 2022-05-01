@@ -20,7 +20,9 @@ func TestAccExceptionBasic(t *testing.T) {
 				Config: exceptionsBasicConfig(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name": nameAttribute,
+						"name":        nameAttribute,
+						"%":           "3",
+						"exception.#": "0",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -29,9 +31,19 @@ func TestAccExceptionBasic(t *testing.T) {
 				Config: exceptionsBasicConfigUpdateAddExceptionMatchSingleField(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                       nameAttribute,
-						"exception.0.match.hostName": "www.google.com",
-						"exception.0.action":         "drop",
+						"name":                          nameAttribute,
+						"exception.0.action":            "drop",
+						"exception.0.match.0.value.#":   "1",
+						"exception.0.match.0.operator":  "equals",
+						"exception.0.comment":           "",
+						"%":                             "3",
+						"exception.0.match.0.operand.#": "0",
+						"exception.#":                   "1",
+						"exception.0.match.0.value.0":   "www.google.com",
+						"exception.0.match.0.key":       "hostName",
+						"exception.0.match.0.%":         "4",
+						"exception.0.match.#":           "1",
+						"exception.0.%":                 "5",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 						resource.TestCheckResourceAttrSet(resourceName, "exception.0.id"),
@@ -43,12 +55,30 @@ func TestAccExceptionBasic(t *testing.T) {
 				Config: exceptionsBasicConfigUpdateChangeExceptionFields(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                               nameAttribute,
-						"exception.0.match.hostName":         "www.facebook.com",
-						"exception.0.match.url":              "/login",
-						"exception.0.match.sourceIdentifier": "1.1.1.1/24",
-						"exception.0.action":                 "skip",
-						"exception.0.comment":                "test comment",
+						"name":                                    nameAttribute,
+						"exception.0.action":                      "skip",
+						"%":                                       "3",
+						"exception.0.comment":                     "test comment",
+						"exception.0.match.0.value.#":             "0",
+						"exception.0.match.0.operand.0.value.#":   "1",
+						"exception.0.match.0.operand.0.%":         "4",
+						"exception.0.match.0.operator":            "and",
+						"exception.0.match.0.%":                   "4",
+						"exception.0.match.0.key":                 "",
+						"exception.0.match.0.operand.2.value.#":   "1",
+						"exception.#":                             "1",
+						"exception.0.match.0.operand.1.operator":  "equals",
+						"exception.0.match.0.operand.1.value.#":   "1",
+						"exception.0.match.0.operand.2.%":         "4",
+						"exception.0.match.0.operand.2.operand.#": "0",
+						"exception.0.match.0.operand.0.operand.#": "0",
+						"exception.0.match.0.operand.0.operator":  "equals",
+						"exception.0.match.0.operand.1.%":         "4",
+						"exception.0.match.#":                     "1",
+						"exception.0.match.0.operand.1.operand.#": "0",
+						"exception.0.match.0.operand.2.operator":  "equals",
+						"exception.0.match.0.operand.#":           "3",
+						"exception.0.%":                           "5",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 						resource.TestCheckResourceAttrSet(resourceName, "exception.0.id"),
@@ -77,13 +107,30 @@ func TestAccExceptionWithExceptionBlock(t *testing.T) {
 				Config: exceptionsConfigWithException(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                               nameAttribute,
-						"exception.#":                        "1",
-						"exception.0.match.hostName":         "www.google.com",
-						"exception.0.match.url":              "/login",
-						"exception.0.match.sourceIdentifier": "1.1.1.1/24",
-						"exception.0.action":                 "skip",
-						"exception.0.comment":                "test comment",
+						"name":                                    nameAttribute,
+						"exception.0.action":                      "skip",
+						"%":                                       "3",
+						"exception.0.comment":                     "test comment",
+						"exception.0.match.0.value.#":             "0",
+						"exception.0.match.0.operand.0.value.#":   "1",
+						"exception.0.match.0.operand.0.%":         "4",
+						"exception.0.match.0.operator":            "and",
+						"exception.0.match.0.%":                   "4",
+						"exception.0.match.0.key":                 "",
+						"exception.0.match.0.operand.2.value.#":   "1",
+						"exception.#":                             "1",
+						"exception.0.match.0.operand.1.operator":  "equals",
+						"exception.0.match.0.operand.1.value.#":   "1",
+						"exception.0.match.0.operand.2.%":         "4",
+						"exception.0.match.0.operand.2.operand.#": "0",
+						"exception.0.match.0.operand.0.operand.#": "0",
+						"exception.0.match.0.operand.0.operator":  "equals",
+						"exception.0.match.0.operand.1.%":         "4",
+						"exception.0.match.#":                     "1",
+						"exception.0.match.0.operand.1.operand.#": "0",
+						"exception.0.match.0.operand.2.operator":  "equals",
+						"exception.0.match.0.operand.#":           "3",
+						"exception.0.%":                           "5",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 						resource.TestCheckResourceAttrSet(resourceName, "exception.0.id"),
@@ -94,18 +141,28 @@ func TestAccExceptionWithExceptionBlock(t *testing.T) {
 				Config: exceptionsConfigWithExceptionAddException(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                               nameAttribute,
-						"exception.#":                        "2",
-						"exception.0.match.hostName":         "www.google.com",
-						"exception.0.match.url":              "/login",
-						"exception.0.match.sourceIdentifier": "1.1.1.1/24",
-						"exception.0.action":                 "skip",
-						"exception.0.comment":                "test comment",
-						"exception.1.match.hostName":         "www.facebook.com",
-						"exception.1.match.url":              "/logout",
-						"exception.1.match.sourceIdentifier": "2.2.2.2/24",
-						"exception.1.action":                 "drop",
-						"exception.1.comment":                "test comment",
+						"name":                                  nameAttribute,
+						"exception.#":                           "2",
+						"exception.1.match.0.operand.0.value.0": "www.facebook.com",
+						"exception.1.match.0.key":               "",
+						"exception.0.match.0.%":                 "4",
+						"exception.0.match.0.operator":          "or",
+						"exception.1.match.0.operand.#":         "3",
+						"exception.1.match.0.%":                 "4",
+						"exception.0.match.0.operand.#":         "3",
+						"exception.0.comment":                   "test comment",
+						"exception.1.match.#":                   "1",
+						"exception.0.action":                    "skip",
+						"exception.0.%":                         "5",
+						"exception.1.comment":                   "test comment",
+						"%":                                     "3",
+						"exception.0.match.0.key":               "",
+						"exception.0.match.#":                   "1",
+						"exception.1.action":                    "drop",
+						"exception.1.match.0.operator":          "and",
+						"exception.1.match.0.value.#":           "0",
+						"exception.1.%":                         "5",
+						"exception.0.match.0.value.#":           "0",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 						resource.TestCheckResourceAttrSet(resourceName, "exception.0.id"),
@@ -118,13 +175,30 @@ func TestAccExceptionWithExceptionBlock(t *testing.T) {
 				Config: exceptionsConfigWithExceptionRemoveException(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                               nameAttribute,
-						"exception.#":                        "1",
-						"exception.0.match.hostName":         "www.facebook.com",
-						"exception.0.match.url":              "/logout",
-						"exception.0.match.sourceIdentifier": "2.2.2.2/24",
-						"exception.0.action":                 "drop",
-						"exception.0.comment":                "test comment",
+						"name":        nameAttribute,
+						"exception.#": "1",
+						"exception.0.match.0.operand.1.operand.#": "0",
+						"exception.0.match.0.operand.2.%":         "4",
+						"exception.0.match.0.operand.#":           "3",
+						"exception.0.match.0.key":                 "",
+						"exception.0.match.0.operand.0.operand.#": "0",
+						"exception.0.match.0.operator":            "and",
+						"exception.0.match.#":                     "1",
+						"exception.0.comment":                     "test comment",
+						"exception.0.match.0.operand.1.value.#":   "1",
+						"exception.0.action":                      "drop",
+						"exception.0.%":                           "5",
+						"exception.0.match.0.operand.0.operator":  "equals",
+						"exception.0.match.0.operand.0.value.#":   "1",
+						"exception.0.match.0.operand.1.%":         "4",
+						"exception.0.match.0.operand.2.operator":  "equals",
+						"exception.0.match.0.operand.0.%":         "4",
+						"exception.0.match.0.value.#":             "0",
+						"exception.0.match.0.%":                   "4",
+						"%":                                       "3",
+						"exception.0.match.0.operand.1.operator":  "equals",
+						"exception.0.match.0.operand.2.operand.#": "0",
+						"exception.0.match.0.operand.2.value.#":   "1",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 						resource.TestCheckResourceAttrSet(resourceName, "exception.0.id"),
@@ -153,8 +227,9 @@ func exceptionsBasicConfigUpdateAddExceptionMatchSingleField(name string) string
 resource "inext_exceptions" %[1]q {
 	name                = %[1]q
 	exception {
-		match = {
-		  hostName         = "www.google.com"
+		match {
+		  key = "hostName"
+		  value = ["www.google.com"]
 		}
 		action  = "drop"
 	  }
@@ -167,10 +242,20 @@ func exceptionsBasicConfigUpdateChangeExceptionFields(name string) string {
 resource "inext_exceptions" %[1]q {
 	name                = %[1]q
 	exception {
-		match = {
-		  hostName         = "www.facebook.com"
-		  url              = "/login"
-		  sourceIdentifier = "1.1.1.1/24"
+		match {
+		  operator = "and"
+		  operand {
+			  key = "hostName"
+			  value = ["www.facebook.com"]
+		  }
+		  operand {
+			  key = "url"
+			  value = ["/login"]
+		  }
+		  operand {
+			  key = "sourceIdentifier"
+			  value = ["1.1.1.1/24"]
+		  }
 		}
 		action  = "skip"
 		comment = "test comment"
@@ -184,14 +269,24 @@ func exceptionsConfigWithException(name string) string {
 resource "inext_exceptions" %[1]q {
 	name                = %[1]q
 	exception {
-		match = {
-		  hostName         = "www.google.com"
-		  url              = "/login"
-		  sourceIdentifier = "1.1.1.1/24"
+		match {
+			operator = "and"
+		  	operand {
+				  key = "hostName"
+				  value = ["www.google.com"]
+		  	}
+		  	operand {
+				  key = "url"
+				  value = ["/login"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["1.1.1.1/24"]
+		  	}
 		}
 		action  = "skip"
 		comment = "test comment"
-	  }
+	}
 }
 `, name)
 }
@@ -201,19 +296,41 @@ func exceptionsConfigWithExceptionAddException(name string) string {
 resource "inext_exceptions" %[1]q {
 	name                = %[1]q
 	exception {
-		match = {
-		  hostName         = "www.google.com"
-		  url              = "/login"
-		  sourceIdentifier = "1.1.1.1/24"
+		match {
+			operator = "or"
+		  	operand {
+				  operator = "not-equals"
+				  key = "hostName"
+				  value = ["www.google.com"]
+		  	}
+		  	operand {
+				  operator = "in"
+				  key = "url"
+				  value = ["/login", "/login2"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["1.1.1.1/24"]
+		  	}
 		}
 		action  = "skip"
 		comment = "test comment"
 	}
 	exception {
-		match = {
-		  hostName         = "www.facebook.com"
-		  url              = "/logout"
-		  sourceIdentifier = "2.2.2.2/24"
+		match {
+			operator = "and"
+		  	operand {
+				  key = "hostName"
+				  value = ["www.facebook.com"]
+		  	}
+		  	operand {
+				  key = "url"
+				  value = ["/logout"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["2.2.2.2/24"]
+		  	}
 		}
 		action  = "drop"
 		comment = "test comment"
@@ -227,10 +344,20 @@ func exceptionsConfigWithExceptionRemoveException(name string) string {
 resource "inext_exceptions" %[1]q {
 	name                = %[1]q
 	exception {
-		match = {
-		  hostName         = "www.facebook.com"
-		  url              = "/logout"
-		  sourceIdentifier = "2.2.2.2/24"
+		match {
+			operator = "and"
+		  	operand {
+				  key = "hostName"
+				  value = ["www.facebook.com"]
+		  	}
+		  	operand {
+				  key = "url"
+				  value = ["/logout"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["2.2.2.2/24"]
+		  	}
 		}
 		action  = "drop"
 		comment = "test comment"

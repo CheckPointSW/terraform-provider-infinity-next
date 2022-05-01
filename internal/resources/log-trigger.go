@@ -178,7 +178,7 @@ func resourceLogTriggerCreate(ctx context.Context, d *schema.ResourceData, meta 
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("Unable to perform LogTrigger Read after Create", err, diags)
 	}
 
 	return diags
@@ -194,7 +194,7 @@ func resourceLogTriggerRead(ctx context.Context, d *schema.ResourceData, meta an
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("Unable to perform LogTrigger Get before read", err, diags)
 	}
 
 	if err := logtrigger.ReadLogTriggerToResourceData(logTrigger, d); err != nil {
@@ -202,7 +202,7 @@ func resourceLogTriggerRead(ctx context.Context, d *schema.ResourceData, meta an
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("Unable to perform LogTrigger read to state file", err, diags)
 	}
 
 	return diags

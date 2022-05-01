@@ -1,36 +1,32 @@
 resource "inext_exceptions" "test" {
-  name = "inext_exceptions-test1"
+  name = "inext_exceptions_test1"
   exception {
-    match = { # currently matches with "AND" condition between all keys and their values
-      hostName         = "www.google.com"
-      url              = "/login"
-      sourceIdentifier = "1.1.1.1/24"
+    match { 
+      operator = "or" # enum of ["and", "or", "not-equals", "equals", "in", "not-in", "exist"]
+      operand {
+        operator = "equals"
+        key = "hostName" # enum of ["hostName", "sourceIdentifier", "url", "countryCode", "countryName", "manufacturer", "paramName", "paramValue", "protectionName", "sourceIP"]
+        value = ["www.google.com"]
+      }
+      operand {
+        operator = "and"
+        operand {
+          operator = "in"
+          key = "sourceIdentifier"
+          value = ["1.1.1.1/24"]
+        }
+        operand {
+          operator = "not-in"
+          key = "countryName"
+          value = ["Ukraine", "Russia"]
+        }
+      }
+      operand {
+        key = "url"
+        value = ["/login"]
+      }
     }
-    action  = "drop" # enum of ["drop", "skip", "accept", "suppressLog"]
+    action  = "skip" # enum of ["drop", "skip", "accept", "suppressLog"]
     comment = "some comment"
-  }
-  exception {
-    match = {
-      hostName         = "www.acme.com"
-      url              = "/"
-      sourceIdentifier = "1.0.0.0/18"
-    }
-    action = "skip" # enum of ["drop", "skip", "accept", "suppressLog"]
-  }
-  exception {
-    match = {
-      hostName         = "www.checkpoint.com"
-      url              = "/"
-      sourceIdentifier = "1.0.0.0/18"
-    }
-    action = "accept" # enum of ["drop", "skip", "accept", "suppressLog"]
-  }
-  exception {
-    match = {
-      hostName         = "www.apple.com"
-      url              = "/"
-      sourceIdentifier = "1.0.0.0/18"
-    }
-    action = "suppressLog" # enum of ["drop", "skip", "accept", "suppressLog"]
   }
 }

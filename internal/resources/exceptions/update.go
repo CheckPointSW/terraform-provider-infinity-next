@@ -1,72 +1,35 @@
 package exceptions
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
+	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/exceptions"
+	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func UpdateExceptionBehaviorInputFromResourceData(d *schema.ResourceData) (UpdateExceptionBehaviorInput, error) {
-	var res UpdateExceptionBehaviorInput
-	res.ID = d.Id()
-	res.BehaviorInput.Name = d.Get("name").(string)
+func parseSchemaExceptions(exceptionsFromResourceData any) []models.ExceptionObjectInput {
+	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](exceptionsFromResourceData), mapToExceptionObjectInput)
+}
 
-	old, new := d.GetChange("exception")
-	oldExceptionsIface := old.([]any)
-	var oldExceptions []SchemaExceptionObject
-	bExceptions, err := json.Marshal(oldExceptionsIface)
-	if err != nil {
-		return UpdateExceptionBehaviorInput{}, err
+func UpdateExceptionBehaviorInputFromResourceData(d *schema.ResourceData) (models.UpdateExceptionBehaviorInput, error) {
+	var res models.UpdateExceptionBehaviorInput
+	if _, newName, hasChange := utils.MustGetChange[string](d, "name"); hasChange {
+		res.Name = newName
 	}
 
-	if err := json.Unmarshal(bExceptions, &oldExceptions); err != nil {
-		return UpdateExceptionBehaviorInput{}, err
-	}
-
-	newExceptionsIface := new.([]any)
-	var newExceptions []SchemaExceptionObject
-	bExceptions, err = json.Marshal(newExceptionsIface)
-	if err != nil {
-		return UpdateExceptionBehaviorInput{}, err
-	}
-
-	if err := json.Unmarshal(bExceptions, &newExceptions); err != nil {
-		return UpdateExceptionBehaviorInput{}, err
-	}
-
-	res.BehaviorInput.RemoveExceptions = make([]string, len(oldExceptions))
-	for i, exception := range oldExceptions {
-		res.BehaviorInput.RemoveExceptions[i] = exception.ID
-	}
-
-	res.BehaviorInput.AddExceptions = make([]ExceptionObjectInput, 0, len(newExceptions))
-	for _, exception := range newExceptions {
-		var exceptionInput ExceptionObjectInput
-		action := NewAction(exception.Action)
-		bAction, err := json.Marshal(action)
-		if err != nil {
-			return UpdateExceptionBehaviorInput{}, fmt.Errorf("failed to marshal exception action %#v: %w", action, err)
-		}
-
-		exceptionInput.Actions = []string{string(bAction)}
-		exceptionInput.Comment = exception.Comment
-		match := AndMatchFromMap(exception.Match)
-		bMatch, err := json.Marshal(match)
-		if err != nil {
-			return UpdateExceptionBehaviorInput{}, fmt.Errorf("failed to marshal exception match %#v: %w", match, err)
-		}
-
-		exceptionInput.Match = string(bMatch)
-		res.BehaviorInput.AddExceptions = append(res.BehaviorInput.AddExceptions, exceptionInput)
+	if oldExceptions, newExceptions, hasChange := utils.GetChangeWithParse(d, "exception", parseSchemaExceptions); hasChange {
+		exceptionsToAdd, exceptionsToRemove := utils.SlicesDiff(oldExceptions, newExceptions)
+		res.AddExceptions = utils.Map(exceptionsToAdd, utils.MustUnmarshalAs[models.AddExceptionObjectInput, models.ExceptionObjectInput])
+		res.RemoveExceptions = utils.Map(exceptionsToRemove, func(toRemove models.ExceptionObjectInput) string { return toRemove.ID })
 	}
 
 	return res, nil
 }
 
-func UpdateExceptionBehavior(c *api.Client, input UpdateExceptionBehaviorInput) (bool, error) {
-	vars := map[string]any{"behaviorInput": input.BehaviorInput, "id": input.ID}
+func UpdateExceptionBehavior(c *api.Client, id string, input models.UpdateExceptionBehaviorInput) (bool, error) {
+	vars := map[string]any{"behaviorInput": input, "id": id}
 	res, err := c.MakeGraphQLRequest(`
 		mutation updateExceptionBehavior($behaviorInput: ExceptionBehaviorUpdateInput, $id: ID!)
 		{

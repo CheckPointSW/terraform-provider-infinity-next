@@ -11,6 +11,71 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+const (
+	// maxNestLevel is the max nesting level of the matchSchema
+	// this is used to avoid infinite recursion when creating the schema
+	maxNestLevel = 20
+)
+
+func matchSchema(nestLevel int) *schema.Resource {
+	if nestLevel == 0 {
+		return &schema.Resource{
+			Schema: map[string]*schema.Schema{
+				"operator": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"and", "or", "not-equals", "equals", "in", "not-in", "exist"}, false)),
+				},
+				"operand": {
+					Optional: true,
+					Type:     schema.TypeList,
+					Elem:     &schema.Resource{},
+				},
+				"key": {
+					Type:             schema.TypeString,
+					Optional:         true,
+					ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"hostName", "sourceIdentifier", "url", "countryCode", "countryName", "manufacturer", "paramName", "paramValue", "protectionName", "sourceIP"}, false)),
+				},
+				"value": {
+					Type:     schema.TypeList,
+					Optional: true,
+					Elem: &schema.Schema{
+						Type: schema.TypeString,
+					},
+				},
+			},
+		}
+	}
+
+	return &schema.Resource{
+		Schema: map[string]*schema.Schema{
+			"operator": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"and", "or", "not-equals", "equals", "in", "not-in", "exist"}, false)),
+				Default:          "equals",
+			},
+			"operand": {
+				Optional: true,
+				Type:     schema.TypeList,
+				Elem:     matchSchema(nestLevel - 1),
+			},
+			"key": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"hostName", "sourceIdentifier", "url", "countryCode", "countryName", "manufacturer", "paramName", "paramValue", "protectionName", "sourceIP"}, false)),
+			},
+			"value": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+		},
+	}
+}
+
 func ResourceExceptions() *schema.Resource {
 	return &schema.Resource{
 		Description: "Exceptions allows overriding the AppSec ML engine decision based on specific parameters",
@@ -41,16 +106,13 @@ func ResourceExceptions() *schema.Resource {
 					Schema: map[string]*schema.Schema{
 						"id": {
 							Type:     schema.TypeString,
+							Optional: true,
 							Computed: true,
 						},
 						"match": {
-							Type: schema.TypeMap,
-							Description: "The condition that must match for the override behavior to apply.\n" +
-								"The condition is that all keys must match the given values",
+							Type:     schema.TypeList,
 							Required: true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
+							Elem:     matchSchema(maxNestLevel),
 						},
 						"action": {
 							Type:             schema.TypeString,
@@ -60,6 +122,7 @@ func ResourceExceptions() *schema.Resource {
 						},
 						"action_id": {
 							Type:     schema.TypeString,
+							Optional: true,
 							Computed: true,
 						},
 						"comment": {
@@ -83,7 +146,7 @@ func resourceExceptionsCreate(ctx context.Context, d *schema.ResourceData, meta 
 		return utils.DiagError("unable to perform ExceptionBehavior Create", err, diags)
 	}
 
-	result, err := exceptions.NewExceptionBehavior(c, createInput)
+	behavior, err := exceptions.NewExceptionBehavior(c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -101,21 +164,12 @@ func resourceExceptionsCreate(ctx context.Context, d *schema.ResourceData, meta 
 		return utils.DiagError("failed to Publish following ExceptionBehavior Create", err, diags)
 	}
 
-	behavior, err := exceptions.GetExceptionBehavior(c, result.ID)
-	if err != nil {
-		if _, discardErr := c.DiscardChanges(); discardErr != nil {
-			diags = utils.DiagError("failed to discard changes", discardErr, diags)
-		}
-
-		return diag.FromErr(err)
-	}
-
 	if err := exceptions.ReadExceptionBehaviorToResourceData(behavior, d); err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("failed to read ExceptionBehavior into state file after create and publish", err, diags)
 	}
 
 	return diags
@@ -131,7 +185,7 @@ func resourceExceptionsRead(ctx context.Context, d *schema.ResourceData, meta an
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("failed to get ExceptionBehavior for read into state file", err, diags)
 	}
 
 	if err := exceptions.ReadExceptionBehaviorToResourceData(behavior, d); err != nil {
@@ -139,7 +193,7 @@ func resourceExceptionsRead(ctx context.Context, d *schema.ResourceData, meta an
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("failed to read ExceptionBehavior into state file", err, diags)
 	}
 
 	return diags
@@ -154,7 +208,7 @@ func resourceExceptionsUpdate(ctx context.Context, d *schema.ResourceData, meta 
 		return utils.DiagError("unable to perform ExceptionBehavior Update", err, diags)
 	}
 
-	result, err := exceptions.UpdateExceptionBehavior(c, updateInput)
+	result, err := exceptions.UpdateExceptionBehavior(c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -178,7 +232,7 @@ func resourceExceptionsUpdate(ctx context.Context, d *schema.ResourceData, meta 
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("failed to Get ExceptionBehavior following Update", err, diags)
 	}
 
 	if err := exceptions.ReadExceptionBehaviorToResourceData(behavior, d); err != nil {
@@ -186,7 +240,7 @@ func resourceExceptionsUpdate(ctx context.Context, d *schema.ResourceData, meta 
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("failed to read ExceptionBehavior into state file after update and publish", err, diags)
 	}
 
 	return diags
