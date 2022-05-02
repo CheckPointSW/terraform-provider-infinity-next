@@ -87,4 +87,4 @@ jobs:
       env:
         TF_ACC: "1"
       run: |
-        go test -v -cover ./internal/
+        go test -v -cover ./internal/resources/tests/
