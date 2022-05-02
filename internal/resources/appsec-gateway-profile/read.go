@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	additonalSettingsIDSeperator = ";;;"
+	additonalSettingsIDSeparator = ";;;"
 )
 
 func ReadCloudGuardAppSecGatewayProfileToResourceData(profile models.CloudGuardAppSecGatewayProfile, d *schema.ResourceData) error {
@@ -34,7 +34,7 @@ func ReadCloudGuardAppSecGatewayProfileToResourceData(profile models.CloudGuardA
 	additionalSettingsKVs := make(map[string]any, len(profile.AdditionalSettings))
 	for _, kv := range profile.AdditionalSettings {
 		additionalSettingsIDs = append(additionalSettingsIDs,
-			fmt.Sprintf("%s%s%s", kv.Key, additonalSettingsIDSeperator, kv.ID))
+			fmt.Sprintf("%s%s%s", kv.Key, additonalSettingsIDSeparator, kv.ID))
 		additionalSettingsKVs[kv.Key] = kv.Value
 	}
 
@@ -45,7 +45,7 @@ func ReadCloudGuardAppSecGatewayProfileToResourceData(profile models.CloudGuardA
 	reverseProxyAdditionalSettingsKVs := make(map[string]any, len(profile.ReverseProxyAdditionalSettings))
 	for _, kv := range profile.ReverseProxyAdditionalSettings {
 		reverseProxyAdditionalSettingsIDs = append(reverseProxyAdditionalSettingsIDs,
-			fmt.Sprintf("%s%s%s", kv.Key, additonalSettingsIDSeperator, kv.ID))
+			fmt.Sprintf("%s%s%s", kv.Key, additonalSettingsIDSeparator, kv.ID))
 		reverseProxyAdditionalSettingsKVs[kv.Key] = kv.Value
 	}
 

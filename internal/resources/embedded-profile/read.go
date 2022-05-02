@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	additonalSettingsIDSeperator = ";;;"
+	additonalSettingsIDSeparator = ";;;"
 )
 
 func ReadEmbeddedProfileToResourceData(profile models.EmbeddedProfile, d *schema.ResourceData) error {
@@ -33,7 +33,7 @@ func ReadEmbeddedProfileToResourceData(profile models.EmbeddedProfile, d *schema
 	additionalSettingsKVs := make(map[string]any, len(profile.AdditionalSettings))
 	for _, kv := range profile.AdditionalSettings {
 		additionalSettingsIDs = append(additionalSettingsIDs,
-			fmt.Sprintf("%s%s%s", kv.Key, additonalSettingsIDSeperator, kv.ID))
+			fmt.Sprintf("%s%s%s", kv.Key, additonalSettingsIDSeparator, kv.ID))
 		additionalSettingsKVs[kv.Key] = kv.Value
 	}
 

@@ -3,7 +3,7 @@ package models
 import "fmt"
 
 const (
-	WebApplicationURIIDSeperator = ";;;"
+	WebApplicationURIIDSeparator = ";;;"
 )
 
 type WebApplicationAdvancedSetting struct {
@@ -57,5 +57,5 @@ type WebApplicationPractice struct {
 }
 
 func (uri *WebApplicationURI) CreateSchemaID() string {
-	return fmt.Sprintf("%s%s%s", uri.URI, WebApplicationURIIDSeperator, uri.ID)
+	return fmt.Sprintf("%s%s%s", uri.URI, WebApplicationURIIDSeparator, uri.ID)
 }

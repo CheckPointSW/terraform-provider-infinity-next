@@ -1,13 +1,13 @@
 package models
 
-// UpdateSourceIdentifier represents the input for updating an exisitng source identifier value
+// UpdateSourceIdentifier represents the input for updating an existing source identifier value
 // in a source identifier field of an existing WebApplicationAsset object
 type UpdateSourceIdentifierValue struct {
 	ID              string `json:"id"`
 	IdentifierValue string `json:"identifierValue"`
 }
 
-// UpdateSourceIdentifier represents the input for updating an exisitng proxy setting field of an existing WebApplicationAsset object
+// UpdateSourceIdentifier represents the input for updating an existing proxy setting field of an existing WebApplicationAsset object
 type UpdateSourceIdentifier struct {
 	ID               string   `json:"id"`
 	SourceIdentifier string   `json:"sourceIdentifier"`
@@ -22,13 +22,13 @@ type AddSourceIdentifier struct {
 	Values           []string `json:"values"`
 }
 
-// AddProxySetting represents the input for updating an exisitng url field of an existing WebApplicationAsset object
+// AddProxySetting represents the input for updating an existing url field of an existing WebApplicationAsset object
 type UpdateURL struct {
 	ID  string `json:"id"`
 	URL string `json:"url"`
 }
 
-// AddProxySetting represents the input for updating an exisitng proxy setting field of an existing WebApplicationAsset object
+// AddProxySetting represents the input for updating an existing proxy setting field of an existing WebApplicationAsset object
 type UpdateProxySetting struct {
 	ID    string `json:"id"`
 	Key   string `json:"key"`

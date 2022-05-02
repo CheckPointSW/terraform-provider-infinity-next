@@ -25,7 +25,7 @@ func UpdateTrustedSourceBehaviorInputFromResourceData(d *schema.ResourceData) (m
 		oldSourcesIDs := utils.MustResourceDataCollectionToSlice[string](d, "sources_identifiers_ids")
 		oldSourcesToIDsMap := make(map[string]string)
 		for _, sourceID := range oldSourcesIDs {
-			sourceAndID := strings.Split(sourceID, models.TrustedSourceIDSeperator)
+			sourceAndID := strings.Split(sourceID, models.TrustedSourceIDSeparator)
 			oldSourcesToIDsMap[sourceAndID[0]] = sourceAndID[1]
 		}
 

@@ -3,7 +3,7 @@ package models
 import "fmt"
 
 const (
-	TrustedSourceIDSeperator = ";;;"
+	TrustedSourceIDSeparator = ";;;"
 )
 
 type TrustedSourceSource struct {
@@ -19,5 +19,5 @@ type TrustedSourceBehavior struct {
 }
 
 func (trustedSource *TrustedSourceSource) CreateSchemaID() string {
-	return fmt.Sprintf("%s%s%s", trustedSource.Source, TrustedSourceIDSeperator, trustedSource.ID)
+	return fmt.Sprintf("%s%s%s", trustedSource.Source, TrustedSourceIDSeparator, trustedSource.ID)
 }

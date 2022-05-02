@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	additonalSettingsIDSeperator = ";;;"
+	additonalSettingsIDSeparator = ";;;"
 )
 
 func ReadDockerProfileToResourceData(profile models.DockerProfile, d *schema.ResourceData) error {
@@ -25,7 +25,7 @@ func ReadDockerProfileToResourceData(profile models.DockerProfile, d *schema.Res
 	additionalSettingsKVs := make(map[string]any, len(profile.AdditionalSettings))
 	for _, kv := range profile.AdditionalSettings {
 		additionalSettingsIDs = append(additionalSettingsIDs,
-			fmt.Sprintf("%s%s%s", kv.Key, additonalSettingsIDSeperator, kv.ID))
+			fmt.Sprintf("%s%s%s", kv.Key, additonalSettingsIDSeparator, kv.ID))
 		additionalSettingsKVs[kv.Key] = kv.Value
 	}
 

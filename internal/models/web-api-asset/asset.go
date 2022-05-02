@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	URLIDSeperator = ";;;;"
+	URLIDSeparator = ";;;;"
 )
 
 type PracticeMode struct {
@@ -147,10 +147,10 @@ func (urls URLs) ToSchema() ([]string, []string) {
 }
 
 // createSchemaID excepts a URL object and returns the following string:
-// "<url><seperator><url_id>"
+// "<url><separator><url_id>"
 // This string is saved in the state file as an url ID
 func (url *URL) createSchemaID() string {
-	return fmt.Sprintf("%s%s%s", url.URL, URLIDSeperator, url.ID)
+	return fmt.Sprintf("%s%s%s", url.URL, URLIDSeparator, url.ID)
 }
 
 // ToSchema converts the SourceIdentifiers field as returned from the API to a slice of

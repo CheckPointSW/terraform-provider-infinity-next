@@ -43,7 +43,7 @@ type WebApplicationPracticeWebAttacksSchema struct {
 func (schemaIDs IDs) ToIndicatorsMap() map[string]string {
 	ret := make(map[string]string)
 	for _, id := range schemaIDs {
-		uriAndID := strings.Split(id, WebApplicationURIIDSeperator)
+		uriAndID := strings.Split(id, WebApplicationURIIDSeparator)
 		ret[uriAndID[0]] = uriAndID[1]
 	}
 

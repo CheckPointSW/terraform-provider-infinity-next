@@ -52,12 +52,12 @@ func UpdateDockerProfileInputFromResourceData(d *schema.ResourceData) (models.Do
 
 func handleUpdateAdditionalSetting(d *schema.ResourceData, settingsKey, setttingsIDsKey string) ([]models.KeyValueInput, []models.KeyValueUpdateInput, []string) {
 	if oldSettingMap, newSettingMap, hasChange := utils.MustGetChange[map[string]any](d, settingsKey); hasChange {
-		// get reverse proxy additional settings ids - each in the format: "<key><additonalSettingsIDSeperator><ID>"
+		// get reverse proxy additional settings ids - each in the format: "<key><additonalSettingsIDSeparator><ID>"
 		additionalSettingsIDsMap := make(map[string]string)
 		additionalSettingsIDsInterface := d.Get(setttingsIDsKey).([]any)
 		for _, intefaceUnparsedID := range additionalSettingsIDsInterface {
 			// parse ID
-			keyAndID := strings.Split(intefaceUnparsedID.(string), additonalSettingsIDSeperator)
+			keyAndID := strings.Split(intefaceUnparsedID.(string), additonalSettingsIDSeparator)
 			key, settingID := keyAndID[0], keyAndID[1]
 			additionalSettingsIDsMap[key] = settingID
 		}

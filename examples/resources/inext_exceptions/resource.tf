@@ -16,18 +16,18 @@ provider "inext" {
 resource "inext_exceptions" "my-exceptions-behavior" {
   name = "some name"
   exception {
-    match { 
+    match {
       operator = "and" # enum of ["and", "or", "not-equals", "equals", "in", "not-in", "exist"]
       operand {
-        key = "hostName" # enum of ["hostName", "sourceIdentifier", "url", "countryCode", "countryName", "manufacturer", "paramName", "paramValue", "protectionName", "sourceIP"]
+        key   = "hostName" # enum of ["hostName", "sourceIdentifier", "url", "countryCode", "countryName", "manufacturer", "paramName", "paramValue", "protectionName", "sourceIP"]
         value = ["www.acme.com"]
       }
       operand {
-        key = "url"
+        key   = "url"
         value = ["/login"]
       }
       operand {
-        key = "sourceIdentifier"
+        key   = "sourceIdentifier"
         value = ["value"]
       }
     }

@@ -186,7 +186,7 @@ func MustSchemaCollectionToSlice[T any](listOrSet any) []T {
 }
 
 // MustResourceDataCollectionToSlice takes a ResourceData object and a fieldName
-// the function tries to retreive the field's value and expects it to be of type
+// the function tries to retrieve the field's value and expects it to be of type
 // schema.TypeSet or schema.TypeList (otherwise it will panic!)
 // this function then converts the set/list to a slice of the desired type
 func MustResourceDataCollectionToSlice[T any](d *schema.ResourceData, fieldName string) []T {

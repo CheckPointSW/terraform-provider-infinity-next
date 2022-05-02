@@ -31,10 +31,20 @@ provider "inext" {
 resource "inext_exceptions" "my-exceptions-behavior" {
   name = "some name"
   exception {
-    match = { # currently matches with "AND" condition between all keys and their values
-      host              = "www.acme.com"
-      uri               = "/login"
-      source_identifier = "value"
+    match {
+      operator = "and" # enum of ["and", "or", "not-equals", "equals", "in", "not-in", "exist"]
+      operand {
+        key   = "hostName" # enum of ["hostName", "sourceIdentifier", "url", "countryCode", "countryName", "manufacturer", "paramName", "paramValue", "protectionName", "sourceIP"]
+        value = ["www.acme.com"]
+      }
+      operand {
+        key   = "url"
+        value = ["/login"]
+      }
+      operand {
+        key   = "sourceIdentifier"
+        value = ["value"]
+      }
     }
     action  = "action1" # enum of ["drop", "skip", "accept", "suppressLog"]
     comment = "some comment"
@@ -63,16 +73,228 @@ resource "inext_exceptions" "my-exceptions-behavior" {
 Required:
 
 - `action` (String) The action of the exception: accept, drop, skip or suppressLog
-- `match` (Map of String) The condition that must match for the override behavior to apply.
-The condition is that all keys must match the given values
+- `match` (Block List, Min: 1) (see [below for nested schema](#nestedblock--exception--match))
 
 Optional:
 
+- `action_id` (String)
 - `comment` (String) Comment for the exception
+- `id` (String) The ID of this resource.
+
+<a id="nestedblock--exception--match"></a>
+### Nested Schema for `exception.match`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand"></a>
+### Nested Schema for `exception.match.operand`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--operand"></a>
+### Nested Schema for `exception.match.operand.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand.value.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand.value.value.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand.value.value.value.value`
+
+Optional:
+
+- `key` (String)
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--value--operand))
+- `operator` (String)
+- `value` (List of String)
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand.value.value.value.value.value`
+
+Optional:
+
+- `key` (String)
+- `operator` (String)
+- `value` (List of String)
 
 Read-Only:
 
-- `action_id` (String)
-- `id` (String) The ID of this resource.
+- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--value--value--operand))
+
+<a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--value--value--operand"></a>
+### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand.value.value.value.value.value.operand`
 
 

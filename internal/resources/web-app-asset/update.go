@@ -37,7 +37,7 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 		oldURLsIDs := utils.MustResourceDataCollectionToSlice[string](d, "urls_ids")
 		oldURLsToIDsMap := make(map[string]string)
 		for _, oldURLID := range oldURLsIDs {
-			urlAndID := strings.Split(oldURLID, models.URLIDSeperator)
+			urlAndID := strings.Split(oldURLID, models.URLIDSeparator)
 			oldURLsToIDsMap[urlAndID[0]] = urlAndID[1]
 		}
 

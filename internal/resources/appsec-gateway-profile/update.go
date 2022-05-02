@@ -94,7 +94,7 @@ func handleUpdateAdditionalSetting(d *schema.ResourceData, settingsKey, settting
 		oldAdditionalSettingIDs := utils.MustResourceDataCollectionToSlice[string](d, setttingsIDsKey)
 		oldAdditionalSettingIDsindicatorMap := make(map[string]string)
 		for _, settingID := range oldAdditionalSettingIDs {
-			keyAndID := strings.Split(settingID, additonalSettingsIDSeperator)
+			keyAndID := strings.Split(settingID, additonalSettingsIDSeparator)
 			key, settingID := keyAndID[0], keyAndID[1]
 			oldAdditionalSettingIDsindicatorMap[key] = settingID
 		}

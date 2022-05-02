@@ -3,7 +3,6 @@ package tests
 import (
 	"fmt"
 	"path"
-	"strings"
 	"testing"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/acctest"
@@ -11,14 +10,12 @@ import (
 )
 
 const (
-	webAppPracticeTestdataPath         = "testdata/web-app-practice"
-	webAppAdvancedPolicyFilename       = "oasschema"
-	webAppAdvancedPolicyFilenameUpdate = "oasschemaupdate"
+	webAppPracticeTestdataPath   = "testdata/web-app-practice"
+	webAppAdvancedPolicyFilename = "oasschema"
 )
 
 var (
-	webAppAdvancedPolicyData       = acctest.MustReadFile(path.Join(webAppPracticeTestdataPath, webAppAdvancedPolicyFilename))
-	webAppAdvancedPolicyDataUpdate = strings.Replace(webAppAdvancedPolicyData, "Intelligence", "update", 1)
+	webAppAdvancedPolicyData = acctest.MustReadFile(path.Join(webAppPracticeTestdataPath, webAppAdvancedPolicyFilename))
 )
 
 func TestAccWebAppPracticeBasic(t *testing.T) {

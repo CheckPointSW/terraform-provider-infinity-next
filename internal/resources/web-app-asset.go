@@ -143,7 +143,7 @@ func ResourceWebAppAsset() *schema.Resource {
 			},
 			"source_identifier": {
 				Type:        schema.TypeSet,
-				Description: "Defines how the source identifer valuess of the asset are retreived",
+				Description: "Defines how the source identifer valuess of the asset are retrieved",
 				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{

@@ -69,7 +69,7 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 - `practice` (Block Set) The practices used by the asset (see [below for nested schema](#nestedblock--practice))
 - `profiles` (Set of String) Profiles linked to the asset
 - `proxy_setting` (Block Set) Settings for the proxy (see [below for nested schema](#nestedblock--proxy_setting))
-- `source_identifier` (Block Set) Defines how the source identifer valuess of the asset are retreived (see [below for nested schema](#nestedblock--source_identifier))
+- `source_identifier` (Block Set) Defines how the source identifer valuess of the asset are retrieved (see [below for nested schema](#nestedblock--source_identifier))
 - `state` (String)
 - `trusted_sources` (Set of String) Trusted sources behavior used by the asset
 - `upstream_url` (String) The URL of the application's backend server to which the reverse proxy redirects the relevant traffic sent to the exposed URL
