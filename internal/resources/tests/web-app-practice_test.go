@@ -2,20 +2,10 @@ package tests
 
 import (
 	"fmt"
-	"path"
 	"testing"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
-)
-
-const (
-	webAppPracticeTestdataPath   = "testdata/web-app-practice"
-	webAppAdvancedPolicyFilename = "oasschema"
-)
-
-var (
-	webAppAdvancedPolicyData = acctest.MustReadFile(path.Join(webAppPracticeTestdataPath, webAppAdvancedPolicyFilename))
 )
 
 func TestAccWebAppPracticeBasic(t *testing.T) {

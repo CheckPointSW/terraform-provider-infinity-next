@@ -173,7 +173,7 @@ func parseSchemaProxySettings(proxySettingsInterfaceFromResourceData any) models
 
 // validatePracticeWrapperInput validates that there is no empty modes in the input (because this fails the update api call)
 // this function is used during update of a practice since the getChange func of the terraform helper package
-// somtimes returns an extra empty practice
+// sometimes returns an extra empty practice
 func validatePracticeWrapperInput(pracitce models.PracticeWrapperInput) bool {
 	if pracitce.PracticeID == "" || pracitce.MainMode == "" {
 		return false

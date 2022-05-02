@@ -64,7 +64,7 @@ func ResourceEmbeddedProfile() *schema.Resource {
 					"The default is Automatic",
 				Optional:         true,
 				Default:          embeddedprofile.UpgradeModeAutomatic,
-				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{string(embeddedprofile.UpgradeModeAutomatic), string(embeddedprofile.UpgradeModeManual), string(embeddedprofile.UpgradeModeScheduled)}, false)),
+				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{embeddedprofile.UpgradeModeAutomatic, embeddedprofile.UpgradeModeManual, embeddedprofile.UpgradeModeScheduled}, false)),
 			},
 			"upgrade_time_schedule_type": {
 				Type:             schema.TypeString,

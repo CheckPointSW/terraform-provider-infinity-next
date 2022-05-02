@@ -43,7 +43,7 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Type:         schema.TypeString,
 				Description:  "The environment of deployment for the AppSec VM: Aws, Azure, VMware or HyperV",
 				Required:     true,
-				ValidateFunc: validation.StringInSlice([]string{string(appsecgatewayprofile.ProfileSubTypeAws), string(appsecgatewayprofile.ProfileSubTypeAzure), string(appsecgatewayprofile.ProfileSubTypeVMware), string(appsecgatewayprofile.ProfileSubTypeHyperV)}, false),
+				ValidateFunc: validation.StringInSlice([]string{appsecgatewayprofile.ProfileSubTypeAws, appsecgatewayprofile.ProfileSubTypeAzure, appsecgatewayprofile.ProfileSubTypeVMware, appsecgatewayprofile.ProfileSubTypeHyperV}, false),
 			},
 			"additional_settings": {
 				Type:        schema.TypeMap,
@@ -66,7 +66,7 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 					"The default is Automatic",
 				Optional:         true,
 				Default:          appsecgatewayprofile.UpgradeModeAutomatic,
-				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{string(appsecgatewayprofile.UpgradeModeAutomatic), string(appsecgatewayprofile.UpgradeModeManual), string(appsecgatewayprofile.UpgradeModeScheduled)}, false)),
+				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{appsecgatewayprofile.UpgradeModeAutomatic, appsecgatewayprofile.UpgradeModeManual, appsecgatewayprofile.UpgradeModeScheduled}, false)),
 			},
 			"upgrade_time_schedule_type": {
 				Type:             schema.TypeString,

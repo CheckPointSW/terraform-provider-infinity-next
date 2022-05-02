@@ -42,15 +42,15 @@ func ReadTrustedSourceBehaviorToResourceData(behavior models.TrustedSourceBehavi
 	d.Set("name", behavior.Name)
 	d.Set("min_num_of_sources", behavior.NumOfSources)
 
-	sourcesIdentifers := make([]string, len(behavior.SourcesIdentifiers))
-	sourcesIdentifersIDs := make([]string, len(behavior.SourcesIdentifiers))
-	for i, sourceIdentifer := range behavior.SourcesIdentifiers {
-		sourcesIdentifers[i] = sourceIdentifer.Source
-		sourcesIdentifersIDs[i] = sourceIdentifer.CreateSchemaID()
+	sourcesIdentifiers := make([]string, len(behavior.SourcesIdentifiers))
+	sourcesIdentifiersIDs := make([]string, len(behavior.SourcesIdentifiers))
+	for i, sourceIdentifier := range behavior.SourcesIdentifiers {
+		sourcesIdentifiers[i] = sourceIdentifier.Source
+		sourcesIdentifiersIDs[i] = sourceIdentifier.CreateSchemaID()
 	}
 
-	d.Set("sources_identifiers", sourcesIdentifers)
-	d.Set("sources_identifiers_ids", sourcesIdentifersIDs)
+	d.Set("sources_identifiers", sourcesIdentifiers)
+	d.Set("sources_identifiers_ids", sourcesIdentifiersIDs)
 
 	return nil
 }

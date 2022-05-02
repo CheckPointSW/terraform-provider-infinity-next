@@ -20,7 +20,6 @@ linters:
     - gofmt
     - gomnd
     - gosimple
-    - ineffassign
     - makezero
     - misspell
     - nakedret
@@ -40,7 +39,8 @@ linters-settings:
     settings:
       mnd:
         checks:
-          - argument
+          - condition
+          - return
   nolintlint:
     allow-leading-space: false
     require-explanation: true
