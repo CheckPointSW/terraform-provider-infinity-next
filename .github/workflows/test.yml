@@ -97,5 +97,7 @@ jobs:
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY }}
         TF_ACC: "1"
       run: |
+        pwd
+        ls -al .
         go test -v -cover ./internal/resources/tests/
-        ./inext --client-id $INEXT_CLIENT_ID --access-key $INEXT_ACCESS_KEY discard
+        cmd/inext --client-id $INEXT_CLIENT_ID --access-key $INEXT_ACCESS_KEY discard
