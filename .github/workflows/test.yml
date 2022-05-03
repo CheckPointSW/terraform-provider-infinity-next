@@ -92,7 +92,7 @@ jobs:
         go build -o inext -v .
         
     - name: TF acceptance tests push
-      if: github.event_name == 'push'
+      if: ${{ github.event_name == 'push' }}
       timeout-minutes: 5
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
@@ -104,7 +104,7 @@ jobs:
         cmd/inext discard
     
     - name: TF acceptance tests pull request
-      if: github.event_name == 'pull_request'
+      if: ${{ github.event_name == 'pull_request' }}
       timeout-minutes: 5
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
@@ -116,7 +116,7 @@ jobs:
         cmd/inext discard
 
     - name: TF acceptance tests schedule
-      if: github.event_name == 'schedule'
+      if: ${{ github.event_name == 'schedule' }}
       timeout-minutes: 5
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
