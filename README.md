@@ -6,7 +6,7 @@ Infinity Next's Terraform Provider for managing CloudGuard AppSec and other Infi
 
 1. Go to https://portal.checkpoint.com, navigate to *Global Settings -> API Keys*
 
-2. Create a new API key and select *Infinity Policy` as the service, with *Admin* role, we recommend that you specify a meaningful comment for the key so you could identify them later and avoid mistakes.
+2. Create a new API key and select *Infinity Policy* as the service, with *Admin* role, we recommend that you specify a meaningful comment for the key so you could identify them later and avoid mistakes.
 
 3. Store the *Client ID* and *Secret Key* in a secure location, and note there's no way to view the secret key afterward.
 
@@ -16,7 +16,7 @@ There are 2 options to set the credentials to be used by the provider
 
 * Set the credentials explicity or through input variables, in the `.tf` file that defines the `provider` block using the fields `client_id` and `access_key`
 
-### Publish and Enforce your changes
+### Publish and Enforce your changes *(Required)*
 All changes that are made when running `terraform apply` are done under a session of the configured API key.
 At Infinity Next, each session must be published to be able to enforce your configured policies on your assets. Think of it as commiting your changes to be able to make a release.
 
@@ -29,7 +29,7 @@ First, Download and install the CLI found in the latest release.
 
 The CLI requires the same credentials used to configure the provider, there are 2 options to pass these credentials to the CLI:
 
-1. Set the environment variables: `INEXT_CLIENT_ID` and `INEXT_ACCESS_KEY` and run `inext <command>`, this is more comfortable for usage right after `terraform apply` since it uses the same environment variables.
+1. Set the environment variables: `INEXT_REGION`, `INEXT_CLIENT_ID` and `INEXT_ACCESS_KEY` and run `inext <command>`, this is more comfortable for usage right after `terraform apply` since it uses the same environment variables.
 2. Create a yaml file at `~/.inext.yaml` with the following content:
    ```
    client-id: <INEXT_CLIENT_ID>

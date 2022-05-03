@@ -135,7 +135,7 @@ var enforceCmd = &cobra.Command{
 
 		errch := make(chan error, 1)
 		go func() {
-			// Poll for the enforce policy task's status until it's
+			// Poll for the enforce policy task's status until it's done
 			for taskStatus == "InProgress" {
 				taskReq, err := http.NewRequest(http.MethodPost, URL+CIAPIV1, bytes.NewBuffer(bReq))
 				if err != nil {
