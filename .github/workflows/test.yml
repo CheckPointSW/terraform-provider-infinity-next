@@ -53,7 +53,7 @@ jobs:
     name: Test
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     strategy:
       max-parallel: 1
       fail-fast: true
@@ -84,12 +84,18 @@ jobs:
     - name: Get dependencies
       run: |
         go mod download
+
+    - name: Build CLI
+      run: |
+        cd cmd
+        go build -o inext -v .
         
     - name: TF acceptance tests
-      timeout-minutes: 10
+      timeout-minutes: 5
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY }}
         TF_ACC: "1"
       run: |
         go test -v -cover ./internal/resources/tests/
+        ./inext --client-id $INEXT_CLIENT_ID --access-key $INEXT_ACCESS_KEY discard
