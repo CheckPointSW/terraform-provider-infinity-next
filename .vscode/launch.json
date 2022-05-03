@@ -1,0 +1,51 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Terraform Provider",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            // this assumes your workspace is the root of the repo
+            "program": "${workspaceFolder}",
+            "env": {},
+            "buildFlags": "-gcflags=\"all=-N -l\"",
+            "args": [
+                "-debug",
+            ]
+        },
+        {
+            "name": "Debug CLI enforce",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            // this assumes your workspace is the root of the repo
+            "program": "${workspaceFolder}/cmd",
+            "env": {},
+            "buildFlags": "-gcflags=\"all=-N -l\"",
+            "args": ["enforce"]
+        },
+        {
+            "name": "Debug CLI publish",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            // this assumes your workspace is the root of the repo
+            "program": "${workspaceFolder}/cmd",
+            "env": {},
+            "buildFlags": "-gcflags=\"all=-N -l\"",
+            "args": ["publish"]
+        },
+        {
+            "name": "Debug CLI discard",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            // this assumes your workspace is the root of the repo
+            "program": "${workspaceFolder}/cmd",
+            "env": {},
+            "buildFlags": "-gcflags=\"all=-N -l\"",
+            "args": ["discard"]
+        }
+    ]
+}

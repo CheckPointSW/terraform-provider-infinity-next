@@ -1,0 +1,1568 @@
+openapi: 3.0.0
+info:
+  version: 0.8.0-dev
+  title: Intelligence-Service
+  contact:
+    name: Infinity Next API
+    email: infinity-next-api@checkpoint.com 
+  description: >
+    # Introduction
+
+    ‘Infinity Next’ is the next generation architecture of Check Point security products. </br>It provides a new approach to developing and deploying advanced security products on a variety of environments. It is adapted to be used by modern orchestration tools and API users. </br>The intelligence model is fit to manage assets. 
+    
+    # Authentication
+
+    Use your JWT. You can generate it via the [registartion/authentication Fog API](https://app.swaggerhub.com/apis/Check-Point/infinity2-fog-agents-api)[s](https://www.youtube.com/watch?v=1Bix44C1EzY)
+    
+    <br><br><b><b>Implement your own Intelligence Source (Aux service):</b></b>
+    <br><br>
+    1) Learn how to create a source registration request to intelligence service (search for "Source Registration" in this page)
+    <br><br>
+    2) Implement the source API from this link - https://app.swaggerhub.com/apis/Check-Point/intelligence-auxiliary/0.0.4-dev
+security:
+  - bearerAuth: []
+
+servers:
+ - url: 'https://<host>:<port>/api/v2'
+
+paths:
+  /intelligence/assets:
+    get:
+      tags:
+        - Intelligence Query
+      summary: "Query to the intelligence."
+      description: >-
+        Creates a simple query looking for assets.<br><br>
+    
+        A query for an asset can be formed using a concatination of the desired fields in the GET query requets below. Field keys and values should be wrappd in qoutes and sepearted by colons. To specify several fields in an "AND" expression use the "+" operator. <br>Example - <br>
+        <br><code>"attributes.data":"myData"+"mainAttributes.ip":"1.1.1.1"</code>
+        
+        <br><br><b><b>Note:</b></b>
+        <br>Note that the query contents MUST be URL <b>Query</b> escaped.
+        <br>Example -
+        <br><br>Putting the example above into a request as part of a query with offset and limit-
+        <br><code>.../assets?offset=5&q=%22attributes.data%22%3A%22myData%22%2B%22mainAttributes.ip%22%3A%221.1.1.1%22&limit=5</code><br><br>
+        Example of a valid request (without the URL query encoding for the sake of readability, a real request should be encoded):<br><br>
+        <code>GET .../assets?q="mainAttributes.ip":"1.1.1.1"+"mainAttributes.host":"power.acme.com"<br>&limit=5&requestedAttributes=attributes.location&minConfidence=500&sortBy=name&cursor="start"</code>
+        <br><br>
+        <b> Note: </b></b><br>
+        
+        - The 'minConfidence' field is relevant for all specified 'requestedAttributes'.
+        
+        - The default 'minConfidence' (if unspecified) is 500
+        
+        - The following fields are 'requestedAttributes' that trigger a lookup in Check Point Threat Cloud:
+        
+          - attributes.countryCode
+          - attributes.countryName
+          - attributes.asn
+          - attributes.reputationClassification
+          - attributes.reputationSeverity
+          - attributes.reputationConfidence
+        
+        - The 'sortBy' field only support name 
+      parameters:
+        - name: X-Trace-Id
+          in: header
+          description: request trace Id
+          required: false
+          schema:
+            type: string
+        # - name: X-Tenant-Id
+        #   in: header
+        #   description: Tenant context in which to create the requested query
+        #   required: true
+        #   schema:
+        #     type: string
+        # - name: X-Source-Id
+        #   in: header
+        #   description: Source context for this operation - the reporting source
+        #   required: true
+        #   schema:
+        #     type: string  
+        - name: q
+          required: true
+          description: >-
+                A series of fields (key/value pairs), warpped in quotes each, with which to query for assets, seperated by '+'. 
+                
+                
+                <br><br><b><b>Note</b></b>: The query qill be treated as an <b>'and'</b> between all key/value pairs.
+          in: query
+          schema:
+            type: string
+            example: >-
+              ?q="mainAttributes.ip":"1.1.1.1"+"mainAttributes.host":"power.acme.com"
+        - name: requestedAttributes
+          required: false
+          description: >-
+                a series of field names which the client would like to get from the queried for assets. Data that is not present in the itnelligence DB will be attempted to be collected from external sources.  
+          in: query
+          schema:
+            type: string
+            minLength: 1
+            example:
+              "?requestedAttributes=attributes.location"   
+        - name: limit
+          required: false
+          description: The maximum number of assets we want to return
+          in: query
+          schema:
+            minimum: 1
+            default: 20
+            maximum: 50
+            type: string
+            example:
+              "?limit=13"
+        # - name: offset
+        #   required: false
+        #   description: The number of assets we want to skip for pagination
+        #   in: query
+        #   schema:
+        #     minimum: 0
+        #     default: 0
+        #     type: string
+        #     example:
+        #       "?offset=2"
+        - name: minConfidence
+          required: false
+          description: the minimum confidence of the reported data the client wishes to receive 
+          in: query
+          schema:
+            minimum: 1
+            maximum: 1000
+            default: 500
+            type: string
+            example:
+              "?minConfidence=13"       
+        - name: sortBy
+          required: false
+          description: the assets can only sorted by name 
+          in: query
+          schema:
+            default: name
+            type: string
+            example:
+              "?sortBy=name"
+        - name: cursor
+          required: false
+          description: the place from which the repo should start the query from
+          in: query
+          schema:
+            type: string
+            example:
+              "?cursor=start"
+          
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorizedError'  
+        '500':
+          $ref: '#/components/responses/internalError'
+
+  /intelligence/assets/query:
+    post:
+      tags:
+        - Intelligence Query
+      summary: "Query to the intelligence."
+      description: >-
+        Creates a query looking for assets. Default query limit is 20.<br><br>
+        Within this query a list of 'requestedAttributes' may be specified. Each with it's minimal desired confidence. 
+        
+        - The default 'minConfidence' (if unspecified) is 500
+        
+        - The following fields are 'requestedAttributes' that trigger a lookup in Check Point Threat Cloud:
+        
+          - attributes.countryCode
+          - attributes.countryName
+          - attributes.asn
+          - attributes.reputationClassification
+          - attributes.reputationSeverity
+          - attributes.reputationConfidence
+
+        - The 'sortBy' field in the request body only support name<br><br>
+        
+        <b>The query language supports the following operatation:</b> <br>
+        
+        <ul>
+          <li>
+            <b>equals/notEquals:</b><br>
+            Given a key and a value the query will search for all assets containing the given key with a value equals to the given value (or not equal to it). 
+          </li>
+          <li>
+            <b>match:</b><br>
+            Given a key and a string value specifying a regex the query will search for all assets containing the given key where its value mathces the given regex. 
+          </li>
+          <li>
+            <b>startsWith:</b><br>
+            Given a key and a string value the query will search for all assets containing the given key where its value stars with the given value. 
+          </li>
+          <li>
+            <b>contains:</b><br>
+            Given a key and a string value the query will search for all assets containing the given key where its value contains the given value. 
+          </li>
+          <li>
+            <b>in/notIn:</b><br>
+            Given a key and an array value the query will search for all assets containing the given key where its value is contained in the given array (or not contained).<br>
+            If the key contains an array then the value is matched if the array cotains at least one item specified in the query value array.
+          </li>
+          <li>
+            <b>and/or:</b><br>
+            This is a logical node in the query language. Given an operator (and/or) and a list of operands (any of the supported query opeartions listed here) it creates the corresponsing query containg them all with an and/or relation between them. 
+          </li>
+          <li>
+            <b>greaterThan/lessThan:</b><br>
+            Given a key and a number value the query will search for all assets containing the given key where its value is greater/less than the given value.
+          </li>
+          <li>
+            <b>greaterThanEquals/lessThanEquals:</b><br>
+            Given a key and a number or string value the query will search for all assets containing the given key where its value is greater/less than equals the given value.
+          </li>
+          <li>
+            <b>range:</b><br>
+            Given a key and a array with length 2 that the firs object is the minimum value and the second object is the maximum value, as value, the query will search for all assets containing the given key where its value is in the range. The renge array can contain integer or string values.
+          </li>
+        </ul>
+        
+      parameters:
+        - name: X-Trace-Id
+          in: header
+          description: request trace Id
+          required: false
+          schema:
+            type: string
+        # - name: X-Tenant-Id
+        #   in: header
+        #   description: Tenant context in which to create the requested query
+        #   required: true
+        #   schema:
+        #     type: string
+        # - name: X-Source-Id
+        #   in: header
+        #   description: Source context for this operation - the reporting source
+        #   required: true
+        #   schema:
+        #     type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecQueryBody'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorizedError'   
+        '500':
+          $ref: '#/components/responses/internalError' 
+  
+  /intelligence/assets/queries:
+    post:
+      tags:
+        - Intelligence Bulk Queries
+      summary: "Bulk query to the intelligence."
+      description: >-
+        Creates bulk queries looking for assets. <br><br>
+        You can use different tenants for each query in the bulk, if they are descendants of the tenant that asked the query. <br><br>
+        Default query limit is 20.<br><br>
+        Within each query a list of 'requestedAttributes' may be specified. Each with it's minimal desired confidence. 
+        
+        - The default 'minConfidence' (if unspecified) is 500
+        
+        - The following fields are 'requestedAttributes' that trigger a lookup in Check Point Threat Cloud:
+        
+          - attributes.countryCode
+          - attributes.countryName
+          - attributes.asn
+          - attributes.reputationClassification
+          - attributes.reputationSeverity
+          - attributes.reputationConfidence
+
+        - The 'sortBy' field in the request body only support name<br><br>
+        
+        <b>The query language supports the following operatation:</b> <br>
+        
+        <ul>
+          <li>
+            <b>equals/notEquals:</b><br>
+            Given a key and a value the query will search for all assets containing the given key with a value equals to the given value (or not equal to it). 
+          </li>
+          <li>
+            <b>match:</b><br>
+            Given a key and a string value specifying a regex the query will search for all assets containing the given key where its value mathces the given regex. 
+          </li>
+          <li>
+            <b>startsWith:</b><br>
+            Given a key and a string value the query will search for all assets containing the given key where its value stars with the given value. 
+          </li>
+          <li>
+            <b>contains:</b><br>
+            Given a key and a string value the query will search for all assets containing the given key where its value contains the given value. 
+          </li>
+          <li>
+            <b>in/notIn:</b><br>
+            Given a key and an array value the query will search for all assets containing the given key where its value is contained in the given array (or not contained).<br>
+            If the key contains an array then the value is matched if the array cotains at least one item specified in the query value array.
+          </li>
+          <li>
+            <b>and/or:</b><br>
+            This is a logical node in the query language. Given an operator (and/or) and a list of operands (any of the supported query opeartions listed here) it creates the corresponsing query containg them all with an and/or relation between them. 
+          </li>
+          <li>
+            <b>greaterThan/lessThan:</b><br>
+            Given a key and a number value the query will search for all assets containing the given key where its value is greater/less than the given value.
+          </li>
+          <li>
+            <b>greaterThanEquals/lessThanEquals:</b><br>
+            Given a key and a number or string value the query will search for all assets containing the given key where its value is greater/less than equals the given value.
+          </li>
+          <li>
+            <b>range:</b><br>
+            Given a key and a array with length 2 that the firs object is the minimum value and the second object is the maximum value, as value, the query will search for all assets containing the given key where its value is in the range. The renge array can contain integer or string values.
+          </li>
+        </ul>
+        
+      parameters:
+        - name: X-Trace-Id
+          in: header
+          description: request trace Id
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkQueriesBody'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BulkQueryResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorizedError'   
+        '500':
+          $ref: '#/components/responses/internalError' 
+          
+  /intelligence/validate:
+    post:
+      tags:
+        - Intelligence Assets Validation 
+      summary: "Validate assets"
+      description: >-
+
+      parameters:
+        - name: X-Trace-Id
+          in: header
+          description: request trace Id
+          required: false
+          schema:
+            type: string
+        # - name: X-Tenant-Id
+        #   in: header
+        #   description: Tenant context in which to create the requested query
+        #   required: true
+        #   schema:
+        #     type: string
+        # - name: X-Source-Id
+        #   in: header
+        #   description: Source context for this operation - the reporting source
+        #   required: true
+        #   schema:
+        #     type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [assets]
+              properties:
+                assets:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ReportedAsset'
+                  minItems: 1  
+                  uniqueItems: true
+              additionalProperties: false
+              example: 
+                assets:
+                  - name: my-asset
+                    schemaVersion: 1
+                    ttl: 3600
+                    assetType: workload-cloud-dns
+                    assetTypeSchemaVersion: 1
+                    permissionType: tenant
+                    objectType: asset
+                    class: workload
+                    category: cloud
+                    family: DNS
+                    tags:
+                      key1: string
+                      key2: string
+                    confidence: 50
+                    mainAttributes:
+                      ip: 1.1.1.1
+                    attributes:  
+                      networkInterfaces:
+                      - name: eth0
+                        ip: 8.8.8.8
+                        subnet: '24'
+                        aliases:
+                        - google.dns.com
+                      data: my data
+        description: List of assets to be added 
+        required: true
+      responses:
+        '200':
+          description: Returns a list of the indexes of invalid assets and the error. If the list is empty all assets are valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Validation'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorizedError'   
+        '500':
+          $ref: '#/components/responses/internalError'
+          
+  /intelligence/invalidation:
+    post:
+      tags:
+        - Intelligence Invalidation 
+      summary: "Invalidate assets"
+      description: >-
+
+      parameters:
+        - name: X-Trace-Id
+          in: header
+          description: request trace Id
+          required: false
+          schema:
+            type: string
+        - name: X-Tenant-Id
+          in: header
+          description: Tenant context in which to create the requested query
+          required: true
+          schema:
+            type: string
+        - name: X-Source-Id
+          in: header
+          description: Source context for this operation - the reporting source
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description:  >-
+          The invalidation object has the following fields dependencies:<br>
+            - given 'kind' field, the following fields are required: 'class', 'category', 'family', 'group', and 'order'.<br>
+            - given 'order' field, the following fields are required: 'class', 'category', 'family', and 'group'.<br>
+            - given 'group' field, the following fields are required: 'class', 'category', and 'family'.<br>
+            - given 'family' field, the following fields are required: 'class', 'category'.<br>
+            - given 'category' field, the following fields are required: 'class'.<br>
+            - given 'mainAttributes' field, the following fields are required: 'class', 'category' and 'family', the other fields are optional.<br>
+            - 'objectType' is currently not required, by default it's set to be 'asset'.<br><br>
+             IMPORTANT NOTICE! The invalidation process is performed asynchronously, please wait a bit before you query again. 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Invalidation'
+        required: true
+      responses:
+        '200':
+          description: OK - the Intelligence performed invalidation for the given data. 
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorizedError'   
+        '500':
+          $ref: '#/components/responses/internalError'        
+  
+  /intelligence/invalidation/register:
+    post:
+      tags:
+        - Intelligence Invalidation Registration
+      summary: "Register for invalidations notifications"
+      description: >-
+        Sign up as a source (aux) to receive notifications of invalidations.<br>
+        If communicationType is sync (default), a request of invalidation would be sent to the registered source at POST /source/invalidation to the url that it registered with.
+        Request body sent to notify the source about an invalidation is the invalidation that has been triggered from the `dataMap` field.<br><br>
+        IMPORTANT NOTE: The source (aux) should perform the registration every 15 minutes periodcally in order to keep getting nothfications.
+      parameters:
+        - name: X-Trace-Id
+          in: header
+          description: request trace Id
+          required: false
+          schema:
+            type: string
+        # - name: X-Tenant-Id
+        #   in: header
+        #   description: Tenant context for this operation
+        #   required: true
+        #   schema:
+        #     type: string
+        # - name: X-Source-Id
+        #   in: header
+        #   description: Source context for this operation
+        #   required: true
+        #   schema:
+        #     type: string
+      requestBody:
+        description:  >-
+          The invalidation registration object has the following fields dependencies:<br>
+            - 'url' field is required
+            - given 'kind' field, the following fields are required: 'class', 'category', 'family', 'group', and 'order'.<br>
+            - given 'order' field, the following fields are required: 'class', 'category', 'family', and 'group'.<br>
+            - given 'group' field, the following fields are required: 'class', 'category', and 'family'.<br>
+            - given 'family' field, the following fields are required: 'class', 'category'.<br>
+            - given 'category' field, the following fields are required: 'class'.<br>
+            - given 'mainAttributes' field, the following fields are required: 'class', 'category' and 'family', the other fields are optional.<br>
+            - 'objectType' and 'class' fields are required.<br>
+            - 'crossTenantDataMaps' field holds the invalidation matchers to match against all tenants' invalidations, if any tenant triggers an invalidation made here it would result in a callback to the source who registered<br>
+            - each invalidationMatcher requires a key to ensure only specific known invalidations, and not just any invalidations
+            <br>
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvalidationRegistration'
+        required: true
+      responses:
+        '200':
+          description: OK - the Intelligence performed invalidation registration for the given data. 
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorizedError'   
+        '500':
+          $ref: '#/components/responses/internalError'
+
+  /intelligence/source/:
+    post:
+      tags:
+        - Source Registration
+      summary: "Registration of an external source service"
+      description: >-
+        Sign up as a source (aux) to the given intelligence, allowing it to possibly query said source (aux) as needed. <br>
+             <br>A source (aux) uniqueness is defined by it tenant and source IDs. Only one source (aux) may be reported for any given combination of these IDs. 
+        <br><br><b><b>Implement your own Intelligence Source (Aux service) with the link below:</b></b>
+        <br><br>
+         https://app.swaggerhub.com/apis/Check-Point/intelligence-auxiliary/0.0.4-dev
+        
+      parameters:
+        - name: X-Trace-Id
+          in: header
+          description: request trace Id
+          required: false
+          schema:
+            type: string
+        # - name: X-Tenant-Id
+        #   in: header
+        #   description: Tenant context in which to create the requested query
+        #   required: true
+        #   schema:
+        #     type: string
+        # - name: X-Source-Id
+        #   in: header
+        #   description: Source context for this operation - the reporting source
+        #   required: true
+        #   schema:
+        #     type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aux'
+        required: true
+      responses:
+        '200':
+          description: OK - the ID of the created auxiliary instance. 
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorizedError'   
+        '500':
+          $ref: '#/components/responses/internalError' 
+components:
+  securitySchemes: 
+    bearerAuth:
+      description: "A valid JWT must be specified as a request header, for example:<br>Authorization: Bearer <access-token>"
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  
+      
+  schemas:
+    ReportedAsset:
+      type: object
+      required:
+        - schemaVersion
+        - ttl
+        - assetType
+        - assetTypeSchemaVersion
+        - permissionType
+        - class
+        - category
+        - family
+        - confidence
+        - mainAttributes
+      properties:
+        schemaVersion:
+          $ref: '#/components/schemas/schemaVersion'
+        ttl:
+          $ref: '#/components/schemas/ttl'
+        assetType:
+          $ref: '#/components/schemas/assetType'
+        assetTypeSchemaVersion:
+          $ref: '#/components/schemas/assetTypeSchemaVersion'
+        permissionType:
+          $ref: '#/components/schemas/permissionType'
+        permissionGroupId:
+          $ref: '#/components/schemas/permissionGroupId'
+        name:  
+          $ref: '#/components/schemas/name'
+        objectType:
+          $ref: '#/components/schemas/objectType'
+        class:
+          $ref: '#/components/schemas/class'
+        category:  
+          $ref: '#/components/schemas/category' 
+        family:
+          $ref: '#/components/schemas/family'
+        group:
+          $ref: '#/components/schemas/group'
+        order:
+          $ref: '#/components/schemas/order'
+        kind:
+          $ref: '#/components/schemas/kind'
+        tags:
+          $ref: '#/components/schemas/tags'
+        confidence:
+          $ref: '#/components/schemas/confidence'
+        mainAttributes:
+          $ref: '#/components/schemas/mainAttributes'
+        attributes:
+          $ref: '#/components/schemas/attributes'
+      additionalProperties: false
+      example:
+        schemaVersion: 1
+        ttl: 5000
+        assetType: workload-cloud-vm
+        assetTypeSchemaVersion: 1
+        permissionType: tenant
+        name: my-asset
+        objectType: asset
+        class: workload
+        category: cloud
+        family: vm
+        group: aws
+        order: ec2
+        kind: t2.nano
+        tags:
+          key1: string
+          key2: string
+        confidence: 50
+        mainAttributes:
+          ip: 1.1.1.1
+        attributes:  
+          networkInterfaces:
+          - name: eth0
+            ip: 8.8.8.8
+            subnet: '24'
+            aliases:
+            - google.dns.com
+          data: my data
+
+    mainAttributes:
+      type: object
+      description: what the source consideres as unique data for this asset
+      additionalProperties:
+        type: string
+
+    attributes:
+      type: object
+      description: any valid json
+
+    name:
+      type: string
+      description: the name of the asset, if a name wasn't given, it will be generated from the asset main attributes
+      minLength: 1
+      maxLength: 32
+      
+    objectType:
+      type: string
+      default: asset
+      enum: 
+      - asset
+      - zone
+
+    class:
+      type: string
+      minLength: 1
+      maxLength: 16
+
+    category:
+      type: string
+      minLength: 1
+      maxLength: 16
+  
+    family:
+      type: string
+      minLength: 1
+      maxLength: 16
+
+    group:
+      type: string
+      minLength: 1
+      maxLength: 16
+
+    order:
+      type: string
+      minLength: 1
+      maxLength: 16
+
+    kind:
+      type: string
+      minLength: 1
+      maxLength: 16
+  
+    tags:
+      type: object
+      additionalProperties:
+        type: string
+
+    ttl:
+      type: integer
+      description: the time in seconds the asset will be kept in the system for
+      minimum: 60
+      maximum: 864000    
+
+    confidence:
+      type: integer
+      minimum: 1
+      maximum: 1000 
+
+    schemaVersion:
+      type: integer
+      minimum: 1
+
+    assetType:
+      type: string
+      minLength: 1
+      maxLength: 64
+  
+    assetTypeSchemaVersion:
+      type: integer
+      minimum: 1
+  
+    permissionType:
+      description:  The field's value must be 'tenant', if you need it to be 'allTenants' you need to get special approval.<br>
+        Please schedule a meeting with Roy Barda/Assaf Maimon to discuss your needs.
+      type: string
+      default: tenant
+      enum: 
+      - agent
+      - profile
+      - app
+      - tenant
+      - group
+      - public
+      - allTenants
+
+    permissionGroupId:
+      type: string
+      minLength: 4
+      maxLength: 16
+      
+    
+    BulkQueryErrors:
+      type: object
+      properties:
+        index:
+          type: integer
+        statusCode:
+          type: integer
+        message:
+          type: string
+      additionalProperties: false
+      example:
+        index: 0
+        statusCode: 400
+        message: "Bad request. Error: Invalid cursor"
+              
+    BulkQueriesResponse:
+      type: object
+      properties:
+        index:
+          type: integer
+        response:
+          $ref: '#/components/schemas/schemaVersion'
+      additionalProperties: false
+      example:
+        index: 1
+        response:
+          assetCollections:
+            - schemaVersion: 1
+              assetType: workload-cloud-ip
+              assetTypeSchemaVersion: 1
+              permissionType: tenant
+              permissionGroupId: some-group-id
+              name: "[1.1.1.1]"
+              objectType: asset
+              class: workload
+              category: cloud
+              family: ip
+              group: ""
+              order: ""
+              kind: ""
+              mainAttributes: 
+                ipv4Addresses: [1.1.1.1]
+              sources:
+                - tenantId: 175bb55c-e36f-4ac5-a7b1-7afa1229aa00
+                  sourceId: 54d7de10-7b2e-4505-955b-cc2c2c7aaa00
+                  assetId: 50255c3172b4fb7fda93025f0bfaa7abefd1
+                  ttl: 120
+                  expirationTime: "2020-07-29T11:21:12.253Z"
+                  confidence: 500
+                  attributes :
+                    countryCode: AU
+                - tenantId: 175bb55c-e36f-4ac5-a7b1-7afa1229bb11
+                  sourceId: 54d7de10-7b2e-4505-955b-cc2c2c7bbb11
+                  assetId: cb068860528cb6bfb000cc35e79f11aeefed2
+                  ttl: 120
+                  expirationTime: "2020-07-29T11:21:12.253Z"
+                  confidence: 600
+                  attributes:
+                    countryCode: AU
+    
+    AssetCollection:
+      type: object
+      required:
+        - schemaVersion
+        - assetType
+        - assetTypeSchemaVersion
+        - permissionType
+        - objectType
+        - class
+        - category
+        - family
+        - confidence
+        - mainAttributes
+        - sources
+      properties:
+        schemaVersion:
+          $ref: '#/components/schemas/schemaVersion'
+        assetType:
+          $ref: '#/components/schemas/assetType'
+        assetTypeSchemaVersion:
+          $ref: '#/components/schemas/assetTypeSchemaVersion'
+        permissionType:
+          $ref: '#/components/schemas/permissionType'
+        permissionGroupId:
+          $ref: '#/components/schemas/permissionGroupId'
+        name:  
+          $ref: '#/components/schemas/name'
+        objectType:
+          $ref: '#/components/schemas/objectType'
+        class:
+          $ref: '#/components/schemas/class'
+        category:  
+          $ref: '#/components/schemas/category' 
+        family:
+          $ref: '#/components/schemas/family'
+        group:
+          $ref: '#/components/schemas/group'
+        order:
+          $ref: '#/components/schemas/order'
+        kind:
+          $ref: '#/components/schemas/kind'
+        mainAttributes:
+          $ref: '#/components/schemas/mainAttributes'
+        soures:
+          type: array
+          items:
+            type: object
+            oneOf:
+              - $ref: '#/components/schemas/sources'
+      additionalProperties: false
+      example:
+        schemaVersion: 1
+        assetType: workload-cloud-ip
+        assetTypeSchemaVersion: 1
+        permissionType: tenant
+        permissionGroupId: some-group-id
+        name: "[1.1.1.1]"
+        objectType: asset
+        class: workload
+        category: cloud
+        family: ip
+        group: ""
+        order: ""
+        kind: ""
+        mainAttributes: 
+          ipv4Addresses: [1.1.1.1]
+        sources:
+          - tenantId: 175bb55c-e36f-4ac5-a7b1-7afa1229aa00
+            sourceId: 54d7de10-7b2e-4505-955b-cc2c2c7aaa00
+            assetId: 50255c3172b4fb7fda93025f0bfaa7abefd1
+            ttl: 120
+            expirationTime: "2020-07-29T11:21:12.253Z"
+            confidence: 500
+            attributes :
+              countryCode: AU
+          - tenantId: 175bb55c-e36f-4ac5-a7b1-7afa1229bb11
+            sourceId: 54d7de10-7b2e-4505-955b-cc2c2c7bbb11
+            assetId: cb068860528cb6bfb000cc35e79f11aeefed2
+            ttl: 120
+            expirationTime: "2020-07-29T11:21:12.253Z"
+            confidence: 600
+            attributes:
+              countryCode: AU
+    
+    sources:
+      type: object
+      required:
+        - tenantId
+        - sourceId
+        - assetId
+        - ttl
+        - expirationTime
+        - confidence
+      properties:
+        tenantId:
+          $ref: '#/components/schemas/tenantId'
+        sourceId:
+          $ref: '#/components/schemas/sourceId'
+        ttl:
+          $ref: '#/components/schemas/ttl'
+        expirationTime:
+          $ref: '#/components/schemas/expirationTime'
+        tags:
+          $ref: '#/components/schemas/tags'
+        confidence:
+          $ref: '#/components/schemas/confidence'
+        attributes:
+          $ref: '#/components/schemas/attributes'
+      additionalProperties: false
+      example:
+        - tenantId: 175bb55c-e36f-4ac5-a7b1-7afa1229aa00,
+          sourceId: 54d7de10-7b2e-4505-955b-cc2c2c7aaa00,
+          assetId: 50255c3172b4fb7fda93025f0bfaa7abefd702e18954efd4fe3cf4d21b212c04,
+          ttl: 1234,
+          expirationTime: 2020-07-29T11:21:12.253Z,
+          tags: 
+            role: developer,
+          confidence: 500,
+          attributes :
+            countryCode: AU
+        - tenantId: 175bb55c-e36f-4ac5-a7b1-7afa1229bb11,
+          sourceId: 54d7de10-7b2e-4505-955b-cc2c2c7bbb11,
+          assetId": cb068860528cb6bfb000cc35e79f11aeefed3c4ea49e41c8d3d46c9fbc6226be,
+          ttl: 544,
+          expirationTime: 2020-07-29T11:21:12.253Z,
+          tags: 
+            role: menager,
+          confidence: 600,
+          attributes:
+            countryCode: AU
+          
+    tenantId:
+      type: integer
+      description: the tenant id the asset is associated with
+      
+    sourceId:
+      type: integer
+      description: the source id the asset is associated with
+    
+    expirationTime:
+      type: string
+      description: the expiration time for the asset (when the asset will be deleted from the repository)
+      
+    EmptyQuery:
+      type: object
+      additionalProperties: false
+        
+    LogicNode:
+      type: object
+      required: [operator, operands]
+      properties:
+        operator:
+          type: string
+          enum: ["and", "or"]
+        operands:
+          type: array
+          minItems: 2
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/EqLeaf'
+              - $ref: '#/components/schemas/GtLtLeaf'
+              - $ref: '#/components/schemas/GteLteLeaf'
+              # - $ref: '#/components/schemas/ExistLeaf'
+              - $ref: '#/components/schemas/Match'
+              - $ref: '#/components/schemas/StartsWith'
+              - $ref: '#/components/schemas/Contains'
+              - $ref: '#/components/schemas/InLeaf'
+              - $ref: '#/components/schemas/LogicNode'
+              # - $ref: '#/components/schemas/ListContainsNode'
+      additionalProperties: false
+      
+      
+    # ExistLeaf:
+    #   type: object
+    #   required: [operator, key]
+    #   properties:
+    #     operator:
+    #       type: string
+    #       enum: ["EXIST"]
+    #     key:
+    #       type: string
+    #   additionalProperties: false
+    
+    Match:
+      type: object
+      required: [operator, key, value]
+      properties:
+        operator:
+          type: string
+          enum: ["match"]
+        key:
+          type: string
+        value:
+          type: string
+      additionalProperties: false
+    
+    StartsWith:
+      type: object
+      required: [operator, key, value]
+      properties:
+        operator:
+          type: string
+          enum: ["startsWith"]
+        key:
+          type: string
+        value:
+          type: string
+      additionalProperties: false
+      
+    Contains:
+      type: object
+      required: [operator, key, value]
+      properties:
+        operator:
+          type: string
+          enum: ["contains"]
+        key:
+          type: string
+        value:
+          type: string
+      additionalProperties: false
+      
+    EqLeaf:
+      type: object
+      required: [operator, key, value]
+      properties:
+        operator:
+          type: string
+          enum: ["equals", "notEquals"]
+        key:
+          type: string
+        value:
+          type: string
+      additionalProperties: false
+      
+    GtLtLeaf:
+      type: object
+      required: [operator, key, value]
+      properties:
+        operator:
+          type: string
+          enum: ["greaterThan", "lessThan"]
+        key:
+          type: string
+        value:
+          type: number
+      additionalProperties: false
+      
+    GteLteLeaf:
+      type: object
+      required: [operator, key, value]
+      properties:
+        operator:
+          type: string
+          enum: ["greaterThanEquals", "lessThanEquals"]
+        key:
+          type: string
+        value:
+         oneOf:
+           - type: string
+           - type: number
+      additionalProperties: false
+      
+    InLeaf:
+      type: object
+      required: [operator, key, value]
+      properties:
+        operator:
+          type: string
+          enum: ["in", "notIn"]
+        key:
+          type: string
+        value:
+          type: array
+          items:
+            type: string
+      additionalProperties: false      
+    
+    
+    SecQueryBody:
+      description: A query to the intelligence
+      required: [query]
+      type: object
+      properties:
+        limit: 
+          type: integer
+          default: 20
+          minimum: 1
+          maximum: 1000
+        cursor:
+          type: string
+          description: the place from which the repo and external sources should start the query from
+          example: start
+        sortBy:
+          type: string 
+          enum: ["assetType", "schemaVersion", "assetTypeSchemaVersion", "permissionType", "class", "category", "family", "group", "order", "kind", "name"]
+        fullResponse:
+          type: boolean
+          description: if the parameter is true only full response will be returned, else, partial response can be returned
+          default: false
+        responseType:
+          type: string 
+          enum: ["assets", "assetCollections"]
+          description: the response type the query should return
+        queryFromAgent:
+          type: boolean
+          description: if true the query came from the agent intelligence - should not be used by the user! this field is for internal use only
+        agentAuxDone:
+          type: boolean
+          description: if true all auxiliaries of the agent intelligence finished reporting the data to the cloud - should not be used by the user! this field is for internal use only
+        queryType:
+          type: object
+          properties:
+            multiTenant:
+              type: boolean
+        object type:
+          type: string
+          enum: ["asset", "zone"]
+          description: the type of your object, we support "asset" and "zone"
+          default: "asset"
+        query:
+          oneOf:
+            - $ref: '#/components/schemas/EmptyQuery'
+            - $ref: '#/components/schemas/EqLeaf'
+            - $ref: '#/components/schemas/GtLtLeaf'
+            - $ref: '#/components/schemas/GteLteLeaf'
+            # - $ref: '#/components/schemas/ExistLeaf'
+            - $ref: '#/components/schemas/Match'
+            - $ref: '#/components/schemas/StartsWith'
+            - $ref: '#/components/schemas/Contains'
+            - $ref: '#/components/schemas/InLeaf'
+            - $ref: '#/components/schemas/LogicNode'
+            # - $ref: '#/components/schemas/ListContainsNode'
+        requestedAttributes:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [key, minConfidence]
+            properties:
+              key:
+                type: string
+              minConfidence:
+                type: integer
+                default: 500
+                minimum: 1
+                maximum: 1000
+          
+            
+      additionalProperties: false
+      example:
+        limit: 20
+        cursor: start
+        sortBy: name
+        fullResponse: true
+        objectType: asset
+        query:
+          operator: equals
+          key: mainAttributes.ip
+          value: 1.1.1.1
+        requestedAttributes:
+          - key: attributes.location
+            minConfidence: 500
+                  
+                  
+    BulkQueriesBody:
+      description: A query to the intelligence
+      required: [query]
+      type: object
+      properties:
+        queries:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/BulkQueryBody'
+    
+    BulkQueryBody:
+      description: A query to the intelligence
+      required: [query]
+      type: object
+      properties:
+        tenantId:
+          type: string
+          example: a7f13edd-6db8-467d-9a29-236d1de68daa
+        index:
+          type: integer
+          minimum: 0
+          maximum: 10
+          example: 0
+        query:
+          $ref: '#/components/schemas/SecQueryBody'
+            
+    QueryResponse:
+      description: reply to an asset query
+      type: object
+      properties:
+        assetCollections:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetCollection'
+        status:
+          type: string
+          enum: ["inProgress", "done"]
+          example: done
+        totalNumAssets:
+          type: number
+          example: 2
+        cursor:
+          type: string
+          example: "start"
+          
+    BulkQueryResponse:
+      description: reply to an bulk asset query
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkQueryErrors'
+        queriesResponse:
+          type: array
+          items:
+            $ref: '#/components/schemas/BulkQueriesResponse'
+   
+    Validation:
+      type: object
+      required: [assetValidationErrors]
+      properties:
+        assetValidationErrors:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetValidationError'
+          minItems: 1  
+          uniqueItems: true
+      additionalProperties: false
+
+    AssetValidationError:
+      type: object
+      required: [reportedAssetAtIndex, statusCode, errorMessage]
+      properties:
+        reportedAssetAtIndex:
+          type: integer
+          minItems: 1  
+          example: 0
+        statusCode:
+          type: integer
+          minItems: 1  
+          example: 400
+        errorMessage:
+          type: string
+          minItems: 1  
+          example: "bad input"
+      additionalProperties: false
+
+    InvalidationRegistration:
+      type: object
+      required:
+        - url
+      properties:
+        name:
+          type: string
+        url:
+          type: string
+        apiVersion:
+          type: string
+          enum: ["v1"]
+        communicationType:
+          type: string
+          enum: ["sync"]
+        dataMap:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invalidation'
+      example:
+        name: source-name
+        url: http://your-aux-url
+        apiVersion: v1
+        communicationType: sync
+        crossTenantDataMaps:
+          - invalidationMatcher:
+              objectType: asset
+              class: devices
+            key: some-uuid
+        dataMap:
+          - objectType: asset
+            class: workload
+            category: cloud
+            family: vm
+            group: aws
+            order: ec2
+            kind: t2.nano
+            mainAttributes:
+              - ipv4Addresses:
+                - 1.1.1.1
+              - ipv6Addresses:
+                - 2001:db8::ff00:42:8329
+          - objectType: asset
+            class: workload
+            category: cloud
+            family: DNS
+
+    Invalidation:
+      type: object
+      required:
+        - invalidations
+      additionalProperties: false
+      properties:
+        invalidations:
+          type: array
+          items:
+            type: object
+            required:
+              - class
+            additionalProperties: false
+            properties:
+              objectType:
+                type: string
+                enum: ["asset", "zone"]
+              class:
+                type: string
+              category:
+                type: string
+              family:
+                type: string
+              group:
+                type: string
+              order:
+                type: string
+              kind:
+                type: string
+              mainAttributes:
+                type: array
+                items:
+                  type: object
+              
+      example: 
+        invalidations:
+          - objectType: asset
+            class: workload
+            category: cloud
+            family: vm
+            group: aws
+            order: ec2
+            kind: t2.nano
+            mainAttributes:
+              - ipv4Addresses:
+                - 1.1.1.1
+              - ipv6Addresses:
+                - 2001:db8::ff00:42:8329
+          - objectType: asset
+            class: workload
+            category: cloud
+            family: DNS
+            
+    
+    Aux:
+      type: object
+      required:
+        - name
+        - communicationType
+        - apiVersion
+        - dataMap
+
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+        queryUrl:
+          type: string
+        communicationType:
+          type: string
+          enum: ["sync", "async"]
+        capabilities:
+          type: object
+          properties:
+            multiTenantQuery:
+              type: boolean
+        apiVersion:
+          type: string
+        sourcesIds:
+          type: array
+          items:
+            type: string
+        dataMap:
+          type: array
+          required:
+            - supportGeneralAttributes
+            - supportPaging
+            - matcher
+          items:
+            type: object
+            additionalProperties: false
+            properties:
+              supportGeneralAttributes:
+                type: boolean
+              supportPaging:
+                type: boolean
+              matcher:
+                type: object
+                minItems: 1
+                description: A list of fields indicating which assets this aux can return information for. Relation between all fields is 'AND'. Each field can either contain a value or a wild card '*'. A missing field, at the root level, is treated as a wildcard.
+                properties:
+                  class:
+                    type: string
+                    default: "*"
+                  category:
+                    type: string
+                    default: "*"    
+                  group:
+                    type: string
+                    default: "*"
+                  family:
+                    type: string
+                    default: "*"  
+                  order:
+                    type: string
+                    default: "*"
+                  kind:
+                    type: string
+                    default: "*"
+                  mainAttributes.ip:
+                    type: string
+                    description: a collection of main attribute fields and values for which this aux can give information. A wildcard value '*' can be used.
+                    additionalProperties:
+                      type: string
+              requestedAttributes:
+                type: array
+                minItems: 1
+                items:
+                  type: string
+              objectType:
+                type: string
+                enum: ["asset", "zone"]
+              
+      example: 
+        name: threat cloud
+        queryUrl: http://aux-host:1234
+        communicationType: sync
+        apiVersion: v1
+        dataMap:
+          - supportGeneralAttributes: false
+            supportPaging: false
+            matcher:
+              mainAttributes.ip: "*"
+            requestedAttributes:
+              - attributes.countryName
+              - attributes.countryCode
+              - attributs.asn
+              - attributes.reputationClassification
+              - attributes.reputationSeverity
+              - attributes.reputationConfidence
+              
+    Result:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Result text message in english
+          example: "some error"
+        messageId:
+          type: string
+          description: Code for message text 
+          example: "001-023"
+        severity:
+          type: string
+          enum:
+            - critical
+            - high
+            - medium
+            - low
+      required:
+        - message
+        - messageId
+        - severity
+  
+  responses:
+    unauthorizedError:
+      description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Result'
+    badRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Result'
+    notFound:
+      description: File or path not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Result'
+            
+    internalError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Result'

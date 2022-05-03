@@ -1,0 +1,48 @@
+*.dll
+*.exe
+.DS_Store
+example.tf
+.terraform.lock.hcl
+.terraform.tfstate.lock.info
+terraform.tfplan
+terraform.tfstate
+bin/
+dist/
+modules-dev/
+/pkg/
+website/.vagrant
+website/.bundle
+website/build
+website/node_modules
+.vagrant/
+*.backup
+./*.tfstate
+.terraform/
+*.log
+*.bak
+*~
+.*.swp
+.idea
+*.iml
+*.test
+*.iml
+log.txt
+markdown-link-check*.txt
+changelog.tmp
+__debug_bin
+
+# Test exclusions
+!command/test-fixtures/**/*.tfstate
+!command/test-fixtures/**/.terraform/
+
+# CI exclusions
+gl-code-quality-report.json
+netrc
+
+# Keep windows files with windows line endings
+*.winfile eol=crlf
+/.vs
+node_modules
+go.work
+go.work.sum
+cmd/inext
