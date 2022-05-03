@@ -61,7 +61,7 @@ resource "inext_exceptions" "my-exceptions-behavior" {
 
 ### Optional
 
-- `exception` (Block List) Overrides AppSec ML engine decision based on match and action (see [below for nested schema](#nestedblock--exception))
+- `exception` (Block Set) Overrides AppSec ML engine decision based on match and action (see [below for nested schema](#nestedblock--exception))
 
 ### Read-Only
 
@@ -73,12 +73,15 @@ resource "inext_exceptions" "my-exceptions-behavior" {
 Required:
 
 - `action` (String) The action of the exception: accept, drop, skip or suppressLog
-- `match` (Block List, Min: 1) (see [below for nested schema](#nestedblock--exception--match))
+- `match` (Block Set, Min: 1) (see [below for nested schema](#nestedblock--exception--match))
 
 Optional:
 
-- `action_id` (String)
 - `comment` (String) Comment for the exception
+
+Read-Only:
+
+- `action_id` (String)
 - `id` (String) The ID of this resource.
 
 <a id="nestedblock--exception--match"></a>
@@ -87,9 +90,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand"></a>
 ### Nested Schema for `exception.match.operand`
@@ -97,9 +100,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--operand"></a>
 ### Nested Schema for `exception.match.operand.value`
@@ -107,9 +110,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand`
@@ -117,9 +120,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value`
@@ -127,9 +130,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value`
@@ -137,9 +140,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value`
@@ -147,9 +150,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand`
@@ -157,9 +160,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value`
@@ -167,9 +170,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value`
@@ -177,9 +180,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value`
@@ -187,9 +190,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value`
@@ -197,9 +200,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value`
@@ -207,9 +210,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value`
@@ -217,9 +220,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value`
@@ -227,9 +230,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand`
@@ -237,9 +240,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand.value`
@@ -247,9 +250,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand.value.value`
@@ -257,9 +260,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand.value.value.value`
@@ -267,9 +270,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand.value.value.value.value`
@@ -277,9 +280,9 @@ Optional:
 Optional:
 
 - `key` (String)
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--value--operand))
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand.value.value.value.value.value`
@@ -288,11 +291,11 @@ Optional:
 
 - `key` (String)
 - `operator` (String)
-- `value` (List of String)
+- `value` (Set of String)
 
 Read-Only:
 
-- `operand` (Block List) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--value--value--operand))
+- `operand` (Block Set) (see [below for nested schema](#nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--value--value--operand))
 
 <a id="nestedblock--exception--match--operand--value--operand--value--value--value--operand--value--value--value--value--value--value--value--operand--value--value--value--value--value--operand"></a>
 ### Nested Schema for `exception.match.operand.value.operand.value.value.value.operand.value.value.value.value.value.value.value.operand.value.value.value.value.value.operand`
