@@ -29,7 +29,7 @@ First, Download and install the CLI found in the latest release.
 
 The CLI requires the same credentials used to configure the provider, there are 2 options to pass these credentials to the CLI:
 
-1. `inext <command> --client-id <INEXT_CLIENT_ID> --access-key <INEXT_ACCESS_KEY> --region eu`
+1. Set the environment variables: `INEXT_CLIENT_ID` and `INEXT_ACCESS_KEY` and run `inext <command>`, this is more comfortable for usage right after `terraform apply` since it uses the same environment variables.
 2. Create a yaml file at `~/.inext.yaml` with the following content:
    ```
    client-id: <INEXT_CLIENT_ID>

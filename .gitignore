@@ -45,3 +45,4 @@ netrc
 node_modules
 go.work
 go.work.sum
+cmd/inext

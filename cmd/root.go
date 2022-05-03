@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"strings"
 
@@ -67,15 +66,12 @@ type getTaskResponse struct {
 // rootCmd represents the base command when called without any subcommands
 var (
 	rootCmd = &cobra.Command{
-		Use:   "infinity-next-cli",
+		Use:   "inext",
 		Short: "Infinity Next API Command Line Interface",
 		Long: `Infinity Next API Command Line Interface
 For example:
-inext enforce
+inext publish && inext enforce
 `,
-		// Uncomment the following line if your bare application
-		// has an action associated with it:
-		// Run: func(cmd *cobra.Command, args []string) { },
 	}
 
 	viper = viperpkg.NewWithOptions(viperpkg.EnvKeyReplacer(&lowerCaseStringEnvKeyReplacer{}))
@@ -120,7 +116,5 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match INEXT_*
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-	}
+	viper.ReadInConfig()
 }
