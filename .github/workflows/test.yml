@@ -99,5 +99,6 @@ jobs:
       run: |
         pwd
         ls -al .
+        ls -al cmd
         go test -v -cover ./internal/resources/tests/
-        cmd/inext --client-id $INEXT_CLIENT_ID --access-key $INEXT_ACCESS_KEY discard
+        cmd/inext discard --client-id $INEXT_CLIENT_ID --access-key $INEXT_ACCESS_KEY
