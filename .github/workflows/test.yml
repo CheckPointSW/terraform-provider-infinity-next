@@ -54,6 +54,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    concurrency: acctests
     strategy:
       max-parallel: 1
       fail-fast: true
