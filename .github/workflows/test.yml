@@ -3,6 +3,9 @@
 #
 name: Tests
 on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 * * * *'
   pull_request:
     paths-ignore:
       - 'README.md'
@@ -53,7 +56,7 @@ jobs:
     timeout-minutes: 15
     strategy:
       max-parallel: 1
-      fail-fast: false
+      fail-fast: true
       matrix:
         # list whatever Terraform versions here you would like to support
         terraform:

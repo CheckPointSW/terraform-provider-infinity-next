@@ -28,7 +28,7 @@ func matchSchema(nestLevel int) *schema.Resource {
 				},
 				"operand": {
 					Optional: true,
-					Type:     schema.TypeList,
+					Type:     schema.TypeSet,
 					Elem:     &schema.Resource{},
 				},
 				"key": {
@@ -37,7 +37,7 @@ func matchSchema(nestLevel int) *schema.Resource {
 					ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"hostName", "sourceIdentifier", "url", "countryCode", "countryName", "manufacturer", "paramName", "paramValue", "protectionName", "sourceIP"}, false)),
 				},
 				"value": {
-					Type:     schema.TypeList,
+					Type:     schema.TypeSet,
 					Optional: true,
 					Elem: &schema.Schema{
 						Type: schema.TypeString,
@@ -57,7 +57,7 @@ func matchSchema(nestLevel int) *schema.Resource {
 			},
 			"operand": {
 				Optional: true,
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Elem:     matchSchema(nestLevel - 1),
 			},
 			"key": {
@@ -66,7 +66,7 @@ func matchSchema(nestLevel int) *schema.Resource {
 				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"hostName", "sourceIdentifier", "url", "countryCode", "countryName", "manufacturer", "paramName", "paramValue", "protectionName", "sourceIP"}, false)),
 			},
 			"value": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Optional: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -99,18 +99,17 @@ func ResourceExceptions() *schema.Resource {
 				Required:    true,
 			},
 			"exception": {
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Description: "Overrides AppSec ML engine decision based on match and action",
 				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
 							Type:     schema.TypeString,
-							Optional: true,
 							Computed: true,
 						},
 						"match": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeSet,
 							Required: true,
 							Elem:     matchSchema(maxNestLevel),
 						},
@@ -122,7 +121,6 @@ func ResourceExceptions() *schema.Resource {
 						},
 						"action_id": {
 							Type:     schema.TypeString,
-							Optional: true,
 							Computed: true,
 						},
 						"comment": {
