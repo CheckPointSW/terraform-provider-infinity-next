@@ -50,9 +50,6 @@ jobs:
     name: Test
     needs: build
     runs-on: ubuntu-latest
-    env:
-      INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID }}
-      INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY }}
     timeout-minutes: 15
     strategy:
       fail-fast: false
@@ -87,6 +84,8 @@ jobs:
     - name: TF acceptance tests
       timeout-minutes: 10
       env:
+        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID }}
+        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY }}
         TF_ACC: "1"
       run: |
         go test -v -cover ./internal/resources/tests/
