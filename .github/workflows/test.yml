@@ -54,7 +54,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    concurrency: acctests
+    concurrency: acctests-${{ github.event_name }}
     strategy:
       max-parallel: 1
       fail-fast: true
@@ -91,11 +91,36 @@ jobs:
         cd cmd
         go build -o inext -v .
         
-    - name: TF acceptance tests
+    - name: TF acceptance tests push
+      if: github.event_name == 'push'
       timeout-minutes: 5
       env:
-        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID }}
-        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY }}
+        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
+        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
+        TF_ACC: "1"
+      run: |
+        cmd/inext discard
+        go test -v -cover ./internal/resources/tests/
+        cmd/inext discard
+    
+    - name: TF acceptance tests pull request
+      if: github.event_name == 'pull_request'
+      timeout-minutes: 5
+      env:
+        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
+        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
+        TF_ACC: "1"
+      run: |
+        cmd/inext discard
+        go test -v -cover ./internal/resources/tests/
+        cmd/inext discard
+
+    - name: TF acceptance tests schedule
+      if: github.event_name == 'schedule'
+      timeout-minutes: 5
+      env:
+        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
+        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
         TF_ACC: "1"
       run: |
         cmd/inext discard
