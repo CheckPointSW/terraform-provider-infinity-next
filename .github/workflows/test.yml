@@ -50,13 +50,15 @@ jobs:
     name: Test
     needs: build
     runs-on: ubuntu-latest
+    env:
+      INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID }}
+      INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY }}
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         # list whatever Terraform versions here you would like to support
         terraform:
-          - '0.12.*'
           - '0.13.*'
           - '0.14.*'
           - '0.15.*'

@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/acctest"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 

@@ -232,7 +232,7 @@ resource "inext_exceptions" %[1]q {
 		  value = ["www.google.com"]
 		}
 		action  = "drop"
-	  }
+	}
 }
 `, name)
 }
@@ -259,7 +259,7 @@ resource "inext_exceptions" %[1]q {
 		}
 		action  = "skip"
 		comment = "test comment"
-	  }
+	}
 }
 `, name)
 }

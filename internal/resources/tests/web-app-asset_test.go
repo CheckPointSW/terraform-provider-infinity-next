@@ -424,37 +424,11 @@ resource "inext_log_trigger" %[5]q {
 resource "inext_exceptions" %[6]q {
 	name = %[6]q
 	exception {
-	  match = {
-		hostName         = "www.google.com"
-		url              = "/login"
-		sourceIdentifier = "1.1.1.1/24"
-	  }
-	  action  = "drop"
-	  comment = "some comment"
-	}
-	exception {
-	  match = {
-		hostName         = "www.acme.com"
-		url              = "/"
-		sourceIdentifier = "1.0.0.0/18"
-	  }
-	  action = "skip"
-	}
-	exception {
-	  match = {
-		hostName         = "www.checkpoint.com"
-		url              = "/"
-		sourceIdentifier = "1.0.0.0/18"
-	  }
-	  action = "accept"
-	}
-	exception {
-	  match = {
-		hostName         = "www.apple.com"
-		url              = "/"
-		sourceIdentifier = "1.0.0.0/18"
-	  }
-	  action = "suppressLog"
+		match {
+		  key = "hostName"
+		  value = ["www.google.com"]
+		}
+		action  = "drop"
 	}
 }
 `, assetName, profileName, trustedSourcesName, practiceName, logTriggerName, exceptionsName)
@@ -584,37 +558,44 @@ resource "inext_log_trigger" %[5]q {
 resource "inext_exceptions" %[6]q {
 	name = %[6]q
 	exception {
-	  match = {
-		hostName         = "www.google.com"
-		url              = "/login"
-		sourceIdentifier = "1.1.1.1/24"
-	  }
-	  action  = "drop"
-	  comment = "some comment"
+		match {
+			operator = "or"
+		  	operand {
+				  operator = "not-equals"
+				  key = "hostName"
+				  value = ["www.google.com"]
+		  	}
+		  	operand {
+				  operator = "in"
+				  key = "url"
+				  value = ["/login", "/login2"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["1.1.1.1/24"]
+		  	}
+		}
+		action  = "skip"
+		comment = "test comment"
 	}
 	exception {
-	  match = {
-		hostName         = "www.acme.com"
-		url              = "/"
-		sourceIdentifier = "1.0.0.0/18"
-	  }
-	  action = "skip"
-	}
-	exception {
-	  match = {
-		hostName         = "www.checkpoint.com"
-		url              = "/"
-		sourceIdentifier = "1.0.0.0/18"
-	  }
-	  action = "accept"
-	}
-	exception {
-	  match = {
-		hostName         = "www.apple.com"
-		url              = "/"
-		sourceIdentifier = "1.0.0.0/18"
-	  }
-	  action = "suppressLog"
+		match {
+			operator = "and"
+		  	operand {
+				  key = "hostName"
+				  value = ["www.facebook.com"]
+		  	}
+		  	operand {
+				  key = "url"
+				  value = ["/logout"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["2.2.2.2/24"]
+		  	}
+		}
+		action  = "drop"
+		comment = "test comment"
 	}
 }
 `, assetName, profileName, trustedSourcesName, practiceName, logTriggerName, exceptionsName)
@@ -797,74 +778,67 @@ resource "inext_log_trigger" %[9]q {
 resource "inext_exceptions" %[6]q {
 	name = %[6]q
 	exception {
-	  match = {
-		hostName         = "www.google.com"
-		url              = "/login"
-		sourceIdentifier = "1.1.1.1/24"
-	  }
-	  action  = "drop"
-	  comment = "some comment"
+		match {
+			operator = "or"
+		  	operand {
+				  operator = "not-equals"
+				  key = "hostName"
+				  value = ["www.google.com"]
+		  	}
+		  	operand {
+				  operator = "in"
+				  key = "url"
+				  value = ["/login", "/login2"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["1.1.1.1/24"]
+		  	}
+		}
+		action  = "skip"
+		comment = "test comment"
 	}
 	exception {
-	  match = {
-		hostName         = "www.acme.com"
-		url              = "/"
-		sourceIdentifier = "1.0.0.0/18"
-	  }
-	  action = "skip"
-	}
-	exception {
-	  match = {
-		hostName         = "www.checkpoint.com"
-		url              = "/"
-		sourceIdentifier = "1.0.0.0/18"
-	  }
-	  action = "accept"
-	}
-	exception {
-	  match = {
-		hostName         = "www.apple.com"
-		url              = "/"
-		sourceIdentifier = "1.0.0.0/18"
-	  }
-	  action = "suppressLog"
+		match {
+			operator = "and"
+		  	operand {
+				  key = "hostName"
+				  value = ["www.facebook.com"]
+		  	}
+		  	operand {
+				  key = "url"
+				  value = ["/logout"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["2.2.2.2/24"]
+		  	}
+		}
+		action  = "drop"
+		comment = "test comment"
 	}
 }
 
 resource "inext_exceptions" %[10]q {
 	name = %[10]q
 	exception {
-	  match = {
-		hostName         = "www.google.com"
-		url              = "/login"
-		sourceIdentifier = "1.1.1.1/24"
-	  }
-	  action  = "drop"
-	  comment = "some comment"
-	}
-	exception {
-	  match = {
-		hostName         = "www.acme.com"
-		url              = "/"
-		sourceIdentifier = "1.0.0.0/18"
-	  }
-	  action = "skip"
-	}
-	exception {
-	  match = {
-		hostName         = "www.checkpoint.com"
-		url              = "/"
-		sourceIdentifier = "1.0.0.0/18"
-	  }
-	  action = "accept"
-	}
-	exception {
-	  match = {
-		hostName         = "www.apple.com"
-		url              = "/"
-		sourceIdentifier = "1.0.0.0/18"
-	  }
-	  action = "suppressLog"
+		match {
+			operator = "and"
+		  	operand {
+				  key = "hostName"
+				  value = ["www.facebook.com"]
+		  	}
+		  	operand {
+				  key = "url"
+				  value = ["/logout"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["2.2.2.2/24"]
+		  	}
+		}
+		action  = "drop"
+		comment = "test comment"
 	}
 }
 `, assetName, profileName, trustedSourcesName, practiceName, logTriggerName, exceptionsName,

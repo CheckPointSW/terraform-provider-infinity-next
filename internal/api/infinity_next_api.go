@@ -38,7 +38,7 @@ type RetryErrorResponse struct {
 	ReqDidTimeout any `json:"reqDidTimeout"`
 }
 
-func (c *Client) InfinityPortalAuthentication(clientId string, secretKey string) error {
+func (c *Client) InfinityPortalAuthentication(clientId string, accessKey string) error {
 	timeout := clientTimeout * time.Second
 	client := http.Client{
 		Timeout: timeout,
@@ -46,7 +46,7 @@ func (c *Client) InfinityPortalAuthentication(clientId string, secretKey string)
 
 	formData := url.Values{
 		"clientId":  {clientId},
-		"accessKey": {secretKey},
+		"accessKey": {accessKey},
 	}
 
 	resp, err := client.PostForm(c.host+"/auth/external", formData)

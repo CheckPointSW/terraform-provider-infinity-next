@@ -117,7 +117,6 @@ func TestAccWebAppPracticeBasic(t *testing.T) {
 						resource.TestCheckResourceAttrSet(resourceName, "web_attacks.0.advanced_setting.0.id"),
 					)...,
 				),
-				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
