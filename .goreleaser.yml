@@ -72,6 +72,8 @@ archives:
 nfpms:
   - builds:
       - inext
+    file_name_template: 'inext_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+    package_name: 'inext'
     formats:
       - apk
       - deb
