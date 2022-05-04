@@ -43,6 +43,4 @@ netrc
 *.winfile eol=crlf
 /.vs
 node_modules
-go.work
-go.work.sum
 cmd/inext
