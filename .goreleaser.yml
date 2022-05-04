@@ -30,8 +30,9 @@ builds:
   ignore:
     - goos: darwin
       goarch: '386'
-  binary: '{{ .Name }}'
-- env:
+  binary: 'inext'
+- id: provider
+  env:
     # goreleaser does not work with CGO, it could also complicate
     # usage by users in CI/CD systems like Terraform Cloud where
     # they are unable to install libraries.
@@ -56,8 +57,18 @@ builds:
       goarch: '386'
   binary: '{{ .ProjectName }}_v{{ .Version }}'
 archives:
-- format: zip
+- id: inext
+  format: binary
+  name_template: 'inext_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  builds:
+    - inext
+- id: provider
+  format: zip
+  files:
+    - none*
   name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
+  builds:
+    - provider
 nfpms:
   - builds:
       - inext
