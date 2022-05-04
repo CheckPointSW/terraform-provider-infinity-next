@@ -5,32 +5,6 @@ before:
     # this is just an example and not a requirement for provider building/publishing
     - go mod tidy
 builds:
-- main: ./cmd
-  id: inext
-  env:
-    # goreleaser does not work with CGO, it could also complicate
-    # usage by users in CI/CD systems like Terraform Cloud where
-    # they are unable to install libraries.
-    - CGO_ENABLED=0
-  mod_timestamp: '{{ .CommitTimestamp }}'
-  flags:
-    - -trimpath
-  ldflags:
-    - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}}'
-  goos:
-    - freebsd
-    - windows
-    - linux
-    - darwin
-  goarch:
-    - amd64
-    - '386'
-    - arm
-    - arm64
-  ignore:
-    - goos: darwin
-      goarch: '386'
-  binary: 'inext'
 - id: provider
   env:
     # goreleaser does not work with CGO, it could also complicate
@@ -57,11 +31,6 @@ builds:
       goarch: '386'
   binary: '{{ .ProjectName }}_v{{ .Version }}'
 archives:
-- id: inext
-  format: binary
-  name_template: 'inext_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
-  builds:
-    - inext
 - id: provider
   format: zip
   files:
@@ -69,15 +38,6 @@ archives:
   name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
   builds:
     - provider
-nfpms:
-  - builds:
-      - inext
-    file_name_template: 'inext_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
-    package_name: 'inext'
-    formats:
-      - apk
-      - deb
-      - rpm
 checksum:
   extra_files:
     - glob: 'terraform-registry-manifest.json'
