@@ -1,6 +1,10 @@
 # Check Point Infinity Next Management Terraform Provider
 Infinity Next's Terraform Provider for managing CloudGuard AppSec and other Infinity Next security application using Terraform.
 
+## Requirements
+* Terraform v0.13+
+* inext CLI - used to publish and enforce your changes made by Terraform.
+
 ## Usage
 ### Generating an API Key *(Required)*
 
@@ -46,3 +50,19 @@ inext publish && inext enforce
 ```
 Then navigate to the [Cloud Tab](https://portal.checkpoint.com/dashboard/policy#/cloud/getting-started) and enable the *Tech Preview* toggle at the bottom right.
 You should now see your applied objects, each in its own tab.
+
+## Build
+### Requirements
+* Go 1.18+
+  
+To build the provider run:
+```
+go build
+```
+
+To build the build the CLI run:
+```
+cd cmd
+go build -o inext
+cp inext /usr/local/bin
+```
