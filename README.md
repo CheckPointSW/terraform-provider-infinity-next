@@ -29,13 +29,21 @@ Due to Terraform's lack of concept of session management/commiting changes at th
 
 This repository includes a CLI utility for this exact use case, which includes 2 commands: `publish` and `enforce`.
 
-### Using the utility CLI
+### Using the `inext` CLI
 Download and install the CLI found in the [latest release](https://github.com/CheckPointSW/infinity-next-terraform-cli/releases/latest)
 
-The CLI requires the same credentials used to configure the provider, there are 2 options to pass these credentials to the CLI:
+You could run `inext help` and get all available options and commands.
+
+The CLI requires the same credentials used to configure the provider, there are 3 options to pass these credentials to the CLI:
 
 1. Set the environment variables: `INEXT_REGION`, `INEXT_CLIENT_ID` and `INEXT_ACCESS_KEY` and run `inext <command>`, this is more comfortable for usage right after `terraform apply` since it uses the same environment variables.
-2. Create a yaml file at `~/.inext.yaml` with the following content:
+   
+2. Set credentials using flags `--client-id` (shorthand `-c`) and `--access-key` (shorthand `-k`)
+   ```
+   inext publish -c $INEXT_CLIENT_ID -k $INEXT_ACCESS_KEY -r us
+   ```
+
+3. Create a yaml file at `~/.inext.yaml` with the following content:
    ```
    client-id: <INEXT_CLIENT_ID>
    access-key: <INEXT_ACCESS_KEY>
