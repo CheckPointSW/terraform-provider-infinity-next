@@ -4,7 +4,7 @@ You could read the documentation of Infinity Next [here](https://github.com/Chec
 
 ## Requirements
 * Terraform v0.13+
-* inext CLI - used to publish and enforce your changes made by Terraform.
+* [inext CLI](https://github.com/CheckPointSW/infinity-next-terraform-cli/releases/latest) - used to publish and enforce your changes made by Terraform.
 
 ## Usage
 ### Generating an API Key *(Required)*
@@ -30,7 +30,7 @@ Due to Terraform's lack of concept of session management/commiting changes at th
 This repository includes a CLI utility for this exact use case, which includes 2 commands: `publish` and `enforce`.
 
 ### Using the utility CLI
-First, Download and install the CLI found in the latest release.
+Download and install the CLI found in the [latest release](https://github.com/CheckPointSW/infinity-next-terraform-cli/releases/latest)
 
 The CLI requires the same credentials used to configure the provider, there are 2 options to pass these credentials to the CLI:
 
