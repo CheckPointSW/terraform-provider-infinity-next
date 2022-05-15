@@ -16,11 +16,13 @@ You could read the documentation of Infinity Next [here](https://github.com/Chec
 3. Store the *Client ID* and *Secret Key* in a secure location, and note there's no way to view the secret key afterward.
 
 ### Configuring the Provider
-There are 2 options to set the credentials to be used by the provider
+There are 2 options to set the credentials to be used by the provider:
+
 * Set the credentials in environment variables `INEXT_CLIENT_ID` and `INEXT_ACCESS_KEY`
 
 * Set the credentials explicity or through input variables, in the `.tf` file that defines the `provider` block using the fields `client_id` and `access_key`
 
+Note that credentials are per region, which can be configured with the `region` field of the provider's definition. It defaults to "eu" and currently it accepts either "eu" or "us".
 ### Publish and Enforce your changes *(Required)*
 All changes that are made when running `terraform apply` are done under a session of the configured API key.
 At Infinity Next, each session must be published to be able to enforce your configured policies on your assets. Think of it as commiting your changes to be able to make a release.
