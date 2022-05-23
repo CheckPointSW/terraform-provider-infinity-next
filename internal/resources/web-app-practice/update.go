@@ -84,6 +84,7 @@ func parseSchemaWebAttacks(schemaWebAttacks any) []models.UpdateWebApplicationPr
 }
 
 func parseToSchemaWebBot(schemaWebBot any) []models.WebApplicationPracticeWebBotSchema {
+	webBotSlice := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaWebBot), mapToWebBotInput)
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaWebBot), utils.MustUnmarshalAs[models.WebApplicationPracticeWebBotSchema, map[string]any])
 }
 
