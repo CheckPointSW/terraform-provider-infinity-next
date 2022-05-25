@@ -221,24 +221,6 @@ func ResourceWebAppPractice() *schema.Resource {
 				Computed: true,
 				MaxItems: 1,
 				Elem: &schema.Resource{
-					// CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
-					// 	var err error
-					// 	if diff.HasChange("inject_uris") {
-					// 		err = diff.SetNewComputed("inject_uris_ids")
-					// 		if err != nil {
-					// 			return err
-					// 		}
-					// 	}
-
-					// 	if diff.HasChange("valid_uris") {
-					// 		err = diff.SetNewComputed("valid_uris_ids")
-					// 		if err != nil {
-					// 			return err
-					// 		}
-					// 	}
-
-					// 	return nil
-					// },
 					Schema: map[string]*schema.Schema{
 						"id": {
 							Type:     schema.TypeString,

@@ -95,7 +95,7 @@ func resourceTrustedSourcesCreate(ctx context.Context, d *schema.ResourceData, m
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("Unable to perform TrustedSourceBehavior Read after Create", err, diags)
 	}
 
 	return diags
@@ -111,7 +111,7 @@ func resourceTrustedSourcesRead(ctx context.Context, d *schema.ResourceData, met
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("Unable to perform TrustedSourceBehavior Get before read", err, diags)
 	}
 
 	if err := trustedsources.ReadTrustedSourceBehaviorToResourceData(behavior, d); err != nil {
@@ -119,7 +119,7 @@ func resourceTrustedSourcesRead(ctx context.Context, d *schema.ResourceData, met
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("Unable to perform TrustedSourceBehavior read to state file", err, diags)
 	}
 
 	return diags
@@ -158,7 +158,7 @@ func resourceTrustedSourcesUpdate(ctx context.Context, d *schema.ResourceData, m
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("Unable to perform TrustedSourceBehavior Get before read after update", err, diags)
 	}
 
 	if err := trustedsources.ReadTrustedSourceBehaviorToResourceData(behavior, d); err != nil {
@@ -166,7 +166,7 @@ func resourceTrustedSourcesUpdate(ctx context.Context, d *schema.ResourceData, m
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
 		}
 
-		return diag.FromErr(err)
+		return utils.DiagError("Unable to perform TrustedSourceBehavior read to state file after update", err, diags)
 	}
 
 	return diags

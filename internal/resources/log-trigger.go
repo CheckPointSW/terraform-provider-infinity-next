@@ -235,6 +235,23 @@ func resourceLogTriggerUpdate(ctx context.Context, d *schema.ResourceData, meta 
 		return utils.DiagError("Failed to Publish following LogTrigger Update", err, diags)
 	}
 
+	logTrigger, err := logtrigger.GetLogTrigger(c, d.Id())
+	if err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("Unable to perform LogTrigger Get before read after update", err, diags)
+	}
+
+	if err := logtrigger.ReadLogTriggerToResourceData(logTrigger, d); err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("Unable to perform LogTrigger read to state file after update", err, diags)
+	}
+
 	return diags
 }
 

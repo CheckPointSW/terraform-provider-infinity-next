@@ -117,7 +117,6 @@ func TestAccWebAppPracticeBasic(t *testing.T) {
 						resource.TestCheckResourceAttrSet(resourceName, "web_attacks.0.advanced_setting.0.id"),
 					)...,
 				),
-				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
@@ -184,10 +183,9 @@ func TestAccWebAppPracticeFull(t *testing.T) {
 				),
 			},
 			{
-				ResourceName:            resourceName,
-				ImportState:             true,
-				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"web_bot.0.inject_uris", "web_bot.0.valid_uris"},
+				ResourceName:      resourceName,
+				ImportState:       true,
+				ImportStateVerify: true,
 			},
 			{
 				Config: webAppPracticeUpdateFullConfig(nameAttribute),
@@ -240,7 +238,6 @@ func TestAccWebAppPracticeFull(t *testing.T) {
 						resource.TestCheckTypeSetElemAttr(resourceName, "web_bot.0.inject_uris.*", "url4"),
 					)...,
 				),
-				ExpectNonEmptyPlan: true,
 			},
 		},
 	})

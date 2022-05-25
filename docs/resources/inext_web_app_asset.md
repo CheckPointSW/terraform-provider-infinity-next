@@ -62,7 +62,7 @@ resource "inext_web_app_asset" "my-webapp-asset" {
 ### Required
 
 - `name` (String) The name of the resource, also acts as it's unique ID
-- `urls` (List of String) The application URLs
+- `urls` (Set of String) The application URLs
 
 ### Optional
 
@@ -87,7 +87,7 @@ resource "inext_web_app_asset" "my-webapp-asset" {
 - `order` (String)
 - `read_only` (Boolean)
 - `sources` (String)
-- `urls_ids` (List of String)
+- `urls_ids` (Set of String)
 
 <a id="nestedblock--practice"></a>
 ### Nested Schema for `practice`
@@ -127,11 +127,11 @@ Read-Only:
 Optional:
 
 - `identifier` (String) The identifier of the source: SourceIP, XForwardedFor, HeaderKey or Cookie
-- `values` (List of String)
+- `values` (Set of String)
 
 Read-Only:
 
 - `id` (String) The ID of this resource.
-- `values_ids` (List of String)
+- `values_ids` (Set of String)
 
 

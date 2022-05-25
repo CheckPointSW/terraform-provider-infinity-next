@@ -46,7 +46,6 @@ func TestAccTrustedSourcesBasic(t *testing.T) {
 						resource.TestCheckTypeSetElemAttr(resourceName, "sources_identifiers.*", "identifier3"),
 					)...,
 				),
-				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
@@ -96,7 +95,6 @@ func TestAccTrustedSourcesFull(t *testing.T) {
 						resource.TestCheckTypeSetElemAttr(resourceName, "sources_identifiers.*", "identifier5"),
 					)...,
 				),
-				ExpectNonEmptyPlan: true,
 			},
 		},
 	})

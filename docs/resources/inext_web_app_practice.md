@@ -129,14 +129,14 @@ Read-Only:
 
 Optional:
 
-- `inject_uris` (List of String) Defines where to inject the Anti-Bot script. The input is the path of the URI
-- `valid_uris` (List of String) Defines which requests must be validated after the script is injected into a specific URI.
+- `inject_uris` (Set of String) Defines where to inject the Anti-Bot script. The input is the path of the URI
+- `valid_uris` (Set of String) Defines which requests must be validated after the script is injected into a specific URI.
 The input is the path of the URI
 
 Read-Only:
 
 - `id` (String) The ID of this resource.
-- `inject_uris_ids` (List of String)
-- `valid_uris_ids` (List of String)
+- `inject_uris_ids` (Set of String)
+- `valid_uris_ids` (Set of String)
 
 

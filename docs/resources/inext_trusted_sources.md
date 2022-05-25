@@ -45,11 +45,11 @@ resource "inext_trusted_sources" "my-trusted-source-behavior" {
 
 ### Optional
 
-- `sources_identifiers` (List of String) The trusted sources identifier values
+- `sources_identifiers` (Set of String) The trusted sources identifier values
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-- `sources_identifiers_ids` (List of String)
+- `sources_identifiers_ids` (Set of String)
 
 

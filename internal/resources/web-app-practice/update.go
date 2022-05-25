@@ -84,8 +84,17 @@ func parseSchemaWebAttacks(schemaWebAttacks any) []models.UpdateWebApplicationPr
 }
 
 func parseToSchemaWebBot(schemaWebBot any) []models.WebApplicationPracticeWebBotSchema {
-	webBotSlice := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaWebBot), mapToWebBotInput)
-	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaWebBot), utils.MustUnmarshalAs[models.WebApplicationPracticeWebBotSchema, map[string]any])
+	parseFunc := func(schemaWebBotMap map[string]any) models.WebApplicationPracticeWebBotSchema {
+		var ret models.WebApplicationPracticeWebBotSchema
+		ret.ID = schemaWebBotMap["id"].(string)
+		ret.InjectURIs = utils.MustSchemaCollectionToSlice[string](schemaWebBotMap["inject_uris"])
+		ret.InjectURIsIDs = utils.MustSchemaCollectionToSlice[string](schemaWebBotMap["inject_uris_ids"])
+		ret.ValidURIs = utils.MustSchemaCollectionToSlice[string](schemaWebBotMap["valid_uris"])
+		ret.ValidURIsIDs = utils.MustSchemaCollectionToSlice[string](schemaWebBotMap["valid_uris_ids"])
+		return ret
+	}
+
+	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaWebBot), parseFunc)
 }
 
 func UpdateWebApplicationPractice(c *api.Client, id string, input models.UpdateWebApplicationPracticeInput) (bool, error) {
