@@ -202,14 +202,14 @@ func ResourceWebAPIAsset() *schema.Resource {
 							Computed: true,
 						},
 						"values": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeSet,
 							Optional: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
 						},
 						"values_ids": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeSet,
 							Computed: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
