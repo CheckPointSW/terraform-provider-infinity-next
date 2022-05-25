@@ -21,6 +21,13 @@ func ResourceWebAppAsset() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
+		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+			if diff.HasChange("urls") {
+				return diff.SetNewComputed("urls_ids")
+			}
+
+			return nil
+		},
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:      schema.TypeString,
