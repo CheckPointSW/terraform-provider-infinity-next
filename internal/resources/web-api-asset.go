@@ -50,7 +50,13 @@ func ResourceWebAPIAsset() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
+		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+			if diff.HasChange("urls") {
+				return diff.SetNewComputed("urls_ids")
+			}
 
+			return nil
+		},
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:      schema.TypeString,
@@ -91,7 +97,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 				Optional: true,
 			},
 			"urls": {
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Description: "The application URLs",
 				Required:    true,
 				MinItems:    1,
@@ -100,7 +106,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 				},
 			},
 			"urls_ids": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
