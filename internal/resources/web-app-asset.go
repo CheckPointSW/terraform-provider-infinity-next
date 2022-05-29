@@ -21,7 +21,13 @@ func ResourceWebAppAsset() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
+		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+			if diff.HasChange("urls") {
+				return diff.SetNewComputed("urls_ids")
+			}
 
+			return nil
+		},
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:      schema.TypeString,
@@ -56,7 +62,7 @@ func ResourceWebAppAsset() *schema.Resource {
 				Optional: true,
 			},
 			"urls": {
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Description: "The application URLs",
 				Required:    true,
 				MinItems:    1,
@@ -65,7 +71,7 @@ func ResourceWebAppAsset() *schema.Resource {
 				},
 			},
 			"urls_ids": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -77,6 +83,13 @@ func ResourceWebAppAsset() *schema.Resource {
 				Optional:    true,
 				Elem: &schema.Resource{
 					Description: "Practice wrapper",
+					CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+						if diff.HasChange("practice_wrapper_id") {
+							return diff.SetNewComputed("practice_wrapper_id")
+						}
+
+						return nil
+					},
 					Schema: map[string]*schema.Schema{
 						"main_mode": {
 							Type:        schema.TypeString,
@@ -157,14 +170,14 @@ func ResourceWebAppAsset() *schema.Resource {
 							Computed: true,
 						},
 						"values": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeSet,
 							Optional: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
 						},
 						"values_ids": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeSet,
 							Computed: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,

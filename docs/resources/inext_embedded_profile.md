@@ -65,7 +65,7 @@ The default is Automatic
 
 ### Read-Only
 
-- `additional_settings_ids` (List of String)
+- `additional_settings_ids` (Set of String)
 - `authentication_token` (String) The token used to register an agent to the profile
 - `id` (String, Sensitive) The ID of this resource.
 - `profile_type` (String)

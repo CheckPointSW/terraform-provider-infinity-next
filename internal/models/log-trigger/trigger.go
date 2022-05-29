@@ -21,8 +21,8 @@ type LogTrigger struct {
 	ResponseCode                 bool   `json:"responseCode"`
 	LogToSyslog                  bool   `json:"logToSyslog"`
 	SyslogIPAddress              string `json:"syslogIpAddress,omitempty"`
-	SyslogPort                   int    `json:"SyslogPortNum,omitempty"`
-	LogToCEF                     bool   `json:"LogToCef"`
-	CEFIPAddress                 string `json:"CefIpAddress,omitempty"`
-	CEFPort                      int    `json:"CefPort,omitempty"`
+	SyslogPort                   int    `json:"syslogPortNum,omitempty"`
+	LogToCEF                     bool   `json:"logToCef"`
+	CEFIPAddress                 string `json:"cefIpAddress,omitempty"`
+	CEFPort                      int    `json:"cefPortNum,omitempty"`
 }

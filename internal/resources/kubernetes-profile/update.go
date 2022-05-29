@@ -58,7 +58,7 @@ func handleUpdateAdditionalSetting(d *schema.ResourceData, settingsKey, settting
 	if oldSettingMap, newSettingMap, hasChange := utils.GetChangeWithParse(d, settingsKey, utils.MustValueAs[map[string]any]); hasChange {
 		// get reverse proxy additional settings ids - each in the format: "<key><additonalSettingsIDSeparator><ID>"
 		additionalSettingsIDsMap := make(map[string]string)
-		additionalSettingsIDsInterface := d.Get(setttingsIDsKey).([]any)
+		additionalSettingsIDsInterface := d.Get(setttingsIDsKey).(*schema.Set).List()
 		for _, intefaceUnparsedID := range additionalSettingsIDsInterface {
 			// parse ID
 			keyAndID := strings.Split(intefaceUnparsedID.(string), additonalSettingsIDSeparator)

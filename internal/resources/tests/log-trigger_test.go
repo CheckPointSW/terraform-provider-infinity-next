@@ -68,7 +68,6 @@ func TestAccLogTriggerBasic(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
-				ExpectNonEmptyPlan: true,
 			},
 		},
 	})

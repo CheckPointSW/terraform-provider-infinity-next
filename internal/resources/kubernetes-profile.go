@@ -22,7 +22,13 @@ func ResourceKubernetesProfile() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
+		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+			if diff.HasChange("additional_settings") {
+				return diff.SetNewComputed("additional_settings_ids")
+			}
 
+			return nil
+		},
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:      schema.TypeString,
@@ -52,7 +58,7 @@ func ResourceKubernetesProfile() *schema.Resource {
 				},
 			},
 			"additional_settings_ids": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,

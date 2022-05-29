@@ -49,10 +49,10 @@ func mapToAdvancedSettingInput(advancedSettingMap map[string]any) models.WebAppl
 	}
 }
 
-func mapToWebBotInput(weBotMap map[string]any) models.WebApplicationPracticeWebBotInput {
+func mapToWebBotInput(webBotMap map[string]any) models.WebApplicationPracticeWebBotInput {
 	var webBotInput models.WebApplicationPracticeWebBotInput
-	webBotInput.InjectURIs = utils.MustSchemaCollectionToSlice[string](weBotMap["inject_uris"])
-	webBotInput.ValidURIs = utils.MustSchemaCollectionToSlice[string](weBotMap["valid_uris"])
+	webBotInput.InjectURIs = utils.MustSchemaCollectionToSlice[string](webBotMap["inject_uris"])
+	webBotInput.ValidURIs = utils.MustSchemaCollectionToSlice[string](webBotMap["valid_uris"])
 	return webBotInput
 }
 

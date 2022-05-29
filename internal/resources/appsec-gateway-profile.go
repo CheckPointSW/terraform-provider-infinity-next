@@ -23,7 +23,21 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
 		},
+		CustomizeDiff: func(ctx context.Context, diff *schema.ResourceDiff, meta interface{}) error {
+			if diff.HasChange("additional_settings") {
+				if err := diff.SetNewComputed("additional_settings_ids"); err != nil {
+					return err
+				}
+			}
 
+			if diff.HasChange("reverseproxy_additional_settings") {
+				if err := diff.SetNewComputed("reverseproxy_additional_settings_ids"); err != nil {
+					return err
+				}
+			}
+
+			return nil
+		},
 		Schema: map[string]*schema.Schema{
 			"id": {
 				Type:      schema.TypeString,
@@ -54,7 +68,7 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				},
 			},
 			"additional_settings_ids": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -106,7 +120,7 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				},
 			},
 			"reverseproxy_additional_settings_ids": {
-				Type:     schema.TypeList,
+				Type:     schema.TypeSet,
 				Computed: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,

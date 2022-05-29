@@ -227,7 +227,7 @@ func ResourceWebAppPractice() *schema.Resource {
 							Computed: true,
 						},
 						"inject_uris": {
-							Type:        schema.TypeList,
+							Type:        schema.TypeSet,
 							Description: "Defines where to inject the Anti-Bot script. The input is the path of the URI",
 							Optional:    true,
 							Elem: &schema.Schema{
@@ -235,14 +235,14 @@ func ResourceWebAppPractice() *schema.Resource {
 							},
 						},
 						"inject_uris_ids": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeSet,
 							Computed: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
 						},
 						"valid_uris": {
-							Type: schema.TypeList,
+							Type: schema.TypeSet,
 							Description: "Defines which requests must be validated after the script is injected into a specific URI.\n" +
 								"The input is the path of the URI",
 							Optional: true,
@@ -251,7 +251,7 @@ func ResourceWebAppPractice() *schema.Resource {
 							},
 						},
 						"valid_uris_ids": {
-							Type:     schema.TypeList,
+							Type:     schema.TypeSet,
 							Computed: true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
