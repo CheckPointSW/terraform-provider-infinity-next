@@ -17,7 +17,7 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
 
     - name: Set up Go
@@ -53,7 +53,7 @@ jobs:
     name: Test
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 50
     concurrency: acctests-${{ github.event_name }}
     strategy:
       max-parallel: 1
@@ -93,7 +93,7 @@ jobs:
         
     - name: TF acceptance tests push
       if: ${{ github.event_name == 'push' }}
-      timeout-minutes: 5
+      timeout-minutes: 10
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
@@ -105,7 +105,7 @@ jobs:
     
     - name: TF acceptance tests pull request
       if: ${{ github.event_name == 'pull_request' }}
-      timeout-minutes: 5
+      timeout-minutes: 10
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
@@ -117,7 +117,7 @@ jobs:
 
     - name: TF acceptance tests schedule
       if: ${{ github.event_name == 'schedule' }}
-      timeout-minutes: 5
+      timeout-minutes: 10
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
