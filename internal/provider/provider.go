@@ -24,7 +24,7 @@ func Provider() *schema.Provider {
 				Type:             schema.TypeString,
 				Optional:         true,
 				ForceNew:         true,
-				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"eu", "us"}, false)),
+				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"eu", "us", "dev"}, false)),
 				DefaultFunc:      schema.EnvDefaultFunc("INEXT_REGION", "eu"),
 			},
 			"client_id": {

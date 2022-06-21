@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -195,6 +196,7 @@ func parseGraphQLResponse(response *http.Response) (*GraphResponse, error) {
 	}
 
 	if err := json.NewDecoder(&buf).Decode(&graphResponsePointer); err != nil {
+		log.Println(err)
 		return nil, fmt.Errorf("faied to decode response body to struct. Body: %+v. ReferenceID: %s", response.Body, referenceID)
 	}
 
