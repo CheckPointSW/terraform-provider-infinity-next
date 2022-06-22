@@ -133,7 +133,7 @@ jobs:
       url: https://q.portal.checkpoint.com
     runs-on: ubuntu-latest
     timeout-minutes: 50
-    concurrency: acctests-${{ github.event_name }}
+    concurrency: acctests-${{ github.event_name }}-dev
     strategy:
       max-parallel: 1
       fail-fast: true
