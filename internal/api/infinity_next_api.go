@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -120,6 +121,8 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 		if err != nil {
 			return nil, err
 		}
+
+		log.Println(res)
 
 		switch res.StatusCode {
 		case http.StatusOK:
