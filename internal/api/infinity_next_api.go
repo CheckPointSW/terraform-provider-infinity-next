@@ -127,9 +127,9 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 		switch res.StatusCode {
 		case http.StatusOK:
 			// breaks out of switch statemant
-		case http.StatusTooManyRequests:
+		case http.StatusTooManyRequests, http.StatusGatewayTimeout, http.StatusRequestTimeout:
 			res.Body.Close()
-			fmt.Println("[WARN] GraphQL request failed due to rate limmiting, retrying..")
+			fmt.Println("[WARN] GraphQL request failed with status " + res.Status + ", retrying..")
 			time.Sleep(time.Second * 2)
 			continue
 		default:
