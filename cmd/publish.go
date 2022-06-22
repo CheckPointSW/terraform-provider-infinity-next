@@ -65,11 +65,17 @@ var publishCmd = &cobra.Command{
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var URL string
+		var API string
 		switch region {
 		case "eu":
 			URL = EUCIURL
+			API = ProdCIAPIV1
 		case "us":
 			URL = USCIURL
+			API = ProdCIAPIV1
+		case "dev":
+			URL = DevCIURL
+			API = DevCIAPIV1
 		default:
 			fmt.Printf("Invalid region %s, expected eu or us\n", region)
 			os.Exit(1)
@@ -127,7 +133,7 @@ var publishCmd = &cobra.Command{
 			return err
 		}
 
-		enforceReq, err := http.NewRequest(http.MethodPost, URL+CIAPIV1, bytes.NewBuffer(bReq))
+		enforceReq, err := http.NewRequest(http.MethodPost, URL+API, bytes.NewBuffer(bReq))
 		if err != nil {
 			return err
 		}

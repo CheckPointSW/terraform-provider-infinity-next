@@ -191,11 +191,11 @@ func parseGraphQLResponse(response *http.Response) (*GraphResponse, error) {
 	referenceID := getReferenceIDFromHeaders(response.Header)
 	var buf bytes.Buffer
 	if _, err := io.Copy(&buf, response.Body); err != nil {
-		return nil, fmt.Errorf("failed to read response body: %+v. ReferenceID: %s", response.Body, referenceID)
+		return nil, fmt.Errorf("failed to read response body: %+v. ReferenceID: %s: %w", response.Body, referenceID, err)
 	}
 
 	if err := json.NewDecoder(&buf).Decode(&graphResponsePointer); err != nil {
-		return nil, fmt.Errorf("faied to decode response body to struct. Body: %+v. ReferenceID: %s", response.Body, referenceID)
+		return nil, fmt.Errorf("failed to decode response body to struct. Body: %+v. ReferenceID: %s: %w", response.Body, referenceID, err)
 	}
 
 	return graphResponsePointer, nil

@@ -9,10 +9,12 @@ import (
 )
 
 const (
-	EUCIURL    = "https://cloudinfra-gw.portal.checkpoint.com"
-	USCIURL    = "https://cloudinfra-gw-us.portal.checkpoint.com"
-	CIAuthPath = "/auth/external"
-	CIAPIV1    = "/app/i2/graphql/V1"
+	EUCIURL     = "https://cloudinfra-gw.portal.checkpoint.com"
+	USCIURL     = "https://cloudinfra-gw-us.portal.checkpoint.com"
+	DevCIURL    = "https://dev-cloudinfra-gw.kube1.iaas.checkpoint.com"
+	CIAuthPath  = "/auth/external"
+	ProdCIAPIV1 = "/app/i2/graphql/V1"
+	DevCIAPIV1  = "/app/infinity2gem/graphql/V1"
 )
 
 var (

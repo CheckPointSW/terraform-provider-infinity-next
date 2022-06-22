@@ -53,6 +53,7 @@ func mapToWebBotInput(webBotMap map[string]any) models.WebApplicationPracticeWeb
 	var webBotInput models.WebApplicationPracticeWebBotInput
 	webBotInput.InjectURIs = utils.MustSchemaCollectionToSlice[string](webBotMap["inject_uris"])
 	webBotInput.ValidURIs = utils.MustSchemaCollectionToSlice[string](webBotMap["valid_uris"])
+
 	return webBotInput
 }
 

@@ -3,9 +3,9 @@
 #
 name: Tests
 on:
-  # schedule:
-  #   # * is a special character in YAML so you have to quote this string
-  #   - cron:  '0 * * * *'
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 * * * *'
   pull_request:
     paths-ignore:
       - 'README.md'
@@ -67,7 +67,6 @@ jobs:
           - '1.0.*'
           - '1.1.*'
     steps:
-
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
@@ -115,12 +114,94 @@ jobs:
         go test -v -cover ./internal/resources/tests/
         cmd/inext discard
 
+    # - name: TF acceptance tests schedule
+    #   if: ${{ github.event_name == 'schedule' }}
+    #   timeout-minutes: 10
+    #   env:
+    #     INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
+    #     INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
+    #     TF_ACC: "1"
+    #   run: |
+    #     cmd/inext discard
+    #     go test -v -cover ./internal/resources/tests/
+    #     cmd/inext discard
+  test-dev:
+    name: Test Dev
+    needs: build
+    environment:
+      name: Dev
+      url: https://q.portal.checkpoint.com
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    concurrency: acctests-${{ github.event_name }}-dev
+    strategy:
+      max-parallel: 1
+      fail-fast: true
+      matrix:
+        # list whatever Terraform versions here you would like to support
+        terraform:
+          - '0.13.*'
+          - '0.14.*'
+          - '0.15.*'
+          - '1.0.*'
+          - '1.1.*'
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: '1.18'
+      id: go
+
+    - uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ matrix.terraform }}
+        terraform_wrapper: false
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v3
+
+    - name: Get dependencies
+      run: |
+        go mod download
+
+    - name: Build CLI
+      run: |
+        cd cmd
+        go build -o inext -v .
+        
+    - name: TF acceptance tests push
+      if: ${{ github.event_name == 'push' }}
+      timeout-minutes: 10
+      env:
+        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
+        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
+        INEXT_REGION: dev
+        TF_ACC: "1"
+      run: |
+        cmd/inext discard
+        go test -v -cover ./internal/resources/tests/
+        cmd/inext discard
+    
+    - name: TF acceptance tests pull request
+      if: ${{ github.event_name == 'pull_request' }}
+      timeout-minutes: 10
+      env:
+        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
+        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
+        INEXT_REGION: dev
+        TF_ACC: "1"
+      run: |
+        cmd/inext discard
+        go test -v -cover ./internal/resources/tests/
+        cmd/inext discard
+
     - name: TF acceptance tests schedule
       if: ${{ github.event_name == 'schedule' }}
       timeout-minutes: 10
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
+        INEXT_REGION: dev
         TF_ACC: "1"
       run: |
         cmd/inext discard
