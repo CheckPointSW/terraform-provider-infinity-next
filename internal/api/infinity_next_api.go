@@ -194,8 +194,9 @@ func parseGraphQLResponse(response *http.Response) (*GraphResponse, error) {
 		return nil, fmt.Errorf("failed to read response body: %+v. ReferenceID: %s: %w", response.Body, referenceID, err)
 	}
 
-	if err := json.NewDecoder(&buf).Decode(&graphResponsePointer); err != nil {
-		return nil, fmt.Errorf("failed to decode response body to struct. Body: %+v. ReferenceID: %s: %w", response.Body, referenceID, err)
+	bResponse := buf.Bytes()
+	if err := json.Unmarshal(bResponse, &graphResponsePointer); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal response body. Body: %s. ReferenceID: %s: %w", string(bResponse), referenceID, err)
 	}
 
 	return graphResponsePointer, nil
