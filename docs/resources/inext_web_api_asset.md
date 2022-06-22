@@ -96,11 +96,11 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 Required:
 
 - `id` (String) The ID of this resource.
+- `main_mode` (String) The mode of the practice: Prevent, Inactive, Disabled or Learn
 
 Optional:
 
 - `exceptions` (Set of String) The exceptions used with the practice
-- `main_mode` (String) The mode of the practice: Prevent, Inactive, Disabled or Learn
 - `practice_wrapper_id` (String)
 - `sub_practices_modes` (Map of String) The name of the sub practice as the key and its mode as the value. Allowed modes: Detect, Prevent, Inactive, AccordingToPractice, Disabled, Learn or Active
 - `triggers` (Set of String) The triggers used with the practice
