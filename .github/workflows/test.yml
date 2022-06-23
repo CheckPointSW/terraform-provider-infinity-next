@@ -53,7 +53,7 @@ jobs:
     name: Test
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 100
     concurrency: acctests-${{ github.event_name }}
     strategy:
       max-parallel: 1
@@ -92,7 +92,7 @@ jobs:
         
     - name: TF acceptance tests push
       if: ${{ github.event_name == 'push' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
@@ -104,7 +104,7 @@ jobs:
     
     - name: TF acceptance tests pull request
       if: ${{ github.event_name == 'pull_request' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
@@ -116,7 +116,7 @@ jobs:
 
     # - name: TF acceptance tests schedule
     #   if: ${{ github.event_name == 'schedule' }}
-    #   timeout-minutes: 10
+    #   timeout-minutes: 20
     #   env:
     #     INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
     #     INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
@@ -132,7 +132,7 @@ jobs:
       name: Dev
       url: https://q.portal.checkpoint.com
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 100
     concurrency: acctests-${{ github.event_name }}-dev
     strategy:
       max-parallel: 1
@@ -171,7 +171,7 @@ jobs:
         
     - name: TF acceptance tests push
       if: ${{ github.event_name == 'push' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
@@ -184,7 +184,7 @@ jobs:
     
     - name: TF acceptance tests pull request
       if: ${{ github.event_name == 'pull_request' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
@@ -197,7 +197,7 @@ jobs:
 
     - name: TF acceptance tests schedule
       if: ${{ github.event_name == 'schedule' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
@@ -214,7 +214,7 @@ jobs:
       name: PreProd
       url: https://q.portal.checkpoint.com
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 100
     concurrency: acctests-${{ github.event_name }}-preprod
     strategy:
       max-parallel: 1
@@ -253,7 +253,7 @@ jobs:
         
     - name: TF acceptance tests push
       if: ${{ github.event_name == 'push' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
@@ -266,7 +266,7 @@ jobs:
     
     - name: TF acceptance tests pull request
       if: ${{ github.event_name == 'pull_request' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
@@ -279,7 +279,7 @@ jobs:
 
     # - name: TF acceptance tests schedule
     #   if: ${{ github.event_name == 'schedule' }}
-    #   timeout-minutes: 10
+    #   timeout-minutes: 20
     #   env:
     #     INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
     #     INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
