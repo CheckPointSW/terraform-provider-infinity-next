@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"time"
@@ -107,7 +106,7 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 	}
 
 	var res *http.Response
-	for i := 0; i < rateLimitingNumOfRetries; i++ {
+	for retryCount := 1; retryCount <= maxNumOfRetries; retryCount++ {
 		httpRequest, err := http.NewRequest(http.MethodPost, c.host+c.endpoint, bytes.NewReader(graphQlRequestBytes))
 		if err != nil {
 			return nil, err
@@ -119,10 +118,15 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 
 		res, err = client.Do(httpRequest)
 		if err != nil {
-			return nil, err
-		}
+			if retryCount == maxNumOfRetries {
+				return nil, err
+			}
 
-		log.Println(res)
+			res.Body.Close()
+			fmt.Println("[WARN] GraphQL request failed with error " + err.Error() + ", retrying..")
+			time.Sleep(time.Second * 2 * time.Duration(retryCount))
+			continue
+		}
 
 		switch res.StatusCode {
 		case http.StatusOK:
@@ -130,7 +134,7 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 		case http.StatusTooManyRequests, http.StatusGatewayTimeout, http.StatusRequestTimeout:
 			res.Body.Close()
 			fmt.Println("[WARN] GraphQL request failed with status " + res.Status + ", retrying..")
-			time.Sleep(time.Second * 2)
+			time.Sleep(time.Second * 2 * time.Duration(retryCount))
 			continue
 		default:
 			defer res.Body.Close()
