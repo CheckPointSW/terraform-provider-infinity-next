@@ -12,9 +12,9 @@ type Client struct {
 }
 
 var (
-	ErrorNotFound            error         = errors.New("not found")
-	clientTimeout            time.Duration = 60
-	rateLimitingNumOfRetries int           = 3
+	ErrorNotFound   error         = errors.New("not found")
+	clientTimeout   time.Duration = 60
+	maxNumOfRetries int           = 3
 )
 
 func NewClient() *Client {

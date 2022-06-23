@@ -24,7 +24,7 @@ func Provider() *schema.Provider {
 				Type:             schema.TypeString,
 				Optional:         true,
 				ForceNew:         true,
-				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"eu", "us", "dev"}, false)),
+				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"eu", "us", "dev", "preprod"}, false)),
 				DefaultFunc:      schema.EnvDefaultFunc("INEXT_REGION", "eu"),
 			},
 			"client_id": {
@@ -90,6 +90,9 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (any, diag.D
 	case "dev":
 		client.SetHost("https://dev-cloudinfra-gw.kube1.iaas.checkpoint.com")
 		client.SetEndpoint("/app/infinity2gem/graphql/V1")
+	case "preprod":
+		client.SetHost("https://dev-cloudinfra-gw.kube1.iaas.checkpoint.com")
+		client.SetEndpoint("/app/i2/graphql/V1")
 	default:
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,

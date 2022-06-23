@@ -53,7 +53,7 @@ jobs:
     name: Test
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 100
     concurrency: acctests-${{ github.event_name }}
     strategy:
       max-parallel: 1
@@ -92,38 +92,38 @@ jobs:
         
     - name: TF acceptance tests push
       if: ${{ github.event_name == 'push' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
         TF_ACC: "1"
       run: |
         cmd/inext discard
-        go test -v -cover ./internal/resources/tests/
+        go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
     
     - name: TF acceptance tests pull request
       if: ${{ github.event_name == 'pull_request' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
         TF_ACC: "1"
       run: |
         cmd/inext discard
-        go test -v -cover ./internal/resources/tests/
+        go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
 
     # - name: TF acceptance tests schedule
     #   if: ${{ github.event_name == 'schedule' }}
-    #   timeout-minutes: 10
+    #   timeout-minutes: 20
     #   env:
     #     INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
     #     INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
     #     TF_ACC: "1"
     #   run: |
     #     cmd/inext discard
-    #     go test -v -cover ./internal/resources/tests/
+    #     go test --timeout 20m -v -cover ./internal/resources/tests/
     #     cmd/inext discard
   test-dev:
     name: Test Dev
@@ -132,7 +132,7 @@ jobs:
       name: Dev
       url: https://q.portal.checkpoint.com
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 100
     concurrency: acctests-${{ github.event_name }}-dev
     strategy:
       max-parallel: 1
@@ -171,7 +171,7 @@ jobs:
         
     - name: TF acceptance tests push
       if: ${{ github.event_name == 'push' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
@@ -179,12 +179,12 @@ jobs:
         TF_ACC: "1"
       run: |
         cmd/inext discard
-        go test -v -cover ./internal/resources/tests/
+        go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
     
     - name: TF acceptance tests pull request
       if: ${{ github.event_name == 'pull_request' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
@@ -192,12 +192,12 @@ jobs:
         TF_ACC: "1"
       run: |
         cmd/inext discard
-        go test -v -cover ./internal/resources/tests/
+        go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
 
     - name: TF acceptance tests schedule
       if: ${{ github.event_name == 'schedule' }}
-      timeout-minutes: 10
+      timeout-minutes: 20
       env:
         INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
         INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
@@ -205,5 +205,87 @@ jobs:
         TF_ACC: "1"
       run: |
         cmd/inext discard
-        go test -v -cover ./internal/resources/tests/
+        go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
+  test-preprod:
+    name: Test PreProd
+    needs: build
+    environment:
+      name: PreProd
+      url: https://q.portal.checkpoint.com
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    concurrency: acctests-${{ github.event_name }}-preprod
+    strategy:
+      max-parallel: 1
+      fail-fast: true
+      matrix:
+        # list whatever Terraform versions here you would like to support
+        terraform:
+          - '0.13.*'
+          - '0.14.*'
+          - '0.15.*'
+          - '1.0.*'
+          - '1.1.*'
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: '1.18'
+      id: go
+
+    - uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ matrix.terraform }}
+        terraform_wrapper: false
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v3
+
+    - name: Get dependencies
+      run: |
+        go mod download
+
+    - name: Build CLI
+      run: |
+        cd cmd
+        go build -o inext -v .
+        
+    - name: TF acceptance tests push
+      if: ${{ github.event_name == 'push' }}
+      timeout-minutes: 20
+      env:
+        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
+        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
+        INEXT_REGION: preprod
+        TF_ACC: "1"
+      run: |
+        cmd/inext discard
+        go test --timeout 20m -v -cover ./internal/resources/tests/
+        cmd/inext discard
+    
+    - name: TF acceptance tests pull request
+      if: ${{ github.event_name == 'pull_request' }}
+      timeout-minutes: 20
+      env:
+        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
+        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
+        INEXT_REGION: preprod
+        TF_ACC: "1"
+      run: |
+        cmd/inext discard
+        go test --timeout 20m -v -cover ./internal/resources/tests/
+        cmd/inext discard
+
+    # - name: TF acceptance tests schedule
+    #   if: ${{ github.event_name == 'schedule' }}
+    #   timeout-minutes: 20
+    #   env:
+    #     INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
+    #     INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
+    #     INEXT_REGION: preprod
+    #     TF_ACC: "1"
+    #   run: |
+    #     cmd/inext discard
+    #     go test --timeout 20m -v -cover ./internal/resources/tests/
+    #     cmd/inext discard

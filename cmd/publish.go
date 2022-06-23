@@ -69,13 +69,16 @@ var publishCmd = &cobra.Command{
 		switch region {
 		case "eu":
 			URL = EUCIURL
-			API = ProdCIAPIV1
+			API = CIAPIV1
 		case "us":
 			URL = USCIURL
-			API = ProdCIAPIV1
+			API = CIAPIV1
 		case "dev":
 			URL = DevCIURL
 			API = DevCIAPIV1
+		case "preprod":
+			URL = DevCIURL
+			API = CIAPIV1
 		default:
 			fmt.Printf("Invalid region %s, expected eu or us\n", region)
 			os.Exit(1)

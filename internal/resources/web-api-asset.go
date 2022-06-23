@@ -122,7 +122,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 						"main_mode": {
 							Type:             schema.TypeString,
 							Description:      "The mode of the practice: Prevent, Inactive, Disabled or Learn",
-							Optional:         true,
+							Required:         true,
 							ValidateDiagFunc: validatePracticeModeFunc,
 						},
 						"sub_practices_modes": {
