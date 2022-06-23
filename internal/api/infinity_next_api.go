@@ -123,17 +123,73 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 			}
 
 			res.Body.Close()
-			fmt.Println("[WARN] GraphQL request failed with error " + err.Error() + ", retrying..")
+			fmt.Println("[WARN] GraphQL request failed with error " + err.Error() + ", retrying...")
 			time.Sleep(time.Second * 2 * time.Duration(retryCount))
 			continue
 		}
 
 		switch res.StatusCode {
 		case http.StatusOK:
-			// breaks out of switch statemant
+			defer res.Body.Close()
+			graphResponse, err := parseGraphQLResponse(res)
+			if err != nil {
+				return nil, err
+			}
+
+			if len(graphResponse.Errors) > 0 {
+				if retryCount == maxNumOfRetries {
+					return nil, fmt.Errorf("GraphQL response contains errors: %s, ReferenceID: %s. Body: %+v", graphResponse.Errors[0].Message, graphResponse.Errors[0].Extensions.ReferenceID, graphResponse.Data)
+				}
+
+				res.Body.Close()
+				fmt.Printf("[WARN] GraphQL request failed with status %s and errors %+v, retrying...", res.Status, graphResponse.Errors)
+				time.Sleep(time.Second * 2 * time.Duration(retryCount))
+				continue
+			}
+
+			graphResponseMap, ok := graphResponse.Data.(map[string]any)
+			if !ok {
+				err := fmt.Errorf("invalid response, should be of type map[string]any but got %#v", graphResponse.Data)
+				if retryCount == maxNumOfRetries {
+					return nil, err
+				}
+
+				res.Body.Close()
+				fmt.Printf("[WARN] GraphQL request failed with error %v, retrying...", err)
+				time.Sleep(time.Second * 2 * time.Duration(retryCount))
+				continue
+			}
+
+			ret, ok := graphResponseMap[responseKey]
+			if !ok {
+				err := fmt.Errorf("invalid response field: %s. Full response: %+v", responseKey, graphResponseMap)
+				if retryCount == maxNumOfRetries {
+					return nil, err
+				}
+
+				res.Body.Close()
+				fmt.Printf("[WARN] GraphQL request failed with error %v, retrying...", err)
+				time.Sleep(time.Second * 2 * time.Duration(retryCount))
+				continue
+
+			}
+
+			if ret == nil {
+				err := fmt.Errorf("%s - ReferenceID: %s", ErrorNotFound.Error(), getReferenceIDFromHeaders(res.Header))
+				if retryCount == maxNumOfRetries {
+					return nil, err
+				}
+
+				res.Body.Close()
+				fmt.Printf("[WARN] GraphQL request failed with error %v, retrying...", err)
+				time.Sleep(time.Second * 2 * time.Duration(retryCount))
+				continue
+			}
+
+			return ret, nil
 		case http.StatusTooManyRequests, http.StatusGatewayTimeout, http.StatusBadGateway, http.StatusRequestTimeout:
 			res.Body.Close()
-			fmt.Println("[WARN] GraphQL request failed with status " + res.Status + ", retrying..")
+			fmt.Println("[WARN] GraphQL request failed with status " + res.Status + ", retrying...")
 			time.Sleep(time.Second * 2 * time.Duration(retryCount))
 			continue
 		default:
@@ -149,44 +205,16 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 				}
 
 				res.Body.Close()
-				fmt.Println("[WARN] GraphQL request failed with error " + err.Error() + ", retrying..")
+				fmt.Printf("[WARN] GraphQL request failed with status %s and errors %+v, retrying...", res.Status, graphResponse.Errors)
 				time.Sleep(time.Second * 2 * time.Duration(retryCount))
 				continue
 			}
 
 			return nil, fmt.Errorf("Non-OK http code (%d) - Body: %+v", res.StatusCode, graphResponse.Data)
 		}
-
-		// if we are here then status code == 200 ok
-		// break out of loop
-		break
 	}
 
-	defer res.Body.Close()
-	graphResponse, err := parseGraphQLResponse(res)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(graphResponse.Errors) > 0 {
-		return nil, fmt.Errorf("GraphQL response contains errors: %s. ReferenceID: %+v. Body: %+v", graphResponse.Errors[0].Message, graphResponse.Errors[0].Extensions.ReferenceID, graphResponse.Data)
-	}
-
-	graphResponseMap, ok := graphResponse.Data.(map[string]any)
-	if !ok {
-		return nil, fmt.Errorf("invalid response, should be of type map[string]any but got %#v", graphResponse.Data)
-	}
-
-	ret, ok := graphResponseMap[responseKey]
-	if !ok {
-		return nil, fmt.Errorf("invalid response field: %s. Full response: %+v", responseKey, graphResponseMap)
-	}
-
-	if ret == nil {
-		return nil, fmt.Errorf("%s - ReferenceID: %s", ErrorNotFound.Error(), getReferenceIDFromHeaders(res.Header))
-	}
-
-	return ret, nil
+	return nil, nil
 }
 
 func getReferenceIDFromHeaders(headers http.Header) string {
