@@ -131,7 +131,7 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 		switch res.StatusCode {
 		case http.StatusOK:
 			// breaks out of switch statemant
-		case http.StatusTooManyRequests, http.StatusGatewayTimeout, http.StatusRequestTimeout:
+		case http.StatusTooManyRequests, http.StatusGatewayTimeout, http.StatusBadGateway, http.StatusRequestTimeout:
 			res.Body.Close()
 			fmt.Println("[WARN] GraphQL request failed with status " + res.Status + ", retrying..")
 			time.Sleep(time.Second * 2 * time.Duration(retryCount))
@@ -144,7 +144,14 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 			}
 
 			if len(graphResponse.Errors) > 0 {
-				return nil, fmt.Errorf("GraphQL response contains errors: %s, ReferenceID: %s. Body: %+v", graphResponse.Errors[0].Message, graphResponse.Errors[0].Extensions.ReferenceID, graphResponse.Data)
+				if retryCount == maxNumOfRetries {
+					return nil, fmt.Errorf("GraphQL response contains errors: %s, ReferenceID: %s. Body: %+v", graphResponse.Errors[0].Message, graphResponse.Errors[0].Extensions.ReferenceID, graphResponse.Data)
+				}
+
+				res.Body.Close()
+				fmt.Println("[WARN] GraphQL request failed with error " + err.Error() + ", retrying..")
+				time.Sleep(time.Second * 2 * time.Duration(retryCount))
+				continue
 			}
 
 			return nil, fmt.Errorf("Non-OK http code (%d) - Body: %+v", res.StatusCode, graphResponse.Data)
