@@ -99,7 +99,7 @@ jobs:
         TF_ACC: "1"
       run: |
         cmd/inext discard
-        go test -v -cover ./internal/resources/tests/
+        go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
     
     - name: TF acceptance tests pull request
@@ -111,7 +111,7 @@ jobs:
         TF_ACC: "1"
       run: |
         cmd/inext discard
-        go test -v -cover ./internal/resources/tests/
+        go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
 
     # - name: TF acceptance tests schedule
@@ -123,7 +123,7 @@ jobs:
     #     TF_ACC: "1"
     #   run: |
     #     cmd/inext discard
-    #     go test -v -cover ./internal/resources/tests/
+    #     go test --timeout 20m -v -cover ./internal/resources/tests/
     #     cmd/inext discard
   test-dev:
     name: Test Dev
@@ -179,7 +179,7 @@ jobs:
         TF_ACC: "1"
       run: |
         cmd/inext discard
-        go test -v -cover ./internal/resources/tests/
+        go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
     
     - name: TF acceptance tests pull request
@@ -192,7 +192,7 @@ jobs:
         TF_ACC: "1"
       run: |
         cmd/inext discard
-        go test -v -cover ./internal/resources/tests/
+        go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
 
     - name: TF acceptance tests schedule
@@ -205,7 +205,7 @@ jobs:
         TF_ACC: "1"
       run: |
         cmd/inext discard
-        go test -v -cover ./internal/resources/tests/
+        go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
   test-preprod:
     name: Test PreProd
@@ -261,7 +261,7 @@ jobs:
         TF_ACC: "1"
       run: |
         cmd/inext discard
-        go test -v -cover ./internal/resources/tests/
+        go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
     
     - name: TF acceptance tests pull request
@@ -274,7 +274,7 @@ jobs:
         TF_ACC: "1"
       run: |
         cmd/inext discard
-        go test -v -cover ./internal/resources/tests/
+        go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
 
     # - name: TF acceptance tests schedule
@@ -287,5 +287,5 @@ jobs:
     #     TF_ACC: "1"
     #   run: |
     #     cmd/inext discard
-    #     go test -v -cover ./internal/resources/tests/
+    #     go test --timeout 20m -v -cover ./internal/resources/tests/
     #     cmd/inext discard
