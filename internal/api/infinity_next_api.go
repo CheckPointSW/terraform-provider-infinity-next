@@ -142,7 +142,7 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 				}
 
 				res.Body.Close()
-				fmt.Printf("[WARN] GraphQL request failed with status %s and errors %+v, retrying...", res.Status, graphResponse.Errors)
+				fmt.Printf("[WARN] GraphQL request failed with status %s and errors %+v, retrying...\n", res.Status, graphResponse.Errors)
 				time.Sleep(time.Second * 2 * time.Duration(retryCount))
 				continue
 			}
@@ -155,7 +155,7 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 				}
 
 				res.Body.Close()
-				fmt.Printf("[WARN] GraphQL request failed with error %v, retrying...", err)
+				fmt.Printf("[WARN] GraphQL request failed with error %v, retrying...\n", err)
 				time.Sleep(time.Second * 2 * time.Duration(retryCount))
 				continue
 			}
@@ -168,7 +168,7 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 				}
 
 				res.Body.Close()
-				fmt.Printf("[WARN] GraphQL request failed with error %v, retrying...", err)
+				fmt.Printf("[WARN] GraphQL request failed with error %v, retrying...\n", err)
 				time.Sleep(time.Second * 2 * time.Duration(retryCount))
 				continue
 
@@ -181,7 +181,7 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 				}
 
 				res.Body.Close()
-				fmt.Printf("[WARN] GraphQL request failed with error %v, retrying...", err)
+				fmt.Printf("[WARN] GraphQL request failed with error %v, retrying...\n", err)
 				time.Sleep(time.Second * 2 * time.Duration(retryCount))
 				continue
 			}
@@ -205,7 +205,7 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 				}
 
 				res.Body.Close()
-				fmt.Printf("[WARN] GraphQL request failed with status %s and errors %+v, retrying...", res.Status, graphResponse.Errors)
+				fmt.Printf("[WARN] GraphQL request failed with status %s and errors %+v, retrying...\n", res.Status, graphResponse.Errors)
 				time.Sleep(time.Second * 2 * time.Duration(retryCount))
 				continue
 			}
