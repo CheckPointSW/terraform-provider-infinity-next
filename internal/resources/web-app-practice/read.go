@@ -1,6 +1,7 @@
 package webapppractice
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -51,10 +52,8 @@ func ReadWebApplicationPracticeToResourceData(practice models.WebApplicationPrac
 	switch practice.WebAttacks.AdvancedSetting.IllegalHttpMethods {
 	case "Yes":
 		advancedSettings.IllegalHttpMethods = true
-	case "No", "":
-		advancedSettings.IllegalHttpMethods = false
 	default:
-		return fmt.Errorf("invalid illegalHttpMethods %s", practice.WebAttacks.AdvancedSetting.IllegalHttpMethods)
+		advancedSettings.IllegalHttpMethods = false
 	}
 
 	webAttacks := models.WebApplicationPracticeWebAttacksSchema{
@@ -102,8 +101,8 @@ func ReadWebApplicationPracticeToResourceData(practice models.WebApplicationPrac
 	return nil
 }
 
-func GetWebApplicationPractice(c *api.Client, id string) (models.WebApplicationPractice, error) {
-	res, err := c.MakeGraphQLRequest(`
+func GetWebApplicationPractice(ctx context.Context, c *api.Client, id string) (models.WebApplicationPractice, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 		{
 			getWebApplicationPractice(id: "`+id+`") {
 				id

@@ -151,7 +151,7 @@ func resourceAppSecGatewayProfileCreate(ctx context.Context, d *schema.ResourceD
 		return utils.DiagError("unable to perform AppSecGatewayProfile Create", err, diags)
 	}
 
-	profile, err := appsecgatewayprofile.NewAppSecGatewayProfile(c, createInput)
+	profile, err := appsecgatewayprofile.NewAppSecGatewayProfile(ctx, c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -187,7 +187,7 @@ func resourceAppSecGatewayProfileRead(ctx context.Context, d *schema.ResourceDat
 
 	id := d.Id()
 
-	profile, err := appsecgatewayprofile.GetCloudGuardAppSecGatewayProfile(c, id)
+	profile, err := appsecgatewayprofile.GetCloudGuardAppSecGatewayProfile(ctx, c, id)
 	if err != nil {
 		return utils.DiagError("unable to perform AppSecGatewayProfile Read", err, diags)
 	}
@@ -209,7 +209,7 @@ func resourceAppSecGatewayProfileUpdate(ctx context.Context, d *schema.ResourceD
 		return utils.DiagError("unable to perform AppSecGatewayProfile Update", err, diags)
 	}
 
-	result, err := appsecgatewayprofile.UpdateAppSecGatewayProfile(c, d.Id(), updateInput)
+	result, err := appsecgatewayprofile.UpdateAppSecGatewayProfile(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -227,7 +227,7 @@ func resourceAppSecGatewayProfileUpdate(ctx context.Context, d *schema.ResourceD
 		return utils.DiagError("failed to Publish following AppSecGatewayProfile Update", err, diags)
 	}
 
-	profile, err := appsecgatewayprofile.GetCloudGuardAppSecGatewayProfile(c, d.Id())
+	profile, err := appsecgatewayprofile.GetCloudGuardAppSecGatewayProfile(ctx, c, d.Id())
 	if err != nil {
 		return utils.DiagError("failed get AppSecGatewayProfile after update", err, diags)
 	}
@@ -244,7 +244,7 @@ func resourceAppSecGatewayProfileDelete(ctx context.Context, d *schema.ResourceD
 	c := meta.(*api.Client)
 
 	ID := d.Id()
-	result, err := appsecgatewayprofile.DeleteAppSecGatewayProfile(c, ID)
+	result, err := appsecgatewayprofile.DeleteAppSecGatewayProfile(ctx, c, ID)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)

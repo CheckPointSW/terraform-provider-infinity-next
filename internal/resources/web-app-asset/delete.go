@@ -1,13 +1,14 @@
 package webappasset
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 )
 
-func DeleteWebApplicationAsset(c *api.Client, id string) (bool, error) {
-	res, err := c.MakeGraphQLRequest(`
+func DeleteWebApplicationAsset(ctx context.Context, c *api.Client, id string) (bool, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 			mutation deleteAsset {
 				deleteAsset(id: "`+id+`")
 			}

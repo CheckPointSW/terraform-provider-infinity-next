@@ -65,7 +65,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 			},
 			"name": {
 				Type:        schema.TypeString,
-				Description: "The name of the resource, also acts as it's unique ID",
+				Description: "The name of the resource, also acts as its unique ID",
 				Required:    true,
 			},
 			"profiles": {
@@ -276,7 +276,7 @@ func resourceWebApiAssetCreate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAPIAsset Create", err, diags)
 	}
 
-	asset, err := webapiasset.NewWebAPIAsset(c, createInput)
+	asset, err := webapiasset.NewWebAPIAsset(ctx, c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("Failed to discard changes", discardErr, diags)
@@ -310,7 +310,7 @@ func resourceWebApiAssetRead(ctx context.Context, d *schema.ResourceData, meta a
 
 	c := meta.(*api.Client)
 
-	asset, err := webapiasset.GetWebAPIAsset(c, d.Id())
+	asset, err := webapiasset.GetWebAPIAsset(ctx, c, d.Id())
 	if err != nil {
 		return utils.DiagError("unable to perform get WebAPIAsset", err, diags)
 	}
@@ -332,7 +332,7 @@ func resourceWebApiAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAPIAsset update", err, diags)
 	}
 
-	result, err := webapiasset.UpdateWebAPIAsset(c, d.Id(), updateInput)
+	result, err := webapiasset.UpdateWebAPIAsset(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -351,7 +351,7 @@ func resourceWebApiAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 	}
 
 	// get the newly created asset and read it into the state
-	newAsset, err := webapiasset.GetWebAPIAsset(c, d.Id())
+	newAsset, err := webapiasset.GetWebAPIAsset(ctx, c, d.Id())
 	if err != nil {
 		return utils.DiagError("unable to perform get WebAPIAsset", err, diags)
 	}
@@ -368,7 +368,7 @@ func resourceWebApiAssetDelete(ctx context.Context, d *schema.ResourceData, meta
 	c := meta.(*api.Client)
 
 	ID := d.Id()
-	result, err := webapiasset.DeleteWebAPIAsset(c, ID)
+	result, err := webapiasset.DeleteWebAPIAsset(ctx, c, ID)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)

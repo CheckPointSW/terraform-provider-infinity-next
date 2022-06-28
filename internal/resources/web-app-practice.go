@@ -30,7 +30,7 @@ func ResourceWebAppPractice() *schema.Resource {
 			},
 			"name": {
 				Type:        schema.TypeString,
-				Description: "The name of the resource, also acts as it's unique ID",
+				Description: "The name of the resource, also acts as its unique ID",
 				Required:    true,
 			},
 			"practice_type": {
@@ -274,7 +274,7 @@ func resourceWebAppPracticeCreate(ctx context.Context, d *schema.ResourceData, m
 		return utils.DiagError("unable to perform WebAppPractice Create", err, diags)
 	}
 
-	practice, err := webapppractice.NewWebApplicationPractice(c, createInput)
+	practice, err := webapppractice.NewWebApplicationPractice(ctx, c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -310,7 +310,7 @@ func resourceWebAppPracticeRead(ctx context.Context, d *schema.ResourceData, met
 
 	id := d.Id()
 
-	practice, err := webapppractice.GetWebApplicationPractice(c, id)
+	practice, err := webapppractice.GetWebApplicationPractice(ctx, c, id)
 	if err != nil {
 		return utils.DiagError("unable to perform WebAppPractice Read", err, diags)
 	}
@@ -332,7 +332,7 @@ func resourceWebAppPracticeUpdate(ctx context.Context, d *schema.ResourceData, m
 		return utils.DiagError("Failed to parse WebAppPractice Update to struct", err, diags)
 	}
 
-	result, err := webapppractice.UpdateWebApplicationPractice(c, d.Id(), updateInput)
+	result, err := webapppractice.UpdateWebApplicationPractice(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -350,7 +350,7 @@ func resourceWebAppPracticeUpdate(ctx context.Context, d *schema.ResourceData, m
 		return utils.DiagError("failed to Publish following WebAppPractice Update", err, diags)
 	}
 
-	practice, err := webapppractice.GetWebApplicationPractice(c, d.Id())
+	practice, err := webapppractice.GetWebApplicationPractice(ctx, c, d.Id())
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -374,7 +374,7 @@ func resourceWebAppPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	result, err := webapppractice.DeleteWebApplicationPractice(c, d.Id())
+	result, err := webapppractice.DeleteWebApplicationPractice(ctx, c, d.Id())
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)

@@ -36,7 +36,7 @@ func ResourceTrustedSources() *schema.Resource {
 			},
 			"name": {
 				Type:        schema.TypeString,
-				Description: "The name of the resource, also acts as it's unique ID",
+				Description: "The name of the resource, also acts as its unique ID",
 				Required:    true,
 			},
 			"min_num_of_sources": {
@@ -72,7 +72,7 @@ func resourceTrustedSourcesCreate(ctx context.Context, d *schema.ResourceData, m
 		return utils.DiagError("unable to perform TrustedSourceBehavior Create", err, diags)
 	}
 
-	behavior, err := trustedsources.NewTrustedSourceBehavior(c, createInput)
+	behavior, err := trustedsources.NewTrustedSourceBehavior(ctx, c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -105,7 +105,7 @@ func resourceTrustedSourcesRead(ctx context.Context, d *schema.ResourceData, met
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	behavior, err := trustedsources.GetTrustedSourceBehavior(c, d.Id())
+	behavior, err := trustedsources.GetTrustedSourceBehavior(ctx, c, d.Id())
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -134,7 +134,7 @@ func resourceTrustedSourcesUpdate(ctx context.Context, d *schema.ResourceData, m
 		return utils.DiagError("unable to perform TrustedSourceBehavior Update", err, diags)
 	}
 
-	result, err := trustedsources.UpdateTrustedSourceBehavior(c, d.Id(), updateInput)
+	result, err := trustedsources.UpdateTrustedSourceBehavior(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -152,7 +152,7 @@ func resourceTrustedSourcesUpdate(ctx context.Context, d *schema.ResourceData, m
 		return utils.DiagError("failed to Publish following TrustedSourceBehavior Update", err, diags)
 	}
 
-	behavior, err := trustedsources.GetTrustedSourceBehavior(c, d.Id())
+	behavior, err := trustedsources.GetTrustedSourceBehavior(ctx, c, d.Id())
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -176,7 +176,7 @@ func resourceTrustedSourcesDelete(ctx context.Context, d *schema.ResourceData, m
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	result, err := trustedsources.DeleteTrustedSourceBehavior(c, d.Id())
+	result, err := trustedsources.DeleteTrustedSourceBehavior(ctx, c, d.Id())
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)

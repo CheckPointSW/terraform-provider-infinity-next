@@ -1,6 +1,7 @@
 package trustedsources
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -43,10 +44,10 @@ func UpdateTrustedSourceBehaviorInputFromResourceData(d *schema.ResourceData) (m
 	return res, nil
 }
 
-func UpdateTrustedSourceBehavior(c *api.Client, id string, input models.UpdateTrustedSourceBehaviorInput) (bool, error) {
+func UpdateTrustedSourceBehavior(ctx context.Context, c *api.Client, id string, input models.UpdateTrustedSourceBehaviorInput) (bool, error) {
 	vars := map[string]any{"behaviorInput": input, "id": id}
 
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 		mutation updateTrustedSourceBehavior($behaviorInput: TrustedSourceBehaviorUpdateInput, $id: ID!)
 		{
 			updateTrustedSourceBehavior(behaviorInput: $behaviorInput, id: $id)

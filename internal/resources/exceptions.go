@@ -95,7 +95,7 @@ func ResourceExceptions() *schema.Resource {
 			},
 			"name": {
 				Type:        schema.TypeString,
-				Description: "The name of the resource, also acts as it's unique ID",
+				Description: "The name of the resource, also acts as its unique ID",
 				Required:    true,
 			},
 			"exception": {
@@ -144,7 +144,7 @@ func resourceExceptionsCreate(ctx context.Context, d *schema.ResourceData, meta 
 		return utils.DiagError("unable to perform ExceptionBehavior Create", err, diags)
 	}
 
-	behavior, err := exceptions.NewExceptionBehavior(c, createInput)
+	behavior, err := exceptions.NewExceptionBehavior(ctx, c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -177,7 +177,7 @@ func resourceExceptionsRead(ctx context.Context, d *schema.ResourceData, meta an
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	behavior, err := exceptions.GetExceptionBehavior(c, d.Id())
+	behavior, err := exceptions.GetExceptionBehavior(ctx, c, d.Id())
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -206,7 +206,7 @@ func resourceExceptionsUpdate(ctx context.Context, d *schema.ResourceData, meta 
 		return utils.DiagError("unable to perform ExceptionBehavior Update", err, diags)
 	}
 
-	result, err := exceptions.UpdateExceptionBehavior(c, d.Id(), updateInput)
+	result, err := exceptions.UpdateExceptionBehavior(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -224,7 +224,7 @@ func resourceExceptionsUpdate(ctx context.Context, d *schema.ResourceData, meta 
 		return utils.DiagError("failed to Publish following ExceptionBehavior Update", err, diags)
 	}
 
-	behavior, err := exceptions.GetExceptionBehavior(c, d.Id())
+	behavior, err := exceptions.GetExceptionBehavior(ctx, c, d.Id())
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -248,7 +248,7 @@ func resourceExceptionsDelete(ctx context.Context, d *schema.ResourceData, meta 
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	result, err := exceptions.DeleteExceptionBehavior(c, d.Id())
+	result, err := exceptions.DeleteExceptionBehavior(ctx, c, d.Id())
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)

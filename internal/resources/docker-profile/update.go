@@ -1,6 +1,7 @@
 package dockerprofile
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strings"
@@ -11,9 +12,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func UpdateDockerProfile(c *api.Client, id any, input models.DockerProfileUpdateInput) (bool, error) {
+func UpdateDockerProfile(ctx context.Context, c *api.Client, id any, input models.DockerProfileUpdateInput) (bool, error) {
 	vars := map[string]any{"profileInput": input, "id": id}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation updateDockerProfile($profileInput: DockerProfileUpdateInput, $id: ID!)
 					{
 						updateDockerProfile (profileInput: $profileInput, id: $id)

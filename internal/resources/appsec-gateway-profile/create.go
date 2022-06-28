@@ -1,6 +1,7 @@
 package appsecgatewayprofile
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -75,9 +76,9 @@ func handleScheduledUpgradeMode(d *schema.ResourceData) models.UpgradeTimeInput 
 	return res
 }
 
-func NewAppSecGatewayProfile(c *api.Client, input models.CreateCloudGuardAppSecGatewayProfileInput) (models.CloudGuardAppSecGatewayProfile, error) {
+func NewAppSecGatewayProfile(ctx context.Context, c *api.Client, input models.CreateCloudGuardAppSecGatewayProfileInput) (models.CloudGuardAppSecGatewayProfile, error) {
 	vars := map[string]any{"profileInput": input}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation newCloudGuardAppSecGatewayProfile($profileInput: CloudGuardAppSecGatewayProfileInput)
 					{	
 						newCloudGuardAppSecGatewayProfile (profileInput: $profileInput) {

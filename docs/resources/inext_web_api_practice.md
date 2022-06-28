@@ -60,7 +60,7 @@ resource "inext_web_api_practice" "my-webapi-practice" {
 
 ### Required
 
-- `name` (String) The name of the resource, also acts as it's unique ID
+- `name` (String) The name of the resource, also acts as its unique ID
 
 ### Optional
 

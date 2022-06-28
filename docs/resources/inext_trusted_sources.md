@@ -41,7 +41,7 @@ resource "inext_trusted_sources" "my-trusted-source-behavior" {
 ### Required
 
 - `min_num_of_sources` (Number) Minimum number of users or addresses that must exhibit similar activity for the behavior to be considered benign
-- `name` (String) The name of the resource, also acts as it's unique ID
+- `name` (String) The name of the resource, also acts as its unique ID
 
 ### Optional
 

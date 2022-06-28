@@ -1,6 +1,7 @@
 package logtrigger
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -38,9 +39,9 @@ func CreateLogTriggerInputFromResourceData(d *schema.ResourceData) (models.Creat
 	return res, nil
 }
 
-func NewLogTrigger(c *api.Client, triggerInput models.CreateLogTriggerInput) (models.LogTrigger, error) {
+func NewLogTrigger(ctx context.Context, c *api.Client, triggerInput models.CreateLogTriggerInput) (models.LogTrigger, error) {
 	vars := map[string]any{"triggerInput": triggerInput}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 		mutation newLogTrigger($triggerInput: LogTriggerInput)
 			{	
 				newLogTrigger (triggerInput: $triggerInput) {

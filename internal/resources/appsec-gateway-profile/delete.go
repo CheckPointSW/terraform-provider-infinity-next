@@ -1,13 +1,14 @@
 package appsecgatewayprofile
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 )
 
-func DeleteAppSecGatewayProfile(c *api.Client, id string) (bool, error) {
-	res, err := c.MakeGraphQLRequest(`
+func DeleteAppSecGatewayProfile(ctx context.Context, c *api.Client, id string) (bool, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 			mutation deleteProfile {
 				deleteProfile(id: "`+id+`")
 			}

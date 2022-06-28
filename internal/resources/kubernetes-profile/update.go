@@ -1,6 +1,7 @@
 package kubernetesprofile
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strings"
@@ -11,9 +12,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func UpdateKubernetesProfile(c *api.Client, id any, input models.KubernetesProfileUpdateInput) (bool, error) {
+func UpdateKubernetesProfile(ctx context.Context, c *api.Client, id any, input models.KubernetesProfileUpdateInput) (bool, error) {
 	vars := map[string]any{"profileInput": input, "id": id}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation updateKubernetesProfile($profileInput: KubernetesProfileUpdateInput, $id: ID!)
 					{
 						updateKubernetesProfile (profileInput: $profileInput, id: $id)

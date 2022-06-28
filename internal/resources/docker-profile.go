@@ -89,7 +89,7 @@ func resourceDockerProfileCreate(ctx context.Context, d *schema.ResourceData, me
 		return utils.DiagError("unable to perform DockerProfile Create", err, diags)
 	}
 
-	profile, err := dockerprofile.NewDockerProfile(c, createInput)
+	profile, err := dockerprofile.NewDockerProfile(ctx, c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -125,7 +125,7 @@ func resourceDockerProfileRead(ctx context.Context, d *schema.ResourceData, meta
 
 	id := d.Id()
 
-	profile, err := dockerprofile.GetDockerProfile(c, id)
+	profile, err := dockerprofile.GetDockerProfile(ctx, c, id)
 	if err != nil {
 		return utils.DiagError("unable to perform DockerProfile Read", err, diags)
 	}
@@ -147,7 +147,7 @@ func resourceDockerProfileUpdate(ctx context.Context, d *schema.ResourceData, me
 		return utils.DiagError("unable to perform DockerProfile Update", err, diags)
 	}
 
-	result, err := dockerprofile.UpdateDockerProfile(c, d.Id(), updateInput)
+	result, err := dockerprofile.UpdateDockerProfile(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -165,7 +165,7 @@ func resourceDockerProfileUpdate(ctx context.Context, d *schema.ResourceData, me
 		return utils.DiagError("failed to Publish following DockerProfile Update", err, diags)
 	}
 
-	profile, err := dockerprofile.GetDockerProfile(c, d.Id())
+	profile, err := dockerprofile.GetDockerProfile(ctx, c, d.Id())
 	if err != nil {
 		return utils.DiagError("failed get DockerProfile after update", err, diags)
 	}
@@ -182,7 +182,7 @@ func resourceDockerProfileDelete(ctx context.Context, d *schema.ResourceData, me
 	c := meta.(*api.Client)
 
 	ID := d.Id()
-	result, err := dockerprofile.DeleteDockerProfile(c, ID)
+	result, err := dockerprofile.DeleteDockerProfile(ctx, c, ID)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)

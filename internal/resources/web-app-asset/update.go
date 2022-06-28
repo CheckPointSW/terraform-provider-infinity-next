@@ -1,6 +1,7 @@
 package webappasset
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -132,9 +133,9 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 	return updateInput, nil
 }
 
-func UpdateWebApplicationAsset(c *api.Client, id any, input models.UpdateWebApplicationAssetInput) (bool, error) {
+func UpdateWebApplicationAsset(ctx context.Context, c *api.Client, id any, input models.UpdateWebApplicationAssetInput) (bool, error) {
 	vars := map[string]any{"assetInput": input, "id": id}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation updateWebApplicationAsset($assetInput: WebApplicationAssetUpdateInput!, $id: ID!)
 					{	
 						updateWebApplicationAsset(assetInput: $assetInput, id: $id) 

@@ -61,7 +61,7 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 
 ### Required
 
-- `name` (String) The name of the resource, also acts as it's unique ID
+- `name` (String) The name of the resource, also acts as its unique ID
 - `urls` (Set of String) The application URLs
 
 ### Optional

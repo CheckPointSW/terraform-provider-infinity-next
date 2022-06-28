@@ -1,6 +1,7 @@
 package trustedsources
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -20,9 +21,9 @@ func CreateTrustedSourceBehaviorInputFromResourceData(d *schema.ResourceData) (m
 	return input, nil
 }
 
-func NewTrustedSourceBehavior(c *api.Client, input models.CreateTrustedSourceBehaviorInput) (models.TrustedSourceBehavior, error) {
+func NewTrustedSourceBehavior(ctx context.Context, c *api.Client, input models.CreateTrustedSourceBehaviorInput) (models.TrustedSourceBehavior, error) {
 	vars := map[string]any{"ownerId": nil, "practiceId": nil, "behaviorInput": input}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation newTrustedSourceBehavior($ownerId: ID, $practiceId: ID, $behaviorInput: TrustedSourceBehaviorInput)
 					{
 						newTrustedSourceBehavior(ownerId: $ownerId, practiceId: $practiceId, behaviorInput: $behaviorInput) {

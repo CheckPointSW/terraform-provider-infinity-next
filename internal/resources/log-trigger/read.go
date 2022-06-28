@@ -1,6 +1,7 @@
 package logtrigger
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -38,8 +39,8 @@ func ReadLogTriggerToResourceData(logTrigger models.LogTrigger, d *schema.Resour
 	return nil
 }
 
-func GetLogTrigger(c *api.Client, id string) (models.LogTrigger, error) {
-	res, err := c.MakeGraphQLRequest(`
+func GetLogTrigger(ctx context.Context, c *api.Client, id string) (models.LogTrigger, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 	{
 		getLogTrigger(id: "`+id+`") {
 			id

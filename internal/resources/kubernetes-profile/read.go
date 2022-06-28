@@ -1,6 +1,7 @@
 package kubernetesprofile
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -36,8 +37,8 @@ func ReadKubernetesProfileToResourceData(profile models.KubernetesProfile, d *sc
 	return nil
 }
 
-func GetKubernetesProfile(c *api.Client, id string) (models.KubernetesProfile, error) {
-	res, err := c.MakeGraphQLRequest(`
+func GetKubernetesProfile(ctx context.Context, c *api.Client, id string) (models.KubernetesProfile, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 		{
 			getKubernetesProfile(id: "`+id+`") {
 				id
