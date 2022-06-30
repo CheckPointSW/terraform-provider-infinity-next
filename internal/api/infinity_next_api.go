@@ -52,7 +52,7 @@ func (c *Client) InfinityPortalAuthentication(clientId string, accessKey string)
 		"accessKey": {accessKey},
 	}
 
-	for retryCount := 1; retryCount < maxNumOfRetries; retryCount++ {
+	for retryCount := 1; retryCount <= maxNumOfRetries; retryCount++ {
 		resp, err := client.PostForm(c.host+"/auth/external", formData)
 		if err != nil {
 			if retryCount == maxNumOfRetries {
@@ -205,6 +205,8 @@ func (c *Client) MakeGraphQLRequest(ctx context.Context, gql, responseKey string
 			}
 
 			if ret == nil {
+				// We need to retry only if it's expected to find the resource
+				// This is only used for test, because we ensure a resource is destroyed after a test using Read.
 				if v := ctx.Value(utils.ExpectResourceNotFound); v != nil && !v.(bool) {
 					err := fmt.Errorf("%s - ReferenceID: %s", ErrorNotFound.Error(), getReferenceIDFromHeaders(res.Header))
 					if retryCount == maxNumOfRetries {
