@@ -1,6 +1,7 @@
 package webapiasset
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -57,8 +58,8 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 	return nil
 }
 
-func GetWebAPIAsset(c *api.Client, id string) (models.WebAPIAsset, error) {
-	res, err := c.MakeGraphQLRequest(`
+func GetWebAPIAsset(ctx context.Context, c *api.Client, id string) (models.WebAPIAsset, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 		{
 			getWebAPIAsset(id: "`+id+`") {
 				id

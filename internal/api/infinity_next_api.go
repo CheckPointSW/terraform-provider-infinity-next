@@ -2,12 +2,15 @@ package api
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
 )
 
 type GraphQLRequest struct {
@@ -49,40 +52,67 @@ func (c *Client) InfinityPortalAuthentication(clientId string, accessKey string)
 		"accessKey": {accessKey},
 	}
 
-	resp, err := client.PostForm(c.host+"/auth/external", formData)
-	if err != nil {
-		return err
+	for retryCount := 1; retryCount <= maxNumOfRetries; retryCount++ {
+		resp, err := client.PostForm(c.host+"/auth/external", formData)
+		if err != nil {
+			if retryCount == maxNumOfRetries {
+				return err
+			}
+
+			time.Sleep(2 * time.Second * time.Duration(retryCount))
+			continue
+		}
+
+		defer resp.Body.Close()
+
+		var result map[string]any
+		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			if retryCount == maxNumOfRetries {
+				return err
+			}
+
+			time.Sleep(2 * time.Second * time.Duration(retryCount))
+			continue
+		}
+
+		data, err := json.Marshal(result["data"])
+		if err != nil {
+			if retryCount == maxNumOfRetries {
+				return err
+			}
+
+			time.Sleep(2 * time.Second * time.Duration(retryCount))
+			continue
+		}
+
+		jsonStr := string(data)
+		var datamap map[string]any
+		if err := json.Unmarshal([]byte(jsonStr), &datamap); err != nil {
+			if retryCount == maxNumOfRetries {
+				return err
+			}
+
+			time.Sleep(2 * time.Second * time.Duration(retryCount))
+			continue
+		}
+
+		tokenInterface, ok := datamap["token"]
+		if !ok {
+			if retryCount == maxNumOfRetries {
+				return fmt.Errorf("missing token in response %#v", result)
+			}
+
+			time.Sleep(2 * time.Second * time.Duration(retryCount))
+			continue
+		}
+
+		c.token = tokenInterface.(string)
 	}
-
-	defer resp.Body.Close()
-
-	var result map[string]any
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return err
-	}
-
-	data, err := json.Marshal(result["data"])
-	if err != nil {
-		return err
-	}
-
-	jsonStr := string(data)
-	var datamap map[string]any
-	if err := json.Unmarshal([]byte(jsonStr), &datamap); err != nil {
-		return err
-	}
-
-	tokenInterface, ok := datamap["token"]
-	if !ok {
-		return fmt.Errorf("missing token in response %#v", result)
-	}
-
-	c.token = tokenInterface.(string)
 
 	return nil
 }
 
-func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]any) (any, error) {
+func (c *Client) MakeGraphQLRequest(ctx context.Context, gql, responseKey string, vars ...map[string]any) (any, error) {
 	variables := make(map[string]any)
 	for _, varMap := range vars {
 		for k, v := range varMap {
@@ -175,15 +205,19 @@ func (c *Client) MakeGraphQLRequest(gql, responseKey string, vars ...map[string]
 			}
 
 			if ret == nil {
-				err := fmt.Errorf("%s - ReferenceID: %s", ErrorNotFound.Error(), getReferenceIDFromHeaders(res.Header))
-				if retryCount == maxNumOfRetries {
-					return nil, err
-				}
+				// We need to retry only if it's expected to find the resource
+				// This is only used for test, because we ensure a resource is destroyed after a test using Read.
+				if v := ctx.Value(utils.ExpectResourceNotFound); v != nil && !v.(bool) {
+					err := fmt.Errorf("%s - ReferenceID: %s", ErrorNotFound.Error(), getReferenceIDFromHeaders(res.Header))
+					if retryCount == maxNumOfRetries {
+						return nil, err
+					}
 
-				res.Body.Close()
-				fmt.Printf("[WARN] GraphQL request failed with error %v, retrying...\n", err)
-				time.Sleep(time.Second * 2 * time.Duration(retryCount))
-				continue
+					res.Body.Close()
+					fmt.Printf("[WARN] GraphQL request failed with error %v, retrying...\n", err)
+					time.Sleep(time.Second * 2 * time.Duration(retryCount))
+					continue
+				}
 			}
 
 			return ret, nil
@@ -249,7 +283,7 @@ func (c *Client) PublishChanges() (bool, error) {
 }
 
 func (c *Client) DiscardChanges() (bool, error) {
-	discardChanges, err := c.MakeGraphQLRequest(`
+	discardChanges, err := c.MakeGraphQLRequest(context.Background(), `
 	mutation discardChanges{
 		discardChanges
 	}`, "discardChanges")

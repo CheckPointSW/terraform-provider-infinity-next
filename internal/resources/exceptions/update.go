@@ -1,6 +1,7 @@
 package exceptions
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -28,9 +29,9 @@ func UpdateExceptionBehaviorInputFromResourceData(d *schema.ResourceData) (model
 	return res, nil
 }
 
-func UpdateExceptionBehavior(c *api.Client, id string, input models.UpdateExceptionBehaviorInput) (bool, error) {
+func UpdateExceptionBehavior(ctx context.Context, c *api.Client, id string, input models.UpdateExceptionBehaviorInput) (bool, error) {
 	vars := map[string]any{"behaviorInput": input, "id": id}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 		mutation updateExceptionBehavior($behaviorInput: ExceptionBehaviorUpdateInput, $id: ID!)
 		{
 			updateExceptionBehavior(behaviorInput: $behaviorInput, id: $id)

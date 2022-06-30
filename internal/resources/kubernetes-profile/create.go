@@ -1,6 +1,7 @@
 package kubernetesprofile
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -36,9 +37,9 @@ func mapToKeyValueInput(d *schema.ResourceData, key string) []models.KeyValueInp
 	return res
 }
 
-func NewKubernetesProfile(c *api.Client, input models.CreateKubernetesProfileInput) (models.KubernetesProfile, error) {
+func NewKubernetesProfile(ctx context.Context, c *api.Client, input models.CreateKubernetesProfileInput) (models.KubernetesProfile, error) {
 	vars := map[string]any{"profileInput": input}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation newKubernetesProfile($profileInput: KubernetesProfileInput)
 					{	
 						newKubernetesProfile (profileInput: $profileInput) {

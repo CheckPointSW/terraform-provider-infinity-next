@@ -57,7 +57,7 @@ resource "inext_exceptions" "my-exceptions-behavior" {
 
 ### Required
 
-- `name` (String) The name of the resource, also acts as it's unique ID
+- `name` (String) The name of the resource, also acts as its unique ID
 
 ### Optional
 

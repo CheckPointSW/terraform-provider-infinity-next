@@ -62,7 +62,7 @@ resource "inext_log_trigger" "mytrigger" {
 
 ### Required
 
-- `name` (String) The name of the resource, also acts as it's unique ID
+- `name` (String) The name of the resource, also acts as its unique ID
 
 ### Optional
 

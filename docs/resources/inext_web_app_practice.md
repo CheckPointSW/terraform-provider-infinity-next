@@ -63,7 +63,7 @@ resource "inext_web_app_practice" "my-webapp-practice" {
 
 ### Required
 
-- `name` (String) The name of the resource, also acts as it's unique ID
+- `name` (String) The name of the resource, also acts as its unique ID
 
 ### Optional
 

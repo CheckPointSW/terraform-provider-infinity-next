@@ -1,6 +1,7 @@
 package webapiasset
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -10,9 +11,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func UpdateWebAPIAsset(c *api.Client, id any, input models.UpdateWebAPIAssetInput) (bool, error) {
+func UpdateWebAPIAsset(ctx context.Context, c *api.Client, id any, input models.UpdateWebAPIAssetInput) (bool, error) {
 	vars := map[string]any{"assetInput": input, "id": id}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation updateWebAPIAsset($assetInput: WebAPIAssetUpdateInput!, $id: ID!)
 					{	
 						updateWebAPIAsset(assetInput: $assetInput, id: $id) 

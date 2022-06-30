@@ -1,6 +1,7 @@
 package dockerprofile
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -35,8 +36,8 @@ func ReadDockerProfileToResourceData(profile models.DockerProfile, d *schema.Res
 	return nil
 }
 
-func GetDockerProfile(c *api.Client, id string) (models.DockerProfile, error) {
-	res, err := c.MakeGraphQLRequest(`
+func GetDockerProfile(ctx context.Context, c *api.Client, id string) (models.DockerProfile, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 		{
 			getDockerProfile(id: "`+id+`") {
 				id

@@ -1,6 +1,7 @@
 package webapipractice
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"strings"
@@ -50,10 +51,8 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 	switch practice.APIAttacks.AdvancedSetting.IllegalHttpMethods {
 	case "Yes":
 		advancedSettings.IllegalHttpMethods = true
-	case "No":
-		advancedSettings.IllegalHttpMethods = false
 	default:
-		return fmt.Errorf("invalid illegalHttpMethods %s", practice.APIAttacks.AdvancedSetting.IllegalHttpMethods)
+		advancedSettings.IllegalHttpMethods = false
 	}
 
 	apiAttacks := models.SchemaAPIAttacks{
@@ -94,8 +93,8 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 	return nil
 }
 
-func GetWebAPIPractice(c *api.Client, id string) (models.WebAPIPractice, error) {
-	res, err := c.MakeGraphQLRequest(`
+func GetWebAPIPractice(ctx context.Context, c *api.Client, id string) (models.WebAPIPractice, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 		{
 			getWebAPIPractice(id: "`+id+`") {
 				id

@@ -26,7 +26,7 @@ func ResourceLogTrigger() *schema.Resource {
 				Computed: true,
 			},
 			"name": {
-				Description: "The name of the resource, also acts as it's unique ID",
+				Description: "The name of the resource, also acts as its unique ID",
 				Type:        schema.TypeString,
 				Required:    true,
 			},
@@ -155,7 +155,7 @@ func resourceLogTriggerCreate(ctx context.Context, d *schema.ResourceData, meta 
 		return utils.DiagError("Failed to create log trigger input struct from resource data", err, diags)
 	}
 
-	logTrigger, err := logtrigger.NewLogTrigger(c, input)
+	logTrigger, err := logtrigger.NewLogTrigger(ctx, c, input)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -188,7 +188,7 @@ func resourceLogTriggerRead(ctx context.Context, d *schema.ResourceData, meta an
 	var diags diag.Diagnostics
 
 	c := meta.(*api.Client)
-	logTrigger, err := logtrigger.GetLogTrigger(c, d.Id())
+	logTrigger, err := logtrigger.GetLogTrigger(ctx, c, d.Id())
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -217,7 +217,7 @@ func resourceLogTriggerUpdate(ctx context.Context, d *schema.ResourceData, meta 
 		return utils.DiagError("Unable to create log trigger update input struct from resource data", err, diags)
 	}
 
-	result, err := logtrigger.UpdateLogTrigger(c, d.Id(), updateInput)
+	result, err := logtrigger.UpdateLogTrigger(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -235,7 +235,7 @@ func resourceLogTriggerUpdate(ctx context.Context, d *schema.ResourceData, meta 
 		return utils.DiagError("Failed to Publish following LogTrigger Update", err, diags)
 	}
 
-	logTrigger, err := logtrigger.GetLogTrigger(c, d.Id())
+	logTrigger, err := logtrigger.GetLogTrigger(ctx, c, d.Id())
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -260,7 +260,7 @@ func resourceLogTriggerDelete(ctx context.Context, d *schema.ResourceData, meta 
 	c := meta.(*api.Client)
 
 	ID := d.Id()
-	result, err := logtrigger.DeleteLogTrigger(c, ID)
+	result, err := logtrigger.DeleteLogTrigger(ctx, c, ID)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)

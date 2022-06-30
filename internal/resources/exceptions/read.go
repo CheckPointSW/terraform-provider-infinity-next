@@ -1,6 +1,7 @@
 package exceptions
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -9,8 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func GetExceptionBehavior(c *api.Client, id string) (models.ExceptionBehavior, error) {
-	res, err := c.MakeGraphQLRequest(`
+func GetExceptionBehavior(ctx context.Context, c *api.Client, id string) (models.ExceptionBehavior, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 			{
 				getExceptionBehavior(id: "`+id+`") {
 					id

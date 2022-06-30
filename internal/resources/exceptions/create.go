@@ -1,6 +1,7 @@
 package exceptions
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
@@ -94,9 +95,9 @@ func CreateExceptionBehaviorInputFromResourceData(d *schema.ResourceData) (model
 	return res, nil
 }
 
-func NewExceptionBehavior(c *api.Client, input models.CreateExceptionBehaviorInput) (models.ExceptionBehavior, error) {
+func NewExceptionBehavior(ctx context.Context, c *api.Client, input models.CreateExceptionBehaviorInput) (models.ExceptionBehavior, error) {
 	vars := map[string]any{"ownerId": nil, "practiceId": nil, "behaviorInput": input}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation newExceptionBehavior($ownerId: ID, $practiceId: ID, $behaviorInput: ExceptionBehaviorInput)
 					{
 						newExceptionBehavior(ownerId: $ownerId, practiceId: $practiceId, behaviorInput: $behaviorInput) {

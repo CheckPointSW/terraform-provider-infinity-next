@@ -1,6 +1,7 @@
 package webapiasset
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -25,9 +26,9 @@ func CreateWebAPIAssetInputFromResourceData(d *schema.ResourceData) (models.Crea
 }
 
 // NewWebAPIAsset sends a request to create the WebAPIAsset and retruns the newly created asset
-func NewWebAPIAsset(c *api.Client, input models.CreateWebAPIAssetInput) (models.WebAPIAsset, error) {
+func NewWebAPIAsset(ctx context.Context, c *api.Client, input models.CreateWebAPIAssetInput) (models.WebAPIAsset, error) {
 	vars := map[string]any{"assetInput": input}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation newWebAPIAsset($assetInput: WebAPIAssetInput!)
 					{
 						newWebAPIAsset(assetInput: $assetInput) {

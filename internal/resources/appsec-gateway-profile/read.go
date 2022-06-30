@@ -1,6 +1,7 @@
 package appsecgatewayprofile
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -55,8 +56,8 @@ func ReadCloudGuardAppSecGatewayProfileToResourceData(profile models.CloudGuardA
 	return nil
 }
 
-func GetCloudGuardAppSecGatewayProfile(c *api.Client, id string) (models.CloudGuardAppSecGatewayProfile, error) {
-	res, err := c.MakeGraphQLRequest(`
+func GetCloudGuardAppSecGatewayProfile(ctx context.Context, c *api.Client, id string) (models.CloudGuardAppSecGatewayProfile, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 		{
 			getCloudGuardAppSecGatewayProfile(id: "`+id+`") {
 				id

@@ -1,6 +1,7 @@
 package embeddedprofile
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -76,9 +77,9 @@ func handleScheduledUpgradeMode(d *schema.ResourceData) models.ScheduleTimeInput
 	return res
 }
 
-func NewEmbeddedProfile(c *api.Client, input models.CreateEmbeddedProfileInput) (models.EmbeddedProfile, error) {
+func NewEmbeddedProfile(ctx context.Context, c *api.Client, input models.CreateEmbeddedProfileInput) (models.EmbeddedProfile, error) {
 	vars := map[string]any{"profileInput": input}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation newEmbeddedProfile($profileInput: EmbeddedProfileInput)
 					{	
 						newEmbeddedProfile (profileInput: $profileInput) {

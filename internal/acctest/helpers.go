@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
+	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -44,7 +45,8 @@ func CheckResourceDestroyed(resourcesNames []string) resource.TestCheckFunc {
 			if rs, ok := s.RootModule().Resources[resourceName]; ok {
 				rd := schema.ResourceData{}
 				rd.SetId(rs.Primary.ID)
-				diags := Provider.ResourcesMap[resourceType].ReadContext(context.Background(), &rd, Provider.Meta())
+				ctx := context.WithValue(context.Background(), utils.ExpectResourceNotFound, true)
+				diags := Provider.ResourcesMap[resourceType].ReadContext(ctx, &rd, Provider.Meta())
 				if diags.HasError() {
 					for _, d := range diags {
 						if !strings.Contains(d.Summary, api.ErrorNotFound.Error()) {

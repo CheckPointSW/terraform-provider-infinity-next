@@ -1,6 +1,7 @@
 package embeddedprofile
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -43,8 +44,8 @@ func ReadEmbeddedProfileToResourceData(profile models.EmbeddedProfile, d *schema
 	return nil
 }
 
-func GetEmbeddedProfile(c *api.Client, id string) (models.EmbeddedProfile, error) {
-	res, err := c.MakeGraphQLRequest(`
+func GetEmbeddedProfile(ctx context.Context, c *api.Client, id string) (models.EmbeddedProfile, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 		{
 			getEmbeddedProfile(id: "`+id+`") {
 				id

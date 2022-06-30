@@ -1,6 +1,7 @@
 package webapipractice
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -43,10 +44,10 @@ func UpdateWebAPIPracticeInputFromResourceData(d *schema.ResourceData) (models.U
 	return updateInput, nil
 }
 
-func UpdateWebAPIPractice(c *api.Client, id string, input models.UpdatePracticeInput) (bool, error) {
+func UpdateWebAPIPractice(ctx context.Context, c *api.Client, id string, input models.UpdatePracticeInput) (bool, error) {
 	vars := map[string]any{"practiceInput": input, "id": id, "ownerId": nil}
 
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 		mutation updateWebAPIPractice($practiceInput: WebAPIPracticeUpdateInput, $id: ID!, $ownerId: ID)
 		{
 			updateWebAPIPractice(practiceInput: $practiceInput, id: $id, ownerId: $ownerId)

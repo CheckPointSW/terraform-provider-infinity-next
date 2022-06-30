@@ -1,6 +1,7 @@
 package webapppractice
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -97,10 +98,10 @@ func parseToSchemaWebBot(schemaWebBot any) []models.WebApplicationPracticeWebBot
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaWebBot), parseFunc)
 }
 
-func UpdateWebApplicationPractice(c *api.Client, id string, input models.UpdateWebApplicationPracticeInput) (bool, error) {
+func UpdateWebApplicationPractice(ctx context.Context, c *api.Client, id string, input models.UpdateWebApplicationPracticeInput) (bool, error) {
 	vars := map[string]any{"practiceInput": input, "id": id, "ownerId": nil}
 
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 		mutation updateWebApplicationPractice($practiceInput: WebApplicationPracticeUpdateInput, $id: ID!, $ownerId: ID)
 		{
 			updateWebApplicationPractice(practiceInput: $practiceInput, id: $id, ownerId: $ownerId)

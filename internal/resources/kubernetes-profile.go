@@ -94,7 +94,7 @@ func resourceKubernetesProfileCreate(ctx context.Context, d *schema.ResourceData
 		return utils.DiagError("unable to perform KubernetesProfile Create", err, diags)
 	}
 
-	profile, err := kubernetesprofile.NewKubernetesProfile(c, createInput)
+	profile, err := kubernetesprofile.NewKubernetesProfile(ctx, c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -130,7 +130,7 @@ func resourceKubernetesProfileRead(ctx context.Context, d *schema.ResourceData, 
 
 	id := d.Id()
 
-	profile, err := kubernetesprofile.GetKubernetesProfile(c, id)
+	profile, err := kubernetesprofile.GetKubernetesProfile(ctx, c, id)
 	if err != nil {
 		return utils.DiagError("unable to perform KubernetesProfile Read", err, diags)
 	}
@@ -152,7 +152,7 @@ func resourceKubernetesProfileUpdate(ctx context.Context, d *schema.ResourceData
 		return utils.DiagError("unable to perform KubernetesProfile Update", err, diags)
 	}
 
-	result, err := kubernetesprofile.UpdateKubernetesProfile(c, d.Id(), updateInput)
+	result, err := kubernetesprofile.UpdateKubernetesProfile(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -170,7 +170,7 @@ func resourceKubernetesProfileUpdate(ctx context.Context, d *schema.ResourceData
 		return utils.DiagError("failed to Publish following KubernetesProfile Update", err, diags)
 	}
 
-	profile, err := kubernetesprofile.GetKubernetesProfile(c, d.Id())
+	profile, err := kubernetesprofile.GetKubernetesProfile(ctx, c, d.Id())
 	if err != nil {
 		return utils.DiagError("failed get KubernetesProfile after update", err, diags)
 	}
@@ -187,7 +187,7 @@ func resourceKubernetesProfileDelete(ctx context.Context, d *schema.ResourceData
 	c := meta.(*api.Client)
 
 	ID := d.Id()
-	result, err := kubernetesprofile.DeleteKubernetesProfile(c, ID)
+	result, err := kubernetesprofile.DeleteKubernetesProfile(ctx, c, ID)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)

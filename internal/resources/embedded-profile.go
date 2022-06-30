@@ -121,7 +121,7 @@ func resourceEmbeddedProfileCreate(ctx context.Context, d *schema.ResourceData, 
 		return utils.DiagError("unable to perform EmbeddedProfile Create", err, diags)
 	}
 
-	profile, err := embeddedprofile.NewEmbeddedProfile(c, createInput)
+	profile, err := embeddedprofile.NewEmbeddedProfile(ctx, c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -157,7 +157,7 @@ func resourceEmbeddedProfileRead(ctx context.Context, d *schema.ResourceData, me
 
 	id := d.Id()
 
-	profile, err := embeddedprofile.GetEmbeddedProfile(c, id)
+	profile, err := embeddedprofile.GetEmbeddedProfile(ctx, c, id)
 	if err != nil {
 		return utils.DiagError("unable to perform EmbeddedProfile Read", err, diags)
 	}
@@ -179,7 +179,7 @@ func resourceEmbeddedProfileUpdate(ctx context.Context, d *schema.ResourceData, 
 		return utils.DiagError("unable to perform EmbeddedProfile Update", err, diags)
 	}
 
-	result, err := embeddedprofile.UpdateEmbeddedProfile(c, d.Id(), updateInput)
+	result, err := embeddedprofile.UpdateEmbeddedProfile(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -197,7 +197,7 @@ func resourceEmbeddedProfileUpdate(ctx context.Context, d *schema.ResourceData, 
 		return utils.DiagError("failed to Publish following EmbeddedProfile Update", err, diags)
 	}
 
-	profile, err := embeddedprofile.GetEmbeddedProfile(c, d.Id())
+	profile, err := embeddedprofile.GetEmbeddedProfile(ctx, c, d.Id())
 	if err != nil {
 		return utils.DiagError("failed get EmbeddedProfile after update", err, diags)
 	}
@@ -214,7 +214,7 @@ func resourceEmbeddedProfileDelete(ctx context.Context, d *schema.ResourceData, 
 	c := meta.(*api.Client)
 
 	ID := d.Id()
-	result, err := embeddedprofile.DeleteEmbeddedProfile(c, ID)
+	result, err := embeddedprofile.DeleteEmbeddedProfile(ctx, c, ID)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)

@@ -36,7 +36,7 @@ func ResourceWebAppAsset() *schema.Resource {
 			},
 			"name": {
 				Type:        schema.TypeString,
-				Description: "The name of the resource, also acts as it's unique ID",
+				Description: "The name of the resource, also acts as its unique ID",
 				Required:    true,
 			},
 			"profiles": {
@@ -94,7 +94,7 @@ func ResourceWebAppAsset() *schema.Resource {
 						"main_mode": {
 							Type:        schema.TypeString,
 							Description: "The mode of the practice: Prevent, Inactive, Disabled or Learn",
-							Optional:    true,
+							Required:    true,
 						},
 						"sub_practices_modes": {
 							Type:        schema.TypeMap,
@@ -244,7 +244,7 @@ func resourceWebAppAssetCreate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAppAsset Create", err, diags)
 	}
 
-	asset, err := webappasset.NewWebApplicationAsset(c, createInput)
+	asset, err := webappasset.NewWebApplicationAsset(ctx, c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -278,7 +278,7 @@ func resourceWebAppAssetRead(ctx context.Context, d *schema.ResourceData, meta a
 
 	c := meta.(*api.Client)
 
-	asset, err := webappasset.GetWebApplicationAsset(c, d.Id())
+	asset, err := webappasset.GetWebApplicationAsset(ctx, c, d.Id())
 	if err != nil {
 		return utils.DiagError("unable to perform WebAppAsset Read", err, diags)
 	}
@@ -295,7 +295,7 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 
 	c := meta.(*api.Client)
 
-	oldAsset, err := webappasset.GetWebApplicationAsset(c, d.Id())
+	oldAsset, err := webappasset.GetWebApplicationAsset(ctx, c, d.Id())
 	if err != nil {
 		return utils.DiagError("unable to perform get WebApplicationAsset for updating", err, diags)
 	}
@@ -305,7 +305,7 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAppAsset Update", err, diags)
 	}
 
-	result, err := webappasset.UpdateWebApplicationAsset(c, d.Id(), updateInput)
+	result, err := webappasset.UpdateWebApplicationAsset(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -323,7 +323,7 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("failed to Publish following WebAppAsset Update", err, diags)
 	}
 
-	asset, err := webappasset.GetWebApplicationAsset(c, d.Id())
+	asset, err := webappasset.GetWebApplicationAsset(ctx, c, d.Id())
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -348,7 +348,7 @@ func resourceWebAppAssetDelete(ctx context.Context, d *schema.ResourceData, meta
 	c := meta.(*api.Client)
 
 	ID := d.Id()
-	result, err := webappasset.DeleteWebApplicationAsset(c, ID)
+	result, err := webappasset.DeleteWebApplicationAsset(ctx, c, ID)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)

@@ -1,4 +1,4 @@
-package exceptions
+package webuserresponse
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 )
 
-func DeleteExceptionBehavior(ctx context.Context, c *api.Client, id string) (bool, error) {
+func DeleteWebUserResponseBehavior(ctx context.Context, c *api.Client, id string) (bool, error) {
 	res, err := c.MakeGraphQLRequest(ctx, `
 			mutation deleteBehavior {
 				deleteBehavior(id: "`+id+`")

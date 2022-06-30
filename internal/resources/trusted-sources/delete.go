@@ -1,13 +1,14 @@
 package trustedsources
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 )
 
-func DeleteTrustedSourceBehavior(c *api.Client, id string) (bool, error) {
-	res, err := c.MakeGraphQLRequest(`
+func DeleteTrustedSourceBehavior(ctx context.Context, c *api.Client, id string) (bool, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 			mutation deleteBehavior {
 				deleteBehavior(id: "`+id+`")
 			}

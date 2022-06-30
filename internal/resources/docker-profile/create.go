@@ -1,6 +1,7 @@
 package dockerprofile
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -35,9 +36,9 @@ func mapToKeyValueInput(d *schema.ResourceData, key string) []models.KeyValueInp
 	return res
 }
 
-func NewDockerProfile(c *api.Client, input models.CreateDockerProfileInput) (models.DockerProfile, error) {
+func NewDockerProfile(ctx context.Context, c *api.Client, input models.CreateDockerProfileInput) (models.DockerProfile, error) {
 	vars := map[string]any{"profileInput": input}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation newDockerProfile($profileInput: DockerProfileInput)
 					{	
 						newDockerProfile (profileInput: $profileInput) {

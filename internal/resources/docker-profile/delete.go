@@ -1,13 +1,14 @@
 package dockerprofile
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 )
 
-func DeleteDockerProfile(c *api.Client, id string) (bool, error) {
-	res, err := c.MakeGraphQLRequest(`
+func DeleteDockerProfile(ctx context.Context, c *api.Client, id string) (bool, error) {
+	res, err := c.MakeGraphQLRequest(ctx, `
 			mutation deleteProfile {
 				deleteProfile(id: "`+id+`")
 			}

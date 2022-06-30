@@ -1,6 +1,7 @@
 package embeddedprofile
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strings"
@@ -11,9 +12,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func UpdateEmbeddedProfile(c *api.Client, id any, input models.EmbeddedProfileUpdateInput) (bool, error) {
+func UpdateEmbeddedProfile(ctx context.Context, c *api.Client, id any, input models.EmbeddedProfileUpdateInput) (bool, error) {
 	vars := map[string]any{"profileInput": input, "id": id}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation updateEmbeddedProfile($profileInput: EmbeddedProfileUpdateInput, $id: ID!)
 					{
 						updateEmbeddedProfile (profileInput: $profileInput, id: $id)

@@ -1,6 +1,7 @@
 package webapppractice
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -80,9 +81,9 @@ func CreateWebApplicationPracticeInputFromResourceData(d *schema.ResourceData) (
 	return res, nil
 }
 
-func NewWebApplicationPractice(c *api.Client, input models.CreateWebApplicationPracticeInput) (models.WebApplicationPractice, error) {
+func NewWebApplicationPractice(ctx context.Context, c *api.Client, input models.CreateWebApplicationPracticeInput) (models.WebApplicationPractice, error) {
 	vars := map[string]any{"ownerId": nil, "mainMode": nil, "subPracticeModes": []any{}, "practiceInput": input}
-	res, err := c.MakeGraphQLRequest(`
+	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation newWebApplicationPractice($ownerId: ID, $mainMode: PracticeMode, $subPracticeModes: [PracticeModeInput], $practiceInput: WebApplicationPracticeInput)
 					{
 						newWebApplicationPractice(ownerId: $ownerId, subPracticeModes: $subPracticeModes, mainMode: $mainMode, practiceInput: $practiceInput) {
