@@ -16,8 +16,8 @@ Trusted sources that serve as a baseline for comparison for benign behavior, and
 terraform {
   required_providers {
     inext = {
-      version = "~> 1.0.0"
-      source  = "checkpointsw/infinity-next"
+      source  = "CheckPointSW/infinity-next"
+      version = "1.0.2"
     }
   }
 }
