@@ -20,7 +20,7 @@ There are 2 options to set the credentials to be used by the provider:
 
 * Set the credentials in environment variables `INEXT_CLIENT_ID` and `INEXT_ACCESS_KEY`
 
-* Set the credentials explicity or through input variables, in the `.tf` file that defines the `provider` block using the fields `client_id` and `access_key`
+* Set the credentials explicitly or through input variables, in the `.tf` file that defines the `provider` block using the fields `client_id` and `access_key`
 
 Note that credentials are per region, which can be configured with the `region` field of the provider's definition. It defaults to "eu" and currently it accepts either "eu" or "us".
 ### Publish and Enforce your changes *(Required)*
