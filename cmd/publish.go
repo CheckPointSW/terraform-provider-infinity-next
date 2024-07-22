@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/CheckPointSW/infinity-next-cli/utils"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -36,11 +37,6 @@ var publishCmd = &cobra.Command{
 	Short: "Publish changes of a session",
 	Long:  `Publish changes of a session`,
 	PreRunE: func(cmd *cobra.Command, args []string) error {
-		cmd.Flags().StringVarP(&clientID, "client-id", "c", "", "Client ID of the API key")
-		cmd.Flags().StringVarP(&accessKey, "access-key", "k", "", "Access key of the API key")
-		cmd.Flags().StringVarP(&region, "region", "r", "eu", "Region of Infinity Next API")
-		cmd.Flags().StringVarP(&token, "token", "t", "", "Authorization token of the API key")
-
 		if err := viper.BindPFlags(cmd.Flags()); err != nil {
 			return err
 		}
@@ -65,20 +61,12 @@ var publishCmd = &cobra.Command{
 	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		var URL string
-		var API string
+		API := policyPath
 		switch region {
 		case "eu":
 			URL = EUCIURL
-			API = CIAPIV1
 		case "us":
 			URL = USCIURL
-			API = CIAPIV1
-		case "dev":
-			URL = DevCIURL
-			API = DevCIAPIV1
-		case "preprod":
-			URL = DevCIURL
-			API = CIAPIV1
 		default:
 			fmt.Printf("Invalid region %s, expected eu or us\n", region)
 			os.Exit(1)
@@ -136,16 +124,43 @@ var publishCmd = &cobra.Command{
 			return err
 		}
 
-		enforceReq, err := http.NewRequest(http.MethodPost, URL+API, bytes.NewBuffer(bReq))
+		publishReq, err := http.NewRequest(http.MethodPost, URL+API, bytes.NewBuffer(bReq))
 		if err != nil {
 			return err
 		}
 
-		enforceReq.Header.Set("Authorization", "Bearer "+auth.Data.Token)
-		enforceReq.Header.Set("Content-Type", "application/json")
+		token, _, err := jwt.NewParser().ParseUnverified(auth.Data.Token, jwt.MapClaims{})
+		if err != nil {
+			return fmt.Errorf("failed to parse token: %w", err)
+		}
+
+		tokenMapClaims := token.Claims.(jwt.MapClaims)
+		if appID, ok := tokenMapClaims[appIDClaim]; ok {
+			switch appID.(string) {
+			case wafAppID:
+				if API != wafPath {
+					API = wafPath
+					publishReq, err = http.NewRequest(http.MethodPost, URL+API, bytes.NewBuffer(bReq))
+					if err != nil {
+						return err
+					}
+				}
+			case policyAppID:
+				if API != policyPath {
+					API = policyPath
+					publishReq, err = http.NewRequest(http.MethodPost, URL+API, bytes.NewBuffer(bReq))
+					if err != nil {
+						return err
+					}
+				}
+			}
+		}
+
+		publishReq.Header.Set("Authorization", "Bearer "+auth.Data.Token)
+		publishReq.Header.Set("Content-Type", "application/json")
 
 		var publishChanges graphqlResponse[publishResponseData]
-		publishResp, err := utils.HTTPRequestUnmarshal(&client, enforceReq, &publishChanges)
+		publishResp, err := utils.HTTPRequestUnmarshal(&client, publishReq, &publishChanges)
 		if err != nil {
 			return err
 		}

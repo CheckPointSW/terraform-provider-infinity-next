@@ -11,6 +11,15 @@ import (
 	"time"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
+	"github.com/golang-jwt/jwt/v5"
+)
+
+const (
+	appIDClaim  = "appId"
+	wafAppID    = "64488de9-f813-42a7-93e7-f3fe25dd9011"
+	policyAppID = "f47b536c-a990-42fb-9ab2-ec38f8c2dcff"
+	wafPath     = "/app/waf/graphql/V1"
+	policyPath  = "/app/i2/graphql/V1"
 )
 
 type GraphQLRequest struct {
@@ -107,6 +116,23 @@ func (c *Client) InfinityPortalAuthentication(clientId string, accessKey string)
 		}
 
 		c.token = tokenInterface.(string)
+		token, _, err := jwt.NewParser().ParseUnverified(c.token, jwt.MapClaims{})
+		if err != nil {
+			return fmt.Errorf("failed to parse token: %w", err)
+		}
+
+		tokenMapClaims := token.Claims.(jwt.MapClaims)
+		if appID, ok := tokenMapClaims[appIDClaim]; ok {
+			switch appID.(string) {
+			case wafAppID:
+				c.SetEndpoint(wafPath)
+			case policyAppID:
+				c.SetEndpoint(policyPath)
+			}
+		}
+
+		break
+
 	}
 
 	return nil
