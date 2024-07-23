@@ -37,6 +37,11 @@ var publishCmd = &cobra.Command{
 	Short: "Publish changes of a session",
 	Long:  `Publish changes of a session`,
 	PreRunE: func(cmd *cobra.Command, args []string) error {
+		cmd.Flags().StringVarP(&clientID, "client-id", "c", "", "Client ID of the API key")
+		cmd.Flags().StringVarP(&accessKey, "access-key", "k", "", "Access key of the API key")
+		cmd.Flags().StringVarP(&region, "region", "r", "eu", "Region of Infinity Next API")
+		cmd.Flags().StringVarP(&token, "token", "t", "", "Authorization token of the API key")
+
 		if err := viper.BindPFlags(cmd.Flags()); err != nil {
 			return err
 		}
@@ -67,6 +72,11 @@ var publishCmd = &cobra.Command{
 			URL = EUCIURL
 		case "us":
 			URL = USCIURL
+		case "dev":
+			URL = DevCIURL
+			API = DevCIAPIV1
+		case "preprod":
+			URL = DevCIURL
 		default:
 			fmt.Printf("Invalid region %s, expected eu or us\n", region)
 			os.Exit(1)
