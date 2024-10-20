@@ -42,12 +42,12 @@ type Practice struct {
 
 // PracticeWrapper represents a practice field of a web application asset object as it is returned from mgmt
 type PracticeWrapper struct {
-	PracticeWrapperID string             `json:"id"`
-	MainMode          string             `json:"mainMode,omitempty"`
-	SubPracticeModes  []PracticeMode     `json:"subPracticeModes,omitempty"`
-	Triggers          []Trigger          `json:"triggers,omitempty"`
-	Behaviors         []PracticeBehavior `json:"behaviors,omitempty"`
-	Practice          Practice           `json:"practice"`
+	PracticeWrapperID string         `json:"id"`
+	MainMode          string         `json:"mainMode,omitempty"`
+	SubPracticeModes  []PracticeMode `json:"subPracticeModes,omitempty"`
+	Triggers          []Trigger      `json:"triggers,omitempty"`
+	//Behaviors         []PracticeBehavior `json:"behaviors,omitempty"`
+	Practice Practice `json:"practice"`
 }
 
 type PracticesWrappers []PracticeWrapper
@@ -202,10 +202,10 @@ func (practiceWrapper PracticeWrapper) ToSchema() SchemaPracticeWrapper {
 		triggers[j] = trigger.ID
 	}
 
-	behaviors := make([]string, len(practiceWrapper.Behaviors))
-	for j, behavior := range practiceWrapper.Behaviors {
-		behaviors[j] = behavior.ID
-	}
+	//behaviors := make([]string, len(practiceWrapper.Behaviors))
+	//for j, behavior := range practiceWrapper.Behaviors {
+	//	behaviors[j] = behavior.ID
+	//}
 
 	subPracticeModes := make(map[string]string)
 	for _, mode := range practiceWrapper.SubPracticeModes {
@@ -218,6 +218,6 @@ func (practiceWrapper PracticeWrapper) ToSchema() SchemaPracticeWrapper {
 		MainMode:          practiceWrapper.MainMode,
 		SubPracticeModes:  subPracticeModes,
 		Triggers:          triggers,
-		Behaviors:         behaviors,
+		//Behaviors:         behaviors,
 	}
 }

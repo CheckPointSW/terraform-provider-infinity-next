@@ -16,7 +16,7 @@ func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (mod
 	res.Name = d.Get("name").(string)
 	res.UpstreamURL = d.Get("upstream_url").(string)
 	res.Profiles = utils.MustResourceDataCollectionToSlice[string](d, "profiles")
-	res.Behaviors = utils.MustResourceDataCollectionToSlice[string](d, "trusted_sources")
+	res.Behaviors = utils.MustResourceDataCollectionToSlice[string](d, "behaviors")
 	res.URLs = utils.MustResourceDataCollectionToSlice[string](d, "urls")
 	res.PracticeWrappers = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "practice"), mapToPracticeWrapperInput)
 	res.ProxySettings = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "proxy_setting"), mapToProxySettingInput)
@@ -50,9 +50,7 @@ func NewWebApplicationAsset(ctx context.Context, c *api.Client, input models.Cre
 								triggers {
 									id
 								}
-								behaviors {
-									id
-								}
+								
 							}
 							profiles {
 								id
@@ -133,13 +131,13 @@ func mapToPracticeWrapperInput(practiceWrapperMap map[string]any) models.Practic
 		}
 	}
 
-	if behaviorsInterface, ok := practiceWrapperMap["exceptions"]; ok {
-		behaviorsSet := behaviorsInterface.(*schema.Set)
-		practiceWrapper.Behaviors = make([]string, 0, behaviorsSet.Len())
-		for _, behavior := range behaviorsSet.List() {
-			practiceWrapper.Behaviors = append(practiceWrapper.Behaviors, behavior.(string))
-		}
-	}
+	//if behaviorsInterface, ok := practiceWrapperMap["exceptions"]; ok {
+	//	behaviorsSet := behaviorsInterface.(*schema.Set)
+	//	practiceWrapper.Behaviors = make([]string, 0, behaviorsSet.Len())
+	//	for _, behavior := range behaviorsSet.List() {
+	//		practiceWrapper.Behaviors = append(practiceWrapper.Behaviors, behavior.(string))
+	//	}
+	//}
 
 	return practiceWrapper
 }

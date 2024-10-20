@@ -25,7 +25,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	d.Set("intelligence_tags", asset.IntelligenceTags)
 	d.Set("read_only", asset.ReadOnly)
 	d.Set("upstream_url", asset.UpstreamURL)
-	d.Set("trusted_sources", asset.Behaviors.ToSchema())
+	d.Set("behaviors", asset.Behaviors.ToSchema())
 	d.Set("profiles", asset.Profiles.ToSchema())
 
 	proxySettingsSchemaMap, err := utils.UnmarshalAs[[]map[string]any](asset.ProxySettings)
@@ -79,9 +79,6 @@ func GetWebApplicationAsset(ctx context.Context, c *api.Client, id string) (mode
 					type
 					status
 					triggers {
-						id
-					}
-					behaviors {
 						id
 					}
 				}
@@ -138,7 +135,7 @@ func GetWebApplicationAsset(ctx context.Context, c *api.Client, id string) (mode
 
 	asset, err := utils.UnmarshalAs[models.WebApplicationAsset](res)
 	if err != nil {
-		return models.WebApplicationAsset{}, fmt.Errorf("Failed to convert graphQL response to WebApplicationAsset struct. Error: %w", err)
+		return models.WebApplicationAsset{}, fmt.Errorf("failed to convert graphQL response to WebApplicationAsset struct. Error: %w", err)
 	}
 
 	return asset, nil

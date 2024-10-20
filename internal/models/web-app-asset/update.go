@@ -1,6 +1,6 @@
 package models
 
-// UpdateSourceIdentifier represents the input for updating an existing source identifier value
+// UpdateSourceIdentifierValue represents the input for updating an existing source identifier value
 // in a source identifier field of an existing WebApplicationAsset object
 type UpdateSourceIdentifierValue struct {
 	ID              string `json:"id"`
@@ -22,13 +22,13 @@ type AddSourceIdentifier struct {
 	Values           []string `json:"values"`
 }
 
-// AddProxySetting represents the input for updating an existing url field of an existing WebApplicationAsset object
+// UpdateURL represents the input for updating an existing url field of an existing WebApplicationAsset object
 type UpdateURL struct {
 	ID  string `json:"id"`
 	URL string `json:"url"`
 }
 
-// AddProxySetting represents the input for updating an existing proxy setting field of an existing WebApplicationAsset object
+// UpdateProxySetting represents the input for updating an existing proxy setting field of an existing WebApplicationAsset object
 type UpdateProxySetting struct {
 	ID    string `json:"id"`
 	Key   string `json:"key"`
@@ -41,7 +41,7 @@ type AddProxySetting struct {
 	Value string `json:"value"`
 }
 
-// AddPracticeModeInput represents the api input for adding a practice mode (sub practice) in a practice to add
+// AddPracticeMode represents the api input for adding a practice mode (sub practice) in a practice to add
 // to an existing WebApplicationAsset object
 type AddPracticeMode struct {
 	Mode        string `json:"mode"`
@@ -54,7 +54,7 @@ type AddPracticeWrapper struct {
 	MainMode         string            `json:"mainMode"`
 	SubPracticeModes []AddPracticeMode `json:"subPracticeModes,omitempty"`
 	Triggers         []string          `json:"triggers"`
-	Behaviors        []string          `json:"behaviors"`
+	//Behaviors        []string          `json:"behaviors"`
 }
 
 // UpdateWebApplicationAssetInput represents the input for updating an existing WebApplicationAsset object
