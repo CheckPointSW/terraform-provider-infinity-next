@@ -30,7 +30,7 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 		updateInput.AddProfiles, updateInput.RemoveProfiles = utils.SlicesDiff(oldProfilesString, newProfilesString)
 	}
 
-	if oldBehaviorsStringList, newBehaviorsStringList, hasChange := utils.GetChangeWithParse(d, "trusted_sources", utils.MustSchemaCollectionToSlice[string]); hasChange {
+	if oldBehaviorsStringList, newBehaviorsStringList, hasChange := utils.GetChangeWithParse(d, "behaviors", utils.MustSchemaCollectionToSlice[string]); hasChange {
 		updateInput.AddBehaviors, updateInput.RemoveBehaviors = utils.SlicesDiff(oldBehaviorsStringList, newBehaviorsStringList)
 	}
 

@@ -14,11 +14,11 @@ provider "inext" {
 }
 
 resource "inext_web_app_asset" "prod_eu_acme" {
-  name            = "ACME Power"
-  profiles        = [inext_appsec_gateway_profile.eu_appsec.id]
-  trusted_sources = [inext_trusted_sources.new_parameter.id]
-  upstream_url    = "https://www.acme.com"
-  urls            = ["http://192.168.2.200/main"]
+  name         = "ACME Power"
+  profiles     = [inext_appsec_gateway_profile.eu_appsec.id]
+  behaviors    = [inext_trusted_sources.new_parameter.id, inext_exceptions.shared_region_exceptions.id]
+  upstream_url = "https://www.acme.com"
+  urls         = ["http://192.168.2.200/main"]
   practice {
     main_mode = "Prevent" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
@@ -27,9 +27,9 @@ resource "inext_web_app_asset" "prod_eu_acme" {
       SchemaValidation = "Disabled"
       Snort            = "AccordingToPractice"
     }
-    id         = inext_web_app_practice.eu_acme_protection.id # required
-    triggers   = [inext_log_trigger.log_trigger.id]
-    exceptions = [inext_exceptions.shared_region_exceptions.id]
+    id       = inext_web_app_practice.eu_acme_protection.id # required
+    triggers = [inext_log_trigger.log_trigger.id]
+
   }
   source_identifier {
     identifier = "HeaderKey"

@@ -9,14 +9,13 @@ type PracticeModeInput struct {
 	SubPractice string `json:"subPractice,omitempty"`
 }
 
-// PracticeInput represents the api input for creating a practice field in the web application asset
+// PracticeWrapperInput represents the api input for creating a practice field in the web application asset
 type PracticeWrapperInput struct {
 	PracticeWrapperID string              `json:"practiceWrapperId,omitempty"`
 	PracticeID        string              `json:"practiceId"`
 	MainMode          string              `json:"mainMode"`
 	SubPracticeModes  []PracticeModeInput `json:"subPracticeModes,omitempty"`
 	Triggers          []string            `json:"triggers,omitempty"`
-	Behaviors         []string            `json:"behaviors,omitempty"`
 }
 
 type PracticeWrappersInputs []PracticeWrapperInput
