@@ -10,7 +10,7 @@ const (
 	URLIDSeparator = ";;;;"
 )
 
-// Trigger represetns a trigger in a Practice object returned from mgmt
+// Trigger represents a trigger in a Practice object returned from mgmt
 type Trigger struct {
 	ID string `json:"id"`
 }
@@ -46,8 +46,7 @@ type PracticeWrapper struct {
 	MainMode          string         `json:"mainMode,omitempty"`
 	SubPracticeModes  []PracticeMode `json:"subPracticeModes,omitempty"`
 	Triggers          []Trigger      `json:"triggers,omitempty"`
-	//Behaviors         []PracticeBehavior `json:"behaviors,omitempty"`
-	Practice Practice `json:"practice"`
+	Practice          Practice       `json:"practice"`
 }
 
 type PracticesWrappers []PracticeWrapper
@@ -77,7 +76,7 @@ type ProxySetting struct {
 
 type ProxySettings []ProxySetting
 
-// URL represents an URL field of a web application asset returned from mgmt
+// URL represents a URL field of a web application asset returned from mgmt
 type URL struct {
 	ID  string `json:"id"`
 	URL string `json:"URL"`
@@ -92,7 +91,7 @@ type Profile struct {
 
 type Profiles []Profile
 
-// WebApplicationAsset represents a web application asset as it is retruned from mgmt
+// WebApplicationAsset represents a web application asset as it is returned from mgmt
 type WebApplicationAsset struct {
 	ID                string            `json:"id"`
 	Name              string            `json:"name"`
@@ -184,7 +183,7 @@ func (sourceIdentifier SourceIdentifier) ToSchema() SchemaSourceIdentifier {
 	}
 }
 
-// ToSchema converts the paractices field as returned from the API to a slice of
+// ToSchema converts the practices field as returned from the API to a slice of
 // SchemaPracticeWrapper to be saved in the state file
 func (wrappers PracticesWrappers) ToSchema() []SchemaPracticeWrapper {
 	mapFunc := func(wrapper PracticeWrapper) SchemaPracticeWrapper {
@@ -202,11 +201,6 @@ func (practiceWrapper PracticeWrapper) ToSchema() SchemaPracticeWrapper {
 		triggers[j] = trigger.ID
 	}
 
-	//behaviors := make([]string, len(practiceWrapper.Behaviors))
-	//for j, behavior := range practiceWrapper.Behaviors {
-	//	behaviors[j] = behavior.ID
-	//}
-
 	subPracticeModes := make(map[string]string)
 	for _, mode := range practiceWrapper.SubPracticeModes {
 		subPracticeModes[mode.SubPractice] = mode.Mode
@@ -218,6 +212,5 @@ func (practiceWrapper PracticeWrapper) ToSchema() SchemaPracticeWrapper {
 		MainMode:          practiceWrapper.MainMode,
 		SubPracticeModes:  subPracticeModes,
 		Triggers:          triggers,
-		//Behaviors:         behaviors,
 	}
 }

@@ -16,7 +16,6 @@ type PracticeWrapperInput struct {
 	MainMode          string              `json:"mainMode"`
 	SubPracticeModes  []PracticeModeInput `json:"subPracticeModes,omitempty"`
 	Triggers          []string            `json:"triggers,omitempty"`
-	//Behaviors         []string            `json:"behaviors,omitempty"`
 }
 
 type PracticeWrappersInputs []PracticeWrapperInput

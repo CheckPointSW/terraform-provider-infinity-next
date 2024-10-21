@@ -50,7 +50,6 @@ func NewWebApplicationAsset(ctx context.Context, c *api.Client, input models.Cre
 								triggers {
 									id
 								}
-								
 							}
 							profiles {
 								id
@@ -130,14 +129,6 @@ func mapToPracticeWrapperInput(practiceWrapperMap map[string]any) models.Practic
 			practiceWrapper.Triggers = append(practiceWrapper.Triggers, trigger.(string))
 		}
 	}
-
-	//if behaviorsInterface, ok := practiceWrapperMap["exceptions"]; ok {
-	//	behaviorsSet := behaviorsInterface.(*schema.Set)
-	//	practiceWrapper.Behaviors = make([]string, 0, behaviorsSet.Len())
-	//	for _, behavior := range behaviorsSet.List() {
-	//		practiceWrapper.Behaviors = append(practiceWrapper.Behaviors, behavior.(string))
-	//	}
-	//}
 
 	return practiceWrapper
 }

@@ -128,11 +128,6 @@ func GetWebApplicationAsset(ctx context.Context, c *api.Client, id string) (mode
 		return models.WebApplicationAsset{}, api.ErrorNotFound
 	}
 
-	// res, ok := mapRes.(map[string]any)
-	// if !ok {
-	// 	return models.WebApplicationAsset{}, fmt.Errorf("invalid response field getWebApplicationAsset value, should be of type map[string]any but got %#v", mapRes)
-	// }
-
 	asset, err := utils.UnmarshalAs[models.WebApplicationAsset](res)
 	if err != nil {
 		return models.WebApplicationAsset{}, fmt.Errorf("failed to convert graphQL response to WebApplicationAsset struct. Error: %w", err)

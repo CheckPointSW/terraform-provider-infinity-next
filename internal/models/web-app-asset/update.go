@@ -54,7 +54,6 @@ type AddPracticeWrapper struct {
 	MainMode         string            `json:"mainMode"`
 	SubPracticeModes []AddPracticeMode `json:"subPracticeModes,omitempty"`
 	Triggers         []string          `json:"triggers"`
-	//Behaviors        []string          `json:"behaviors"`
 }
 
 // UpdateWebApplicationAssetInput represents the input for updating an existing WebApplicationAsset object

@@ -20,7 +20,6 @@ type SchemaPracticeWrapper struct {
 	MainMode          string            `json:"main_mode,omitempty"`
 	SubPracticeModes  map[string]string `json:"sub_practices_modes,omitempty"`
 	Triggers          []string          `json:"triggers,omitempty"`
-	//Behaviors         []string          `json:"exceptions,omitempty"`
 }
 
 // SchemaSourceIdentifier represents the SourceIdentifier field of a web application asset as it is saved in the state file

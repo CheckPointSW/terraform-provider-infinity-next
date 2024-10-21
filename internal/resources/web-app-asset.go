@@ -120,14 +120,6 @@ func ResourceWebAppAsset() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						//"exceptions": {
-						//	Type:        schema.TypeSet,
-						//	Description: "The exceptions used with the practice",
-						//	Optional:    true,
-						//	Elem: &schema.Schema{
-						//		Type: schema.TypeString,
-						//	},
-						//},
 					},
 				},
 			},
