@@ -47,9 +47,9 @@ func ResourceWebAppAsset() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
-			"trusted_sources": {
+			"behaviors": {
 				Type:        schema.TypeSet,
-				Description: "Trusted sources behavior used by the asset",
+				Description: "behaviors used by the asset",
 				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -115,14 +115,6 @@ func ResourceWebAppAsset() *schema.Resource {
 						"triggers": {
 							Type:        schema.TypeSet,
 							Description: "The triggers used with the practice",
-							Optional:    true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
-						"exceptions": {
-							Type:        schema.TypeSet,
-							Description: "The exceptions used with the practice",
 							Optional:    true,
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
