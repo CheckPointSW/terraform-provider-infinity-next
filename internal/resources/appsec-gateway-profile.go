@@ -14,7 +14,7 @@ import (
 func ResourceAppSecGatewayProfile() *schema.Resource {
 	return &schema.Resource{
 		Description: "CloudGuard Application Security Gateway profile is deployed as a VM that runs on a Check Point Gaia OS " +
-			"with a reverse proxy and Check Point Nano-Agent",
+			"with a reverse proxy and Check Point Nano-Agent.",
 
 		CreateContext: resourceAppSecGatewayProfileCreate,
 		ReadContext:   resourceAppSecGatewayProfileRead,
