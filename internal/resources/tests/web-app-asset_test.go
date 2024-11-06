@@ -284,7 +284,6 @@ resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path3", "http://host/%[1]s/path2"]
 	profiles        = [inext_appsec_gateway_profile.%[2]s.id]
-	trusted_sources = [inext_trusted_sources.%[3]s.id]
   	upstream_url    = "some url 5"
 	practice {
 		main_mode = "Prevent"
@@ -295,7 +294,6 @@ resource "inext_web_app_asset" %[1]q {
 		}
 		id         = inext_web_app_practice.%[4]s.id
 		triggers   = [inext_log_trigger.%[5]s.id]
-		exceptions = [inext_exceptions.%[6]s.id]
 	}
   	proxy_setting {
     	key   = "some key"
@@ -417,7 +415,6 @@ resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path1", "http://host/%[1]s/path2"]
 	profiles        = [inext_appsec_gateway_profile.%[2]s.id]
-	trusted_sources = [inext_trusted_sources.%[3]s.id]
 	upstream_url    = "some url 5"
 	practice {
 	  main_mode = "Learn"
@@ -428,7 +425,6 @@ resource "inext_web_app_asset" %[1]q {
 	  }
 	  id         = inext_web_app_practice.%[4]s.id
 	  triggers   = [inext_log_trigger.%[5]s.id]
-	  exceptions = [inext_exceptions.%[6]s.id]
 	}
 
 	proxy_setting {
@@ -585,7 +581,6 @@ resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path3", "http://host/%[1]s/path4"]
 	profiles        = [inext_appsec_gateway_profile.%[7]s.id]
-	trusted_sources = [inext_trusted_sources.%[8]s.id]
 	upstream_url    = "some url 10"
 	practice {
 	  main_mode = "Prevent"
@@ -596,7 +591,6 @@ resource "inext_web_app_asset" %[1]q {
 	  }
 	  id         = inext_web_app_practice.%[4]s.id
 	  triggers   = [inext_log_trigger.%[9]s.id]
-	  exceptions = [inext_exceptions.%[10]s.id]
 	}
 
 	proxy_setting {

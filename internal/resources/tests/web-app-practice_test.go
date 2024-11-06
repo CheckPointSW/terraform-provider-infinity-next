@@ -248,7 +248,7 @@ func webAppPracticeBasicConfig(name string) string {
 resource "inext_web_app_practice" %[1]q {
 	name = %[1]q
 	web_attacks {
-		minimum_severity = "High
+		minimum_severity = "High"
 		advanced_setting {
 			max_object_depth     = 40
 			body_size            = 1000000
