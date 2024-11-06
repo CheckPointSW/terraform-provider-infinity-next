@@ -20,8 +20,9 @@ func TestAccAppsecGatewayProfileBasic(t *testing.T) {
 				Config: appsecGatewayProfileBasicConfig(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":             nameAttribute,
-						"profile_sub_type": "Aws",
+						"name":                 nameAttribute,
+						"profile_sub_type":     "Aws",
+						"max_number_of_agents": "10",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -170,6 +171,7 @@ func appsecGatewayProfileBasicConfig(name string) string {
 resource "inext_appsec_gateway_profile" %[1]q {
 	name = %[1]q
 	profile_sub_type = "Aws"
+	max_number_of_agents = 10
 }
 `, name)
 }
