@@ -214,6 +214,14 @@ func webAPIPracticeBasicConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_web_api_practice" %[1]q {
 	name = %[1]q
+	ips {
+		performance_impact    = "MediumOrLower"
+		severity_level        = "MediumOrAbove"
+		protections_from_year = "2016"
+		high_confidence       = "Prevent"
+		medium_confidence     = "Prevent"
+		low_confidence        = "Detect"
+	}
 }
 `, name)
 }
