@@ -11,19 +11,21 @@ import (
 func TestAccWebApplicationAssetBasic(t *testing.T) {
 	assetNameAttribute := acctest.GenerateResourceName()
 	profileNameAttribute := acctest.GenerateResourceName()
-	behaviorsNameAttribute := acctest.GenerateResourceName()
+	trustedSourcesNameAttribute := acctest.GenerateResourceName()
 	practiceNameAttribute := acctest.GenerateResourceName()
 	logTriggerNameAttribute := acctest.GenerateResourceName()
+	exceptionsNameAttribute := acctest.GenerateResourceName()
 	assetResourceName := "inext_web_app_asset." + assetNameAttribute
 	profileResourceName := "inext_appsec_gateway_profile." + profileNameAttribute
-	behaviorsResourceName := "inext_behaviors." + behaviorsNameAttribute
+	trustedSourcesResourceName := "inext_trusted_sources." + trustedSourcesNameAttribute
 	practiceResourceName := "inext_web_app_practice." + practiceNameAttribute
 	logTriggerResourceName := "inext_log_trigger." + logTriggerNameAttribute
+	exceptionsResourceName := "inext_exceptions." + exceptionsNameAttribute
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { acctest.PreCheck(t) },
 		ProviderFactories: acctest.ProviderFactories,
-		CheckDestroy: acctest.CheckResourceDestroyed([]string{assetResourceName, profileResourceName, behaviorsResourceName,
-			practiceResourceName, logTriggerResourceName}),
+		CheckDestroy: acctest.CheckResourceDestroyed([]string{assetResourceName, profileResourceName, trustedSourcesResourceName,
+			practiceResourceName, logTriggerResourceName, exceptionsResourceName}),
 		Steps: []resource.TestStep{
 			{
 				Config: webApplicationAssetBasicConfig(assetNameAttribute),
@@ -46,8 +48,8 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 				ImportState:  true,
 			},
 			{
-				Config: webApplicationAssetUpdateBasicConfig(assetNameAttribute, profileNameAttribute, behaviorsNameAttribute,
-					practiceNameAttribute, logTriggerNameAttribute),
+				Config: webApplicationAssetUpdateBasicConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
+					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
@@ -79,7 +81,7 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
-						"behaviors.#":                      "1",
+						"trusted_sources.#":                "1",
 						"class":                            "workload",
 						"category":                         "cloud",
 						"group":                            "",
@@ -112,30 +114,34 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 func TestAccWebApplicationAssetFull(t *testing.T) {
 	assetNameAttribute := acctest.GenerateResourceName()
 	profileNameAttribute := acctest.GenerateResourceName()
-	behaviorsNameAttribute := acctest.GenerateResourceName()
+	trustedSourcesNameAttribute := acctest.GenerateResourceName()
 	practiceNameAttribute := acctest.GenerateResourceName()
 	logTriggerNameAttribute := acctest.GenerateResourceName()
+	exceptionsNameAttribute := acctest.GenerateResourceName()
 	anotherProfileNameAttribute := acctest.GenerateResourceName()
-	anotherBehaviorsNameAttribute := acctest.GenerateResourceName()
+	anotherTrustedSourcesNameAttribute := acctest.GenerateResourceName()
 	anotherLogTriggerNameAttribute := acctest.GenerateResourceName()
+	anotherExceptionsNameAttribute := acctest.GenerateResourceName()
 	assetResourceName := "inext_web_app_asset." + assetNameAttribute
 	profileResourceName := "inext_appsec_gateway_profile." + profileNameAttribute
-	behaviorsResourceName := "inext_behaviors." + behaviorsNameAttribute
+	trustedSourcesResourceName := "inext_trusted_sources." + trustedSourcesNameAttribute
 	practiceResourceName := "inext_web_app_practice." + practiceNameAttribute
 	logTriggerResourceName := "inext_log_trigger." + logTriggerNameAttribute
+	exceptionsResourceName := "inext_exceptions." + exceptionsNameAttribute
 	anotherProfileResourceName := "inext_appsec_gateway_profile." + anotherProfileNameAttribute
-	anotherBehaviorsResourceName := "inext_behaviors." + anotherBehaviorsNameAttribute
+	anotherTrustedSourcesResourceName := "inext_trusted_sources." + anotherTrustedSourcesNameAttribute
 	anotherLogTriggerResourceName := "inext_log_trigger." + anotherLogTriggerNameAttribute
+	anotherExceptionsResourceName := "inext_exceptions." + anotherExceptionsNameAttribute
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { acctest.PreCheck(t) },
 		ProviderFactories: acctest.ProviderFactories,
-		CheckDestroy: acctest.CheckResourceDestroyed([]string{assetResourceName, profileResourceName, behaviorsResourceName,
-			practiceResourceName, logTriggerResourceName, anotherProfileResourceName, anotherBehaviorsResourceName,
-			anotherLogTriggerResourceName}),
+		CheckDestroy: acctest.CheckResourceDestroyed([]string{assetResourceName, profileResourceName, trustedSourcesResourceName,
+			practiceResourceName, logTriggerResourceName, exceptionsResourceName, anotherProfileResourceName, anotherTrustedSourcesResourceName,
+			anotherLogTriggerResourceName, anotherExceptionsResourceName}),
 		Steps: []resource.TestStep{
 			{
-				Config: webApplicationAssetFullConfig(assetNameAttribute, profileNameAttribute, behaviorsNameAttribute,
-					practiceNameAttribute, logTriggerNameAttribute),
+				Config: webApplicationAssetFullConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
+					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
@@ -167,7 +173,7 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
-						"behaviors.#":                      "1",
+						"trusted_sources.#":                "1",
 						"class":                            "workload",
 						"category":                         "cloud",
 						"group":                            "",
@@ -198,9 +204,9 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
-				Config: webApplicationAssetUpdateFullConfig(assetNameAttribute, profileNameAttribute, behaviorsNameAttribute,
-					practiceNameAttribute, logTriggerNameAttribute, anotherProfileNameAttribute,
-					anotherBehaviorsNameAttribute, anotherLogTriggerNameAttribute),
+				Config: webApplicationAssetUpdateFullConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
+					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute, anotherProfileNameAttribute,
+					anotherTrustedSourcesNameAttribute, anotherLogTriggerNameAttribute, anotherExceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
@@ -232,7 +238,7 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
-						"behaviors.#":                      "1",
+						"trusted_sources.#":                "1",
 						"class":                            "workload",
 						"category":                         "cloud",
 						"group":                            "",
@@ -271,14 +277,14 @@ resource "inext_web_app_asset" %[1]q {
 `, name)
 }
 
-func webApplicationAssetUpdateBasicConfig(assetName, profileName, behaviorsName,
-	practiceName, logTriggerName string) string {
+func webApplicationAssetUpdateBasicConfig(assetName, profileName, trustedSourcesName,
+	practiceName, logTriggerName, exceptionsName string) string {
 	return fmt.Sprintf(`
 resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path3", "http://host/%[1]s/path2"]
 	profiles        = [inext_appsec_gateway_profile.%[2]s.id]
-	behaviors = [inext_behaviors.%[3]s.id]
+	trusted_sources = [inext_trusted_sources.%[3]s.id]
   	upstream_url    = "some url 5"
 	practice {
 		main_mode = "Prevent"
@@ -289,6 +295,7 @@ resource "inext_web_app_asset" %[1]q {
 		}
 		id         = inext_web_app_practice.%[4]s.id
 		triggers   = [inext_log_trigger.%[5]s.id]
+		exceptions = [inext_exceptions.%[6]s.id]
 	}
   	proxy_setting {
     	key   = "some key"
@@ -336,7 +343,7 @@ resource "inext_appsec_gateway_profile" %[2]q {
 	}
 }
 
-resource "inext_behaviors" %[3]q {
+resource "inext_trusted_sources" %[3]q {
 	name                = %[3]q
 	min_num_of_sources  = 10
 	sources_identifiers = ["identifier4", "identifier2", "identifier3"]
@@ -390,17 +397,27 @@ resource "inext_log_trigger" %[5]q {
 	web_url_query                    = true
 }
 
-`, assetName, profileName, behaviorsName, practiceName, logTriggerName)
+resource "inext_exceptions" %[6]q {
+	name = %[6]q
+	exception {
+		match {
+		  key = "hostName"
+		  value = ["www.google.com"]
+		}
+		action  = "drop"
+	}
+}
+`, assetName, profileName, trustedSourcesName, practiceName, logTriggerName, exceptionsName)
 }
 
 func webApplicationAssetFullConfig(assetName, profileName,
-	behaviorsName, practiceName, logTriggerName string) string {
+	trustedSourcesName, practiceName, logTriggerName, exceptionsName string) string {
 	return fmt.Sprintf(`
 resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path1", "http://host/%[1]s/path2"]
 	profiles        = [inext_appsec_gateway_profile.%[2]s.id]
-	behaviors = [inext_beahviors.%[3]s.id]
+	trusted_sources = [inext_trusted_sources.%[3]s.id]
 	upstream_url    = "some url 5"
 	practice {
 	  main_mode = "Learn"
@@ -411,6 +428,7 @@ resource "inext_web_app_asset" %[1]q {
 	  }
 	  id         = inext_web_app_practice.%[4]s.id
 	  triggers   = [inext_log_trigger.%[5]s.id]
+	  exceptions = [inext_exceptions.%[6]s.id]
 	}
 
 	proxy_setting {
@@ -459,7 +477,7 @@ resource "inext_appsec_gateway_profile" %[2]q {
 	}
 }
 
-resource "inext_behaviors" %[3]q {
+resource "inext_trusted_sources" %[3]q {
 	name                = %[3]q
 	min_num_of_sources  = 10
 	sources_identifiers = ["identifier4", "identifier2", "identifier3"]
@@ -513,18 +531,61 @@ resource "inext_log_trigger" %[5]q {
 	web_url_query                    = true
 }
 
-`, assetName, profileName, behaviorsName, practiceName, logTriggerName)
+resource "inext_exceptions" %[6]q {
+	name = %[6]q
+	exception {
+		match {
+			operator = "or"
+		  	operand {
+				  operator = "not-equals"
+				  key = "hostName"
+				  value = ["www.google.com"]
+		  	}
+		  	operand {
+				  operator = "in"
+				  key = "url"
+				  value = ["/login", "/login2"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["1.1.1.1/24"]
+		  	}
+		}
+		action  = "skip"
+		comment = "test comment"
+	}
+	exception {
+		match {
+			operator = "and"
+		  	operand {
+				  key = "hostName"
+				  value = ["www.facebook.com"]
+		  	}
+		  	operand {
+				  key = "url"
+				  value = ["/logout"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["2.2.2.2/24"]
+		  	}
+		}
+		action  = "drop"
+		comment = "test comment"
+	}
+}
+`, assetName, profileName, trustedSourcesName, practiceName, logTriggerName, exceptionsName)
 }
 
 func webApplicationAssetUpdateFullConfig(assetName, profileName,
-	behaviorsName, practiceName, logTriggerName,
-	anotherProfileName, anotherBehaviorsName, anotherLogTriggerName string) string {
+	trustedSourcesName, practiceName, logTriggerName, exceptionsName,
+	anotherProfileName, anotherTrustedSourcesName, anotherLogTriggerName, anotherExcpetionsName string) string {
 	return fmt.Sprintf(`
 resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path3", "http://host/%[1]s/path4"]
-	profiles        = [inext_appsec_gateway_profile.%[5]s.id]
-	behaviors = [inext_behaviors.%[7]s.id]
+	profiles        = [inext_appsec_gateway_profile.%[7]s.id]
+	trusted_sources = [inext_trusted_sources.%[8]s.id]
 	upstream_url    = "some url 10"
 	practice {
 	  main_mode = "Prevent"
@@ -534,7 +595,8 @@ resource "inext_web_app_asset" %[1]q {
 		Snort  = "AccordingToPractice"
 	  }
 	  id         = inext_web_app_practice.%[4]s.id
-	  triggers   = [inext_log_trigger.%[8]s.id]
+	  triggers   = [inext_log_trigger.%[9]s.id]
+	  exceptions = [inext_exceptions.%[10]s.id]
 	}
 
 	proxy_setting {
@@ -583,8 +645,8 @@ resource "inext_appsec_gateway_profile" %[2]q {
 	}
 }
 
-resource "inext_appsec_gateway_profile" %[6]q {
-	name                          = %[6]q
+resource "inext_appsec_gateway_profile" %[7]q {
+	name                          = %[7]q
 	profile_sub_type              = "Aws"
 	upgrade_mode                  = "Scheduled"
 	upgrade_time_schedule_type    = "DaysInWeek"
@@ -603,14 +665,14 @@ resource "inext_appsec_gateway_profile" %[6]q {
 	}
 }
 
-resource "inext_behaviors" %[3]q {
+resource "inext_trusted_sources" %[3]q {
 	name                = %[3]q
 	min_num_of_sources  = 10
 	sources_identifiers = ["identifier4", "identifier2", "identifier3"]
 }
 
-resource "inext_behaviors" %[7]q {
-	name                = %[7]q
+resource "inext_trusted_sources" %[8]q {
+	name                = %[8]q
 	min_num_of_sources  = 10
 	sources_identifiers = ["identifier4", "identifier2", "identifier3"]
 }
@@ -663,8 +725,8 @@ resource "inext_log_trigger" %[5]q {
 	web_url_query                    = true
 }
 
-resource "inext_log_trigger" %[8]q {
-	name                             = %[8]q
+resource "inext_log_trigger" %[9]q {
+	name                             = %[9]q
 	verbosity                        = "Extended" # enum of ["Minimal", "Standard", "Extended"]
 	access_control_allow_events      = true
 	access_control_drop_events       = true
@@ -689,6 +751,72 @@ resource "inext_log_trigger" %[8]q {
 	web_url_query                    = true
 }
 
-`, assetName, profileName, behaviorsName, practiceName, logTriggerName,
-		anotherProfileName, anotherBehaviorsName, anotherLogTriggerName)
+resource "inext_exceptions" %[6]q {
+	name = %[6]q
+	exception {
+		match {
+			operator = "or"
+		  	operand {
+				  operator = "not-equals"
+				  key = "hostName"
+				  value = ["www.google.com"]
+		  	}
+		  	operand {
+				  operator = "in"
+				  key = "url"
+				  value = ["/login", "/login2"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["1.1.1.1/24"]
+		  	}
+		}
+		action  = "skip"
+		comment = "test comment"
+	}
+	exception {
+		match {
+			operator = "and"
+		  	operand {
+				  key = "hostName"
+				  value = ["www.facebook.com"]
+		  	}
+		  	operand {
+				  key = "url"
+				  value = ["/logout"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["2.2.2.2/24"]
+		  	}
+		}
+		action  = "drop"
+		comment = "test comment"
+	}
+}
+
+resource "inext_exceptions" %[10]q {
+	name = %[10]q
+	exception {
+		match {
+			operator = "and"
+		  	operand {
+				  key = "hostName"
+				  value = ["www.facebook.com"]
+		  	}
+		  	operand {
+				  key = "url"
+				  value = ["/logout"]
+		  	}
+		  	operand {
+				  key = "sourceIdentifier"
+				  value = ["2.2.2.2/24"]
+		  	}
+		}
+		action  = "drop"
+		comment = "test comment"
+	}
+}
+`, assetName, profileName, trustedSourcesName, practiceName, logTriggerName, exceptionsName,
+		anotherProfileName, anotherTrustedSourcesName, anotherLogTriggerName, anotherExcpetionsName)
 }
