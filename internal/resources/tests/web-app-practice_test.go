@@ -247,6 +247,19 @@ func webAppPracticeBasicConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_web_app_practice" %[1]q {
 	name = %[1]q
+	web_attacks {
+		minimum_severity = "High
+		advanced_setting {
+			max_object_depth     = 40
+			body_size            = 1000000
+			url_size             = 32768
+			header_size          = 102400
+			illegal_http_methods = false
+			open_redirect        = "Disabled"
+			error_disclosure     = "Disabled"
+			csrf_protection      = "Disabled"
+		}
+	}
 }
 `, name)
 }

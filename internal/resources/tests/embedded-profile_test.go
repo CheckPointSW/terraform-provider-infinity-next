@@ -20,7 +20,8 @@ func TestAccEmbeddedProfileBasic(t *testing.T) {
 				Config: embeddedProfileBasicConfig(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name": nameAttribute,
+						"name":                 nameAttribute,
+						"max_number_of_agents": "10",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -145,6 +146,7 @@ func embeddedProfileBasicConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_embedded_profile" %[1]q {
 	name = %[1]q
+	max_number_of_agents = 10
 }
 `, name)
 }
