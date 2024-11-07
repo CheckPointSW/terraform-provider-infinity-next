@@ -90,6 +90,7 @@ func NewWebAPIPractice(ctx context.Context, c *api.Client, input models.CreateWe
 
 func mapToIPSInput(ipsMap map[string]any) models.IPSInput {
 	return models.IPSInput{
+		ID:                  ipsMap["id"].(string),
 		PerformanceImpact:   ipsMap["performance_impact"].(string),
 		SeverityLevel:       ipsMap["severity_level"].(string),
 		ProtectionsFromYear: "Y" + ipsMap["protections_from_year"].(string),
@@ -106,6 +107,7 @@ func mapToAdvancedSettingInput(advancedSettingMap map[string]any) models.Advance
 	}
 
 	return models.AdvancedSettingInput{
+		ID:                 advancedSettingMap["id"].(string),
 		BodySize:           advancedSettingMap["body_size"].(int),
 		URLSize:            advancedSettingMap["url_size"].(int),
 		HeaderSize:         advancedSettingMap["header_size"].(int),
@@ -122,6 +124,8 @@ func mapToAPIAttacksInput(apiAttacksMap map[string]any) models.APIAttacksInput {
 		res.AdvancedSetting = advancedSetting[0]
 	}
 
+	res.ID = apiAttacksMap["id"].(string)
+
 	return res
 }
 
@@ -134,6 +138,7 @@ func createSchemaValidationInput(schemaValidtionFromResourceData any) models.Sch
 
 	schemaValidation = models.NewFileSchemaEncode(schemaValidation.Filename, schemaValidation.Data)
 	return models.SchemaValidationInput{
+		ID:        schemaValidation.ID,
 		OASSchema: schemaValidation.Data,
 	}
 }
