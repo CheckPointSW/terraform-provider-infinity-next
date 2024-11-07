@@ -222,6 +222,16 @@ resource "inext_web_api_practice" %[1]q {
 		medium_confidence     = "Prevent"
 		low_confidence        = "Detect"
 	}
+	api_attacks {
+		minimum_severity = "High"
+		advanced_setting {
+			body_size            = 1000000
+			url_size             = 32768
+			header_size          = 102400
+			max_object_depth     = 40
+			illegal_http_methods = false
+		}
+	}
 }
 `, name)
 }
