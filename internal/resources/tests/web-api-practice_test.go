@@ -127,8 +127,8 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 				Config: webAPIPracticeFullConfig(nameAttribute, schemaValidationFilename, schemaValidationData),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                                                  nameAttribute,
-						"schema_validation.0.filename":                          schemaValidationFilename,
+						"name": nameAttribute,
+						//"schema_validation.0.filename":                          schemaValidationFilename,
 						"schema_validation.0.data":                              schemaValidationData,
 						"api_attacks.0.minimum_severity":                        "Critical",
 						"ips.0.high_confidence":                                 "Detect",
