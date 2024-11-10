@@ -139,6 +139,7 @@ func GetWebAPIPractice(ctx context.Context, c *api.Client, id string) (models.We
 					OasSchema {
 						data
 						name
+						size
 					}
 				}
 			}
