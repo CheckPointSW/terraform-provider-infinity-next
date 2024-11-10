@@ -162,7 +162,7 @@ func ResourceWebAPIPractice() *schema.Resource {
 				},
 			},
 			"schema_validation": {
-				Type:     schema.TypeMap,
+				Type:     schema.TypeSet,
 				Optional: true,
 				Computed: true,
 				MaxItems: 1,
