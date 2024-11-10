@@ -165,7 +165,7 @@ func ResourceWebAPIPractice() *schema.Resource {
 				Type:     schema.TypeMap,
 				Optional: true,
 				Computed: true,
-				//MaxItems: 1,
+				MaxItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
@@ -183,23 +183,6 @@ func ResourceWebAPIPractice() *schema.Resource {
 						},
 					},
 				},
-
-				//Elem: &schema.Resource{
-				//	Schema: map[string]*schema.Schema{
-				//		"id": {
-				//			Type:     schema.TypeString,
-				//			Computed: true,
-				//		},
-				//		"filename": {
-				//			Type:     schema.TypeString,
-				//			Required: true,
-				//		},
-				//		"data": {
-				//			Type:      schema.TypeString,
-				//			Sensitive: true,
-				//			Required:  true,
-				//		},
-				//	},
 			},
 		},
 	}
