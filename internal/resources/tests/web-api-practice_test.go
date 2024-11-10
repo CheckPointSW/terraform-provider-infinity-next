@@ -43,7 +43,7 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 						"ips.0.%":                        "7",
 						//"schema_validation.0.filename":   "",
 						"schema_validation.0.oas_schema.name": "",
-						"schema_validation.0.oas_schema.size": "",
+						//"schema_validation.0.oas_schema.size": "",
 						"schema_validation.0.oas_schema.data": "",
 						"schema_validation.0.oas_schema.%":    "",
 						"api_attacks.#":                       "1",
@@ -263,8 +263,10 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		filename = %[2]q
-		data     = %[3]q
+		oas_schema {
+			name = %[2]q
+			data = %[3]q
+		}
 	}
 }
 `, name, filename, data)
@@ -293,8 +295,10 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		filename = %[2]q
-		data     = %[3]q
+		oas_schema {
+			name = %[2]q
+			data = %[3]q
+		}
 	}
 }
 `, name, filename, data)
@@ -323,8 +327,10 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		filename = %[2]q
-		data     = %[3]q
+		oas_schema {
+			name = %[2]q
+			data = %[3]q
+		}
 	}
 }
 `, name, filename, data)
