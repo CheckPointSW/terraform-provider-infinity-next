@@ -88,7 +88,7 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 		return fmt.Errorf("failed to convert FileSchema struct to map. Error: %w", err)
 	}
 
-	d.Set("schema_validation", []map[string]any{schemaValidationMap})
+	d.Set("schema_validation", schemaValidationMap)
 
 	return nil
 }

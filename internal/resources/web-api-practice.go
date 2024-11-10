@@ -162,26 +162,12 @@ func ResourceWebAPIPractice() *schema.Resource {
 				},
 			},
 			"schema_validation": {
-				Type:     schema.TypeSet,
+				Type:     schema.TypeMap,
 				Optional: true,
 				Computed: true,
 				MaxItems: 1,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"filename": {
-							Type:     schema.TypeString,
-							Required: true,
-						},
-						"data": {
-							Type:      schema.TypeString,
-							Sensitive: true,
-							Required:  true,
-						},
-					},
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
 				},
 			},
 		},
