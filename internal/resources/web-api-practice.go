@@ -182,7 +182,9 @@ func ResourceWebAPIPractice() *schema.Resource {
 						//	Required:  true,
 						//},
 						"oas_schema": {
-							Type: schema.TypeSet,
+							Type:     schema.TypeSet,
+							Computed: true,
+							Optional: true,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"data": {
