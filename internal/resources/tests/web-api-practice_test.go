@@ -41,27 +41,27 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 						"ips.0.low_confidence":           "Detect",
 						"ips.0.performance_impact":       "MediumOrLower",
 						"ips.0.%":                        "7",
-						//"schema_validation.0.filename":   "",
+						"schema_validation.0.filename":   "",
 						//"schema_validation.0.oas_schema.name": "",
 						//"schema_validation.0.oas_schema.size": "",
 						//"schema_validation.0.oas_schema.data": "",
 						//"schema_validation.0.oas_schema.%":    "",
-						"api_attacks.#":        "1",
-						"ips.0.severity_level": "MediumOrAbove",
-						//"schema_validation.0.data":       "",
-						"practice_type":           "WebAPI",
-						"default":                 "false",
-						"ips.0.medium_confidence": "Prevent",
-						"schema_validation.0.%":   "2",
-						"category":                "ThreatPrevention",
-						"api_attacks.0.%":         "3",
-						"ips.0.high_confidence":   "Prevent",
-						//"api_attacks.0.advanced_setting.0.body_size":            "1000000",
-						//"api_attacks.0.advanced_setting.0.url_size":             "32768",
-						//"api_attacks.0.advanced_setting.0.header_size":          "102400",
-						//"api_attacks.0.advanced_setting.0.%":                    "6",
-						//"api_attacks.0.advanced_setting.0.max_object_depth":     "40",
-						//"api_attacks.0.advanced_setting.0.illegal_http_methods": "false",
+						"api_attacks.#":            "1",
+						"ips.0.severity_level":     "MediumOrAbove",
+						"schema_validation.0.data": "",
+						"practice_type":            "WebAPI",
+						"default":                  "false",
+						"ips.0.medium_confidence":  "Prevent",
+						"schema_validation.0.%":    "3",
+						"category":                 "ThreatPrevention",
+						"api_attacks.0.%":          "3",
+						"ips.0.high_confidence":    "Prevent",
+						"api_attacks.0.advanced_setting.0.body_size":            "1000000",
+						"api_attacks.0.advanced_setting.0.url_size":             "32768",
+						"api_attacks.0.advanced_setting.0.header_size":          "102400",
+						"api_attacks.0.advanced_setting.0.%":                    "6",
+						"api_attacks.0.advanced_setting.0.max_object_depth":     "40",
+						"api_attacks.0.advanced_setting.0.illegal_http_methods": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 						resource.TestCheckResourceAttrSet(resourceName, "schema_validation.0.id"),
@@ -131,21 +131,21 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 				Config: webAPIPracticeFullConfig(nameAttribute, schemaValidationFilename, schemaValidationData),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name": nameAttribute,
-						//"schema_validation.0.filename":                          schemaValidationFilename,
-						"schema_validation.0.data":       schemaValidationData,
-						"api_attacks.0.minimum_severity": "Critical",
-						"ips.0.high_confidence":          "Detect",
-						"practice_type":                  "WebAPI",
-						//"api_attacks.0.advanced_setting.0.url_size":             "1000",
-						//"api_attacks.0.advanced_setting.0.%":                    "6",
-						"ips.0.medium_confidence":  "Detect",
-						"ips.0.performance_impact": "LowOrLower",
-						//"api_attacks.0.advanced_setting.0.header_size":          "1000",
-						//"api_attacks.0.advanced_setting.0.illegal_http_methods": "true",
-						//"api_attacks.0.advanced_setting.0.body_size":            "1000",
-						"schema_validation.#": "1",
-						//"api_attacks.0.advanced_setting.0.max_object_depth":     "1000",
+						"name":                                                  nameAttribute,
+						"schema_validation.0.filename":                          schemaValidationFilename,
+						"schema_validation.0.data":                              schemaValidationData,
+						"api_attacks.0.minimum_severity":                        "Critical",
+						"ips.0.high_confidence":                                 "Detect",
+						"practice_type":                                         "WebAPI",
+						"api_attacks.0.advanced_setting.0.url_size":             "1000",
+						"api_attacks.0.advanced_setting.0.%":                    "6",
+						"ips.0.medium_confidence":                               "Detect",
+						"ips.0.performance_impact":                              "LowOrLower",
+						"api_attacks.0.advanced_setting.0.header_size":          "1000",
+						"api_attacks.0.advanced_setting.0.illegal_http_methods": "true",
+						"api_attacks.0.advanced_setting.0.body_size":            "1000",
+						"schema_validation.#":                                   "1",
+						"api_attacks.0.advanced_setting.0.max_object_depth":     "1000",
 						"default":                          "false",
 						"api_attacks.0.advanced_setting.#": "1",
 						"category":                         "ThreatPrevention",
@@ -263,10 +263,8 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		oas_schema {
-			name = %[2]q
-			data = %[3]q
-		}
+		filename = %[2]q
+		data     = %[3]q
 	}
 }
 `, name, filename, data)
@@ -295,10 +293,8 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		oas_schema {
-			name = %[2]q
-			data = %[3]q
-		}
+		filename = %[2]q
+		data     = %[3]q
 	}
 }
 `, name, filename, data)
@@ -327,10 +323,8 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		oas_schema {
-			name = %[2]q
-			data = %[3]q
-		}
+		filename = %[2]q
+		data     = %[3]q
 	}
 }
 `, name, filename, data)

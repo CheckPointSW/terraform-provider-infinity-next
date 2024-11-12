@@ -369,13 +369,6 @@ resource "inext_web_api_practice" %[4]q {
 		illegal_http_methods = true
 	  }
 	}
-	schema_validation {
-		oas_schema {
-			data = "data"
-			name = "name"
-			size = 100
-		}
-	}
 }
 
 resource "inext_log_trigger" %[5]q {
@@ -509,13 +502,6 @@ resource "inext_web_api_practice" %[4]q {
 		max_object_depth     = 1000
 		illegal_http_methods = true
 	  }
-	}
-	schema_validation {
-		oas_schema {
-			data = "data"
-			name = "name"
-			size = 100
-		}
 	}
 }
 
@@ -710,13 +696,6 @@ resource "inext_web_api_practice" %[4]q {
 		max_object_depth     = 1000
 		illegal_http_methods = true
 	  }
-	}
-	schema_validation {
-		oas_schema {	
-			data = "data"
-			name = "name"
-			size = 100
-		}
 	}
 }
 

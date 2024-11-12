@@ -48,16 +48,16 @@ type FileSchema struct {
 	Data     string `json:"data"`
 }
 
-type OASSchema struct {
-	Data string `json:"data"`
-	Name string `json:"name"`
-	Size uint64 `json:"size"`
-}
-
-type SchemaValidationSchema struct {
-	ID        string    `json:"id"`
-	OASSchema OASSchema `json:"OasSchema"`
-}
+//type OASSchema struct {
+//	Data string `json:"data"`
+//	Name string `json:"name"`
+//	Size uint64 `json:"size"`
+//}
+//
+//type SchemaValidationSchema struct {
+//	ID        string    `json:"id"`
+//	OASSchema OASSchema `json:"OasSchema"`
+//}
 
 func NewFileSchemaEncode(filename, fileData string) FileSchema {
 	b64Data := base64.StdEncoding.EncodeToString([]byte(fileData))

@@ -25,7 +25,7 @@ func CreateWebAPIPracticeInputFromResourceData(d *schema.ResourceData) (models.C
 		res.APIAttacks = apiAttacksSlice[0]
 	}
 
-	schemaValidationSlice := utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "schema_validation"), mapToSchemaValidationInput)
+	schemaValidationSlice := utils.Map(utils.MustResourceDataCollectionToSlice[any](d, "schema_validation"), createSchemaValidationInput)
 	if len(schemaValidationSlice) > 0 {
 		res.SchemaValidation = schemaValidationSlice[0]
 	}
@@ -70,7 +70,6 @@ func NewWebAPIPractice(ctx context.Context, c *api.Client, input models.CreateWe
 								OasSchema {
 									data
 									name
-									size
 								}
 							}
 						}
@@ -90,54 +89,54 @@ func NewWebAPIPractice(ctx context.Context, c *api.Client, input models.CreateWe
 }
 
 func mapToIPSInput(ipsMap map[string]any) models.IPSInput {
-	var ret models.IPSInput
-	ret.PerformanceImpact = ipsMap["performance_impact"].(string)
-	ret.SeverityLevel = ipsMap["severity_level"].(string)
-	ret.ProtectionsFromYear = "Y" + ipsMap["protections_from_year"].(string)
-	ret.HighConfidence = ipsMap["high_confidence"].(string)
-	ret.MediumConfidence = ipsMap["medium_confidence"].(string)
-	ret.LowConfidence = ipsMap["low_confidence"].(string)
-	if id, ok := ipsMap["id"]; ok {
-		ret.ID = id.(string)
-	}
-
-	return ret
-	//return models.IPSInput{
-	//	PerformanceImpact:   ipsMap["performance_impact"].(string),
-	//	SeverityLevel:       ipsMap["severity_level"].(string),
-	//	ProtectionsFromYear: "Y" + ipsMap["protections_from_year"].(string),
-	//	HighConfidence:      ipsMap["high_confidence"].(string),
-	//	MediumConfidence:    ipsMap["medium_confidence"].(string),
-	//	LowConfidence:       ipsMap["low_confidence"].(string),
+	//var ret models.IPSInput
+	//ret.PerformanceImpact = ipsMap["performance_impact"].(string)
+	//ret.SeverityLevel = ipsMap["severity_level"].(string)
+	//ret.ProtectionsFromYear = "Y" + ipsMap["protections_from_year"].(string)
+	//ret.HighConfidence = ipsMap["high_confidence"].(string)
+	//ret.MediumConfidence = ipsMap["medium_confidence"].(string)
+	//ret.LowConfidence = ipsMap["low_confidence"].(string)
+	//if id, ok := ipsMap["id"]; ok {
+	//	ret.ID = id.(string)
 	//}
+	//
+	//return ret
+	return models.IPSInput{
+		PerformanceImpact:   ipsMap["performance_impact"].(string),
+		SeverityLevel:       ipsMap["severity_level"].(string),
+		ProtectionsFromYear: "Y" + ipsMap["protections_from_year"].(string),
+		HighConfidence:      ipsMap["high_confidence"].(string),
+		MediumConfidence:    ipsMap["medium_confidence"].(string),
+		LowConfidence:       ipsMap["low_confidence"].(string),
+	}
 }
 
 func mapToAdvancedSettingInput(advancedSettingMap map[string]any) models.AdvancedSettingInput {
-	var ret models.AdvancedSettingInput
-
+	//var ret models.AdvancedSettingInput
+	//
 	illegalHttpMethods := "No"
 	if advancedSettingMap["illegal_http_methods"].(bool) {
 		illegalHttpMethods = "Yes"
 	}
-
-	ret.BodySize = advancedSettingMap["body_size"].(int)
-	ret.URLSize = advancedSettingMap["url_size"].(int)
-	ret.HeaderSize = advancedSettingMap["header_size"].(int)
-	ret.MaxObjectDepth = advancedSettingMap["max_object_depth"].(int)
-	ret.IllegalHttpMethods = illegalHttpMethods
-	if id, ok := advancedSettingMap["id"]; ok {
-		ret.ID = id.(string)
-	}
-
-	return ret
-
-	//return models.AdvancedSettingInput{
-	//	BodySize:           advancedSettingMap["body_size"].(int),
-	//	URLSize:            advancedSettingMap["url_size"].(int),
-	//	HeaderSize:         advancedSettingMap["header_size"].(int),
-	//	MaxObjectDepth:     advancedSettingMap["max_object_depth"].(int),
-	//	IllegalHttpMethods: illegalHttpMethods,
+	//
+	//ret.BodySize = advancedSettingMap["body_size"].(int)
+	//ret.URLSize = advancedSettingMap["url_size"].(int)
+	//ret.HeaderSize = advancedSettingMap["header_size"].(int)
+	//ret.MaxObjectDepth = advancedSettingMap["max_object_depth"].(int)
+	//ret.IllegalHttpMethods = illegalHttpMethods
+	//if id, ok := advancedSettingMap["id"]; ok {
+	//	ret.ID = id.(string)
 	//}
+	//
+	//return ret
+
+	return models.AdvancedSettingInput{
+		BodySize:           advancedSettingMap["body_size"].(int),
+		URLSize:            advancedSettingMap["url_size"].(int),
+		HeaderSize:         advancedSettingMap["header_size"].(int),
+		MaxObjectDepth:     advancedSettingMap["max_object_depth"].(int),
+		IllegalHttpMethods: illegalHttpMethods,
+	}
 }
 
 func mapToAPIAttacksInput(apiAttacksMap map[string]any) models.APIAttacksInput {
@@ -151,27 +150,27 @@ func mapToAPIAttacksInput(apiAttacksMap map[string]any) models.APIAttacksInput {
 	return res
 }
 
-func mapToSchemaValidationInput(schemaValidationMap map[string]any) models.SchemaValidationInput {
-	var ret models.SchemaValidationInput
-
-	if id, ok := schemaValidationMap["id"]; ok {
-		ret.ID = id.(string)
-	}
-
-	ret.OASSchema = schemaValidationMap["OasSchema"].(string)
-
-	return ret
-}
-
-//func createSchemaValidationInput(schemaValidtionFromResourceData any) models.SchemaValidationInput {
-//	schemaValidation, err := utils.UnmarshalAs[models.FileSchema](schemaValidtionFromResourceData)
-//	if err != nil {
-//		fmt.Printf("Failed to convert input schema validation to FileSchema struct. Error: %+v", err)
-//		return models.SchemaValidationInput{}
+//func mapToSchemaValidationInput(schemaValidationMap map[string]any) models.SchemaValidationInput {
+//	var ret models.SchemaValidationInput
+//
+//	if id, ok := schemaValidationMap["id"]; ok {
+//		ret.ID = id.(string)
 //	}
 //
-//	schemaValidation = models.NewFileSchemaEncode(schemaValidation.Filename, schemaValidation.Data)
-//	return models.SchemaValidationInput{
-//		OASSchema: schemaValidation.Data,
-//	}
+//	ret.OASSchema = schemaValidationMap["OasSchema"].(string)
+//
+//	return ret
 //}
+
+func createSchemaValidationInput(schemaValidtionFromResourceData any) models.SchemaValidationInput {
+	schemaValidation, err := utils.UnmarshalAs[models.FileSchema](schemaValidtionFromResourceData)
+	if err != nil {
+		fmt.Printf("Failed to convert input schema validation to FileSchema struct. Error: %+v", err)
+		return models.SchemaValidationInput{}
+	}
+
+	schemaValidation = models.NewFileSchemaEncode(schemaValidation.Filename, schemaValidation.Data)
+	return models.SchemaValidationInput{
+		OASSchema: schemaValidation.Data,
+	}
+}

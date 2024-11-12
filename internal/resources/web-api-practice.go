@@ -172,37 +172,37 @@ func ResourceWebAPIPractice() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
-						//"filename": {
-						//	Type:     schema.TypeString,
-						//	Required: true,
-						//},
-						//"data": {
-						//	Type:      schema.TypeString,
-						//	Sensitive: true,
-						//	Required:  true,
-						//},
-						"oas_schema": {
-							Type:     schema.TypeSet,
-							Computed: true,
-							Optional: true,
-							Elem: &schema.Resource{
-								Schema: map[string]*schema.Schema{
-									"data": {
-										Type:      schema.TypeString,
-										Sensitive: true,
-										Required:  true,
-									},
-									"name": {
-										Type:     schema.TypeString,
-										Required: true,
-									},
-									"size": {
-										Type:     schema.TypeInt,
-										Required: true,
-									},
-								},
-							},
+						"filename": {
+							Type:     schema.TypeString,
+							Required: true,
 						},
+						"data": {
+							Type:      schema.TypeString,
+							Sensitive: true,
+							Required:  true,
+						},
+						//"oas_schema": {
+						//	Type:     schema.TypeSet,
+						//	Computed: true,
+						//	Optional: true,
+						//	Elem: &schema.Resource{
+						//		Schema: map[string]*schema.Schema{
+						//			"data": {
+						//				Type:      schema.TypeString,
+						//				Sensitive: true,
+						//				Required:  true,
+						//			},
+						//			"name": {
+						//				Type:     schema.TypeString,
+						//				Required: true,
+						//			},
+						//			"size": {
+						//				Type:     schema.TypeInt,
+						//				Required: true,
+						//			},
+						//		},
+						//	},
+						//},
 					},
 				},
 			},
