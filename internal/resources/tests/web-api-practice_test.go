@@ -236,7 +236,7 @@ resource "inext_web_api_practice" %[1]q {
 			illegal_http_methods = false
 		}
 	}
-	Schema_validation {
+	schema_validation {
 		filename = ""
 		data     = ""
 	}
