@@ -67,10 +67,8 @@ func NewWebAPIPractice(ctx context.Context, c *api.Client, input models.CreateWe
 							}
 							SchemaValidation {
 								id
-								OasSchema {
-									data
-									name
-								}
+								filename
+								data
 							}
 						}
 					}
