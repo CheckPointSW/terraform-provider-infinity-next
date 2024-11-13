@@ -3,7 +3,6 @@ package resources
 import (
 	"context"
 	"fmt"
-
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	webapipractice "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-practice"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
@@ -230,7 +229,7 @@ func resourceWebAPIPracticeCreate(ctx context.Context, d *schema.ResourceData, m
 		return utils.DiagError("unable to perform WebAPIPractice Create", err, diags)
 	}
 
-	fmt.Printf("Created WebAPIPractice: %+v", practice)
+	fmt.Printf("Created new WebAPIPractice: %+v", practice)
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
