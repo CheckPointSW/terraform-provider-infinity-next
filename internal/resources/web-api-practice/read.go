@@ -96,7 +96,7 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 
 	schemaValidationMap, err := utils.UnmarshalAs[map[string]any](schemaValidation)
 	if err != nil {
-		return fmt.Errorf("failed to convert FileSchema struct to map. Error: %w", err)
+		return fmt.Errorf("failed to convert SchemaValidation struct to map. Error: %w", err)
 	}
 
 	d.Set("schema_validation", []map[string]any{schemaValidationMap})
@@ -136,8 +136,10 @@ func GetWebAPIPractice(ctx context.Context, c *api.Client, id string) (models.We
 				}
 				SchemaValidation {
 					id
-					filename
-					data
+					OasSchema {
+						data
+						name
+					}
 				}
 			}
 		}

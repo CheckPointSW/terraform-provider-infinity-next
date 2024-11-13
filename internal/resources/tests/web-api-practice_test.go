@@ -237,8 +237,8 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		filename = ""
-		data     = ""
+		filename = "filename"
+		data     = "data"
 	}
 }
 `, name)
