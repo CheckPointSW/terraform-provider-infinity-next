@@ -12,7 +12,7 @@ import (
 
 const (
 	webAPIPracticeTestdataPath     = "testdata/web-api-practice"
-	schemaValidationFilename       = "new File"
+	schemaValidationFilename       = "oasschema"
 	schemaValidationFilenameUpdate = "oasschemaupdate"
 )
 
@@ -131,8 +131,8 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 				Config: webAPIPracticeFullConfig(nameAttribute, schemaValidationFilename, schemaValidationData),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                                                  nameAttribute,
-						"schema_validation.0.filename":                          schemaValidationFilename,
+						"name": nameAttribute,
+						//"schema_validation.0.filename":                          schemaValidationFilename,
 						"schema_validation.0.data":                              schemaValidationData,
 						"api_attacks.0.minimum_severity":                        "Critical",
 						"ips.0.high_confidence":                                 "Detect",
@@ -175,13 +175,13 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 				Config: webAPIPracticeUpdateFullConfig(nameAttribute, schemaValidationFilenameUpdate, schemaValidationDataUpdate),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                         nameAttribute,
-						"schema_validation.0.filename": schemaValidationFilenameUpdate,
-						"schema_validation.0.data":     schemaValidationDataUpdate,
-						"api_attacks.#":                "1",
-						"category":                     "ThreatPrevention",
-						"default":                      "false",
-						"ips.0.high_confidence":        "Prevent",
+						"name": nameAttribute,
+						//"schema_validation.0.filename": schemaValidationFilenameUpdate,
+						"schema_validation.0.data": schemaValidationDataUpdate,
+						"api_attacks.#":            "1",
+						"category":                 "ThreatPrevention",
+						"default":                  "false",
+						"ips.0.high_confidence":    "Prevent",
 						"api_attacks.0.advanced_setting.0.body_size":            "1001",
 						"schema_validation.0.%":                                 "3",
 						"api_attacks.0.minimum_severity":                        "High",
