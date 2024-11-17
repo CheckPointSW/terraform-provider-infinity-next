@@ -305,8 +305,8 @@ resource "inext_web_app_practice" %[1]q {
 		performance_impact    = "LowOrLower"
 		severity_level        = "LowOrAbove"
 		protections_from_year = "2016"
-		high_confidence       = "Detect"
-		medium_confidence     = "Detect"
+		high_confidence       = "AccordingToPractice"
+		medium_confidence     = "AccordingToPractice"
 		low_confidence        = "Detect"
 	}
 	web_attacks {

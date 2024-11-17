@@ -222,8 +222,8 @@ resource "inext_web_api_practice" %[1]q {
 		performance_impact    = "MediumOrLower"
 		severity_level        = "MediumOrAbove"
 		protections_from_year = "2016"
-		high_confidence       = "Prevent"
-		medium_confidence     = "Prevent"
+		high_confidence       = "AccordingToPractice"
+		medium_confidence     = "AccordingToPractice"
 		low_confidence        = "Detect"
 	}
 	api_attacks {
@@ -278,8 +278,8 @@ resource "inext_web_api_practice" %[1]q {
 		performance_impact    = "LowOrLower"   
 		severity_level        = "LowOrAbove"
 		protections_from_year = "2016"      
-		high_confidence       = "Detect"    
-		medium_confidence     = "Detect"    
+		high_confidence       = "AccordingToPractice"    
+		medium_confidence     = "AccordingToPractice"    
 		low_confidence        = "Detect" 
 	}
 	api_attacks {
