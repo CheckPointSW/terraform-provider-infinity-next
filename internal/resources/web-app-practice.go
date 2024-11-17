@@ -11,7 +11,37 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+const (
+	severityLevelLowOrAbove    = "LowOrAbove"
+	severityLevelMediumOrAbove = "MediumOrAbove"
+	severityLevelHighOrAbove   = "HighOrAbove"
+	severityLevelCritical      = "Critical"
+
+	fileSecurityModeDetect              = "Detect"
+	fileSecurityModePrevent             = "Prevent"
+	fileSecurityModeInactive            = "Inactive"
+	fileSecurityModeAccordingToPractice = "AccordingToPractice"
+
+	fileSizeUnitsBytes = "Bytes"
+	fileSizeUnitsKB    = "KB"
+	fileSizeUnitsMB    = "MB"
+	fileSizeUnitsGB    = "GB"
+
+	waapModeDisabled = "Disabled"
+	waapModeLearn    = "Learn"
+	waapModePrevent  = "Prevent"
+	waapModePractice = "AccordingToPractice"
+)
+
 func ResourceWebAppPractice() *schema.Resource {
+	validationSeverityLevel := validation.ToDiagFunc(
+		validation.StringInSlice([]string{severityLevelLowOrAbove, severityLevelMediumOrAbove, severityLevelHighOrAbove, severityLevelCritical}, false))
+	validationFileSecurityMode := validation.ToDiagFunc(
+		validation.StringInSlice([]string{fileSecurityModeDetect, fileSecurityModePrevent, fileSecurityModeInactive, fileSecurityModeAccordingToPractice}, false))
+	//validationFileSizeUnits := validation.ToDiagFunc(
+	//	validation.StringInSlice([]string{fileSizeUnitsBytes, fileSizeUnitsKB, fileSizeUnitsMB, fileSizeUnitsGB}, false))
+	validationWAAPMode := validation.ToDiagFunc(
+		validation.StringInSlice([]string{waapModeDisabled, waapModeLearn, waapModePrevent, waapModePractice}, false))
 	return &schema.Resource{
 		Description: "Web Application Practice",
 
@@ -60,17 +90,17 @@ func ResourceWebAppPractice() *schema.Resource {
 						},
 						"performance_impact": {
 							Type:             schema.TypeString,
-							Description:      "The performance impact: LowOrLower, MediumOrLower or HighOrLower",
+							Description:      "The performance impact: VeryLow, LowOrLower, MediumOrLower or HighOrLower",
 							Default:          "MediumOrLower",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"LowOrLower", "MediumOrLower", "HighOrLower"}, false)),
+							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"VeryLow", "LowOrLower", "MediumOrLower", "HighOrLower"}, false)),
 						},
 						"severity_level": {
 							Type:             schema.TypeString,
 							Description:      "The severity level: LowOrAbove, MediumOrAbove, HighOrAbove or Critical",
 							Default:          "MediumOrAbove",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"LowOrAbove", "MediumOrAbove", "HighOrAbove", "Critical"}, false)),
+							ValidateDiagFunc: validationSeverityLevel,
 						},
 						"protections_from_year": {
 							Type:        schema.TypeString,
@@ -80,24 +110,24 @@ func ResourceWebAppPractice() *schema.Resource {
 						},
 						"high_confidence": {
 							Type:             schema.TypeString,
-							Description:      "Detect, Prevent or Inactive",
-							Default:          "Prevent",
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Detect", "Prevent", "Inactive"}, false)),
+							ValidateDiagFunc: validationFileSecurityMode,
 						},
 						"medium_confidence": {
 							Type:             schema.TypeString,
-							Description:      "Detect, Prevent or Inactive",
-							Default:          "Prevent",
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Detect", "Prevent", "Inactive"}, false)),
+							ValidateDiagFunc: validationFileSecurityMode,
 						},
 						"low_confidence": {
 							Type:             schema.TypeString,
-							Description:      "Detect, Prevent or Inactive",
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
 							Default:          "Detect",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Detect", "Prevent", "Inactive"}, false)),
+							ValidateDiagFunc: validationFileSecurityMode,
 						},
 						// "advanced_policy": {
 						// 	Type:     schema.TypeSet,
@@ -168,21 +198,21 @@ func ResourceWebAppPractice() *schema.Resource {
 										Description:      "Prevent, AccordingToPractice, Disabled or Learn",
 										Default:          "Disabled",
 										Optional:         true,
-										ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Disabled", "Learn", "Prevent", "AccordingToPractice"}, false)),
+										ValidateDiagFunc: validationWAAPMode,
 									},
 									"open_redirect": {
 										Type:             schema.TypeString,
 										Description:      "Prevent, AccordingToPractice, Disabled or Learn",
 										Default:          "Disabled",
 										Optional:         true,
-										ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Disabled", "Learn", "Prevent", "AccordingToPractice"}, false)),
+										ValidateDiagFunc: validationWAAPMode,
 									},
 									"error_disclosure": {
 										Type:             schema.TypeString,
 										Description:      "Prevent, AccordingToPractice, Disabled or Learn",
 										Default:          "Disabled",
 										Optional:         true,
-										ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Disabled", "Learn", "Prevent", "AccordingToPractice"}, false)),
+										ValidateDiagFunc: validationWAAPMode,
 									},
 									"body_size": {
 										Type:     schema.TypeInt,
