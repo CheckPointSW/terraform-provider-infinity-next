@@ -11,8 +11,9 @@ import (
 )
 
 const (
-	webAPIPracticeTestdataPath     = "testdata/web-api-practice"
-	schemaValidationFilename       = "oasschema"
+	webAPIPracticeTestdataPath = "testdata/web-api-practice"
+	//schemaValidationFilename       = "oasschema"
+	schemaValidationFilename       = "new File"
 	schemaValidationFilenameUpdate = "oasschemaupdate"
 )
 
