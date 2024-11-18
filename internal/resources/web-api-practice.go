@@ -192,7 +192,6 @@ func ResourceWebAPIPractice() *schema.Resource {
 						"size": {
 							Type:     schema.TypeInt,
 							Required: true,
-							Computed: true,
 							Default:  0,
 						},
 						"is_file_exist": {
