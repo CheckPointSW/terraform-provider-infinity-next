@@ -77,22 +77,23 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 
 		decodedData = string(bDecodedData)
 	}
-	schemaValidation := models.FileSchema{
-		ID:       practice.SchemaValidation.ID,
-		Filename: practice.SchemaValidation.OASSchema.Name,
-		Data:     decodedData,
+	//schemaValidation := models.FileSchema{
+	//	ID:       practice.SchemaValidation.ID,
+	//	Filename: practice.SchemaValidation.OASSchema.Name,
+	//	Data:     decodedData,
+	//}
+
+	oasSchema := models.OASSchema{
+		Data:        decodedData,
+		Name:        practice.SchemaValidation.OASSchema.Name,
+		Size:        practice.SchemaValidation.OASSchema.Size,
+		IsFileExist: practice.SchemaValidation.OASSchema.IsFileExist,
 	}
 
-	//oasSchema := models.OASSchema{
-	//	Data: decodedData,
-	//	Name: practice.SchemaValidation.OASSchema.Name,
-	//	Size: practice.SchemaValidation.OASSchema.Size,
-	//}
-	//
-	//schemaValidation := models.SchemaValidationSchema{
-	//	ID:        practice.SchemaValidation.ID,
-	//	OASSchema: oasSchema,
-	//}
+	schemaValidation := models.SchemaValidationSchema{
+		ID:        practice.SchemaValidation.ID,
+		OASSchema: oasSchema,
+	}
 
 	schemaValidationMap, err := utils.UnmarshalAs[map[string]any](schemaValidation)
 	if err != nil {

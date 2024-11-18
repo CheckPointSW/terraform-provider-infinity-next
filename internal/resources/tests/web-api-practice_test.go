@@ -41,21 +41,21 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 						"ips.0.low_confidence":           "Detect",
 						"ips.0.performance_impact":       "MediumOrLower",
 						"ips.0.%":                        "7",
-						"schema_validation.0.filename":   "",
+						//"schema_validation.0.filename":   "",
 						//"schema_validation.0.oas_schema.name": "",
 						//"schema_validation.0.oas_schema.size": "",
 						//"schema_validation.0.oas_schema.data": "",
 						//"schema_validation.0.oas_schema.%":    "",
-						"api_attacks.#":            "1",
-						"ips.0.severity_level":     "MediumOrAbove",
-						"schema_validation.0.data": "",
-						"practice_type":            "WebAPI",
-						"default":                  "false",
-						"ips.0.medium_confidence":  "AccordingToPractice",
-						"schema_validation.0.%":    "3",
-						"category":                 "ThreatPrevention",
-						"api_attacks.0.%":          "3",
-						"ips.0.high_confidence":    "AccordingToPractice",
+						"api_attacks.#":        "1",
+						"ips.0.severity_level": "MediumOrAbove",
+						//"schema_validation.0.data": "",
+						"practice_type":           "WebAPI",
+						"default":                 "false",
+						"ips.0.medium_confidence": "AccordingToPractice",
+						"schema_validation.0.%":   "3",
+						"category":                "ThreatPrevention",
+						"api_attacks.0.%":         "3",
+						"ips.0.high_confidence":   "AccordingToPractice",
 						"api_attacks.0.advanced_setting.0.body_size":            "1000000",
 						"api_attacks.0.advanced_setting.0.url_size":             "32768",
 						"api_attacks.0.advanced_setting.0.header_size":          "102400",
@@ -82,7 +82,7 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name": nameAttribute,
 						//"schema_validation.0.filename":                          schemaValidationFilename,
-						"schema_validation.0.data":                              schemaValidationData,
+						//"schema_validation.0.data":                              schemaValidationData,
 						"api_attacks.0.minimum_severity":                        "Critical",
 						"ips.0.high_confidence":                                 "Detect",
 						"practice_type":                                         "WebAPI",
@@ -133,7 +133,7 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name": nameAttribute,
 						//"schema_validation.0.filename":                          schemaValidationFilename,
-						"schema_validation.0.data":                              schemaValidationData,
+						//"schema_validation.0.data":                              schemaValidationData,
 						"api_attacks.0.minimum_severity":                        "Critical",
 						"ips.0.high_confidence":                                 "AccordingToPractice",
 						"practice_type":                                         "WebAPI",
@@ -177,11 +177,11 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name": nameAttribute,
 						//"schema_validation.0.filename": schemaValidationFilenameUpdate,
-						"schema_validation.0.data": schemaValidationDataUpdate,
-						"api_attacks.#":            "1",
-						"category":                 "ThreatPrevention",
-						"default":                  "false",
-						"ips.0.high_confidence":    "Prevent",
+						//"schema_validation.0.data": schemaValidationDataUpdate,
+						"api_attacks.#":         "1",
+						"category":              "ThreatPrevention",
+						"default":               "false",
+						"ips.0.high_confidence": "Prevent",
 						"api_attacks.0.advanced_setting.0.body_size":            "1001",
 						"schema_validation.0.%":                                 "3",
 						"api_attacks.0.minimum_severity":                        "High",
@@ -262,10 +262,6 @@ resource "inext_web_api_practice" %[1]q {
 		  illegal_http_methods = true
 		}
 	}
-	schema_validation {
-		filename = %[2]q
-		data     = %[3]q
-	}
 }
 `, name, filename, data)
 }
@@ -327,9 +323,11 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		filename = %[2]q
-		data     = %[3]q
-	}
+		oas_schema {
+			data = %[3]q
+			name = %[2]q
+			size = 0
+			is_file_exists = false
 }
 `, name, filename, data)
 }

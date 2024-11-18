@@ -2,9 +2,10 @@ package models
 
 // FileWrapper represents the OASSchema field of the SchemaValidation field of the WebAPIPractice returned from the API
 type FileWrapper struct {
-	Data string `json:"data"`
-	Name string `json:"name"`
-	Size uint64 `json:"size"`
+	Data        string `json:"data"`
+	Name        string `json:"name"`
+	Size        uint64 `json:"size"`
+	IsFileExist bool   `json:"isFileExists"`
 }
 
 // SchemaValidation represents the SchemaValidation field of the WebAPIPractice returned from the API
