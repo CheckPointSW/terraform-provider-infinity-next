@@ -266,7 +266,7 @@ resource "inext_web_api_practice" %[1]q {
 		name = %[2]q
 		data     = %[3]q
 		size	 = 0
-		is_file_exists = false
+		is_file_exist = false
 	}
 }
 `, name, filename, data)
@@ -295,8 +295,10 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		filename = %[2]q
+		name = %[2]q
 		data     = %[3]q
+		size	 = 0
+		is_file_exist = false
 	}
 }
 `, name, filename, data)
@@ -328,7 +330,7 @@ resource "inext_web_api_practice" %[1]q {
 		data = %[3]q
 		name = %[2]q
 		size = 1200
-		is_file_exists = true
+		is_file_exist = true
 	}
 }
 `, name, filename, data)
