@@ -56,8 +56,8 @@ type OASSchema struct {
 }
 
 type SchemaValidationSchema struct {
-	ID        string    `json:"id"`
-	OASSchema OASSchema `json:"OasSchema"`
+	ID        string      `json:"id"`
+	OASSchema []OASSchema `json:"OasSchema"`
 }
 
 func NewFileSchemaEncode(filename, fileData string) FileSchema {

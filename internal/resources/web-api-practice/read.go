@@ -92,7 +92,7 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 
 	schemaValidation := models.SchemaValidationSchema{
 		ID:        practice.SchemaValidation.ID,
-		OASSchema: oasSchema,
+		OASSchema: []models.OASSchema{oasSchema},
 	}
 
 	schemaValidationMap, err := utils.UnmarshalAs[map[string]any](schemaValidation)

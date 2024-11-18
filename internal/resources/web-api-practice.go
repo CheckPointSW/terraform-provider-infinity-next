@@ -193,6 +193,7 @@ func ResourceWebAPIPractice() *schema.Resource {
 							Type:     schema.TypeSet,
 							Computed: true,
 							Optional: true,
+							MaxItems: 1,
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									"data": {
