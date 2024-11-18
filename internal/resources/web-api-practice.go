@@ -237,7 +237,7 @@ func resourceWebAPIPracticeCreate(ctx context.Context, d *schema.ResourceData, m
 		return utils.DiagError("unable to perform WebAPIPractice Create", err, diags)
 	}
 
-	//fmt.Printf("Created new WebAPIPractice: %+v \n", practice)
+	fmt.Printf("Created new WebAPIPractice: %+v \n", practice)
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
@@ -264,6 +264,8 @@ func resourceWebAPIPracticeRead(ctx context.Context, d *schema.ResourceData, met
 	c := meta.(*api.Client)
 	id := d.Id()
 
+	fmt.Printf("Reading WebAPIPractice: %s\n", id)
+
 	practice, err := webapipractice.GetWebAPIPractice(ctx, c, id)
 	if err != nil {
 		return utils.DiagError("unable to perform WebAPIPractice Read", err, diags)
@@ -280,6 +282,8 @@ func resourceWebAPIPracticeUpdate(ctx context.Context, d *schema.ResourceData, m
 	var diags diag.Diagnostics
 
 	c := meta.(*api.Client)
+
+	fmt.Printf("Updating WebAPIPractice: %s\n", d.Id())
 
 	updateInput, err := webapipractice.UpdateWebAPIPracticeInputFromResourceData(d)
 	if err != nil {
