@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"fmt"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	webapipractice "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-practice"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
@@ -326,6 +327,8 @@ func resourceWebAPIPracticeUpdate(ctx context.Context, d *schema.ResourceData, m
 func resourceWebAPIPracticeDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
+
+	fmt.Printf("Deleting WebAPIPractice: %s\n", d.Id())
 
 	result, err := webapipractice.DeleteWebAPIPractice(ctx, c, d.Id())
 	if err != nil || !result {
