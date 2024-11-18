@@ -209,7 +209,8 @@ func ResourceWebAPIPractice() *schema.Resource {
 										Required: true,
 									},
 									"is_file_exist": {
-										Type: schema.TypeBool,
+										Type:     schema.TypeBool,
+										Optional: true,
 									},
 								},
 							},
