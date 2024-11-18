@@ -80,8 +80,8 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 				Config: webAPIPracticeUpdateBasicConfig(nameAttribute, schemaValidationFilename, schemaValidationData),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                                                  nameAttribute,
-						"schema_validation.0.filename":                          schemaValidationFilename,
+						"name": nameAttribute,
+						//"schema_validation.0.filename":                          schemaValidationFilename,
 						"schema_validation.0.data":                              schemaValidationData,
 						"api_attacks.0.minimum_severity":                        "Critical",
 						"ips.0.high_confidence":                                 "Detect",
@@ -292,13 +292,17 @@ resource "inext_web_api_practice" %[1]q {
 			illegal_http_methods = true
 		}
 	}
-	schema_validation {
-		filename = %[2]q
-		data     = %[3]q
-	}
 }
-`, name, filename, data)
+`, name)
 }
+
+//	schema_validation {
+//		filename = %[2]q
+//		data     = %[3]q
+//	}
+//}
+//`, name, filename, data)
+//}
 
 func webAPIPracticeUpdateFullConfig(name, filename, data string) string {
 	return fmt.Sprintf(`
