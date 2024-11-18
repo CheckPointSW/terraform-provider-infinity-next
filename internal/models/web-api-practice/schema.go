@@ -43,9 +43,11 @@ type SchemaIPS struct {
 }
 
 type FileSchema struct {
-	ID       string `json:"id,omitempty"`
-	Filename string `json:"filename,omitempty"`
-	Data     string `json:"data"`
+	ID          string `json:"id,omitempty"`
+	Filename    string `json:"name,omitempty"`
+	Data        string `json:"data"`
+	Size        uint64 `json:"size,omitempty"`
+	IsFileExist bool   `json:"isFileExist,omitempty"`
 }
 
 type OASSchema struct {

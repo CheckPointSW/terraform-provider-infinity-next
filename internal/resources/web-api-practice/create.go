@@ -70,6 +70,8 @@ func NewWebAPIPractice(ctx context.Context, c *api.Client, input models.CreateWe
 								OasSchema {
 									data
 									name
+									size
+									isFileExist
 								}
 							}
 						}
