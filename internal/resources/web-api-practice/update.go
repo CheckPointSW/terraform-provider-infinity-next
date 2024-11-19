@@ -77,6 +77,6 @@ func parseSchemaAPIAttacks(schemaAPIAttacks any) []models.UpdateAPIAttacksInput 
 }
 
 func parseSchemaValidation(validation any) []models.UpdateSchemaValidationInput {
-	input := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](validation), mapToSchemaValidationInput)
+	input := utils.Map(utils.MustSchemaCollectionToSlice[any](validation), mapToSchemaValidationInput)
 	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateSchemaValidationInput, models.SchemaValidationInput])
 }

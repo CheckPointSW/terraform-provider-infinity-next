@@ -189,16 +189,16 @@ func ResourceWebAPIPractice() *schema.Resource {
 							Sensitive: true,
 							Required:  true,
 						},
-						"size": {
-							Type:     schema.TypeInt,
-							Optional: true,
-							Computed: true,
-						},
-						"is_file_exist": {
-							Type:     schema.TypeBool,
-							Optional: true,
-							Computed: true,
-						},
+						//"size": {
+						//	Type:     schema.TypeInt,
+						//	Optional: true,
+						//	Computed: true,
+						//},
+						//"is_file_exist": {
+						//	Type:     schema.TypeBool,
+						//	Optional: true,
+						//	Computed: true,
+						//},
 						//"oas_schema": {
 						//	Type:     schema.TypeSet,
 						//	Computed: true,

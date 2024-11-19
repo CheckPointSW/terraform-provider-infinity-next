@@ -25,7 +25,7 @@ func CreateWebAPIPracticeInputFromResourceData(d *schema.ResourceData) (models.C
 		res.APIAttacks = apiAttacksSlice[0]
 	}
 
-	schemaValidationSlice := utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "schema_validation"), mapToSchemaValidationInput)
+	schemaValidationSlice := utils.Map(utils.MustResourceDataCollectionToSlice[any](d, "schema_validation"), mapToSchemaValidationInput)
 	if len(schemaValidationSlice) > 0 {
 		res.SchemaValidation = schemaValidationSlice[0]
 	}
@@ -70,8 +70,6 @@ func NewWebAPIPractice(ctx context.Context, c *api.Client, input models.CreateWe
 								OasSchema {
 									data
 									name
-									size
-									isFileExist
 								}
 							}
 						}
@@ -166,7 +164,7 @@ func mapToAPIAttacksInput(apiAttacksMap map[string]any) models.APIAttacksInput {
 //	return ret
 //}
 
-func mapToSchemaValidationInput(schemaValidationFromResourceData map[string]any) models.SchemaValidationInput {
+func mapToSchemaValidationInput(schemaValidationFromResourceData any) models.SchemaValidationInput {
 	schemaValidation, err := utils.UnmarshalAs[models.FileSchema](schemaValidationFromResourceData)
 	if err != nil {
 		fmt.Printf("Failed to convert input schema validation to FileSchema struct. Error: %+v", err)
@@ -174,19 +172,19 @@ func mapToSchemaValidationInput(schemaValidationFromResourceData map[string]any)
 	}
 
 	schemaValidation = models.NewFileSchemaEncode(schemaValidation.Filename, schemaValidation.Data)
+	//
+	//	var ret models.SchemaValidationInput
+	//
+	//	if schemaValidation.ID != "" {
+	//		ret.ID = schemaValidation.ID
+	//	}
+	//
+	//	ret.OASSchema = schemaValidation.Data
+	//
+	//	return ret
+	//}
 
-	var ret models.SchemaValidationInput
-
-	if schemaValidation.ID != "" {
-		ret.ID = schemaValidation.ID
+	return models.SchemaValidationInput{
+		OASSchema: schemaValidation.Data,
 	}
-
-	ret.OASSchema = schemaValidation.Data
-
-	return ret
 }
-
-//	return models.SchemaValidationInput{
-//		OASSchema: schemaValidation.Data,
-//	}
-//}
