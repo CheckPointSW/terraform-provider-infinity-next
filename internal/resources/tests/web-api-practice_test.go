@@ -81,7 +81,7 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                                                  nameAttribute,
-						"schema_validation.0.name":                              schemaValidationFilename,
+						"schema_validation.0.name":                              "New File",
 						"schema_validation.0.data":                              schemaValidationData,
 						"api_attacks.0.minimum_severity":                        "Critical",
 						"ips.0.high_confidence":                                 "Detect",
@@ -132,7 +132,7 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                                                  nameAttribute,
-						"schema_validation.0.name":                              schemaValidationFilename,
+						"schema_validation.0.name":                              "New File 1",
 						"schema_validation.0.data":                              schemaValidationData,
 						"api_attacks.0.minimum_severity":                        "Critical",
 						"ips.0.high_confidence":                                 "AccordingToPractice",
@@ -176,7 +176,7 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                     nameAttribute,
-						"schema_validation.0.name": schemaValidationFilenameUpdate,
+						"schema_validation.0.name": "New File 2",
 						"schema_validation.0.data": schemaValidationDataUpdate,
 						"api_attacks.#":            "1",
 						"category":                 "ThreatPrevention",
