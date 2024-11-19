@@ -2,7 +2,7 @@ package models
 
 type SchemaValidationInput struct {
 	ID        string `json:"id,omitempty"`
-	OASSchema string `json:"OasSchema"`
+	OASSchema string `json:"OasSchema,omitempty"`
 }
 
 type AdvancedSettingInput struct {
