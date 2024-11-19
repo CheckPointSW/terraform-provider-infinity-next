@@ -152,28 +152,40 @@ func mapToAPIAttacksInput(apiAttacksMap map[string]any) models.APIAttacksInput {
 	return res
 }
 
-func mapToSchemaValidationInput(schemaValidationMap map[string]any) models.SchemaValidationInput {
-	var ret models.SchemaValidationInput
+//func mapToSchemaValidationInput(schemaValidationMap map[string]any) models.SchemaValidationInput {
+//	var ret models.SchemaValidationInput
+//
+//	if id, ok := schemaValidationMap["id"]; ok {
+//		ret.ID = id.(string)
+//	}
+//
+//	fmt.Printf("schemaValidationMap: %+v\n", schemaValidationMap)
+//
+//	ret.OASSchema = schemaValidationMap["OasSchema"].(string)
+//
+//	return ret
+//}
 
-	if id, ok := schemaValidationMap["id"]; ok {
-		ret.ID = id.(string)
+func mapToSchemaValidationInput(schemaValidationFromResourceData map[string]any) models.SchemaValidationInput {
+	schemaValidation, err := utils.UnmarshalAs[models.FileSchema](schemaValidationFromResourceData)
+	if err != nil {
+		fmt.Printf("Failed to convert input schema validation to FileSchema struct. Error: %+v", err)
+		return models.SchemaValidationInput{}
 	}
 
-	fmt.Printf("schemaValidationMap: %+v\n", schemaValidationMap)
+	schemaValidation = models.NewFileSchemaEncode(schemaValidation.Filename, schemaValidation.Data)
 
-	ret.OASSchema = schemaValidationMap["OasSchema"].(string)
+	var ret models.SchemaValidationInput
+
+	if schemaValidation.ID != "" {
+		ret.ID = schemaValidation.ID
+	}
+
+	ret.OASSchema = schemaValidation.Data
 
 	return ret
 }
 
-//func createSchemaValidationInput(schemaValidtionFromResourceData any) models.SchemaValidationInput {
-//	schemaValidation, err := utils.UnmarshalAs[models.FileSchema](schemaValidtionFromResourceData)
-//	if err != nil {
-//		fmt.Printf("Failed to convert input schema validation to FileSchema struct. Error: %+v", err)
-//		return models.SchemaValidationInput{}
-//	}
-//
-//	schemaValidation = models.NewFileSchemaEncode(schemaValidation.Filename, schemaValidation.Data)
 //	return models.SchemaValidationInput{
 //		OASSchema: schemaValidation.Data,
 //	}
