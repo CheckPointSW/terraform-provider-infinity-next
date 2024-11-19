@@ -75,7 +75,7 @@ type WebApplicationFileSecuritySchema struct {
 	RequiredArchiveExtraction bool   `json:"required_archive_extraction,omitempty"`
 	ArchiveFileSizeLimit      int    `json:"archive_file_size_limit,omitempty"`
 	ArchiveFileSizeLimitUnit  string `json:"archive_file_size_limit_unit,omitempty"`
-	AllowArchiveWithinArchive string `json:"allow_archiveW_within_archive,omitempty"`
+	AllowArchiveWithinArchive string `json:"allow_archive_within_archive,omitempty"`
 	AllowAnUnopenedArchive    string `json:"allow_an_unopened_archive,omitempty"`
 	AllowFileType             bool   `json:"allow_file_type,omitempty"`
 	RequiredThreatEmulation   bool   `json:"required_threat_emulation,omitempty"`
