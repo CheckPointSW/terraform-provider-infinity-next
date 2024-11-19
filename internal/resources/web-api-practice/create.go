@@ -30,6 +30,11 @@ func CreateWebAPIPracticeInputFromResourceData(d *schema.ResourceData) (models.C
 		res.SchemaValidation = schemaValidationSlice[0]
 	}
 
+	fileSecuritySlice := utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "file_security"), mapToFileSecurityInput)
+	if len(fileSecuritySlice) > 0 {
+		res.FileSecurity = fileSecuritySlice[0]
+	}
+
 	return res, nil
 }
 
@@ -70,7 +75,27 @@ func NewWebAPIPractice(ctx context.Context, c *api.Client, input models.CreateWe
 								OasSchema {
 									data
 									name
+									size
+									isFileExist
 								}
+							}
+							FileSecurity {
+								id
+								severityLevel
+								highConfidence
+								mediumConfidence
+								lowConfidence
+								allowFileSizeLimit
+								fileSizeLimit
+								fileSizeLimitUnit
+								filesWithoutName
+								requiredArchiveExtraction
+								archiveFileSizeLimit
+								archiveFileSizeLimitUnit
+								allowArchiveWithinArchive
+								allowAnUnopenedArchive
+								allowFileType
+								requiredThreatEmulation
 							}
 						}
 					}
@@ -150,20 +175,6 @@ func mapToAPIAttacksInput(apiAttacksMap map[string]any) models.APIAttacksInput {
 	return res
 }
 
-//func mapToSchemaValidationInput(schemaValidationMap map[string]any) models.SchemaValidationInput {
-//	var ret models.SchemaValidationInput
-//
-//	if id, ok := schemaValidationMap["id"]; ok {
-//		ret.ID = id.(string)
-//	}
-//
-//	fmt.Printf("schemaValidationMap: %+v\n", schemaValidationMap)
-//
-//	ret.OASSchema = schemaValidationMap["OasSchema"].(string)
-//
-//	return ret
-//}
-
 func mapToSchemaValidationInput(schemaValidationFromResourceData any) models.SchemaValidationInput {
 	schemaValidation, err := utils.UnmarshalAs[models.FileSchema](schemaValidationFromResourceData)
 	if err != nil {
@@ -172,19 +183,27 @@ func mapToSchemaValidationInput(schemaValidationFromResourceData any) models.Sch
 	}
 
 	schemaValidation = models.NewFileSchemaEncode(schemaValidation.Filename, schemaValidation.Data)
-	//
-	//	var ret models.SchemaValidationInput
-	//
-	//	if schemaValidation.ID != "" {
-	//		ret.ID = schemaValidation.ID
-	//	}
-	//
-	//	ret.OASSchema = schemaValidation.Data
-	//
-	//	return ret
-	//}
-
 	return models.SchemaValidationInput{
 		OASSchema: schemaValidation.Data,
+	}
+}
+
+func mapToFileSecurityInput(fileSecurityMap map[string]any) models.WebApplicationFileSecurityInput {
+	return models.WebApplicationFileSecurityInput{
+		SeverityLevel:             fileSecurityMap["severity_level"].(string),
+		HighConfidence:            fileSecurityMap["high_confidence"].(string),
+		MediumConfidence:          fileSecurityMap["medium_confidence"].(string),
+		LowConfidence:             fileSecurityMap["low_confidence"].(string),
+		AllowFileSizeLimit:        fileSecurityMap["allow_file_size_limit"].(string),
+		FileSizeLimit:             fileSecurityMap["file_size_limit"].(int),
+		FileSizeLimitUnit:         fileSecurityMap["file_size_limit_unit"].(string),
+		FilesWithoutName:          fileSecurityMap["files_without_name"].(string),
+		RequiredArchiveExtraction: fileSecurityMap["required_archive_extraction"].(bool),
+		ArchiveFileSizeLimit:      fileSecurityMap["archive_file_size_limit"].(int),
+		ArchiveFileSizeLimitUnit:  fileSecurityMap["archive_file_size_limit_unit"].(string),
+		AllowArchiveWithinArchive: fileSecurityMap["allow_archive_within_archive"].(string),
+		AllowAnUnopenedArchive:    fileSecurityMap["allow_an_unopened_archive"].(string),
+		AllowFileType:             fileSecurityMap["allow_file_type"].(bool),
+		RequiredThreatEmulation:   fileSecurityMap["required_threat_emulation"].(bool),
 	}
 }

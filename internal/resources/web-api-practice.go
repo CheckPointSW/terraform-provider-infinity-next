@@ -16,8 +16,8 @@ func ResourceWebAPIPractice() *schema.Resource {
 		validation.StringInSlice([]string{severityLevelLowOrAbove, severityLevelMediumOrAbove, severityLevelHighOrAbove, severityLevelCritical}, false))
 	validationFileSecurityMode := validation.ToDiagFunc(
 		validation.StringInSlice([]string{fileSecurityModeDetect, fileSecurityModePrevent, fileSecurityModeInactive, fileSecurityModeAccordingToPractice}, false))
-	//validationFileSizeUnits := validation.ToDiagFunc(
-	//	validation.StringInSlice([]string{fileSizeUnitsBytes, fileSizeUnitsKB, fileSizeUnitsMB, fileSizeUnitsGB}, false))
+	validationFileSizeUnits := validation.ToDiagFunc(
+		validation.StringInSlice([]string{fileSizeUnitsBytes, fileSizeUnitsKB, fileSizeUnitsMB, fileSizeUnitsGB}, false))
 	//validationWAAPMode := validation.ToDiagFunc(
 	//	validation.StringInSlice([]string{waapModeDisabled, waapModeLearn, waapModePrevent, waapModePractice}, false))
 	return &schema.Resource{
@@ -189,16 +189,16 @@ func ResourceWebAPIPractice() *schema.Resource {
 							Sensitive: true,
 							Required:  true,
 						},
-						//"size": {
-						//	Type:     schema.TypeInt,
-						//	Optional: true,
-						//	Computed: true,
-						//},
-						//"is_file_exist": {
-						//	Type:     schema.TypeBool,
-						//	Optional: true,
-						//	Computed: true,
-						//},
+						"size": {
+							Type:     schema.TypeInt,
+							Optional: true,
+							Computed: true,
+						},
+						"is_file_exist": {
+							Type:     schema.TypeBool,
+							Optional: true,
+							Computed: true,
+						},
 						//"oas_schema": {
 						//	Type:     schema.TypeSet,
 						//	Computed: true,
@@ -226,6 +226,115 @@ func ResourceWebAPIPractice() *schema.Resource {
 						//		},
 						//	},
 						//},
+					},
+				},
+			},
+			"file_security": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Computed: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"severity_level": {
+							Type:             schema.TypeString,
+							Description:      "LowOrAbove, MediumOrAbove, HighOrAbove or Critical",
+							Default:          "MediumOrAbove",
+							Optional:         true,
+							ValidateDiagFunc: validationSeverityLevel,
+						},
+						"high_confidence": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"medium_confidence": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"low_confidence": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "Detect",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"allow_file_size_limit": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"file_size_limit": {
+							Type:     schema.TypeInt,
+							Default:  10,
+							Optional: true,
+						},
+						"file_size_limit_unit": {
+							Type:             schema.TypeString,
+							Description:      "Bytes, KB, MB or GB",
+							Default:          "MB",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSizeUnits,
+						},
+						"files_without_name": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"required_archive_extraction": {
+							Type:     schema.TypeBool,
+							Default:  false,
+							Optional: true,
+						},
+						"archive_file_size_limit": {
+							Type:     schema.TypeInt,
+							Default:  10,
+							Optional: true,
+						},
+						"archive_file_size_limit_unit": {
+							Type:             schema.TypeString,
+							Description:      "Bytes, KB, MB or GB",
+							Default:          "MB",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSizeUnits,
+						},
+						"allow_archive_within_archive": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"allow_an_unopened_archive": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"allow_file_type": {
+							Type:     schema.TypeBool,
+							Default:  false,
+							Optional: true,
+						},
+						"required_threat_emulation": {
+							Type:     schema.TypeBool,
+							Default:  false,
+							Optional: true,
+						},
 					},
 				},
 			},

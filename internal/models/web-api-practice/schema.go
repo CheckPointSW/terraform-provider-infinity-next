@@ -43,11 +43,11 @@ type SchemaIPS struct {
 }
 
 type FileSchema struct {
-	ID       string `json:"id,omitempty"`
-	Filename string `json:"name,omitempty"`
-	Data     string `json:"data"`
-	//Size        uint64 `json:"size,omitempty"`
-	//IsFileExist bool   `json:"isFileExist,omitempty"`
+	ID          string `json:"id,omitempty"`
+	Filename    string `json:"name,omitempty"`
+	Data        string `json:"data"`
+	Size        uint64 `json:"size,omitempty"`
+	IsFileExist bool   `json:"isFileExist,omitempty"`
 }
 
 type OASSchema struct {
@@ -60,6 +60,25 @@ type OASSchema struct {
 type SchemaValidationSchema struct {
 	ID        string      `json:"id"`
 	OASSchema []OASSchema `json:"OasSchema"`
+}
+
+type WebApplicationFileSecuritySchema struct {
+	ID                        string `json:"id,omitempty"`
+	SeverityLevel             string `json:"severity_level,omitempty"`
+	HighConfidence            string `json:"high_confidence,omitempty"`
+	MediumConfidence          string `json:"medium_confidence,omitempty"`
+	LowConfidence             string `json:"low_confidence,omitempty"`
+	AllowFileSizeLimit        string `json:"allow_file_size_limit,omitempty"`
+	FileSizeLimit             int    `json:"file_size_limit,omitempty"`
+	FileSizeLimitUnit         string `json:"file_size_limit_unit,omitempty"`
+	FilesWithoutName          string `json:"files_without_name,omitempty"`
+	RequiredArchiveExtraction bool   `json:"required_archive_extraction,omitempty"`
+	ArchiveFileSizeLimit      int    `json:"archive_file_size_limit,omitempty"`
+	ArchiveFileSizeLimitUnit  string `json:"archive_file_size_limit_unit,omitempty"`
+	AllowArchiveWithinArchive string `json:"allow_archiveW_within_archive,omitempty"`
+	AllowAnUnopenedArchive    string `json:"allow_an_unopened_archive,omitempty"`
+	AllowFileType             bool   `json:"allow_file_type,omitempty"`
+	RequiredThreatEmulation   bool   `json:"required_threat_emulation,omitempty"`
 }
 
 func NewFileSchemaEncode(filename, fileData string) FileSchema {
