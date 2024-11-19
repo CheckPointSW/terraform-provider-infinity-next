@@ -236,12 +236,6 @@ resource "inext_web_api_practice" %[1]q {
 			illegal_http_methods = false
 		}
 	}
-	schema_validation {
-		name = ""
-		data = ""
-		size = 0
-		is_file_exist = false
-	}
 }
 `, name)
 }
