@@ -241,6 +241,7 @@ resource "inext_web_api_practice" %[1]q {
 		data = ""
 		size = 0
 		is_file_exist = false
+	}
 }
 `, name)
 }
