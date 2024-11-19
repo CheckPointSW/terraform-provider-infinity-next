@@ -263,7 +263,7 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		name = %[2]q
+		name = "New File"
 		data     = %[3]q
 	}
 }
@@ -293,7 +293,7 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		name = %[2]q
+		name = "New File 1"
 		data     = %[3]q
 	}
 }
@@ -324,7 +324,7 @@ resource "inext_web_api_practice" %[1]q {
 	}
 	schema_validation {
 		data = %[3]q
-		name = %[2]q
+		name = "New File 2"
 	}
 }
 `, name, filename, data)
