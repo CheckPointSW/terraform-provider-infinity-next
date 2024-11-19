@@ -265,8 +265,6 @@ resource "inext_web_api_practice" %[1]q {
 	schema_validation {
 		name = %[2]q
 		data     = %[3]q
-		size	 = 1
-		is_file_exist = true
 	}
 }
 `, name, filename, data)
@@ -297,8 +295,6 @@ resource "inext_web_api_practice" %[1]q {
 	schema_validation {
 		name = %[2]q
 		data     = %[3]q
-		size	 = 0
-		is_file_exist = false
 	}
 }
 `, name, filename, data)
@@ -329,8 +325,6 @@ resource "inext_web_api_practice" %[1]q {
 	schema_validation {
 		data = %[3]q
 		name = %[2]q
-		size = 1200
-		is_file_exist = true
 	}
 }
 `, name, filename, data)
