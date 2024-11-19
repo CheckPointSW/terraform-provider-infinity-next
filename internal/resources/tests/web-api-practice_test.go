@@ -236,6 +236,11 @@ resource "inext_web_api_practice" %[1]q {
 			illegal_http_methods = false
 		}
 	}
+	schema_validation {
+		name = ""
+		data = ""
+		size = 0
+		is_file_exist = false
 }
 `, name)
 }
@@ -265,8 +270,8 @@ resource "inext_web_api_practice" %[1]q {
 	schema_validation {
 		name = %[2]q
 		data     = %[3]q
-		size	 = 0
-		is_file_exist = false
+		size	 = 1
+		is_file_exist = true
 	}
 }
 `, name, filename, data)

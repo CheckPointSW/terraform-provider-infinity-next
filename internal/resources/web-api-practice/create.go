@@ -159,6 +159,8 @@ func mapToSchemaValidationInput(schemaValidationMap map[string]any) models.Schem
 		ret.ID = id.(string)
 	}
 
+	fmt.Printf("schemaValidationMap: %+v\n", schemaValidationMap)
+
 	ret.OASSchema = schemaValidationMap["OasSchema"].(string)
 
 	return ret
