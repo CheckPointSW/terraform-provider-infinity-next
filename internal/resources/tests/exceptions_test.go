@@ -21,7 +21,7 @@ func TestAccExceptionBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":        nameAttribute,
-						"%":           "3",
+						"%":           "4",
 						"exception.#": "0",
 						"visibility":  "Shared",
 					}),
@@ -37,7 +37,7 @@ func TestAccExceptionBasic(t *testing.T) {
 						"exception.0.match.0.value.#":   "1",
 						"exception.0.match.0.operator":  "equals",
 						"exception.0.comment":           "",
-						"%":                             "3",
+						"%":                             "4",
 						"exception.0.match.0.operand.#": "0",
 						"exception.#":                   "1",
 						"exception.0.match.0.value.0":   "www.google.com",
@@ -45,6 +45,7 @@ func TestAccExceptionBasic(t *testing.T) {
 						"exception.0.match.0.%":         "4",
 						"exception.0.match.#":           "1",
 						"exception.0.%":                 "5",
+						"visibility":                    "Shared",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 						resource.TestCheckResourceAttrSet(resourceName, "exception.0.id"),
@@ -58,7 +59,7 @@ func TestAccExceptionBasic(t *testing.T) {
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                                    nameAttribute,
 						"exception.0.action":                      "skip",
-						"%":                                       "3",
+						"%":                                       "4",
 						"exception.0.comment":                     "test comment",
 						"exception.0.match.0.value.#":             "0",
 						"exception.0.match.0.operand.0.value.#":   "1",
@@ -143,6 +144,7 @@ func TestAccExceptionWithExceptionBlock(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                                    nameAttribute,
+						"visibility":                              "Local",
 						"exception.0.match.0.operand.1.key":       "sourceIdentifier",
 						"exception.1.match.0.operand.1.%":         "4",
 						"exception.0.match.0.operand.0.operand.#": "0",
@@ -154,7 +156,7 @@ func TestAccExceptionWithExceptionBlock(t *testing.T) {
 						"exception.1.match.0.operand.0.%":         "4",
 						"exception.1.match.#":                     "1",
 						"exception.0.match.0.operand.0.value.#":   "1",
-						"%":                                       "3",
+						"%":                                       "4",
 						"exception.0.match.0.operand.0.key":       "hostName",
 						"exception.0.match.0.operand.1.operand.#": "0",
 						"exception.0.match.0.operand.#":           "3",
@@ -213,6 +215,7 @@ func TestAccExceptionWithExceptionBlock(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                                    nameAttribute,
+						"visibility":                              "Shared",
 						"exception.0.action":                      "drop",
 						"exception.0.match.0.operand.1.operator":  "equals",
 						"exception.0.match.0.operand.1.value.0":   "2.2.2.2/24",
@@ -303,6 +306,7 @@ resource "inext_exceptions" %[1]q {
 		action  = "skip"
 		comment = "test comment"
 	}
+	visibility = "Local"
 }
 `, name)
 }
@@ -330,6 +334,7 @@ resource "inext_exceptions" %[1]q {
 		action  = "skip"
 		comment = "test comment"
 	}
+	visibility = "Shared"
 }
 `, name)
 }

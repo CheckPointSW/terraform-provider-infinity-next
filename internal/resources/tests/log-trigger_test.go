@@ -98,6 +98,8 @@ resource "inext_log_trigger" %[1]q {
 	cef_ip_address                   = "10.0.0.1"
 	cef_port                         = 81
 	cef_protocol                     = "TCP"
+	compliance_violations            = false
+	compliance_warnings              = false
 	extend_logging                   = false
 	extend_logging_min_severity      = "Critical"
 	log_to_agent                     = true
