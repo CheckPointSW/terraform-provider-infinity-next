@@ -34,7 +34,7 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"name":            assetNameAttribute,
 						"urls.0":          fmt.Sprintf("http://host/%s/path1", assetNameAttribute),
 						"urls.#":          "1",
-						"%":               "21",
+						"%":               "24",
 						"urls_ids.#":      "1",
 						"main_attributes": fmt.Sprintf("{\"applicationUrls\":\"http://host/%s/path1\"}", assetNameAttribute),
 					}),
@@ -53,7 +53,7 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "21",
+						"%":                                     "24",
 						"read_only":                             "false",
 						"upstream_url":                          "some url 5",
 						"urls.#":                                "2",
@@ -91,8 +91,9 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"main_attributes":   fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path2;http://host/%[1]s/path3\"}", assetNameAttribute),
 						"asset_type":        "WebApplication",
 						"intelligence_tags": "",
-						"tag.0.key":         "tagkey1",
-						"tag.0.value":       "tagvalue1",
+						"tags.#":            "1",
+						"tags.0.key":        "tagkey1",
+						"tags.0.value":      "tagvalue1",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -105,7 +106,7 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path2", assetNameAttribute)),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path3", assetNameAttribute)),
-						resource.TestCheckResourceAttrSet(assetResourceName, "tag.0.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -148,7 +149,7 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "21",
+						"%":                                     "24",
 						"read_only":                             "false",
 						"upstream_url":                          "some url 5",
 						"urls.#":                                "2",
@@ -186,11 +187,11 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"main_attributes":   fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path1;http://host/%[1]s/path2\"}", assetNameAttribute),
 						"asset_type":        "WebApplication",
 						"intelligence_tags": "",
-						"tag.#":             "2",
-						"tag.0.key":         "tagkey1",
-						"tag.0.value":       "tagvalue1",
-						"tag.1.key":         "tagkey2",
-						"tag.1.value":       "tagvalue2",
+						"tags.#":            "2",
+						"tags.0.key":        "tagkey1",
+						"tags.0.value":      "tagvalue1",
+						"tags.1.key":        "tagkey2",
+						"tags.1.value":      "tagvalue2",
 						"is_shares_urls":    "false",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
@@ -203,8 +204,8 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "proxy_setting.2.id"),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path1", assetNameAttribute)),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path2", assetNameAttribute)),
-						resource.TestCheckResourceAttrSet(assetResourceName, "tag.0.id"),
-						resource.TestCheckResourceAttrSet(assetResourceName, "tag.1.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tags.1.id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -221,7 +222,7 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "21",
+						"%":                                     "24",
 						"read_only":                             "false",
 						"upstream_url":                          "some url 10",
 						"urls.#":                                "2",
@@ -259,13 +260,13 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"main_attributes":   fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path3;http://host/%[1]s/path4\"}", assetNameAttribute),
 						"asset_type":        "WebApplication",
 						"intelligence_tags": "",
-						"tag.#":             "3",
-						"tag.0.key":         "tagkey1",
-						"tag.0.value":       "tagvalue2",
-						"tag.1.key":         "tagkey2",
-						"tag.1.value":       "tagvalue1",
-						"tag.2.key":         "tagkey3",
-						"tag.2.value":       "tagvalue3",
+						"tags.#":            "3",
+						"tags.0.key":        "tagkey1",
+						"tags.0.value":      "tagvalue2",
+						"tags.1.key":        "tagkey2",
+						"tags.1.value":      "tagvalue1",
+						"tags.2.key":        "tagkey3",
+						"tags.2.value":      "tagvalue3",
 						"is_shares_urls":    "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
@@ -278,9 +279,9 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "proxy_setting.2.id"),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path3", assetNameAttribute)),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path4", assetNameAttribute)),
-						resource.TestCheckResourceAttrSet(assetResourceName, "tag.0.id"),
-						resource.TestCheckResourceAttrSet(assetResourceName, "tag.1.id"),
-						resource.TestCheckResourceAttrSet(assetResourceName, "tag.2.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tags.1.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tags.2.id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -341,7 +342,7 @@ resource "inext_web_app_asset" %[1]q {
     	identifier = "HeaderKey"
     	values     = ["value1"]
   	}
-	tag {
+	tags {
 		key   = "tagkey1"
 		value = "tagvalue1"
 	}
@@ -477,11 +478,11 @@ resource "inext_web_app_asset" %[1]q {
 	  identifier = "HeaderKey"
 	  values     = ["value1"]
 	}
-	tag {
+	tags {
 	  key   = "tagkey1"
 	  value = "tagvalue1"
 	}
-	tag {
+	tags {
 	  key   = "tagkey2"
 	  value = "tagvalue2"
 	}
@@ -652,15 +653,15 @@ resource "inext_web_app_asset" %[1]q {
 	  identifier = "Cookie"
 	  values     = ["value8", "value9"]
 	}
-	tag {
+	tags {
 	  key   = "tagkey1"
 	  value = "tagvalue2"
 	}
-	tag {
+	tags {
 	  key   = "tagkey2"
       value = "tagvalue1"
 	}
-	tag {
+	tags {
 	  key   = "tagkey3"
 	  value = "tagvalue3"
 	}

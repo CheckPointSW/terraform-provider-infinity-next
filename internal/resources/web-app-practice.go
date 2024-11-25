@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	webapppractice "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-practice"
@@ -435,6 +436,8 @@ func resourceWebAppPracticeCreate(ctx context.Context, d *schema.ResourceData, m
 		return utils.DiagError("unable to perform WebAppPractice Create", err, diags)
 	}
 
+	fmt.Printf("created practice: %v\n", practice)
+
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
@@ -467,6 +470,8 @@ func resourceWebAppPracticeRead(ctx context.Context, d *schema.ResourceData, met
 		return utils.DiagError("unable to perform WebAppPractice Read", err, diags)
 	}
 
+	fmt.Printf("read practice: %v\n", practice)
+
 	if err := webapppractice.ReadWebApplicationPracticeToResourceData(practice, d); err != nil {
 		return utils.DiagError("unable to perform WebAppPractice Read", err, diags)
 	}
@@ -492,6 +497,8 @@ func resourceWebAppPracticeUpdate(ctx context.Context, d *schema.ResourceData, m
 
 		return utils.DiagError("unable to perform WebAppPractice Update", err, diags)
 	}
+
+	fmt.Printf("updated practice: %v\n", d.Id())
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
@@ -534,6 +541,8 @@ func resourceWebAppPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 
 		return utils.DiagError("unable to perform WebAppPractice Delete", err, diags)
 	}
+
+	fmt.Printf("deleted practice: %v\n", d.Id())
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
