@@ -79,11 +79,11 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 		decodedData = string(bDecodedData)
 	}
 	schemaValidation := models.FileSchema{
-		ID:          practice.SchemaValidation.ID,
-		Filename:    practice.SchemaValidation.OASSchema.Name,
-		Data:        decodedData,
-		Size:        practice.SchemaValidation.OASSchema.Size,
-		IsFileExist: practice.SchemaValidation.OASSchema.IsFileExist,
+		ID:       practice.SchemaValidation.ID,
+		Filename: practice.SchemaValidation.OASSchema.Name,
+		Data:     decodedData,
+		Size:     practice.SchemaValidation.OASSchema.Size,
+		//IsFileExist: practice.SchemaValidation.OASSchema.IsFileExist,
 	}
 
 	schemaValidationMap, err := utils.UnmarshalAs[map[string]any](schemaValidation)
