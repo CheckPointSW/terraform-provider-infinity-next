@@ -23,6 +23,7 @@ func TestAccExceptionBasic(t *testing.T) {
 						"name":        nameAttribute,
 						"%":           "3",
 						"exception.#": "0",
+						"visibility":  "Shared",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -274,6 +275,7 @@ resource "inext_exceptions" %[1]q {
 		}
 		action  = "drop"
 	}
+	visibility = "Local"
 }
 `, name)
 }

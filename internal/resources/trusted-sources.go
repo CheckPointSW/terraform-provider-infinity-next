@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	trustedsources "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/trusted-sources"
@@ -11,6 +12,8 @@ import (
 )
 
 func ResourceTrustedSources() *schema.Resource {
+	validateVisibility := validation.ToDiagFunc(
+		validation.StringInSlice([]string{visibilityShared, visibilityLocal}, false))
 	return &schema.Resource{
 		Description: "Trusted sources that serve as a baseline for comparison for benign behavior, " +
 			"and how many users or addresses must exhibit similar activity for it to be considered bengin by the learning model",
@@ -38,6 +41,13 @@ func ResourceTrustedSources() *schema.Resource {
 				Type:        schema.TypeString,
 				Description: "The name of the resource, also acts as its unique ID",
 				Required:    true,
+			},
+			"visibility": {
+				Type:             schema.TypeString,
+				Description:      "The visibility of the resource - Shared or Local",
+				Default:          "Shared",
+				Optional:         true,
+				ValidateDiagFunc: validateVisibility,
 			},
 			"min_num_of_sources": {
 				Type:        schema.TypeInt,

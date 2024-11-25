@@ -11,6 +11,19 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+const (
+	severityLevelHigh   = "High"
+	severityLevelMedium = "Medium"
+
+	performanceImpactVeryLow       = "VeryLow"
+	performanceImpactLowOrLower    = "LowOrLower"
+	performanceImpactMediumOrLower = "MediumOrLower"
+	performanceImpactHighOrLower   = "HighOrLower"
+
+	visibilityShared = "Shared"
+	visibilityLocal  = "Local"
+)
+
 func ResourceWebAPIPractice() *schema.Resource {
 	validationSeverityLevel := validation.ToDiagFunc(
 		validation.StringInSlice([]string{severityLevelLowOrAbove, severityLevelMediumOrAbove, severityLevelHighOrAbove, severityLevelCritical}, false))
@@ -18,8 +31,12 @@ func ResourceWebAPIPractice() *schema.Resource {
 		validation.StringInSlice([]string{fileSecurityModeDetect, fileSecurityModePrevent, fileSecurityModeInactive, fileSecurityModeAccordingToPractice}, false))
 	validationFileSizeUnits := validation.ToDiagFunc(
 		validation.StringInSlice([]string{fileSizeUnitsBytes, fileSizeUnitsKB, fileSizeUnitsMB, fileSizeUnitsGB}, false))
-	//validationWAAPMode := validation.ToDiagFunc(
-	//	validation.StringInSlice([]string{waapModeDisabled, waapModeLearn, waapModePrevent, waapModePractice}, false))
+	validationVisibility := validation.ToDiagFunc(
+		validation.StringInSlice([]string{visibilityShared, visibilityLocal}, false))
+	validationPerformanceImpact := validation.ToDiagFunc(
+		validation.StringInSlice([]string{performanceImpactVeryLow, performanceImpactLowOrLower, performanceImpactMediumOrLower, performanceImpactHighOrLower}, false))
+	validationMinimumSeverity := validation.ToDiagFunc(
+		validation.StringInSlice([]string{severityLevelCritical, severityLevelHigh, severityLevelMedium}, false))
 	return &schema.Resource{
 		Description: "Practice for securing a web API",
 
@@ -40,6 +57,13 @@ func ResourceWebAPIPractice() *schema.Resource {
 				Type:        schema.TypeString,
 				Description: "The name of the resource, also acts as its unique ID",
 				Required:    true,
+			},
+			"visibility": {
+				Type:             schema.TypeString,
+				Description:      "The visibility of the resource, Shared or Local",
+				Default:          "Shared",
+				Optional:         true,
+				ValidateDiagFunc: validationVisibility,
 			},
 			"practice_type": {
 				Type:     schema.TypeString,
@@ -70,7 +94,7 @@ func ResourceWebAPIPractice() *schema.Resource {
 							Description:      "The performance impact: VeryLow, LowOrLower, MediumOrLower or HighOrLower",
 							Default:          "MediumOrLower",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"VeryLow", "LowOrLower", "MediumOrLower", "HighOrLower"}, false)),
+							ValidateDiagFunc: validationPerformanceImpact,
 						},
 						"severity_level": {
 							Type:             schema.TypeString,
@@ -125,7 +149,7 @@ func ResourceWebAPIPractice() *schema.Resource {
 							Description:      "Medium, High or Critical",
 							Default:          "High",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Critical", "High", "Medium"}, false)),
+							ValidateDiagFunc: validationMinimumSeverity,
 						},
 						"advanced_setting": {
 							Type:     schema.TypeSet,
@@ -199,33 +223,6 @@ func ResourceWebAPIPractice() *schema.Resource {
 							Optional: true,
 							Computed: true,
 						},
-						//"oas_schema": {
-						//	Type:     schema.TypeSet,
-						//	Computed: true,
-						//	Optional: true,
-						//	MaxItems: 1,
-						//	Elem: &schema.Resource{
-						//		Schema: map[string]*schema.Schema{
-						//			"data": {
-						//				Type:      schema.TypeString,
-						//				Sensitive: true,
-						//				Required:  true,
-						//			},
-						//			"name": {
-						//				Type:     schema.TypeString,
-						//				Required: true,
-						//			},
-						//			"size": {
-						//				Type:     schema.TypeInt,
-						//				Required: true,
-						//			},
-						//			"is_file_exist": {
-						//				Type:     schema.TypeBool,
-						//				Optional: true,
-						//			},
-						//		},
-						//	},
-						//},
 					},
 				},
 			},

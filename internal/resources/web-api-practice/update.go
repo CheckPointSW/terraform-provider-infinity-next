@@ -17,6 +17,10 @@ func UpdateWebAPIPracticeInputFromResourceData(d *schema.ResourceData) (models.U
 		updateInput.Name = newName
 	}
 
+	if _, newVisibility, hasChange := utils.MustGetChange[string](d, "visibility"); hasChange {
+		updateInput.Visibility = newVisibility
+	}
+
 	if oldIPSSlice, newIPSSlice, hasChange := utils.GetChangeWithParse(d, "ips", parseSchemaIPS); hasChange && len(newIPSSlice) > 0 {
 		if len(oldIPSSlice) > 0 {
 			newIPSSlice[0].ID = oldIPSSlice[0].ID

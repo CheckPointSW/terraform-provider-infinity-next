@@ -68,6 +68,7 @@ type WebAPIPractice struct {
 	Name             string                     `json:"name"`
 	Category         string                     `json:"category"`
 	PracticeType     string                     `json:"practiceType"`
+	Visibility       string                     `json:"visibility"`
 	APIAttacks       APIAttacks                 `json:"APIAttacks"`
 	Default          bool                       `json:"default"`
 	SchemaValidation SchemaValidation           `json:"SchemaValidation"`

@@ -37,6 +37,16 @@ func ResourceLogTrigger() *schema.Resource {
 				Default:      "Standard",
 				ValidateFunc: validation.StringInSlice([]string{"Standard", "Minimal", "Extended"}, false),
 			},
+			"compliance_warnings": {
+				Type:     schema.TypeBool,
+				Default:  true,
+				Optional: true,
+			},
+			"compliance_violations": {
+				Type:     schema.TypeBool,
+				Default:  true,
+				Optional: true,
+			},
 			"access_control_allow_events": {
 				Description: "Log Access Control accepts",
 				Type:        schema.TypeBool,
@@ -122,6 +132,13 @@ func ResourceLogTrigger() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"syslog_protocol": {
+				Description:  "Syslog protocol: UDP or TCP",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Default:      "UDP",
+				ValidateFunc: validation.StringInSlice([]string{"UDP", "TCP"}, false),
+			},
 			"syslog_port": {
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -137,6 +154,13 @@ func ResourceLogTrigger() *schema.Resource {
 			"cef_port": {
 				Type:     schema.TypeInt,
 				Optional: true,
+			},
+			"cef_protocol": {
+				Description:  "CEF protocol: UDP or TCP",
+				Type:         schema.TypeString,
+				Optional:     true,
+				Default:      "UDP",
+				ValidateFunc: validation.StringInSlice([]string{"UDP", "TCP"}, false),
 			},
 		},
 		Importer: &schema.ResourceImporter{

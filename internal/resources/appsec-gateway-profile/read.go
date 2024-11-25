@@ -25,6 +25,7 @@ func ReadCloudGuardAppSecGatewayProfileToResourceData(profile models.CloudGuardA
 		d.Set("upgrade_time_hour", profile.UpgradeTime.Time)
 		d.Set("upgrade_time_duration", profile.UpgradeTime.Duration)
 		d.Set("upgrade_time_week_days", profile.UpgradeTime.WeekDays)
+		d.Set("upgrade_time_days", profile.UpgradeTime.Days)
 	}
 
 	d.Set("reverseproxy_upstream_timeout", profile.ReverseProxyUpstreamTimeout)
@@ -81,6 +82,9 @@ func GetCloudGuardAppSecGatewayProfile(ctx context.Context, c *api.Client, id st
 					time
 					... on ScheduleDaysInWeek {
 						weekDays
+					}
+					... on ScheduleDaysInMonth {
+						days
 					}
 				}
 				reverseProxyUpstreamTimeout

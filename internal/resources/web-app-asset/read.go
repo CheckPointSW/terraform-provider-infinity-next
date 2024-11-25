@@ -27,6 +27,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	d.Set("upstream_url", asset.UpstreamURL)
 	d.Set("behaviors", asset.Behaviors.ToSchema())
 	d.Set("profiles", asset.Profiles.ToSchema())
+	d.Set("is_shares_urls", asset.IsSharesURLs)
 
 	proxySettingsSchemaMap, err := utils.UnmarshalAs[[]map[string]any](asset.ProxySettings)
 	if err != nil {
@@ -54,6 +55,13 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	}
 
 	d.Set("practice", schemaPracticeWrappersMap)
+
+	tagsSchemaMap, err := utils.UnmarshalAs[[]map[string]any](asset.Tags)
+	if err != nil {
+		return fmt.Errorf("failed to convert tags to slice of maps. Error: %+v", err)
+	}
+
+	d.Set("tags", tagsSchemaMap)
 
 	return nil
 }
@@ -88,6 +96,11 @@ func GetWebApplicationAsset(ctx context.Context, c *api.Client, id string) (mode
 				behaviors {
 					id
 				}
+				tags {
+					id
+					key
+					value
+				}
 				sourceIdentifiers {
 					id
 					sourceIdentifier
@@ -116,6 +129,7 @@ func GetWebApplicationAsset(ctx context.Context, c *api.Client, id string) (mode
 				mainAttributes
 				intelligenceTags
 				readOnly
+				isSharesURLs
 			}
 		}
 	`, "getWebApplicationAsset")

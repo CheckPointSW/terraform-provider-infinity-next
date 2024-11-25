@@ -34,6 +34,10 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 		updateInput.AddBehaviors, updateInput.RemoveBehaviors = utils.SlicesDiff(oldBehaviorsStringList, newBehaviorsStringList)
 	}
 
+	if _, newIsSharesURLs, hasChange := utils.GetChangeWithParse(d, "is_shares_urls", utils.MustValueAs[bool]); hasChange {
+		updateInput.IsSharesURLs = newIsSharesURLs
+	}
+
 	if oldURLsString, newURLsString, hasChange := utils.GetChangeWithParse(d, "urls", utils.MustSchemaCollectionToSlice[string]); hasChange {
 		oldURLsIDs := utils.MustResourceDataCollectionToSlice[string](d, "urls_ids")
 		oldURLsToIDsMap := make(map[string]string)
@@ -118,7 +122,7 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 				SourceIdentifier: oldSourceIdentifier.SourceIdentifier,
 				AddValues:        valuesToAdd,
 				RemoveValues:     valuesIDsToRemove,
-				UpdateValues:     []string{},
+				UpdateValues:     []models.UpdateSourceIdentifierValue{},
 			})
 		}
 
@@ -126,6 +130,28 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 		for _, oldSourceIdentifier := range oldSourceIdentifiers {
 			if _, ok := newSourceIdentifiersIndicatorMap[oldSourceIdentifier.SourceIdentifier]; !ok {
 				updateInput.RemoveSourceIdentifiers = append(updateInput.RemoveSourceIdentifiers, oldSourceIdentifier.ID)
+			}
+		}
+	}
+
+	if oldTags, newTags, hasChange := utils.GetChangeWithParse(d, "tags", parseSchemaTags); hasChange {
+		oldTagsIndicatorMap := oldTags.ToIndicatorsMap()
+		for _, newTag := range newTags {
+			// if tag does not exist - add it
+			if _, ok := oldTagsIndicatorMap[newTag.Key]; !ok {
+				updateInput.AddTags = append(updateInput.AddTags, models.AddTag{
+					Key:   newTag.Key,
+					Value: newTag.Value,
+				})
+
+				continue
+			}
+		}
+
+		newTagsIndicatorMap := newTags.ToIndicatorsMap()
+		for _, oldTag := range oldTags {
+			if _, ok := newTagsIndicatorMap[oldTag.Key]; !ok {
+				updateInput.RemoveTags = append(updateInput.RemoveTags, oldTag.Key)
 			}
 		}
 	}
@@ -155,19 +181,19 @@ func UpdateWebApplicationAsset(ctx context.Context, c *api.Client, id any, input
 }
 
 // parseSchemaSourceIdentifiers converts the source identifiers (type schema.TypeSet) to a slice of map[string]any
-// and then converts the it to a slice of modles.SourceIdentifierInput
+// and then converts it to a slice of models.SourceIdentifierInput
 func parseSchemaSourceIdentifiers(sourceIdentifiersFromResourceData any) models.SourceIdentifiersInputs {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](sourceIdentifiersFromResourceData), mapToSourceIdentifierInput)
 }
 
 // parseSchemaPracticeWrappers converts the practice wrappers (type schema.TypeSet) to a slice of map[string]any
-// and then converts the it to a slice of modles.PracticeWrapperInput
+// and then converts it to a slice of models.PracticeWrapperInput
 func parseSchemaPracticeWrappers(practiceWrappersFromResourceData any) []models.PracticeWrapperInput {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](practiceWrappersFromResourceData), mapToPracticeWrapperInput)
 }
 
 // parseSchemaProxySettings converts the proxy settings (type schema.TypeSet) to a slice of map[string]any
-// and then converts the it to a slice of modles.PracticeWrapperInput
+// and then converts it to a slice of models.PracticeWrapperInput
 func parseSchemaProxySettings(proxySettingsInterfaceFromResourceData any) models.ProxySettingInputs {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](proxySettingsInterfaceFromResourceData), mapToProxySettingInput)
 }
@@ -175,16 +201,20 @@ func parseSchemaProxySettings(proxySettingsInterfaceFromResourceData any) models
 // validatePracticeWrapperInput validates that there is no empty modes in the input (because this falis the update api call)
 // this function is used during update of a practice since the getChange func of the terraform helper package
 // sometimes returns an extra empty practice
-func validatePracticeWrapperInput(pracitce models.PracticeWrapperInput) bool {
-	if pracitce.PracticeID == "" || pracitce.MainMode == "" {
+func validatePracticeWrapperInput(practice models.PracticeWrapperInput) bool {
+	if practice.PracticeID == "" || practice.MainMode == "" {
 		return false
 	}
 
-	for _, mode := range pracitce.SubPracticeModes {
+	for _, mode := range practice.SubPracticeModes {
 		if mode.Mode == "" {
 			return false
 		}
 	}
 
 	return true
+}
+
+func parseSchemaTags(tagsFromResourceData any) models.TagsInputs {
+	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](tagsFromResourceData), mapToTagsInputs)
 }

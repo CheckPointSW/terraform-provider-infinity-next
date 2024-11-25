@@ -14,7 +14,7 @@ func CreateWebUserResponseBehaviorInputFromResourceData(d *schema.ResourceData) 
 	var input models.CreateWebUserResponseBehaviorInput
 
 	input.Name = d.Get("name").(string)
-	input.Visibility = "Shared"
+	input.Visibility = d.Get("visibility").(string)
 	input.Mode = d.Get("mode").(string)
 	input.MessageTitle = d.Get("message_title").(string)
 	input.MessageBody = d.Get("message_body").(string)
@@ -36,6 +36,7 @@ func NewWebUserResponseBehavior(ctx context.Context, c *api.Client, input models
 							mode
 							messageTitle
 							messageBody
+							visibility
 							httpResponseCode
 							redirectURL
 							xEventId

@@ -18,6 +18,7 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 	d.Set("practice_type", practice.PracticeType)
 	d.Set("category", practice.Category)
 	d.Set("default", practice.Default)
+	d.Set("visibility", practice.Visibility)
 
 	ipsSchema := models.SchemaIPS{
 		ID:                  practice.IPS.ID,
@@ -85,18 +86,6 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 		IsFileExist: practice.SchemaValidation.OASSchema.IsFileExist,
 	}
 
-	//oasSchema := models.OASSchema{
-	//	Data:        decodedData,
-	//	Name:        practice.SchemaValidation.OASSchema.Name,
-	//	Size:        practice.SchemaValidation.OASSchema.Size,
-	//	IsFileExist: practice.SchemaValidation.OASSchema.IsFileExist,
-	//}
-	//
-	//schemaValidation := models.SchemaValidationSchema{
-	//	ID:        practice.SchemaValidation.ID,
-	//	OASSchema: []models.OASSchema{oasSchema},
-	//}
-
 	schemaValidationMap, err := utils.UnmarshalAs[map[string]any](schemaValidation)
 	if err != nil {
 		return fmt.Errorf("failed to convert SchemaValidation struct to map. Error: %w", err)
@@ -139,6 +128,7 @@ func GetWebAPIPractice(ctx context.Context, c *api.Client, id string) (models.We
 			getWebAPIPractice(id: "`+id+`") {
 				id
 				name
+				visibility
 				practiceType
 				category
 				default

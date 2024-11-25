@@ -21,6 +21,8 @@ func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (mod
 	res.PracticeWrappers = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "practice"), mapToPracticeWrapperInput)
 	res.ProxySettings = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "proxy_setting"), mapToProxySettingInput)
 	res.SourceIdentifiers = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "source_identifier"), mapToSourceIdentifierInput)
+	res.Tags = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "tags"), mapToTagsInputs)
+	res.IsSharesURLs = d.Get("is_shares_urls").(bool)
 
 	return res, nil
 }
@@ -54,6 +56,11 @@ func NewWebApplicationAsset(ctx context.Context, c *api.Client, input models.Cre
 							profiles {
 								id
 							}
+							tags {
+								id
+								key
+								value
+							}
 							behaviors {
 								id
 							}
@@ -85,6 +92,7 @@ func NewWebApplicationAsset(ctx context.Context, c *api.Client, input models.Cre
 							mainAttributes
 							intelligenceTags
 							readOnly
+							isSharesURLs
 						}
 					}
 				`, "newWebApplicationAsset", vars)
@@ -111,15 +119,15 @@ func mapToPracticeWrapperInput(practiceWrapperMap map[string]any) models.Practic
 	practicesModesMap := make(map[string]string)
 
 	if subPracticesModes, ok := practiceWrapperMap["sub_practices_modes"]; ok {
-		for subPratice, mode := range subPracticesModes.(map[string]any) {
-			practicesModesMap[subPratice] = mode.(string)
+		for subPractice, mode := range subPracticesModes.(map[string]any) {
+			practicesModesMap[subPractice] = mode.(string)
 		}
 	}
 
 	practiceWrapper.SubPracticeModes = make([]models.PracticeModeInput, 0, len(practicesModesMap))
-	for subPratice, mode := range practicesModesMap {
+	for subPractice, mode := range practicesModesMap {
 		practiceWrapper.SubPracticeModes = append(practiceWrapper.SubPracticeModes,
-			models.PracticeModeInput{Mode: mode, SubPractice: subPratice})
+			models.PracticeModeInput{Mode: mode, SubPractice: subPractice})
 	}
 
 	if triggersInterface, ok := practiceWrapperMap["triggers"]; ok {
@@ -156,4 +164,11 @@ func mapToSourceIdentifierInput(sourceIdentifierMap map[string]any) models.Sourc
 	}
 
 	return ret
+}
+
+func mapToTagsInputs(tagsMap map[string]any) models.TagInput {
+	var ret models.TagInput
+	ret.Key, ret.Value = tagsMap["key"].(string), tagsMap["value"].(string)
+	return ret
+
 }

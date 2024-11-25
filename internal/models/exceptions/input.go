@@ -20,9 +20,21 @@ type ExceptionObjectInput struct {
 	Comment string   `json:"comment,omitempty"`
 }
 
+type ExceptionObjectInputs []ExceptionObjectInput
+
 // CreateExceptionBehaviorInput represents the api input for creating an Exception behavior object
 type CreateExceptionBehaviorInput struct {
-	Name       string                 `json:"name,omitempty"`
-	Visibility string                 `json:"visibility,omitempty"`
-	Exceptions []ExceptionObjectInput `json:"exceptions,omitempty"`
+	Name       string                `json:"name,omitempty"`
+	Visibility string                `json:"visibility,omitempty"`
+	Exceptions ExceptionObjectInputs `json:"exceptions,omitempty"`
+}
+
+// ToIndicatorsMap converts a models.ExceptionObjectInput to a map from an exception object id to the exception object struct itself
+func (inputs ExceptionObjectInputs) ToIndicatorsMap() map[string]ExceptionObjectInput {
+	ret := make(map[string]ExceptionObjectInput)
+	for _, input := range inputs {
+		ret[input.ID] = input
+	}
+
+	return ret
 }

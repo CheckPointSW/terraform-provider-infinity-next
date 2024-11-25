@@ -69,6 +69,10 @@ func UpdateCloudGuardAppSecGatewayProfileInputFromResourceData(d *schema.Resourc
 			upgradeTime.WeekDays = newUpgradeTimeWeekDays
 		}
 
+		if _, newUpgradeTime, hasChange := utils.MustGetChange[models.UpdateUpgradeTimeInput](d, "upgrade_time"); hasChange {
+			upgradeTime = newUpgradeTime
+		}
+
 		res.UpgradeTime = &upgradeTime
 	}
 

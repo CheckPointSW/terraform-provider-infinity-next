@@ -16,6 +16,7 @@ func GetWebUserResponseBehavior(ctx context.Context, c *api.Client, id string) (
 				getWebUserResponseBehavior(id: "`+id+`") {
 					id
 					name
+					visibility
 					mode
 					messageTitle
 					messageBody
@@ -41,6 +42,7 @@ func GetWebUserResponseBehavior(ctx context.Context, c *api.Client, id string) (
 func ReadWebUserResponseBehaviorToResourceData(behavior models.WebUserResponseBehavior, d *schema.ResourceData) error {
 	d.SetId(behavior.ID)
 	d.Set("name", behavior.Name)
+	d.Set("visibility", behavior.Visibility)
 	d.Set("mode", behavior.Mode)
 	d.Set("message_title", behavior.MessageTitle)
 	d.Set("message_body", behavior.MessageBody)

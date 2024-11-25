@@ -73,6 +73,10 @@ func UpdateEmbeddedProfileInputFromResourceData(d *schema.ResourceData) (models.
 			upgradeTime.WeekDays = newUpgradeTimeWeekDays
 		}
 
+		if _, newUpgradeTimeDays, hasChange := utils.GetChangeWithParse(d, "upgrade_time_days", utils.MustSchemaCollectionToSlice[int]); hasChange {
+			upgradeTime.Days = newUpgradeTimeDays
+		}
+
 		res.UpgradeTime = &upgradeTime
 	}
 
@@ -83,14 +87,14 @@ func UpdateEmbeddedProfileInputFromResourceData(d *schema.ResourceData) (models.
 	return res, nil
 }
 
-func handleUpdateAdditionalSetting(d *schema.ResourceData, settingsKey, setttingsIDsKey string) ([]models.KeyValueInput, []models.KeyValueUpdateInput, []string) {
+func handleUpdateAdditionalSetting(d *schema.ResourceData, settingsKey, settingsIDsKey string) ([]models.KeyValueInput, []models.KeyValueUpdateInput, []string) {
 	if oldSettingMap, newSettingMap, hasChange := utils.GetChangeWithParse(d, settingsKey, utils.MustValueAs[map[string]any]); hasChange {
-		// get reverse proxy additional settings ids - each in the format: "<key><additonalSettingsIDSeparator><ID>"
+		// get reverse proxy additional settings ids - each in the format: "<key><additionalSettingsIDSeparator><ID>"
 		additionalSettingsIDsMap := make(map[string]string)
-		additionalSettingsIDsInterface := d.Get(setttingsIDsKey).(*schema.Set).List()
-		for _, intefaceUnparsedID := range additionalSettingsIDsInterface {
+		additionalSettingsIDsInterface := d.Get(settingsIDsKey).(*schema.Set).List()
+		for _, interfaceUnparsedID := range additionalSettingsIDsInterface {
 			// parse ID
-			keyAndID := strings.Split(intefaceUnparsedID.(string), additonalSettingsIDSeparator)
+			keyAndID := strings.Split(interfaceUnparsedID.(string), additonalSettingsIDSeparator)
 			key, settingID := keyAndID[0], keyAndID[1]
 			additionalSettingsIDsMap[key] = settingID
 		}

@@ -25,8 +25,10 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 	d.Set("intelligence_tags", asset.IntelligenceTags)
 	d.Set("read_only", asset.ReadOnly)
 	d.Set("upstream_url", asset.UpstreamURL)
-	d.Set("trusted_sources", asset.Behaviors.ToSchema())
+	d.Set("behaviors", asset.Behaviors.ToSchema())
 	d.Set("profiles", asset.Profiles.ToSchema())
+	d.Set("is_shares_urls", asset.IsSharesURLs)
+	d.Set("state", asset.State)
 
 	proxySettingsSchemaMap, err := utils.UnmarshalAs[[]map[string]any](asset.ProxySettings)
 	if err != nil {
@@ -55,6 +57,13 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 
 	d.Set("practice", schemaPracticeWrappersMap)
 
+	tagsSchemaMap, err := utils.UnmarshalAs[[]map[string]any](asset.Tags)
+	if err != nil {
+		return fmt.Errorf("failed to convert tags to slice of maps. Error: %+v", err)
+	}
+
+	d.Set("tags", tagsSchemaMap)
+
 	return nil
 }
 
@@ -81,9 +90,6 @@ func GetWebAPIAsset(ctx context.Context, c *api.Client, id string) (models.WebAP
 					triggers {
 						id
 					}
-					behaviors {
-						id
-					}
 				}
 				profiles {
 					id
@@ -91,6 +97,11 @@ func GetWebAPIAsset(ctx context.Context, c *api.Client, id string) (models.WebAP
 				behaviors {
 					id
 					name
+				}
+				tags {
+					id
+					key
+					value
 				}
 				sourceIdentifiers {
 					id

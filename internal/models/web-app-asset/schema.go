@@ -30,3 +30,9 @@ type SchemaSourceIdentifier struct {
 	Values           []string `json:"values"`
 	ValuesIDs        []string `json:"values_ids"`
 }
+
+type SchemaTag struct {
+	ID    string `json:"id,omitempty"`
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}

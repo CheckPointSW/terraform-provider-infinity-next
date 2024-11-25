@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/exceptions"
@@ -77,6 +78,8 @@ func matchSchema(nestLevel int) *schema.Resource {
 }
 
 func ResourceExceptions() *schema.Resource {
+	validateVisibility := validation.ToDiagFunc(
+		validation.StringInSlice([]string{visibilityShared, visibilityLocal}, false))
 	return &schema.Resource{
 		Description: "Exceptions allows overriding the AppSec ML engine decision based on specific parameters",
 
@@ -97,6 +100,13 @@ func ResourceExceptions() *schema.Resource {
 				Type:        schema.TypeString,
 				Description: "The name of the resource, also acts as its unique ID",
 				Required:    true,
+			},
+			"visibility": {
+				Type:             schema.TypeString,
+				Description:      "The visibility of the exception: Shared or Local",
+				Default:          "Shared",
+				Optional:         true,
+				ValidateDiagFunc: validateVisibility,
 			},
 			"exception": {
 				Type:        schema.TypeSet,
@@ -153,6 +163,8 @@ func resourceExceptionsCreate(ctx context.Context, d *schema.ResourceData, meta 
 		return utils.DiagError("unable to perform ExceptionBehavior Create", err, diags)
 	}
 
+	fmt.Printf("Created ExceptionBehavior: %v\n", behavior)
+
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
@@ -186,6 +198,8 @@ func resourceExceptionsRead(ctx context.Context, d *schema.ResourceData, meta an
 		return utils.DiagError("failed to get ExceptionBehavior for read into state file", err, diags)
 	}
 
+	fmt.Printf("Read ExceptionBehavior: %v\n", behavior)
+
 	if err := exceptions.ReadExceptionBehaviorToResourceData(behavior, d); err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -214,6 +228,8 @@ func resourceExceptionsUpdate(ctx context.Context, d *schema.ResourceData, meta 
 
 		return utils.DiagError("unable to perform ExceptionBehavior Update", err, diags)
 	}
+
+	fmt.Printf("Updated ExceptionBehavior: %v\n", d.Id())
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
@@ -256,6 +272,8 @@ func resourceExceptionsDelete(ctx context.Context, d *schema.ResourceData, meta 
 
 		return utils.DiagError("unable to perform ExceptionBehavior Delete", err, diags)
 	}
+
+	fmt.Printf("Deleted ExceptionBehavior: %v\n", d.Id())
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {

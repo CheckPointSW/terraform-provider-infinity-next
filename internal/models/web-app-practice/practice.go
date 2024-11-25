@@ -45,14 +45,35 @@ type WebApplicationIPS struct {
 	LowConfidence       string `json:"lowConfidence"`
 }
 
+type FileSecurity struct {
+	ID                        string `json:"id,omitempty"`
+	SeverityLevel             string `json:"severityLevel,omitempty"`
+	HighConfidence            string `json:"highConfidence,omitempty"`
+	MediumConfidence          string `json:"mediumConfidence,omitempty"`
+	LowConfidence             string `json:"lowConfidence,omitempty"`
+	AllowFileSizeLimit        string `json:"allowFileSizeLimit,omitempty"`
+	FileSizeLimit             int    `json:"fileSizeLimit,omitempty"`
+	FileSizeLimitUnit         string `json:"fileSizeLimitUnit,omitempty"`
+	FilesWithoutName          string `json:"filesWithoutName,omitempty"`
+	RequiredArchiveExtraction bool   `json:"requiredArchiveExtraction,omitempty"`
+	ArchiveFileSizeLimit      int    `json:"archiveFileSizeLimit,omitempty"`
+	ArchiveFileSizeLimitUnit  string `json:"archiveFileSizeLimitUnit,omitempty"`
+	AllowArchiveWithinArchive string `json:"allowArchiveWithinArchive,omitempty"`
+	AllowAnUnopenedArchive    string `json:"allowAnUnopenedArchive,omitempty"`
+	AllowFileType             bool   `json:"allowFileType,omitempty"`
+	RequiredThreatEmulation   bool   `json:"requiredThreatEmulation,omitempty"`
+}
+
 type WebApplicationPractice struct {
 	ID           string                   `json:"id"`
 	Name         string                   `json:"name"`
 	Category     string                   `json:"category"`
 	PracticeType string                   `json:"practiceType"`
+	Visibility   string                   `json:"visibility"`
 	IPS          WebApplicationIPS        `json:"IPS"`
 	WebBot       WebApplicationWebBot     `json:"WebBot"`
 	WebAttacks   WebApplicationWebAttacks `json:"WebAttacks"`
+	FileSecurity FileSecurity             `json:"FileSecurity"`
 	Default      bool                     `json:"default"`
 }
 

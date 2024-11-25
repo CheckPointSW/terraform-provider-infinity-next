@@ -17,6 +17,10 @@ func UpdateWebApplicationPracticeInputFromResourceData(d *schema.ResourceData) (
 		updateInput.Name = newName
 	}
 
+	if _, newVisibility, hasChange := utils.MustGetChange[string](d, "visibility"); hasChange {
+		updateInput.Visibility = newVisibility
+	}
+
 	if oldIPSSlice, newIPSSlice, hasChange := utils.GetChangeWithParse(d, "ips", parseSchemaIPS); hasChange && len(newIPSSlice) > 0 {
 		if len(oldIPSSlice) > 0 {
 			newIPSSlice[0].ID = oldIPSSlice[0].ID
@@ -41,8 +45,8 @@ func UpdateWebApplicationPracticeInputFromResourceData(d *schema.ResourceData) (
 			oldInjectURIsToIDsMap := oldSchemaWebBot.InjectURIsIDs.ToIndicatorsMap()
 			var removedInjectURIsIDs []string
 			for _, removedInjectURI := range removedInjectURIs {
-				if removdID, ok := oldInjectURIsToIDsMap[removedInjectURI]; ok {
-					removedInjectURIsIDs = append(removedInjectURIsIDs, removdID)
+				if removedID, ok := oldInjectURIsToIDsMap[removedInjectURI]; ok {
+					removedInjectURIsIDs = append(removedInjectURIsIDs, removedID)
 				}
 			}
 
@@ -50,8 +54,8 @@ func UpdateWebApplicationPracticeInputFromResourceData(d *schema.ResourceData) (
 			oldValidURIsToIDsMap := oldSchemaWebBot.ValidURIsIDs.ToIndicatorsMap()
 			var removedValidURIsIDs []string
 			for _, removedValidURI := range removedValidURIs {
-				if removdID, ok := oldValidURIsToIDsMap[removedValidURI]; ok {
-					removedValidURIsIDs = append(removedValidURIsIDs, removdID)
+				if removedID, ok := oldValidURIsToIDsMap[removedValidURI]; ok {
+					removedValidURIsIDs = append(removedValidURIsIDs, removedID)
 				}
 			}
 
@@ -59,8 +63,10 @@ func UpdateWebApplicationPracticeInputFromResourceData(d *schema.ResourceData) (
 				ID:                  oldSchemaWebBot.ID,
 				AddInjectURIs:       addedInjectURIs,
 				RemoveInjectURIsIDs: removedInjectURIsIDs,
+				UpdateInjectURIs:    models.UpdateURIsInputs{},
 				AddValidURIs:        addedValidURIs,
 				RemoveValidURIsIDs:  removedValidURIsIDs,
+				UpdateValidURIs:     models.UpdateURIsInputs{},
 			}
 
 		} else {
@@ -71,12 +77,20 @@ func UpdateWebApplicationPracticeInputFromResourceData(d *schema.ResourceData) (
 		}
 	}
 
+	if oldFileSecurity, newFileSecurity, hasChange := utils.GetChangeWithParse(d, "file_security", parseSchemaFileSecurity); hasChange && len(newFileSecurity) > 0 {
+		if len(oldFileSecurity) > 0 {
+			newFileSecurity[0].ID = oldFileSecurity[0].ID
+		}
+
+		updateInput.FileSecurity = newFileSecurity[0]
+	}
+
 	return updateInput, nil
 }
 
 func parseSchemaIPS(schemaIPS any) []models.UpdateWebApplicationPracticeIPSInput {
 	input := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaIPS), mapToIPSInput)
-	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateWebApplicationPracticeIPSInput, models.WebApplicationPractcieIPSInput])
+	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateWebApplicationPracticeIPSInput, models.WebApplicationPracticeIPSInput])
 }
 
 func parseSchemaWebAttacks(schemaWebAttacks any) []models.UpdateWebApplicationPracticeWebAttacksInput {
@@ -118,4 +132,9 @@ func UpdateWebApplicationPractice(ctx context.Context, c *api.Client, id string,
 	}
 
 	return value, err
+}
+
+func parseSchemaFileSecurity(schemaFileSecurity any) []models.UpdateFileSecurity {
+	input := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaFileSecurity), mapToFileSecurityInput)
+	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateFileSecurity, models.FileSecurityInput])
 }

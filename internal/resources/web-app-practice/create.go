@@ -10,8 +10,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func mapToIPSInput(ipsMap map[string]any) models.WebApplicationPractcieIPSInput {
-	return models.WebApplicationPractcieIPSInput{
+func mapToIPSInput(ipsMap map[string]any) models.WebApplicationPracticeIPSInput {
+	return models.WebApplicationPracticeIPSInput{
 		PerformanceImpact:   ipsMap["performance_impact"].(string),
 		SeverityLevel:       ipsMap["severity_level"].(string),
 		ProtectionsFromYear: "Y" + ipsMap["protections_from_year"].(string),
@@ -58,11 +58,37 @@ func mapToWebBotInput(webBotMap map[string]any) models.WebApplicationPracticeWeb
 	return webBotInput
 }
 
+func mapToFileSecurityInput(fileSecurityMap map[string]any) models.FileSecurityInput {
+	var ret models.FileSecurityInput
+
+	if id, ok := fileSecurityMap["id"]; ok {
+		ret.ID = id.(string)
+	}
+
+	ret.SeverityLevel = fileSecurityMap["severity_level"].(string)
+	ret.HighConfidence = fileSecurityMap["high_confidence"].(string)
+	ret.MediumConfidence = fileSecurityMap["medium_confidence"].(string)
+	ret.LowConfidence = fileSecurityMap["low_confidence"].(string)
+	ret.AllowFileSizeLimit = fileSecurityMap["allow_file_size_limit"].(string)
+	ret.FileSizeLimit = fileSecurityMap["file_size_limit"].(int)
+	ret.FileSizeLimitUnit = fileSecurityMap["file_size_limit_unit"].(string)
+	ret.FilesWithoutName = fileSecurityMap["files_without_name"].(string)
+	ret.RequiredArchiveExtraction = fileSecurityMap["required_archive_extraction"].(bool)
+	ret.ArchiveFileSizeLimit = fileSecurityMap["archive_file_size_limit"].(int)
+	ret.ArchiveFileSizeLimitUnit = fileSecurityMap["archive_file_size_limit_unit"].(string)
+	ret.AllowArchiveWithinArchive = fileSecurityMap["allow_archive_within_archive"].(string)
+	ret.AllowAnUnopenedArchive = fileSecurityMap["allow_an_unopened_archive"].(string)
+	ret.AllowFileType = fileSecurityMap["allow_file_type"].(bool)
+	ret.RequiredThreatEmulation = fileSecurityMap["required_threat_emulation"].(bool)
+
+	return ret
+}
+
 func CreateWebApplicationPracticeInputFromResourceData(d *schema.ResourceData) (models.CreateWebApplicationPracticeInput, error) {
 	var res models.CreateWebApplicationPracticeInput
 
 	res.Name = d.Get("name").(string)
-	res.Visibility = "Shared"
+	res.Visibility = d.Get("visibility").(string)
 	ipsSlice := utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "ips"), mapToIPSInput)
 	if len(ipsSlice) > 0 {
 		res.IPS = ipsSlice[0]
@@ -78,6 +104,11 @@ func CreateWebApplicationPracticeInputFromResourceData(d *schema.ResourceData) (
 		res.WebBot = webBotSlice[0]
 	}
 
+	fileSecuritySlice := utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "file_security"), mapToFileSecurityInput)
+	if len(fileSecuritySlice) > 0 {
+		res.FileSecurity = fileSecuritySlice[0]
+	}
+
 	return res, nil
 }
 
@@ -89,6 +120,7 @@ func NewWebApplicationPractice(ctx context.Context, c *api.Client, input models.
 						newWebApplicationPractice(ownerId: $ownerId, subPracticeModes: $subPracticeModes, mainMode: $mainMode, practiceInput: $practiceInput) {
 							id
 							name
+							visibility
 							practiceType
 							category
 							default
@@ -126,6 +158,24 @@ func NewWebApplicationPractice(ctx context.Context, c *api.Client, input models.
 									id
 									URI
 								}
+							}
+							FileSecurity {
+								id
+								severityLevel
+								highConfidence
+								mediumConfidence
+								lowConfidence
+								allowFileSizeLimit
+								fileSizeLimit
+								fileSizeLimitUnit
+								filesWithoutName
+								requiredArchiveExtraction
+								archiveFileSizeLimit
+								archiveFileSizeLimitUnit	
+								allowArchiveWithinArchive
+								allowAnUnopenedArchive
+								allowFileType
+								requiredThreatEmulation
 							}
 						}
 					}

@@ -74,6 +74,15 @@ func handleScheduledUpgradeMode(d *schema.ResourceData) models.ScheduleTimeInput
 		}
 	}
 
+	if v, ok := d.GetOk("upgrade_time_days"); ok {
+		days := v.(*schema.Set).List()
+		res.Days = make([]int, 0, len(days))
+		for _, dayInterface := range days {
+			day := dayInterface.(int)
+			res.Days = append(res.Days, day)
+		}
+	}
+
 	return res
 }
 
@@ -102,6 +111,9 @@ func NewEmbeddedProfile(ctx context.Context, c *api.Client, input models.CreateE
 								time
 								... on ScheduleDaysInWeek {
 									weekDays
+								}
+								... on ScheduleDaysInMonth {
+									days
 								}
 							}
 							onlyDefinedApplications

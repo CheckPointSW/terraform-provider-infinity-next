@@ -16,8 +16,8 @@ func CreateLogTriggerInputFromResourceData(d *schema.ResourceData) (models.Creat
 	res.Verbosity = d.Get("verbosity").(string)
 	res.AccessControlAllowEvents = d.Get("access_control_allow_events").(bool)
 	res.AccessControlDropEvents = d.Get("access_control_drop_events").(bool)
-	res.ThreaPreventionDetectEvents = d.Get("threat_prevention_detect_events").(bool)
-	res.ThreaPreventionPreventEvents = d.Get("threat_prevention_prevent_events").(bool)
+	res.ThreatPreventionDetectEvents = d.Get("threat_prevention_detect_events").(bool)
+	res.ThreatPreventionPreventEvents = d.Get("threat_prevention_prevent_events").(bool)
 	res.WebRequests = d.Get("web_requests").(bool)
 	res.WebURLPath = d.Get("web_url_path").(bool)
 	res.WebURLQuery = d.Get("web_url_query").(bool)
@@ -31,10 +31,14 @@ func CreateLogTriggerInputFromResourceData(d *schema.ResourceData) (models.Creat
 	res.ResponseCode = d.Get("response_code").(bool)
 	res.LogToSyslog = d.Get("log_to_syslog").(bool)
 	res.SyslogIPAddress = d.Get("syslog_ip_address").(string)
+	res.SyslogProtocol = d.Get("syslog_protocol").(string)
 	res.SyslogPort = d.Get("syslog_port").(int)
 	res.LogToCEF = d.Get("log_to_cef").(bool)
 	res.CEFIPAddress = d.Get("cef_ip_address").(string)
 	res.CEFPort = d.Get("cef_port").(int)
+	res.CEFProtocol = d.Get("cef_protocol").(string)
+	res.ComplianceWarnings = d.Get("compliance_warnings").(bool)
+	res.ComplianceViolations = d.Get("compliance_violations").(bool)
 
 	return res, nil
 }
@@ -48,6 +52,8 @@ func NewLogTrigger(ctx context.Context, c *api.Client, triggerInput models.Creat
 					id
 					name
 					verbosity
+					complianceWarnings
+					complianceViolations
 					acAllow
 					acDrop
 					tpDetect
@@ -65,10 +71,12 @@ func NewLogTrigger(ctx context.Context, c *api.Client, triggerInput models.Creat
 					responseCode
 					logToSyslog
 					syslogIpAddress
+					syslogProtocol
 					syslogPortNum
 					logToCef
 					cefIpAddress
 					cefPortNum
+					cefProtocol
 				}
 			}
 		`, "newLogTrigger", vars)

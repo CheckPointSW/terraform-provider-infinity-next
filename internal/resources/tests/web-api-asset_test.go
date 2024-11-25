@@ -91,6 +91,9 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 						"main_attributes":                  fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path2;http://host/%[1]s/path3\"}", assetNameAttribute),
 						"asset_type":                       "WebAPI",
 						"intelligence_tags":                "",
+						"tag.#":                            "1",
+						"tag.0.key":                        "tagkey1",
+						"tag.0.value":                      "tagvalue1",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -103,6 +106,7 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path2", assetNameAttribute)),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path3", assetNameAttribute)),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tag.0.id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -183,6 +187,12 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"main_attributes":                  fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path1;http://host/%[1]s/path2\"}", assetNameAttribute),
 						"asset_type":                       "WebAPI",
 						"intelligence_tags":                "",
+						"tag.#":                            "2",
+						"tag.0.key":                        "tagkey1",
+						"tag.0.value":                      "tagvalue1",
+						"tag.1.key":                        "tagkey2",
+						"tag.1.value":                      "tagvalue2",
+						"is_shares_urls":                   "false",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -194,6 +204,8 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "proxy_setting.2.id"),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path1", assetNameAttribute)),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path2", assetNameAttribute)),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tag.0.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tag.1.id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -248,6 +260,14 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"main_attributes":                  fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path3;http://host/%[1]s/path4\"}", assetNameAttribute),
 						"asset_type":                       "WebAPI",
 						"intelligence_tags":                "",
+						"tag.#":                            "3",
+						"tag.0.key":                        "tagkey1",
+						"tag.0.value":                      "tagvalue2",
+						"tag.1.key":                        "tagkey2",
+						"tag.1.value":                      "tagvalue1",
+						"tag.2.key":                        "tagkey3",
+						"tag.2.value":                      "tagvalue3",
+						"is_shares_urls":                   "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -259,6 +279,9 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "proxy_setting.2.id"),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path3", assetNameAttribute)),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path4", assetNameAttribute)),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tag.0.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tag.1.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tag.2.id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -321,6 +344,10 @@ resource "inext_web_api_asset" %[1]q {
     	identifier = "HeaderKey"
     	values     = ["value1"]
   	}
+	tag {
+		key   = "tagkey1"
+		value = "tagvalue1"
+	}
 }
 
 resource "inext_appsec_gateway_profile" %[2]q {
@@ -455,6 +482,15 @@ resource "inext_web_api_asset" %[1]q {
 	  identifier = "HeaderKey"
 	  values     = ["value1"]
 	}
+	tag {
+	  key   = "tagkey1"
+	  value = "tagvalue1"
+	}
+	tag {
+	  key   = "tagkey2"
+	  value = "tagvalue2"
+	}
+	is_shares_urls = false
 }
 
 resource "inext_appsec_gateway_profile" %[2]q {
@@ -623,6 +659,19 @@ resource "inext_web_api_asset" %[1]q {
 	  identifier = "Cookie"
 	  values     = ["value8", "value9"]
 	}
+	tag {
+	  key   = "tagkey1"
+	  value = "tagvalue2"
+	}
+	tag {
+	  key   = "tagkey2"
+      value = "tagvalue1"
+	}
+	tag {
+	  key   = "tagkey3"
+	  value = "tagvalue3"
+	}
+	is_shares_urls = true
 }
 
 resource "inext_appsec_gateway_profile" %[2]q {
