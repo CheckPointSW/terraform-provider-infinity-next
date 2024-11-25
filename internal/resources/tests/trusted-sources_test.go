@@ -117,7 +117,7 @@ func trustedSourcesWithIdentifiersConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_trusted_sources" %[1]q {
 	name                = %[1]q
-	visibility          = "Local"
+	visibility          = "Shared"
 	min_num_of_sources  = 1
 	sources_identifiers = ["identifier1", "identifier2", "identifier3"]
 }
@@ -128,7 +128,7 @@ func trustedSourcesUpdateCreateSourceIdentifiersConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_trusted_sources" %[1]q {
 	name                = %[1]q
-	visibility          = "Shared"
+	visibility          = "Local"
 	min_num_of_sources  = 2
 	sources_identifiers = ["identifier1", "identifier2", "identifier3"]
 }
