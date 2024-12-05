@@ -77,13 +77,13 @@ func UpdateWebApplicationPracticeInputFromResourceData(d *schema.ResourceData) (
 		}
 	}
 
-	if oldFileSecurity, newFileSecurity, hasChange := utils.GetChangeWithParse(d, "file_security", parseSchemaFileSecurity); hasChange && len(newFileSecurity) > 0 {
-		if len(oldFileSecurity) > 0 {
-			newFileSecurity[0].ID = oldFileSecurity[0].ID
-		}
-
-		updateInput.FileSecurity = newFileSecurity[0]
-	}
+	//if oldFileSecurity, newFileSecurity, hasChange := utils.GetChangeWithParse(d, "file_security", parseSchemaFileSecurity); hasChange && len(newFileSecurity) > 0 {
+	//	if len(oldFileSecurity) > 0 {
+	//		newFileSecurity[0].ID = oldFileSecurity[0].ID
+	//	}
+	//
+	//	updateInput.FileSecurity = newFileSecurity[0]
+	//}
 
 	return updateInput, nil
 }
@@ -134,7 +134,7 @@ func UpdateWebApplicationPractice(ctx context.Context, c *api.Client, id string,
 	return value, err
 }
 
-func parseSchemaFileSecurity(schemaFileSecurity any) []models.UpdateFileSecurity {
-	input := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaFileSecurity), mapToFileSecurityInput)
-	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateFileSecurity, models.FileSecurityInput])
-}
+//func parseSchemaFileSecurity(schemaFileSecurity any) []models.UpdateFileSecurity {
+//	input := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaFileSecurity), mapToFileSecurityInput)
+//	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateFileSecurity, models.FileSecurityInput])
+//}

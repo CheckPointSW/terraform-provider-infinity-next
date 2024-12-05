@@ -2,8 +2,6 @@ package resources
 
 import (
 	"context"
-	"fmt"
-
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	webapppractice "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-practice"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
@@ -39,8 +37,8 @@ func ResourceWebAppPractice() *schema.Resource {
 		validation.StringInSlice([]string{severityLevelLowOrAbove, severityLevelMediumOrAbove, severityLevelHighOrAbove, severityLevelCritical}, false))
 	validationFileSecurityMode := validation.ToDiagFunc(
 		validation.StringInSlice([]string{fileSecurityModeDetect, fileSecurityModePrevent, fileSecurityModeInactive, fileSecurityModeAccordingToPractice}, false))
-	validationFileSizeUnits := validation.ToDiagFunc(
-		validation.StringInSlice([]string{fileSizeUnitsBytes, fileSizeUnitsKB, fileSizeUnitsMB, fileSizeUnitsGB}, false))
+	//validationFileSizeUnits := validation.ToDiagFunc(
+	//	validation.StringInSlice([]string{fileSizeUnitsBytes, fileSizeUnitsKB, fileSizeUnitsMB, fileSizeUnitsGB}, false))
 	validationVisibility := validation.ToDiagFunc(
 		validation.StringInSlice([]string{visibilityShared, visibilityLocal}, false))
 	validationPerformanceImpact := validation.ToDiagFunc(
@@ -304,115 +302,115 @@ func ResourceWebAppPractice() *schema.Resource {
 					},
 				},
 			},
-			"file_security": {
-				Type:     schema.TypeSet,
-				Optional: true,
-				Computed: true,
-				MaxItems: 1,
-				Elem: &schema.Resource{
-					Schema: map[string]*schema.Schema{
-						"id": {
-							Type:     schema.TypeString,
-							Computed: true,
-						},
-						"severity_level": {
-							Type:             schema.TypeString,
-							Description:      "LowOrAbove, MediumOrAbove, HighOrAbove or Critical",
-							Default:          "MediumOrAbove",
-							Optional:         true,
-							ValidateDiagFunc: validationSeverityLevel,
-						},
-						"high_confidence": {
-							Type:             schema.TypeString,
-							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
-							Default:          "Prevent",
-							Optional:         true,
-							ValidateDiagFunc: validationFileSecurityMode,
-						},
-						"medium_confidence": {
-							Type:             schema.TypeString,
-							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
-							Default:          "Prevent",
-							Optional:         true,
-							ValidateDiagFunc: validationFileSecurityMode,
-						},
-						"low_confidence": {
-							Type:             schema.TypeString,
-							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
-							Default:          "Detect",
-							Optional:         true,
-							ValidateDiagFunc: validationFileSecurityMode,
-						},
-						"allow_file_size_limit": {
-							Type:             schema.TypeString,
-							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
-							Default:          "AccordingToPractice",
-							Optional:         true,
-							ValidateDiagFunc: validationFileSecurityMode,
-						},
-						"file_size_limit": {
-							Type:     schema.TypeInt,
-							Default:  10,
-							Optional: true,
-						},
-						"file_size_limit_unit": {
-							Type:             schema.TypeString,
-							Description:      "Bytes, KB, MB or GB",
-							Default:          "MB",
-							Optional:         true,
-							ValidateDiagFunc: validationFileSizeUnits,
-						},
-						"file_without_name": {
-							Type:             schema.TypeString,
-							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
-							Default:          "AccordingToPractice",
-							Optional:         true,
-							ValidateDiagFunc: validationFileSecurityMode,
-						},
-						"required_archive_extraction": {
-							Type:     schema.TypeBool,
-							Default:  false,
-							Optional: true,
-						},
-						"archive_file_size_limit": {
-							Type:     schema.TypeInt,
-							Default:  10,
-							Optional: true,
-						},
-						"archive_file_size_limit_unit": {
-							Type:             schema.TypeString,
-							Description:      "Bytes, KB, MB or GB",
-							Default:          "MB",
-							Optional:         true,
-							ValidateDiagFunc: validationFileSizeUnits,
-						},
-						"allow_archive_within_archive": {
-							Type:             schema.TypeString,
-							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
-							Default:          "AccordingToPractice",
-							Optional:         true,
-							ValidateDiagFunc: validationFileSecurityMode,
-						},
-						"allow_an_unopened_archive": {
-							Type:             schema.TypeString,
-							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
-							Default:          "AccordingToPractice",
-							Optional:         true,
-							ValidateDiagFunc: validationFileSecurityMode,
-						},
-						"allow_file_type": {
-							Type:     schema.TypeBool,
-							Default:  false,
-							Optional: true,
-						},
-						"required_threat_emulation": {
-							Type:     schema.TypeBool,
-							Default:  false,
-							Optional: true,
-						},
-					},
-				},
-			},
+			//"file_security": {
+			//	Type:     schema.TypeSet,
+			//	Optional: true,
+			//	Computed: true,
+			//	MaxItems: 1,
+			//	Elem: &schema.Resource{
+			//		Schema: map[string]*schema.Schema{
+			//			"id": {
+			//				Type:     schema.TypeString,
+			//				Computed: true,
+			//			},
+			//			"severity_level": {
+			//				Type:             schema.TypeString,
+			//				Description:      "LowOrAbove, MediumOrAbove, HighOrAbove or Critical",
+			//				Default:          "MediumOrAbove",
+			//				Optional:         true,
+			//				ValidateDiagFunc: validationSeverityLevel,
+			//			},
+			//			"high_confidence": {
+			//				Type:             schema.TypeString,
+			//				Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+			//				Default:          "Prevent",
+			//				Optional:         true,
+			//				ValidateDiagFunc: validationFileSecurityMode,
+			//			},
+			//			"medium_confidence": {
+			//				Type:             schema.TypeString,
+			//				Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+			//				Default:          "Prevent",
+			//				Optional:         true,
+			//				ValidateDiagFunc: validationFileSecurityMode,
+			//			},
+			//			"low_confidence": {
+			//				Type:             schema.TypeString,
+			//				Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+			//				Default:          "Detect",
+			//				Optional:         true,
+			//				ValidateDiagFunc: validationFileSecurityMode,
+			//			},
+			//			"allow_file_size_limit": {
+			//				Type:             schema.TypeString,
+			//				Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+			//				Default:          "AccordingToPractice",
+			//				Optional:         true,
+			//				ValidateDiagFunc: validationFileSecurityMode,
+			//			},
+			//			"file_size_limit": {
+			//				Type:     schema.TypeInt,
+			//				Default:  10,
+			//				Optional: true,
+			//			},
+			//			"file_size_limit_unit": {
+			//				Type:             schema.TypeString,
+			//				Description:      "Bytes, KB, MB or GB",
+			//				Default:          "MB",
+			//				Optional:         true,
+			//				ValidateDiagFunc: validationFileSizeUnits,
+			//			},
+			//			"file_without_name": {
+			//				Type:             schema.TypeString,
+			//				Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+			//				Default:          "AccordingToPractice",
+			//				Optional:         true,
+			//				ValidateDiagFunc: validationFileSecurityMode,
+			//			},
+			//			"required_archive_extraction": {
+			//				Type:     schema.TypeBool,
+			//				Default:  false,
+			//				Optional: true,
+			//			},
+			//			"archive_file_size_limit": {
+			//				Type:     schema.TypeInt,
+			//				Default:  10,
+			//				Optional: true,
+			//			},
+			//			"archive_file_size_limit_unit": {
+			//				Type:             schema.TypeString,
+			//				Description:      "Bytes, KB, MB or GB",
+			//				Default:          "MB",
+			//				Optional:         true,
+			//				ValidateDiagFunc: validationFileSizeUnits,
+			//			},
+			//			"allow_archive_within_archive": {
+			//				Type:             schema.TypeString,
+			//				Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+			//				Default:          "AccordingToPractice",
+			//				Optional:         true,
+			//				ValidateDiagFunc: validationFileSecurityMode,
+			//			},
+			//			"allow_an_unopened_archive": {
+			//				Type:             schema.TypeString,
+			//				Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+			//				Default:          "AccordingToPractice",
+			//				Optional:         true,
+			//				ValidateDiagFunc: validationFileSecurityMode,
+			//			},
+			//			"allow_file_type": {
+			//				Type:     schema.TypeBool,
+			//				Default:  false,
+			//				Optional: true,
+			//			},
+			//			"required_threat_emulation": {
+			//				Type:     schema.TypeBool,
+			//				Default:  false,
+			//				Optional: true,
+			//			},
+			//		},
+			//	},
+			//},
 		},
 	}
 }
@@ -436,7 +434,7 @@ func resourceWebAppPracticeCreate(ctx context.Context, d *schema.ResourceData, m
 		return utils.DiagError("unable to perform WebAppPractice Create", err, diags)
 	}
 
-	fmt.Printf("created practice: %v\n", practice)
+	//fmt.Printf("created practice: %v\n", practice)
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
@@ -470,7 +468,7 @@ func resourceWebAppPracticeRead(ctx context.Context, d *schema.ResourceData, met
 		return utils.DiagError("unable to perform WebAppPractice Read", err, diags)
 	}
 
-	fmt.Printf("read practice: %v\n", practice)
+	//fmt.Printf("read practice: %v\n", practice)
 
 	if err := webapppractice.ReadWebApplicationPracticeToResourceData(practice, d); err != nil {
 		return utils.DiagError("unable to perform WebAppPractice Read", err, diags)
@@ -498,7 +496,7 @@ func resourceWebAppPracticeUpdate(ctx context.Context, d *schema.ResourceData, m
 		return utils.DiagError("unable to perform WebAppPractice Update", err, diags)
 	}
 
-	fmt.Printf("updated practice: %v\n", d.Id())
+	//fmt.Printf("updated practice: %v\n", d.Id())
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
@@ -542,7 +540,7 @@ func resourceWebAppPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 		return utils.DiagError("unable to perform WebAppPractice Delete", err, diags)
 	}
 
-	fmt.Printf("deleted practice: %v\n", d.Id())
+	//fmt.Printf("deleted practice: %v\n", d.Id())
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {

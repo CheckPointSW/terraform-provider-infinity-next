@@ -99,31 +99,31 @@ func ReadWebApplicationPracticeToResourceData(practice models.WebApplicationPrac
 
 	d.Set("web_bot", []map[string]any{webBotMap})
 
-	fileSecurity := models.FileSecurity{
-		ID:                        practice.FileSecurity.ID,
-		SeverityLevel:             practice.FileSecurity.SeverityLevel,
-		HighConfidence:            practice.FileSecurity.HighConfidence,
-		MediumConfidence:          practice.FileSecurity.MediumConfidence,
-		LowConfidence:             practice.FileSecurity.LowConfidence,
-		AllowFileSizeLimit:        practice.FileSecurity.AllowFileSizeLimit,
-		FileSizeLimit:             practice.FileSecurity.FileSizeLimit,
-		FileSizeLimitUnit:         practice.FileSecurity.FileSizeLimitUnit,
-		FilesWithoutName:          practice.FileSecurity.FilesWithoutName,
-		RequiredArchiveExtraction: practice.FileSecurity.RequiredArchiveExtraction,
-		ArchiveFileSizeLimit:      practice.FileSecurity.ArchiveFileSizeLimit,
-		ArchiveFileSizeLimitUnit:  practice.FileSecurity.ArchiveFileSizeLimitUnit,
-		//AllowArchiveWithinArchive: practice.FileSecurity.AllowArchiveWithinArchive,
-		AllowAnUnopenedArchive:  practice.FileSecurity.AllowAnUnopenedArchive,
-		AllowFileType:           practice.FileSecurity.AllowFileType,
-		RequiredThreatEmulation: practice.FileSecurity.RequiredThreatEmulation,
-	}
-
-	fileSecurityMap, err := utils.UnmarshalAs[map[string]any](fileSecurity)
-	if err != nil {
-		return fmt.Errorf("failed to convert FileSecurity struct to map. Error: %w", err)
-	}
-
-	d.Set("file_security", []map[string]any{fileSecurityMap})
+	//fileSecurity := models.FileSecurity{
+	//	ID:                        practice.FileSecurity.ID,
+	//	SeverityLevel:             practice.FileSecurity.SeverityLevel,
+	//	HighConfidence:            practice.FileSecurity.HighConfidence,
+	//	MediumConfidence:          practice.FileSecurity.MediumConfidence,
+	//	LowConfidence:             practice.FileSecurity.LowConfidence,
+	//	AllowFileSizeLimit:        practice.FileSecurity.AllowFileSizeLimit,
+	//	FileSizeLimit:             practice.FileSecurity.FileSizeLimit,
+	//	FileSizeLimitUnit:         practice.FileSecurity.FileSizeLimitUnit,
+	//	FilesWithoutName:          practice.FileSecurity.FilesWithoutName,
+	//	RequiredArchiveExtraction: practice.FileSecurity.RequiredArchiveExtraction,
+	//	ArchiveFileSizeLimit:      practice.FileSecurity.ArchiveFileSizeLimit,
+	//	ArchiveFileSizeLimitUnit:  practice.FileSecurity.ArchiveFileSizeLimitUnit,
+	//	//AllowArchiveWithinArchive: practice.FileSecurity.AllowArchiveWithinArchive,
+	//	AllowAnUnopenedArchive:  practice.FileSecurity.AllowAnUnopenedArchive,
+	//	AllowFileType:           practice.FileSecurity.AllowFileType,
+	//	RequiredThreatEmulation: practice.FileSecurity.RequiredThreatEmulation,
+	//}
+	//
+	//fileSecurityMap, err := utils.UnmarshalAs[map[string]any](fileSecurity)
+	//if err != nil {
+	//	return fmt.Errorf("failed to convert FileSecurity struct to map. Error: %w", err)
+	//}
+	//
+	//d.Set("file_security", []map[string]any{fileSecurityMap})
 
 	return nil
 }
