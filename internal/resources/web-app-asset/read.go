@@ -170,7 +170,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	}
 
 	d.Set("proxy_setting", proxySettingsSchemaMap)
-	d.Set("mtls", mTLSsSchemaMap)
+	d.Set("mtls", mTLSsMap)
 
 	sourceIdentifiersSchema := asset.SourceIdentifiers.ToSchema()
 	sourceIdentifiersSchemaMap, err := utils.UnmarshalAs[[]map[string]any](sourceIdentifiersSchema)
