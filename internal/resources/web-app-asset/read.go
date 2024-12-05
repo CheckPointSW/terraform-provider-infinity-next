@@ -10,6 +10,16 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+func proxySettingKeyTomTLSType(proxySettingKey string) string {
+	if proxySettingKey == mtlsClientEnable || proxySettingKey == mtlsClientData || proxySettingKey == mtlsClientFileName {
+		return mtlsTypeClient
+	}
+	if proxySettingKey == mtlsServerEnable || proxySettingKey == mtlsServerData || proxySettingKey == mtlsServerFileName {
+		return mtlsTypeServer
+	}
+	return ""
+}
+
 func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *schema.ResourceData) error {
 	d.SetId(asset.ID)
 	d.Set("name", asset.Name)
@@ -29,12 +39,139 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	d.Set("profiles", asset.Profiles.ToSchema())
 	d.Set("is_shares_urls", asset.IsSharesURLs)
 
-	proxySettingsSchemaMap, err := utils.UnmarshalAs[[]map[string]any](asset.ProxySettings)
-	if err != nil {
-		return fmt.Errorf("failed to convert proxy settings to slice of maps. Error: %+v", err)
+	//proxySettingsSchemaMap, err := utils.UnmarshalAs[[]map[string]any](asset.ProxySettings)
+	//if err != nil {
+	//	return fmt.Errorf("failed to convert proxy settings to slice of maps. Error: %+v", err)
+	//}
+	//
+	//d.Set("proxy_setting", proxySettingsSchemaMap)
+
+	var proxySettingsSchemaMap []map[string]any
+	var mTLSsSchemaMap map[string]models.FileSchema
+	var mTLSsMap []map[string]any
+
+	for _, proxySetting := range asset.ProxySettings {
+		mTLSType := proxySettingKeyTomTLSType(proxySetting.Key)
+		if mTLSType != "" {
+			if _, ok := mTLSsSchemaMap[mTLSType]; !ok {
+				mTLSsSchemaMap[mTLSType] = models.FileSchema{}
+			}
+			switch proxySetting.Key {
+			case mtlsClientEnable, mtlsServerEnable:
+				if proxySetting.Value == "true" {
+					mTLSsSchemaMap[mTLSType] = models.FileSchema{
+						FilenameID: mTLSsSchemaMap[mTLSType].FilenameID,
+						Filename:   mTLSsSchemaMap[mTLSType].Filename,
+						DataID:     mTLSsSchemaMap[mTLSType].DataID,
+						Data:       mTLSsSchemaMap[mTLSType].Data,
+						Type:       mTLSType,
+						EnableID:   proxySetting.ID,
+						Enable:     true,
+					}
+				}
+				if proxySetting.Value == "false" {
+					mTLSsSchemaMap[mTLSType] = models.FileSchema{
+						FilenameID: mTLSsSchemaMap[mTLSType].FilenameID,
+						Filename:   mTLSsSchemaMap[mTLSType].Filename,
+						DataID:     mTLSsSchemaMap[mTLSType].DataID,
+						Data:       mTLSsSchemaMap[mTLSType].Data,
+						Type:       mTLSType,
+						EnableID:   proxySetting.ID,
+						Enable:     false,
+					}
+				}
+			case mtlsClientData, mtlsServerData:
+				mTLSsSchemaMap[mTLSType] = models.FileSchema{
+					FilenameID: mTLSsSchemaMap[mTLSType].FilenameID,
+					Filename:   mTLSsSchemaMap[mTLSType].Filename,
+					DataID:     proxySetting.ID,
+					Data:       proxySetting.Value,
+					Type:       mTLSType,
+					EnableID:   mTLSsSchemaMap[mTLSType].EnableID,
+					Enable:     mTLSsSchemaMap[mTLSType].Enable,
+				}
+			case mtlsClientFileName, mtlsServerFileName:
+				mTLSsSchemaMap[mTLSType] = models.FileSchema{
+					FilenameID: proxySetting.ID,
+					Filename:   proxySetting.Value,
+					DataID:     mTLSsSchemaMap[mTLSType].DataID,
+					Data:       mTLSsSchemaMap[mTLSType].Data,
+					Type:       mTLSType,
+					EnableID:   mTLSsSchemaMap[mTLSType].EnableID,
+					Enable:     mTLSsSchemaMap[mTLSType].Enable,
+				}
+			default:
+				continue
+			}
+		} else {
+			proxySettingSchemaMap, err := utils.UnmarshalAs[map[string]any](proxySetting)
+			if err != nil {
+				return fmt.Errorf("failed to convert proxy setting to map. Error: %+v", err)
+			}
+
+			proxySettingsSchemaMap = append(proxySettingsSchemaMap, proxySettingSchemaMap)
+		}
+	}
+	//case mtlsServerEnable:
+	//	if proxySetting.Value == "true" {
+	//		mTLSsSchemaMap[mTLSType] = models.FileSchema{
+	//			FilenameID: mTLSsSchemaMap[mTLSType].FilenameID,
+	//			Filename:   mTLSsSchemaMap[mTLSType].Filename,
+	//			DataID:     mTLSsSchemaMap[mTLSType].DataID,
+	//			Data:       mTLSsSchemaMap[mTLSType].Data,
+	//			Type:       mTLSType,
+	//			EnableID:   proxySetting.ID,
+	//			Enable:     true,
+	//		}
+	//	}
+	//	if proxySetting.Value == "false" {
+	//		mTLSsSchemaMap[mTLSType] = models.FileSchema{
+	//			FilenameID: mTLSsSchemaMap[mTLSType].FilenameID,
+	//			Filename:   mTLSsSchemaMap[mTLSType].Filename,
+	//			DataID:     mTLSsSchemaMap[mTLSType].DataID,
+	//			Data:       mTLSsSchemaMap[mTLSType].Data,
+	//			Type:       mTLSType,
+	//			EnableID:   proxySetting.ID,
+	//			Enable:     false,
+	//		}
+	//	}
+	//case mtlsServerData:
+	//	mTLSsSchemaMap[mTLSType] = models.FileSchema{
+	//		FilenameID: mTLSsSchemaMap[mTLSType].FilenameID,
+	//		Filename:   mTLSsSchemaMap[mTLSType].Filename,
+	//		DataID:     proxySetting.ID,
+	//		Data:       proxySetting.Value,
+	//		Type:       mTLSType,
+	//		EnableID:   mTLSsSchemaMap[mTLSType].EnableID,
+	//		Enable:     mTLSsSchemaMap[mTLSType].Enable,
+	//	}
+	//case mtlsServerFileName:
+	//	mTLSsSchemaMap[mTLSType] = models.FileSchema{
+	//		FilenameID: proxySetting.ID,
+	//		Filename:   proxySetting.Value,
+	//		DataID:     mTLSsSchemaMap[mTLSType].DataID,
+	//		Data:       mTLSsSchemaMap[mTLSType].Data,
+	//		Type:       mTLSType,
+	//		EnableID:   mTLSsSchemaMap[mTLSType].EnableID,
+	//		Enable:     mTLSsSchemaMap[mTLSType].Enable,
+	//	}
+
+	//proxySettingsSchemaMap, err := utils.UnmarshalAs[[]map[string]any](asset.ProxySettings)
+	//if err != nil {
+	//	return fmt.Errorf("failed to convert proxy settings to slice of maps. Error: %+v", err)
+	//}
+
+	for _, mTLSscehma := range mTLSsSchemaMap {
+		mTLS, err := utils.UnmarshalAs[map[string]any](mTLSscehma)
+		if err != nil {
+			return fmt.Errorf("failed to convert mTLS to map. Error: %+v", err)
+		}
+
+		mTLSsMap = append(mTLSsMap, mTLS)
 	}
 
 	d.Set("proxy_setting", proxySettingsSchemaMap)
+	d.Set("mtls", mTLSsMap)
 
 	sourceIdentifiersSchema := asset.SourceIdentifiers.ToSchema()
 	sourceIdentifiersSchemaMap, err := utils.UnmarshalAs[[]map[string]any](sourceIdentifiersSchema)
