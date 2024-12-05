@@ -10,6 +10,19 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+const (
+	mtlsTypeClient = "client"
+	mtlsTypeServer = "server"
+
+	mtlsClientEnable   = "isUpstreamTrustedCAFile"
+	mtlsClientData     = "upstreamTrustedCAFile"
+	mtlsClientFileName = "upstreamTrustedCAFileName"
+
+	mtlsServerEnable   = "isTrustedCAListFile"
+	mtlsServerData     = "trustedCAListFile"
+	mtlsServerFileName = "trustedCAListFileName"
+)
+
 func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (models.CreateWebApplicationAssetInput, error) {
 	var res models.CreateWebApplicationAssetInput
 
@@ -21,6 +34,11 @@ func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (mod
 	res.PracticeWrappers = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "practice"), mapToPracticeWrapperInput)
 	res.ProxySettings = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "proxy_setting"), mapToProxySettingInput)
 	res.SourceIdentifiers = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "source_identifier"), mapToSourceIdentifierInput)
+
+	var mtls []models.FileSchema
+	mtls = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "mtls"), mapToMTLSInput)
+
+	res.ProxySettings = mapMTLSToProxySettingInputs(mtls, res.ProxySettings)
 
 	return res, nil
 }
@@ -156,4 +174,47 @@ func mapToSourceIdentifierInput(sourceIdentifierMap map[string]any) models.Sourc
 	}
 
 	return ret
+}
+
+func mapToMTLSInput(mTLSMap map[string]any) models.FileSchema {
+	mTLSFile, err := utils.UnmarshalAs[models.FileSchema](mTLSMap["file"])
+	if err != nil {
+		fmt.Printf("Failed to convert input schema validation to FileSchema struct. Error: %+v", err)
+		return models.FileSchema{}
+	}
+
+	mTLSFile = models.NewFileSchemaEncode(mTLSFile.Filename, mTLSFile.Data, mTLSFile.Type, mTLSFile.Enable)
+
+	return mTLSFile
+}
+
+func mapMTLSToProxySettingInputs(mTLS []models.FileSchema, proxySettings models.ProxySettingInputs) models.ProxySettingInputs {
+	for _, mTLSFile := range mTLS {
+		var proxySettingEnable, proxySettingData, proxySettingFileName models.ProxySettingInput
+		switch mTLSFile.Type {
+		case "client":
+			proxySettingEnable.Key = "isUpstreamTrustedCAFile"
+			proxySettingData.Key = "upstreamTrustedCAFile"
+			proxySettingFileName.Key = "upstreamTrustedCAFileName"
+		case "server":
+			proxySettingEnable.Key = "isTrustedCAListFile"
+			proxySettingData.Key = "trustedCAListFile"
+			proxySettingFileName.Key = "trustedCAListFileName"
+		default:
+			continue
+		}
+
+		if mTLSFile.Enable {
+			proxySettingEnable.Value = "true"
+		} else {
+			proxySettingEnable.Value = "false"
+		}
+
+		proxySettingData.Value = mTLSFile.Data
+		proxySettingFileName.Value = mTLSFile.Filename
+
+		proxySettings = append(proxySettings, proxySettingEnable, proxySettingData, proxySettingFileName)
+	}
+
+	return proxySettings
 }
