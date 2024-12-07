@@ -89,9 +89,74 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 
 		newProxySettingsIndicators := newProxySettings.ToIndicatorsMap()
 		for _, oldSetting := range oldProxySettings {
+			if oldSetting.Key == mtlsClientEnable || oldSetting.Key == mtlsClientData || oldSetting.Key == mtlsClientFileName || oldSetting.Key == mtlsServerData || oldSetting.Key == mtlsServerFileName || oldSetting.Key == mtlsServerEnable {
+				continue
+			}
 			if _, ok := newProxySettingsIndicators[oldSetting.Key]; !ok {
 				updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, oldSetting.ID)
 			}
+		}
+	}
+
+	if oldMTLSs, newMTLSs, hasChange := utils.GetChangeWithParse(d, "mtls", parsemTLSs); hasChange {
+		oldMTLSsIndicators := oldMTLSs.ToIndicatorMap()
+		mTLSsToAdd := models.FileSchemas{}
+		for _, newMTLS := range newMTLSs {
+			oldMTLS, ok := oldMTLSsIndicators[newMTLS.Type]
+			if !ok {
+				mTLSsToAdd = append(mTLSsToAdd, newMTLS)
+				//proxysettingstoadd := mapMTLSToProxySettingInputs(newMTLS, models.ProxySettingInputs{})
+				//
+				//updateInput.AddProxySetting = append(updateInput.AddProxySetting, mapMTLSToProxySettingInputs(newMTLS))
+				continue
+			}
+			if oldMTLS.Enable != newMTLS.Enable {
+				var enableToString string
+				if newMTLS.Enable {
+					enableToString = "true"
+				} else {
+					enableToString = "false"
+				}
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldMTLS.EnableID,
+					Value: enableToString,
+				})
+			}
+
+			if oldMTLS.Data != newMTLS.Data {
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldMTLS.DataID,
+					Value: newMTLS.Data,
+				})
+			}
+
+			if oldMTLS.Filename != newMTLS.Filename {
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldMTLS.FilenameID,
+					Value: newMTLS.Filename,
+				})
+			}
+
+			//oldMTLS := oldMTLSsIndicators[newMTLS["type"].(string)]
+			//if oldMTLS.Data != newMTLS["data"].(string) || oldMTLS.Enable != newMTLS["enable"].(bool) {
+			//	updateInput.UpdateMTLS = append(updateInput.UpdateMTLS, models.UpdateMTLS{
+			//		ID:     oldMTLS.ID,
+			//		Type:   oldMTLS.Type,
+			//		Data:   newMTLS["data"].(string),
+			//		Enable: newMTLS["enable"].(bool),
+			//	})
+			//}
+		}
+
+		var proxySettingsToAdd models.ProxySettingInputs
+		if mTLSsToAdd != nil {
+			proxySettingsToAdd = mapMTLSToProxySettingInputs(mTLSsToAdd, models.ProxySettingInputs{})
+		}
+		for _, proxySettingToAdd := range proxySettingsToAdd {
+			updateInput.AddProxySetting = append(updateInput.AddProxySetting, models.AddProxySetting{
+				Key:   proxySettingToAdd.Key,
+				Value: proxySettingToAdd.Value,
+			})
 		}
 	}
 
@@ -217,4 +282,8 @@ func validatePracticeWrapperInput(practice models.PracticeWrapperInput) bool {
 
 func parseSchemaTags(tagsFromResourceData any) models.TagsInputs {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](tagsFromResourceData), mapToTagsInputs)
+}
+
+func parsemTLSs(mTLSsFromResourceData any) models.FileSchemas {
+	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](mTLSsFromResourceData), mapToMTLSInput)
 }

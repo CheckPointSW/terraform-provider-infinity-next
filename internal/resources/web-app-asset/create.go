@@ -203,7 +203,7 @@ func mapToMTLSInput(mTLSMap map[string]any) models.FileSchema {
 	return mTLSFile
 }
 
-func mapMTLSToProxySettingInputs(mTLS []models.FileSchema, proxySettings models.ProxySettingInputs) models.ProxySettingInputs {
+func mapMTLSToProxySettingInputs(mTLS models.FileSchemas, proxySettings models.ProxySettingInputs) models.ProxySettingInputs {
 	for _, mTLSFile := range mTLS {
 		var proxySettingEnable, proxySettingData, proxySettingFileName models.ProxySettingInput
 		switch mTLSFile.Type {

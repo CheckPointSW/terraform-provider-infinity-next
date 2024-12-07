@@ -1,6 +1,8 @@
 package models
 
-import "strings"
+import (
+	"strings"
+)
 
 // PracticeModeInput represents the api input for creating a practice mode field
 // in the practice field of the web application asset
@@ -100,4 +102,13 @@ func (inputs TagsInputs) ToIndicatorsMap() map[string]TagInput {
 	}
 
 	return ret
+}
+
+func (mtlsInputs FileSchemas) ToIndicatorMap() map[string]FileSchema {
+	mTLSs := make(map[string]FileSchema)
+	for _, mTLS := range mtlsInputs {
+		mTLSs[mTLS.Type] = mTLS
+	}
+
+	return mTLSs
 }

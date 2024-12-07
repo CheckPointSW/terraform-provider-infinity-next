@@ -492,7 +492,6 @@ resource "inext_web_app_asset" %[1]q {
 	  key   = "tagkey2"
 	  value = "tagvalue2"
 	}
-	is_shares_urls = false
 	mtls {
 		filename = "cert.pem"
 		data	 = "cert data"
@@ -677,7 +676,6 @@ resource "inext_web_app_asset" %[1]q {
 	  key   = "tagkey3"
 	  value = "tagvalue3"
 	}
-	is_shares_urls = true
 	mtls {
 		filename = "newfile.pem"
 		data	 = "new cert data"
