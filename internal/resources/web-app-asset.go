@@ -269,7 +269,7 @@ func ResourceWebAppAsset() *schema.Resource {
 						},
 						"filename": {
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
 						},
 						"data_id": {
 							Type:     schema.TypeString,
@@ -278,7 +278,7 @@ func ResourceWebAppAsset() *schema.Resource {
 						"data": {
 							Type:      schema.TypeString,
 							Sensitive: true,
-							Required:  true,
+							Optional:  true,
 						},
 						"type": {
 							Type:     schema.TypeString,
@@ -290,7 +290,7 @@ func ResourceWebAppAsset() *schema.Resource {
 						},
 						"enable": {
 							Type:     schema.TypeBool,
-							Required: true,
+							Optional: true,
 						},
 					},
 				},
