@@ -187,6 +187,11 @@ func mapToSourceIdentifierInput(sourceIdentifierMap map[string]any) models.Sourc
 func mapToTagsInputs(tagsMap map[string]any) models.TagInput {
 	var ret models.TagInput
 	ret.Key, ret.Value = tagsMap["key"].(string), tagsMap["value"].(string)
+
+	if id, ok := tagsMap["id"]; ok {
+		ret.ID = id.(string)
+	}
+
 	return ret
 
 }

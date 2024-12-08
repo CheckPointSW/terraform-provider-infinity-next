@@ -220,8 +220,9 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 	if oldTags, newTags, hasChange := utils.GetChangeWithParse(d, "tags", parseSchemaTags); hasChange {
 		oldTagsIndicatorMap := oldTags.ToIndicatorsMap()
 		for _, newTag := range newTags {
+			oldTag, ok := oldTagsIndicatorMap[newTag.Key]
 			// if tag does not exist - add it
-			if _, ok := oldTagsIndicatorMap[newTag.Key]; !ok {
+			if !ok {
 				updateInput.AddTags = append(updateInput.AddTags, models.AddTag{
 					Key:   newTag.Key,
 					Value: newTag.Value,
@@ -229,12 +230,21 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 
 				continue
 			}
+
+			// tag exist - check if it needs to be updated
+			if oldTag.Value != newTag.Value {
+				updateInput.RemoveTags = append(updateInput.RemoveTags, oldTag.ID)
+				updateInput.AddTags = append(updateInput.AddTags, models.AddTag{
+					Key:   newTag.Key,
+					Value: newTag.Value,
+				})
+			}
 		}
 
 		newTagsIndicatorMap := newTags.ToIndicatorsMap()
 		for _, oldTag := range oldTags {
 			if _, ok := newTagsIndicatorMap[oldTag.Key]; !ok {
-				updateInput.RemoveTags = append(updateInput.RemoveTags, oldTag.Key)
+				updateInput.RemoveTags = append(updateInput.RemoveTags, oldTag.ID)
 			}
 		}
 	}

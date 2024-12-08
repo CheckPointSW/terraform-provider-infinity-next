@@ -15,6 +15,7 @@ type PracticeModeInput struct {
 type TagInput struct {
 	Key   string `json:"key"`
 	Value string `json:"value"`
+	ID    string `json:"id,omitempty"`
 }
 
 type TagsInputs []TagInput

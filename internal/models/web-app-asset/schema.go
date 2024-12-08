@@ -3,13 +3,12 @@ package models
 import (
 	"encoding/base64"
 	"fmt"
-	"path/filepath"
 )
 
 const (
 	SourceIdentifierValueIDSeparator = ";;;"
-	FileDataFilenameFormat           = "%s;"
-	FileDataFormat                   = "data:;base64,%s"
+	//FileDataFilenameFormat           = "%s;"
+	FileDataFormat = "data:application/octet-stream;base64,%s"
 )
 
 // SchemaPracticeMode represents a PracticeMode field of a practice field of a
@@ -60,11 +59,11 @@ type FileSchemas []FileSchema
 func NewFileSchemaEncode(filename, fileData, fileType string, fileEnable bool) FileSchema {
 	b64Data := base64.StdEncoding.EncodeToString([]byte(fileData))
 	data := fmt.Sprintf(FileDataFormat, b64Data)
-	filenameFmt := fmt.Sprintf(FileDataFilenameFormat, filepath.Base(filename))
+	//filenameFmt := fmt.Sprintf(FileDataFilenameFormat, filepath.Base(filename))
 
 	return FileSchema{
 		Filename: filename,
-		Data:     filenameFmt + data,
+		Data:     data,
 		Type:     fileType,
 		Enable:   fileEnable,
 	}
