@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func parseSchemaExceptions(exceptionsFromResourceData any) []models.ExceptionObjectInput {
+func parseSchemaExceptions(exceptionsFromResourceData any) models.ExceptionObjectInputs {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](exceptionsFromResourceData), mapToExceptionObjectInput)
 }
 
@@ -20,10 +20,43 @@ func UpdateExceptionBehaviorInputFromResourceData(d *schema.ResourceData) (model
 		res.Name = newName
 	}
 
+	if _, newVisibility, hasChange := utils.MustGetChange[string](d, "visibility"); hasChange {
+		res.Visibility = newVisibility
+	}
+
 	if oldExceptions, newExceptions, hasChange := utils.GetChangeWithParse(d, "exception", parseSchemaExceptions); hasChange {
-		exceptionsToAdd, exceptionsToRemove := utils.SlicesDiff(oldExceptions, newExceptions)
-		res.AddExceptions = utils.Map(exceptionsToAdd, utils.MustUnmarshalAs[models.AddExceptionObjectInput, models.ExceptionObjectInput])
-		res.RemoveExceptions = utils.Map(exceptionsToRemove, func(toRemove models.ExceptionObjectInput) string { return toRemove.ID })
+		oldExceptionsIndicators := oldExceptions.ToIndicatorsMap()
+		for _, newException := range newExceptions {
+			// if key does not exist then this is a new Exception to add
+			if _, ok := oldExceptionsIndicators[newException.ID]; !ok {
+				res.AddExceptions = append(res.AddExceptions, models.AddExceptionObjectInput{
+					Match:   newException.Match,
+					Actions: newException.Actions,
+					Comment: newException.Comment,
+				})
+
+			}
+
+			// we know the key exist
+			// if the value is different - update the Exception
+			oldException := oldExceptionsIndicators[newException.Match]
+			actionsToAdd, actionsToRemove := utils.SlicesDiff(oldException.Actions, newException.Actions)
+			res.UpdateExceptions = append(res.UpdateExceptions, models.ExceptionObjectActionUpdate{
+				ID:            newException.ID,
+				Match:         newException.Match,
+				AddActions:    actionsToAdd,
+				RemoveActions: actionsToRemove,
+				UpdateActions: models.UpdateExceptionsObjectInputs{},
+				Comment:       newException.Comment,
+			})
+		}
+
+		newExceptionsIndicators := newExceptions.ToIndicatorsMap()
+		for _, oldException := range oldExceptions {
+			if _, ok := newExceptionsIndicators[oldException.ID]; !ok {
+				res.RemoveExceptions = append(res.RemoveExceptions, oldException.ID)
+			}
+		}
 	}
 
 	return res, nil

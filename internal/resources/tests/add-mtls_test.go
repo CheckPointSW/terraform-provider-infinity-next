@@ -8,17 +8,17 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccWebAPIAssetBasic(t *testing.T) {
+func TestAccWebApplicationAssetWithmTLSBasic(t *testing.T) {
 	assetNameAttribute := acctest.GenerateResourceName()
 	profileNameAttribute := acctest.GenerateResourceName()
 	trustedSourcesNameAttribute := acctest.GenerateResourceName()
 	practiceNameAttribute := acctest.GenerateResourceName()
 	logTriggerNameAttribute := acctest.GenerateResourceName()
 	exceptionsNameAttribute := acctest.GenerateResourceName()
-	assetResourceName := "inext_web_api_asset." + assetNameAttribute
+	assetResourceName := "inext_web_app_asset." + assetNameAttribute
 	profileResourceName := "inext_appsec_gateway_profile." + profileNameAttribute
 	trustedSourcesResourceName := "inext_trusted_sources." + trustedSourcesNameAttribute
-	practiceResourceName := "inext_web_api_practice." + practiceNameAttribute
+	practiceResourceName := "inext_web_app_practice." + practiceNameAttribute
 	logTriggerResourceName := "inext_log_trigger." + logTriggerNameAttribute
 	exceptionsResourceName := "inext_exceptions." + exceptionsNameAttribute
 	resource.Test(t, resource.TestCase{
@@ -28,13 +28,13 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 			practiceResourceName, logTriggerResourceName, exceptionsResourceName}),
 		Steps: []resource.TestStep{
 			{
-				Config: webAPIAssetBasicConfig(assetNameAttribute),
+				Config: webApplicationAssetmTLSBasicConfig(assetNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":            assetNameAttribute,
 						"urls.0":          fmt.Sprintf("http://host/%s/path1", assetNameAttribute),
 						"urls.#":          "1",
-						"%":               "24",
+						"%":               "25",
 						"urls_ids.#":      "1",
 						"main_attributes": fmt.Sprintf("{\"applicationUrls\":\"http://host/%s/path1\"}", assetNameAttribute),
 					}),
@@ -48,19 +48,19 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 				ImportState:  true,
 			},
 			{
-				Config: webAPIAssetUpdateBasicConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
+				Config: webApplicationAssetUpdatemTLSBasicConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
 					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "24",
+						"%":                                     "25", // was 24
 						"read_only":                             "false",
 						"upstream_url":                          "some url 5",
 						"urls.#":                                "2",
 						"urls_ids.#":                            "2",
 						"profiles.#":                            "1",
 						"practice.#":                            "1",
-						"practice.0.%":                          "6",
+						"practice.0.%":                          "5",
 						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
 						"practice.0.sub_practices_modes.WebBot": "AccordingToPractice",
@@ -77,7 +77,7 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 						"source_identifier.1.values.#":     "1",
 						"source_identifier.0.values.#":     "1",
 						"source_identifier.0.values_ids.#": "1",
-						"proxy_setting.#":                  "3",
+						"proxy_setting.#":                  "3", //was 3
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
@@ -87,13 +87,19 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 						"group":             "",
 						"order":             "",
 						"kind":              "",
-						"family":            "Web API",
+						"family":            "Web Application",
 						"main_attributes":   fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path2;http://host/%[1]s/path3\"}", assetNameAttribute),
-						"asset_type":        "WebAPI",
+						"asset_type":        "WebApplication",
 						"intelligence_tags": "",
 						"tags.#":            "1",
 						"tags.0.key":        "tagkey1",
 						"tags.0.value":      "tagvalue1",
+
+						"mtls.#":          "1",
+						"mtls.0.filename": "cert.pem",
+						"mtls.0.data":     "data:application/octet-stream;base64,Y2VydCBkYXRh",
+						"mtls.0.type":     "client",
+						"mtls.0.enable":   "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -107,6 +113,9 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path2", assetNameAttribute)),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path3", assetNameAttribute)),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -115,7 +124,7 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 	})
 }
 
-func TestAccWebAPIAssetFull(t *testing.T) {
+func TestAccWebApplicationAssetWithmTLSFull(t *testing.T) {
 	assetNameAttribute := acctest.GenerateResourceName()
 	profileNameAttribute := acctest.GenerateResourceName()
 	trustedSourcesNameAttribute := acctest.GenerateResourceName()
@@ -126,10 +135,10 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 	anotherTrustedSourcesNameAttribute := acctest.GenerateResourceName()
 	anotherLogTriggerNameAttribute := acctest.GenerateResourceName()
 	anotherExceptionsNameAttribute := acctest.GenerateResourceName()
-	assetResourceName := "inext_web_api_asset." + assetNameAttribute
+	assetResourceName := "inext_web_app_asset." + assetNameAttribute
 	profileResourceName := "inext_appsec_gateway_profile." + profileNameAttribute
 	trustedSourcesResourceName := "inext_trusted_sources." + trustedSourcesNameAttribute
-	practiceResourceName := "inext_web_api_practice." + practiceNameAttribute
+	practiceResourceName := "inext_web_app_practice." + practiceNameAttribute
 	logTriggerResourceName := "inext_log_trigger." + logTriggerNameAttribute
 	exceptionsResourceName := "inext_exceptions." + exceptionsNameAttribute
 	anotherProfileResourceName := "inext_appsec_gateway_profile." + anotherProfileNameAttribute
@@ -144,19 +153,19 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 			anotherLogTriggerResourceName, anotherExceptionsResourceName}),
 		Steps: []resource.TestStep{
 			{
-				Config: webAPIAssetFullConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
+				Config: webApplicationAssetmTLSFullConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
 					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "24",
+						"%":                                     "25", // was 24
 						"read_only":                             "false",
 						"upstream_url":                          "some url 5",
 						"urls.#":                                "2",
 						"urls_ids.#":                            "2",
 						"profiles.#":                            "1",
 						"practice.#":                            "1",
-						"practice.0.%":                          "6",
+						"practice.0.%":                          "5",
 						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
 						"practice.0.sub_practices_modes.WebBot": "AccordingToPractice",
@@ -173,7 +182,7 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"source_identifier.1.values.#":     "1",
 						"source_identifier.0.values.#":     "1",
 						"source_identifier.0.values_ids.#": "1",
-						"proxy_setting.#":                  "3",
+						"proxy_setting.#":                  "3", //was 3
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
@@ -183,15 +192,21 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"group":             "",
 						"order":             "",
 						"kind":              "",
-						"family":            "Web API",
+						"family":            "Web Application",
 						"main_attributes":   fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path1;http://host/%[1]s/path2\"}", assetNameAttribute),
-						"asset_type":        "WebAPI",
+						"asset_type":        "WebApplication",
 						"intelligence_tags": "",
 						"tags.#":            "2",
 						"tags.0.key":        "tagkey1",
 						"tags.0.value":      "tagvalue1",
 						"tags.1.key":        "tagkey2",
 						"tags.1.value":      "tagvalue2",
+
+						"mtls.#":          "1",
+						"mtls.0.filename": "cert.pem",
+						"mtls.0.data":     "data:application/octet-stream;base64,Y2VydCBkYXRh",
+						"mtls.0.type":     "client",
+						"mtls.0.enable":   "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -205,6 +220,10 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path2", assetNameAttribute)),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.1.id"),
+
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -215,20 +234,20 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
-				Config: webAPIAssetUpdateFullConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
+				Config: webApplicationAssetUpdatemTLSFullConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
 					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute, anotherProfileNameAttribute,
 					anotherTrustedSourcesNameAttribute, anotherLogTriggerNameAttribute, anotherExceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "24",
+						"%":                                     "25", // was 24
 						"read_only":                             "false",
 						"upstream_url":                          "some url 10",
 						"urls.#":                                "2",
 						"urls_ids.#":                            "2",
 						"profiles.#":                            "1",
 						"practice.#":                            "1",
-						"practice.0.%":                          "6",
+						"practice.0.%":                          "5",
 						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "Learn",
 						"practice.0.sub_practices_modes.WebBot": "Inactive",
@@ -245,7 +264,7 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"source_identifier.1.values.#":     "2",
 						"source_identifier.0.values.#":     "2",
 						"source_identifier.0.values_ids.#": "2",
-						"proxy_setting.#":                  "3",
+						"proxy_setting.#":                  "3", //was 3
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
@@ -255,17 +274,27 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"group":             "",
 						"order":             "",
 						"kind":              "",
-						"family":            "Web API",
+						"family":            "Web Application",
 						"main_attributes":   fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path3;http://host/%[1]s/path4\"}", assetNameAttribute),
-						"asset_type":        "WebAPI",
+						"asset_type":        "WebApplication",
 						"intelligence_tags": "",
 						"tags.#":            "3",
-						"tags.0.key":        "tagkey1",
-						"tags.0.value":      "tagvalue2",
-						"tags.1.key":        "tagkey2",
-						"tags.1.value":      "tagvalue1",
-						"tags.2.key":        "tagkey3",
-						"tags.2.value":      "tagvalue3",
+						"tags.0.key":        "tagkey3",
+						"tags.0.value":      "tagvalue3",
+						"tags.1.key":        "tagkey1",
+						"tags.1.value":      "tagvalue2",
+						"tags.2.key":        "tagkey2",
+						"tags.2.value":      "tagvalue1",
+
+						"mtls.#":          "2",
+						"mtls.0.filename": "newfile.pem",
+						"mtls.0.data":     "data:application/octet-stream;base64,bmV3IGNlcnQgZGF0YQ==",
+						"mtls.0.type":     "server",
+						"mtls.0.enable":   "true",
+						"mtls.1.filename": "newfile2.pem",
+						"mtls.1.data":     "data:application/octet-stream;base64,bmV3IGNlcnQgZGF0YTI=",
+						"mtls.1.type":     "client",
+						"mtls.1.enable":   "false",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -280,6 +309,13 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.1.id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.2.id"),
+
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.enable_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -289,19 +325,19 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 
 }
 
-func webAPIAssetBasicConfig(name string) string {
+func webApplicationAssetmTLSBasicConfig(name string) string {
 	return fmt.Sprintf(`
-resource "inext_web_api_asset" %[1]q {
+resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path1"]
 }
 `, name)
 }
 
-func webAPIAssetUpdateBasicConfig(assetName, profileName, trustedSourcesName,
+func webApplicationAssetUpdatemTLSBasicConfig(assetName, profileName, trustedSourcesName,
 	practiceName, logTriggerName, exceptionsName string) string {
 	return fmt.Sprintf(`
-resource "inext_web_api_asset" %[1]q {
+resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path3", "http://host/%[1]s/path2"]
 	profiles        = [inext_appsec_gateway_profile.%[2]s.id]
@@ -313,7 +349,7 @@ resource "inext_web_api_asset" %[1]q {
 		  WebBot = "AccordingToPractice"
 		  Snort  = "Disabled"
 		}
-		id         = inext_web_api_practice.%[4]s.id
+		id         = inext_web_app_practice.%[4]s.id
 		triggers   = [inext_log_trigger.%[5]s.id]
 	}
   	proxy_setting {
@@ -344,6 +380,12 @@ resource "inext_web_api_asset" %[1]q {
 		key   = "tagkey1"
 		value = "tagvalue1"
 	}
+	mtls {
+		filename = "cert.pem"
+		data	 = "cert data"
+		type = "client"
+		enable = true
+	}
 }
 
 resource "inext_appsec_gateway_profile" %[2]q {
@@ -372,7 +414,7 @@ resource "inext_trusted_sources" %[3]q {
 	sources_identifiers = ["identifier4", "identifier2", "identifier3"]
 }
 
-resource "inext_web_api_practice" %[4]q {
+resource "inext_web_app_practice" %[4]q {
 	name = %[4]q
 	ips {
 	  performance_impact    = "MediumOrLower"
@@ -382,7 +424,7 @@ resource "inext_web_api_practice" %[4]q {
 	  medium_confidence     = "Detect"
 	  low_confidence        = "Inactive"
 	}
-	api_attacks {
+	web_attacks {
 	  minimum_severity = "Critical"
 	  advanced_setting {
 		body_size            = 1000
@@ -433,10 +475,10 @@ resource "inext_exceptions" %[6]q {
 `, assetName, profileName, trustedSourcesName, practiceName, logTriggerName, exceptionsName)
 }
 
-func webAPIAssetFullConfig(assetName, profileName,
+func webApplicationAssetmTLSFullConfig(assetName, profileName,
 	trustedSourcesName, practiceName, logTriggerName, exceptionsName string) string {
 	return fmt.Sprintf(`
-resource "inext_web_api_asset" %[1]q {
+resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path1", "http://host/%[1]s/path2"]
 	profiles        = [inext_appsec_gateway_profile.%[2]s.id]
@@ -448,7 +490,7 @@ resource "inext_web_api_asset" %[1]q {
 		WebBot = "AccordingToPractice"
 		Snort  = "Disabled"
 	  }
-	  id         = inext_web_api_practice.%[4]s.id
+	  id         = inext_web_app_practice.%[4]s.id
 	  triggers   = [inext_log_trigger.%[5]s.id]
 	}
 
@@ -484,6 +526,12 @@ resource "inext_web_api_asset" %[1]q {
 	  key   = "tagkey2"
 	  value = "tagvalue2"
 	}
+	mtls {
+		filename = "cert.pem"
+		data	 = "cert data"
+		type = "client"
+		enable = true
+	}
 }
 
 resource "inext_appsec_gateway_profile" %[2]q {
@@ -512,7 +560,7 @@ resource "inext_trusted_sources" %[3]q {
 	sources_identifiers = ["identifier4", "identifier2", "identifier3"]
 }
 
-resource "inext_web_api_practice" %[4]q {
+resource "inext_web_app_practice" %[4]q {
 	name = %[4]q
 	ips {
 	  performance_impact    = "MediumOrLower"
@@ -522,7 +570,7 @@ resource "inext_web_api_practice" %[4]q {
 	  medium_confidence     = "Detect"
 	  low_confidence        = "Inactive"
 	}
-	api_attacks {
+	web_attacks {
 	  minimum_severity = "Critical"
 	  advanced_setting {
 		body_size            = 1000
@@ -606,11 +654,11 @@ resource "inext_exceptions" %[6]q {
 `, assetName, profileName, trustedSourcesName, practiceName, logTriggerName, exceptionsName)
 }
 
-func webAPIAssetUpdateFullConfig(assetName, profileName,
+func webApplicationAssetUpdatemTLSFullConfig(assetName, profileName,
 	trustedSourcesName, practiceName, logTriggerName, exceptionsName,
 	anotherProfileName, anotherTrustedSourcesName, anotherLogTriggerName, anotherExcpetionsName string) string {
 	return fmt.Sprintf(`
-resource "inext_web_api_asset" %[1]q {
+resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path3", "http://host/%[1]s/path4"]
 	profiles        = [inext_appsec_gateway_profile.%[7]s.id]
@@ -622,7 +670,7 @@ resource "inext_web_api_asset" %[1]q {
 		WebBot = "Inactive"
 		Snort  = "AccordingToPractice"
 	  }
-	  id         = inext_web_api_practice.%[4]s.id
+	  id         = inext_web_app_practice.%[4]s.id
 	  triggers   = [inext_log_trigger.%[9]s.id]
 	}
 
@@ -661,6 +709,18 @@ resource "inext_web_api_asset" %[1]q {
 	tags {
 	  key   = "tagkey3"
 	  value = "tagvalue3"
+	}
+	mtls {
+		filename = "newfile.pem"
+		data	 = "new cert data"
+		type = "server"
+		enable = true
+	}
+	mtls {
+		filename = "newfile2.pem"
+		data	 = "new cert data2"
+		type = "client"
+		enable = false
 	}
 }
 
@@ -716,7 +776,7 @@ resource "inext_trusted_sources" %[8]q {
 	sources_identifiers = ["identifier4", "identifier2", "identifier3"]
 }
 
-resource "inext_web_api_practice" %[4]q {
+resource "inext_web_app_practice" %[4]q {
 	name = %[4]q
 	ips {
 	  performance_impact    = "MediumOrLower"
@@ -726,7 +786,7 @@ resource "inext_web_api_practice" %[4]q {
 	  medium_confidence     = "Detect"
 	  low_confidence        = "Inactive"
 	}
-	api_attacks {
+	web_attacks {
 	  minimum_severity = "Critical"
 	  advanced_setting {
 		body_size            = 1000

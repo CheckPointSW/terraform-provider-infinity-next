@@ -14,7 +14,7 @@ func CreateTrustedSourceBehaviorInputFromResourceData(d *schema.ResourceData) (m
 	var input models.CreateTrustedSourceBehaviorInput
 
 	input.Name = d.Get("name").(string)
-	input.Visibility = "Shared"
+	input.Visibility = d.Get("visibility").(string)
 	input.NumOfSources = d.Get("min_num_of_sources").(int)
 	input.SourcesIdentifiers = utils.MustResourceDataCollectionToSlice[string](d, "sources_identifiers")
 
@@ -29,6 +29,7 @@ func NewTrustedSourceBehavior(ctx context.Context, c *api.Client, input models.C
 						newTrustedSourceBehavior(ownerId: $ownerId, practiceId: $practiceId, behaviorInput: $behaviorInput) {
 							id
 							name
+							visibility
 							behaviorType
 							numOfSources
 							sourcesIdentifiers {

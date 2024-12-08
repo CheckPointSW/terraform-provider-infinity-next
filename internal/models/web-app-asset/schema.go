@@ -1,7 +1,14 @@
 package models
 
+import (
+	"encoding/base64"
+	"fmt"
+)
+
 const (
 	SourceIdentifierValueIDSeparator = ";;;"
+	//FileDataFilenameFormat           = "%s;"
+	FileDataFormat = "data:application/octet-stream;base64,%s"
 )
 
 // SchemaPracticeMode represents a PracticeMode field of a practice field of a
@@ -29,4 +36,35 @@ type SchemaSourceIdentifier struct {
 	SourceIdentifier string   `json:"identifier"`
 	Values           []string `json:"values"`
 	ValuesIDs        []string `json:"values_ids"`
+}
+
+type SchemaTag struct {
+	ID    string `json:"id,omitempty"`
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+type FileSchema struct {
+	FilenameID string `json:"filename_id,omitempty"`
+	Filename   string `json:"filename,omitempty"`
+	DataID     string `json:"data_id,omitempty"`
+	Data       string `json:"data"`
+	Type       string `json:"type,omitempty"`
+	EnableID   string `json:"enable_id,omitempty"`
+	Enable     bool   `json:"enable,omitempty"`
+}
+
+type FileSchemas []FileSchema
+
+func NewFileSchemaEncode(filename, fileData, fileType string, fileEnable bool) FileSchema {
+	b64Data := base64.StdEncoding.EncodeToString([]byte(fileData))
+	data := fmt.Sprintf(FileDataFormat, b64Data)
+	//filenameFmt := fmt.Sprintf(FileDataFilenameFormat, filepath.Base(filename))
+
+	return FileSchema{
+		Filename: filename,
+		Data:     data,
+		Type:     fileType,
+		Enable:   fileEnable,
+	}
 }

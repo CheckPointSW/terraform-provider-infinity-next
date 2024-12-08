@@ -16,6 +16,7 @@ func GetExceptionBehavior(ctx context.Context, c *api.Client, id string) (models
 				getExceptionBehavior(id: "`+id+`") {
 					id
 					name
+					visibility
 					exceptions {
 						id
 						match
@@ -44,6 +45,7 @@ func GetExceptionBehavior(ctx context.Context, c *api.Client, id string) (models
 func ReadExceptionBehaviorToResourceData(behavior models.ExceptionBehavior, d *schema.ResourceData) error {
 	d.SetId(behavior.ID)
 	d.Set("name", behavior.Name)
+	d.Set("visibility", behavior.Visibility)
 	schemaExceptions := behavior.Exceptions.ToSchema()
 	schemaExceptionsMap, err := utils.UnmarshalAs[[]map[string]any](schemaExceptions)
 	if err != nil {

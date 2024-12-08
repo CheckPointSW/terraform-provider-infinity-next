@@ -14,10 +14,12 @@ func UpdateLogTriggerInputFromResourceData(d *schema.ResourceData) (models.Updat
 	var ret models.UpdateLogTriggerInput
 	ret.Name = d.Get("name").(string)
 	ret.Verbosity = d.Get("verbosity").(string)
+	ret.ComplianceWarnings = d.Get("compliance_warnings").(bool)
+	ret.ComplianceViolations = d.Get("compliance_violations").(bool)
 	ret.AccessControlAllowEvents = d.Get("access_control_allow_events").(bool)
 	ret.AccessControlDropEvents = d.Get("access_control_drop_events").(bool)
-	ret.ThreaPreventionDetectEvents = d.Get("threat_prevention_detect_events").(bool)
-	ret.ThreaPreventionPreventEvents = d.Get("threat_prevention_prevent_events").(bool)
+	ret.ThreatPreventionDetectEvents = d.Get("threat_prevention_detect_events").(bool)
+	ret.ThreatPreventionPreventEvents = d.Get("threat_prevention_prevent_events").(bool)
 	ret.WebRequests = d.Get("web_requests").(bool)
 	ret.WebURLPath = d.Get("web_url_path").(bool)
 	ret.WebURLQuery = d.Get("web_url_query").(bool)
@@ -39,6 +41,10 @@ func UpdateLogTriggerInputFromResourceData(d *schema.ResourceData) (models.Updat
 		ret.SyslogIPAddress = syslogIPAddress
 	}
 
+	if _, syslogProtocol, hasChange := utils.MustGetChange[string](d, "syslog_protocol"); hasChange {
+		ret.SyslogProtocol = syslogProtocol
+	}
+
 	if _, syslogPortNum, hasChange := utils.MustGetChange[int](d, "syslog_port"); hasChange {
 		ret.SyslogPort = syslogPortNum
 	}
@@ -49,6 +55,10 @@ func UpdateLogTriggerInputFromResourceData(d *schema.ResourceData) (models.Updat
 
 	if _, cefPortNum, hasChange := utils.MustGetChange[int](d, "cef_port"); hasChange {
 		ret.CEFPort = cefPortNum
+	}
+
+	if _, cefProtocol, hasChange := utils.MustGetChange[string](d, "cef_protocol"); hasChange {
+		ret.CEFProtocol = cefProtocol
 	}
 
 	return ret, nil

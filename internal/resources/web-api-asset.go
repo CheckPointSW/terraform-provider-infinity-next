@@ -26,6 +26,7 @@ const (
 	xForwardedFor = "XForwardedFor"
 	headerKey     = "HeaderKey"
 	cookie        = "Cookie"
+	jwtKey        = "JWTKey"
 
 	// Allowed states
 	suggestedState = "Suggested"
@@ -37,7 +38,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 	validatePracticeModeFunc := validation.ToDiagFunc(validation.StringInSlice(
 		[]string{detectMode, preventMode, inactiveMode, accordingToPracticeMode, disabledMode, learnMode, activeMode}, false))
 	validateSourceIdentifierFunc := validation.ToDiagFunc(validation.StringInSlice(
-		[]string{sourceIP, xForwardedFor, headerKey, cookie}, false))
+		[]string{sourceIP, xForwardedFor, headerKey, cookie, jwtKey}, false))
 	validateStateFunc := validation.ToDiagFunc(validation.StringInSlice(
 		[]string{suggestedState, activeState, headerKey, inactiveState}, false))
 
@@ -77,9 +78,9 @@ func ResourceWebAPIAsset() *schema.Resource {
 				},
 			},
 			// top level behaviors
-			"trusted_sources": {
+			"behaviors": {
 				Type:        schema.TypeSet,
-				Description: "Trusted sources behavior used by the asset",
+				Description: "behaviors used by the asset",
 				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -110,6 +111,27 @@ func ResourceWebAPIAsset() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
+				},
+			},
+			"tags": {
+				Type:        schema.TypeSet,
+				Description: "The tags used by the asset",
+				Optional:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"key": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"value": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
 				},
 			},
 			"practice": {
@@ -150,15 +172,6 @@ func ResourceWebAPIAsset() *schema.Resource {
 								Type: schema.TypeString,
 							},
 						},
-						// practices.behaviors
-						"exceptions": {
-							Type:        schema.TypeSet,
-							Description: "The exceptions used with the practice",
-							Optional:    true,
-							Elem: &schema.Schema{
-								Type: schema.TypeString,
-							},
-						},
 					},
 				},
 			},
@@ -187,13 +200,13 @@ func ResourceWebAPIAsset() *schema.Resource {
 			},
 			"source_identifier": {
 				Type:        schema.TypeSet,
-				Description: "Defines how the source identifier valuess of the asset are retrieved",
+				Description: "Defines how the source identifier values of the asset are retrieved",
 				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"identifier": {
 							Type:             schema.TypeString,
-							Description:      "The identifier of the source: SourceIP, XForwardedFor, HeaderKey or Cookie",
+							Description:      "The identifier of the source: SourceIP, XForwardedFor, HeaderKey, Cookie or JWTKey",
 							Optional:         true,
 							ValidateDiagFunc: validateSourceIdentifierFunc,
 						},
@@ -259,6 +272,10 @@ func ResourceWebAPIAsset() *schema.Resource {
 				Computed: true,
 			},
 			"read_only": {
+				Type:     schema.TypeBool,
+				Computed: true,
+			},
+			"is_shares_urls": {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
