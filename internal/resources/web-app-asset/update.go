@@ -117,16 +117,22 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 				} else {
 					enableToString = "false"
 				}
+
+				key := mtlsClientEnable
+				if oldMTLS.Type == mtlsTypeServer {
+					key = mtlsServerEnable
+				}
 				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
 					ID:    oldMTLS.EnableID,
+					Key:   key,
 					Value: enableToString,
 				})
 			}
 
 			if oldMTLS.Data != newMTLS.Data {
-				key := "upstreamTrustedCAFile"
-				if oldMTLS.Type == "server" {
-					key = "trustedCAListFile"
+				key := mtlsClientData
+				if oldMTLS.Type == mtlsTypeServer {
+					key = mtlsServerData
 				}
 
 				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
@@ -137,9 +143,9 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 			}
 
 			if oldMTLS.Filename != newMTLS.Filename {
-				key := "upstreamTrustedCAFileName"
-				if oldMTLS.Type == "server" {
-					key = "trustedCAListFileName"
+				key := mtlsClientFileName
+				if oldMTLS.Type == mtlsTypeServer {
+					key = mtlsServerFileName
 				}
 
 				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{

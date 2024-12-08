@@ -2,8 +2,6 @@ package resources
 
 import (
 	"context"
-	"fmt"
-
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/exceptions"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
@@ -163,8 +161,6 @@ func resourceExceptionsCreate(ctx context.Context, d *schema.ResourceData, meta 
 		return utils.DiagError("unable to perform ExceptionBehavior Create", err, diags)
 	}
 
-	fmt.Printf("Created ExceptionBehavior: %v\n", behavior)
-
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
@@ -198,8 +194,6 @@ func resourceExceptionsRead(ctx context.Context, d *schema.ResourceData, meta an
 		return utils.DiagError("failed to get ExceptionBehavior for read into state file", err, diags)
 	}
 
-	fmt.Printf("Read ExceptionBehavior: %v\n", behavior)
-
 	if err := exceptions.ReadExceptionBehaviorToResourceData(behavior, d); err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -228,8 +222,6 @@ func resourceExceptionsUpdate(ctx context.Context, d *schema.ResourceData, meta 
 
 		return utils.DiagError("unable to perform ExceptionBehavior Update", err, diags)
 	}
-
-	fmt.Printf("Updated ExceptionBehavior: %v\n", d.Id())
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
@@ -272,8 +264,6 @@ func resourceExceptionsDelete(ctx context.Context, d *schema.ResourceData, meta 
 
 		return utils.DiagError("unable to perform ExceptionBehavior Delete", err, diags)
 	}
-
-	fmt.Printf("Deleted ExceptionBehavior: %v\n", d.Id())
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
