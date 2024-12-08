@@ -37,7 +37,7 @@ func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (mod
 	res.Tags = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "tags"), mapToTagsInputs)
 	res.IsSharesURLs = d.Get("is_shares_urls").(bool)
 
-	var mtls []models.FileSchema
+	var mtls models.FileSchemas
 	mtls = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "mtls"), mapToMTLSInput)
 
 	res.ProxySettings = mapMTLSToProxySettingInputs(mtls, res.ProxySettings)
@@ -192,7 +192,7 @@ func mapToTagsInputs(tagsMap map[string]any) models.TagInput {
 }
 
 func mapToMTLSInput(mTLSMap map[string]any) models.FileSchema {
-	mTLSFile, err := utils.UnmarshalAs[models.FileSchema](mTLSMap["file"])
+	mTLSFile, err := utils.UnmarshalAs[models.FileSchema](mTLSMap)
 	if err != nil {
 		fmt.Printf("Failed to convert input schema validation to FileSchema struct. Error: %+v", err)
 		return models.FileSchema{}
