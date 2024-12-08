@@ -101,7 +101,7 @@ func TestAccWebApplicationAssetWithmTLSBasic(t *testing.T) {
 
 						"mtls.#":          "1",
 						"mtls.0.filename": "cert.pem",
-						"mtls.0.data":     "cert data",
+						"mtls.0.data":     "cert.pem;data:;base64,Y2VydCBkYXRh",
 						"mtls.0.type":     "client",
 						"mtls.0.enable":   "true",
 					}),
@@ -212,7 +212,7 @@ func TestAccWebApplicationAssetWithmTLSFull(t *testing.T) {
 
 						"mtls.#":          "1",
 						"mtls.0.filename": "cert.pem",
-						"mtls.0.data":     "cert data",
+						"mtls.0.data":     "cert.pem;data:;base64,Y2VydCBkYXRh",
 						"mtls.0.type":     "client",
 						"mtls.0.enable":   "true",
 					}),
@@ -306,11 +306,11 @@ func TestAccWebApplicationAssetWithmTLSFull(t *testing.T) {
 
 						"mtls.#":          "2",
 						"mtls.0.filename": "newfile.pem",
-						"mtls.0.data":     "new cert data",
+						"mtls.0.data":     "newfile.pem;data:;base64,bmV3IGNlcnQgZGF0YQ==",
 						"mtls.0.type":     "server",
 						"mtls.0.enable":   "true",
 						"mtls.1.filename": "newfile2.pem",
-						"mtls.1.data":     "new cert data2",
+						"mtls.1.data":     "newfile2.pem;data:;base64,bmV3IGNlcnQgZGF0YTI=",
 						"mtls.1.type":     "client",
 						"mtls.1.enable":   "false",
 					}),
