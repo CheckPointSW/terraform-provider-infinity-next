@@ -2,7 +2,6 @@ package resources
 
 import (
 	"context"
-	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -309,7 +308,7 @@ func resourceWebAppAssetCreate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAppAsset Create", err, diags)
 	}
 
-	fmt.Printf("created input: %v\n", createInput)
+	//fmt.Printf("created input: %v\n", createInput)
 
 	asset, err := webappasset.NewWebApplicationAsset(ctx, c, createInput)
 	if err != nil {
@@ -320,7 +319,7 @@ func resourceWebAppAssetCreate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAppAsset Create", err, diags)
 	}
 
-	fmt.Printf("created asset: %v\n", asset)
+	//fmt.Printf("created asset: %v\n", asset)
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
@@ -352,13 +351,13 @@ func resourceWebAppAssetRead(ctx context.Context, d *schema.ResourceData, meta a
 		return utils.DiagError("unable to perform WebAppAsset Read", err, diags)
 	}
 
-	fmt.Printf("read asset: %v\n", asset)
+	//fmt.Printf("read asset: %v\n", asset)
 
 	if err := webappasset.ReadWebApplicationAssetToResourceData(asset, d); err != nil {
 		return utils.DiagError("unable to perform WebAppAsset Read", err, diags)
 	}
 
-	fmt.Printf("read resource data: %v\n", d)
+	//fmt.Printf("read resource data: %v\n", d)
 
 	return diags
 }
@@ -378,7 +377,7 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAppAsset Update", err, diags)
 	}
 
-	fmt.Printf("update input: %v\n", updateInput)
+	//fmt.Printf("update input: %v\n", updateInput)
 
 	result, err := webappasset.UpdateWebApplicationAsset(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
@@ -407,7 +406,7 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 		return diag.FromErr(err)
 	}
 
-	fmt.Printf("updated asset: %v\n", asset)
+	//fmt.Printf("updated asset: %v\n", asset)
 
 	if err := webappasset.ReadWebApplicationAssetToResourceData(asset, d); err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
@@ -417,7 +416,7 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 		return diag.FromErr(err)
 	}
 
-	fmt.Printf("updated resource data: %v\n", d)
+	//fmt.Printf("updated resource data: %v\n", d)
 
 	return diags
 }
