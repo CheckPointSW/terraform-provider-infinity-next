@@ -124,15 +124,27 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 			}
 
 			if oldMTLS.Data != newMTLS.Data {
+				key := "upstreamTrustedCAFile"
+				if oldMTLS.Type == "server" {
+					key = "trustedCAListFile"
+				}
+
 				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
 					ID:    oldMTLS.DataID,
+					Key:   key,
 					Value: newMTLS.Data,
 				})
 			}
 
 			if oldMTLS.Filename != newMTLS.Filename {
+				key := "upstreamTrustedCAFileName"
+				if oldMTLS.Type == "server" {
+					key = "trustedCAListFileName"
+				}
+
 				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
 					ID:    oldMTLS.FilenameID,
+					Key:   key,
 					Value: newMTLS.Filename,
 				})
 			}

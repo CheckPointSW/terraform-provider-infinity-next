@@ -200,6 +200,18 @@ func mapToMTLSInput(mTLSMap map[string]any) models.FileSchema {
 
 	mTLSFile = models.NewFileSchemaEncode(mTLSFile.Filename, mTLSFile.Data, mTLSFile.Type, mTLSFile.Enable)
 
+	if mTLSMap["filename_id"] != nil {
+		mTLSFile.FilenameID = mTLSMap["filename_id"].(string)
+	}
+
+	if mTLSMap["data_id"] != nil {
+		mTLSFile.DataID = mTLSMap["data_id"].(string)
+	}
+
+	if mTLSMap["enable_id"] != nil {
+		mTLSFile.EnableID = mTLSMap["enable_id"].(string)
+	}
+
 	return mTLSFile
 }
 
