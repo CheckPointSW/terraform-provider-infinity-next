@@ -275,7 +275,7 @@ func TestAccWebApplicationAssetWithmTLSFull(t *testing.T) {
 						"source_identifier.1.values.#":     "2",
 						"source_identifier.0.values.#":     "2",
 						"source_identifier.0.values_ids.#": "2",
-						"proxy_setting.#":                  "9", //was 3
+						"proxy_setting.#":                  "3", //was 3
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
