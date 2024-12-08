@@ -47,7 +47,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	//d.Set("proxy_setting", proxySettingsSchemaMap)
 
 	var proxySettingsSchemaMap []map[string]any
-	var mTLSsSchemaMap map[string]models.FileSchema
+	mTLSsSchemaMap := make(map[string]models.FileSchema)
 	var mTLSsMap []map[string]any
 
 	for _, proxySetting := range asset.ProxySettings {
