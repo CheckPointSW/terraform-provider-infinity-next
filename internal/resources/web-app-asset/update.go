@@ -105,9 +105,6 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 			oldMTLS, ok := oldMTLSsIndicators[newMTLS.Type]
 			if !ok {
 				mTLSsToAdd = append(mTLSsToAdd, newMTLS)
-				//proxysettingstoadd := mapMTLSToProxySettingInputs(newMTLS, models.ProxySettingInputs{})
-				//
-				//updateInput.AddProxySetting = append(updateInput.AddProxySetting, mapMTLSToProxySettingInputs(newMTLS))
 				continue
 			}
 			if oldMTLS.Enable != newMTLS.Enable {
@@ -154,16 +151,6 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 					Value: newMTLS.Filename,
 				})
 			}
-
-			//oldMTLS := oldMTLSsIndicators[newMTLS["type"].(string)]
-			//if oldMTLS.Data != newMTLS["data"].(string) || oldMTLS.Enable != newMTLS["enable"].(bool) {
-			//	updateInput.UpdateMTLS = append(updateInput.UpdateMTLS, models.UpdateMTLS{
-			//		ID:     oldMTLS.ID,
-			//		Type:   oldMTLS.Type,
-			//		Data:   newMTLS["data"].(string),
-			//		Enable: newMTLS["enable"].(bool),
-			//	})
-			//}
 		}
 
 		var proxySettingsToAdd models.ProxySettingInputs

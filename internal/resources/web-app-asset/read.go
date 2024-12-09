@@ -2,7 +2,10 @@ package webappasset
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
+	"mime"
+	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
@@ -53,45 +56,68 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 			case mtlsClientEnable, mtlsServerEnable:
 				if proxySetting.Value == "true" {
 					mTLSsSchemaMap[mTLSType] = models.FileSchema{
-						FilenameID: mTLSsSchemaMap[mTLSType].FilenameID,
-						Filename:   mTLSsSchemaMap[mTLSType].Filename,
-						DataID:     mTLSsSchemaMap[mTLSType].DataID,
-						Data:       mTLSsSchemaMap[mTLSType].Data,
-						Type:       mTLSType,
-						EnableID:   proxySetting.ID,
-						Enable:     true,
+						FilenameID:      mTLSsSchemaMap[mTLSType].FilenameID,
+						Filename:        mTLSsSchemaMap[mTLSType].Filename,
+						CertificateType: mTLSsSchemaMap[mTLSType].CertificateType,
+						DataID:          mTLSsSchemaMap[mTLSType].DataID,
+						Data:            mTLSsSchemaMap[mTLSType].Data,
+						Type:            mTLSType,
+						EnableID:        proxySetting.ID,
+						Enable:          true,
 					}
 				}
 				if proxySetting.Value == "false" {
 					mTLSsSchemaMap[mTLSType] = models.FileSchema{
-						FilenameID: mTLSsSchemaMap[mTLSType].FilenameID,
-						Filename:   mTLSsSchemaMap[mTLSType].Filename,
-						DataID:     mTLSsSchemaMap[mTLSType].DataID,
-						Data:       mTLSsSchemaMap[mTLSType].Data,
-						Type:       mTLSType,
-						EnableID:   proxySetting.ID,
-						Enable:     false,
+						FilenameID:      mTLSsSchemaMap[mTLSType].FilenameID,
+						Filename:        mTLSsSchemaMap[mTLSType].Filename,
+						CertificateType: mTLSsSchemaMap[mTLSType].CertificateType,
+						DataID:          mTLSsSchemaMap[mTLSType].DataID,
+						Data:            mTLSsSchemaMap[mTLSType].Data,
+						Type:            mTLSType,
+						EnableID:        proxySetting.ID,
+						Enable:          false,
 					}
 				}
 			case mtlsClientData, mtlsServerData:
+				var decodedData string
+				var fileExtensionsByType []string
+				if strings.Contains(proxySetting.Value, "base64,") {
+					b64Data := strings.SplitN(proxySetting.Value, "base64,", 2)[1]
+					bDecodedData, err := base64.StdEncoding.DecodeString(b64Data)
+					if err != nil {
+						return fmt.Errorf("failed decoding base64 string %s: %w", b64Data, err)
+					}
+
+					decodedData = string(bDecodedData)
+
+					mimeType := strings.SplitN(proxySetting.Value, ":", 2)[1]
+					mimeType = strings.SplitN(mimeType, ";", 2)[0]
+					fileExtensionsByType, err = mime.ExtensionsByType(mimeType)
+					if err != nil {
+						return fmt.Errorf("failed to get file extension by type %s: %w", mimeType, err)
+					}
+				}
+
 				mTLSsSchemaMap[mTLSType] = models.FileSchema{
-					FilenameID: mTLSsSchemaMap[mTLSType].FilenameID,
-					Filename:   mTLSsSchemaMap[mTLSType].Filename,
-					DataID:     proxySetting.ID,
-					Data:       proxySetting.Value,
-					Type:       mTLSType,
-					EnableID:   mTLSsSchemaMap[mTLSType].EnableID,
-					Enable:     mTLSsSchemaMap[mTLSType].Enable,
+					FilenameID:      mTLSsSchemaMap[mTLSType].FilenameID,
+					Filename:        mTLSsSchemaMap[mTLSType].Filename,
+					CertificateType: fileExtensionsByType[0],
+					DataID:          proxySetting.ID,
+					Data:            decodedData,
+					Type:            mTLSType,
+					EnableID:        mTLSsSchemaMap[mTLSType].EnableID,
+					Enable:          mTLSsSchemaMap[mTLSType].Enable,
 				}
 			case mtlsClientFileName, mtlsServerFileName:
 				mTLSsSchemaMap[mTLSType] = models.FileSchema{
-					FilenameID: proxySetting.ID,
-					Filename:   proxySetting.Value,
-					DataID:     mTLSsSchemaMap[mTLSType].DataID,
-					Data:       mTLSsSchemaMap[mTLSType].Data,
-					Type:       mTLSType,
-					EnableID:   mTLSsSchemaMap[mTLSType].EnableID,
-					Enable:     mTLSsSchemaMap[mTLSType].Enable,
+					FilenameID:      proxySetting.ID,
+					Filename:        proxySetting.Value,
+					CertificateType: mTLSsSchemaMap[mTLSType].CertificateType,
+					DataID:          mTLSsSchemaMap[mTLSType].DataID,
+					Data:            mTLSsSchemaMap[mTLSType].Data,
+					Type:            mTLSType,
+					EnableID:        mTLSsSchemaMap[mTLSType].EnableID,
+					Enable:          mTLSsSchemaMap[mTLSType].Enable,
 				}
 			default:
 				continue
