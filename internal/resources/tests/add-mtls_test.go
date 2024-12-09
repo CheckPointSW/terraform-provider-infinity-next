@@ -290,7 +290,7 @@ func TestAccWebApplicationAssetWithmTLSFull(t *testing.T) {
 
 						"mtls.#":                  "2",
 						"mtls.0.filename":         "newfile.der",
-						"mtls.0.certificate_type": ".der",
+						"mtls.0.certificate_type": ".cer",
 						"mtls.0.data":             "new cert data",
 						"mtls.0.type":             "server",
 						"mtls.0.enable":           "true",

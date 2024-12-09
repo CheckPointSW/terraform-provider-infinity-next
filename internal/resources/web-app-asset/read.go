@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"mime"
 	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -80,7 +79,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 				}
 			case mtlsClientData, mtlsServerData:
 				var decodedData string
-				var fileExtensionsByType []string
+				var fileExtensionsByType string
 				if strings.Contains(proxySetting.Value, "base64,") {
 					b64Data := strings.SplitN(proxySetting.Value, "base64,", 2)[1]
 					bDecodedData, err := base64.StdEncoding.DecodeString(b64Data)
@@ -92,16 +91,17 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 
 					mimeType := strings.SplitN(proxySetting.Value, ":", 2)[1]
 					mimeType = strings.SplitN(mimeType, ";", 2)[0]
-					fileExtensionsByType, err = mime.ExtensionsByType(mimeType)
-					if err != nil {
-						return fmt.Errorf("failed to get file extension by type %s: %w", mimeType, err)
-					}
+					fileExtensionsByType = models.MimeTypeToFileExtension(mimeType)
+					//fileExtensionsByType, err = mime.ExtensionsByType(mimeType)
+					//if err != nil {
+					//	return fmt.Errorf("failed to get file extension by type %s: %w", mimeType, err)
+					//}
 				}
 
 				mTLSsSchemaMap[mTLSType] = models.FileSchema{
 					FilenameID:      mTLSsSchemaMap[mTLSType].FilenameID,
 					Filename:        mTLSsSchemaMap[mTLSType].Filename,
-					CertificateType: fileExtensionsByType[0],
+					CertificateType: fileExtensionsByType,
 					DataID:          proxySetting.ID,
 					Data:            decodedData,
 					Type:            mTLSType,

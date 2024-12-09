@@ -3,7 +3,6 @@ package models
 import (
 	"encoding/base64"
 	"fmt"
-	"mime"
 )
 
 const (
@@ -56,11 +55,42 @@ type FileSchema struct {
 	Enable          bool   `json:"enable,omitempty"`
 }
 
+func fileExtensionToMimeType(extension string) string {
+	switch extension {
+	case ".pem":
+		return "application/x-pem-file"
+	case ".der", ".cer", ".crt":
+		return "application/x-x509-ca-cert"
+	case ".p12", ".pfx":
+		return "application/x-pkcs12"
+	case ".p7b", ".p7c":
+		return "application/x-pkcs7-certificates"
+	default:
+		return "application/octet-stream"
+	}
+}
+
+func MimeTypeToFileExtension(mimeType string) string {
+	switch mimeType {
+	case "application/x-pem-file":
+		return ".pem"
+	case "application/x-x509-ca-cert":
+		return ".cer"
+	case "application/x-pkcs12":
+		return ".p12"
+	case "application/x-pkcs7-certificates":
+		return ".p7b"
+	default:
+		return ""
+	}
+}
+
 type FileSchemas []FileSchema
 
 func NewFileSchemaEncode(filename, fileData, mTLSType, certificateType string, fileEnable bool) FileSchema {
 	b64Data := base64.StdEncoding.EncodeToString([]byte(fileData))
-	data := fmt.Sprintf(FileDataFormat, mime.TypeByExtension(certificateType), b64Data)
+	data := fmt.Sprintf(FileDataFormat, fileExtensionToMimeType(certificateType), b64Data)
+	//data := fmt.Sprintf(FileDataFormat, mime.TypeByExtension(certificateType), b64Data)
 	//filenameFmt := fmt.Sprintf(FileDataFilenameFormat, filepath.Base(filename))
 
 	return FileSchema{
