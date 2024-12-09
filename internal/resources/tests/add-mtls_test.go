@@ -98,7 +98,7 @@ func TestAccWebApplicationAssetWithmTLSBasic(t *testing.T) {
 						"mtls.#":                  "1",
 						"mtls.0.filename":         "cert.cer",
 						"mtls.0.certificate_type": ".cer",
-						"mtls.0.data":             "cert.data",
+						"mtls.0.data":             "cert data",
 						"mtls.0.type":             "client",
 						"mtls.0.enable":           "true",
 					}),
