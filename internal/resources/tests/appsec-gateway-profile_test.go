@@ -20,8 +20,9 @@ func TestAccAppsecGatewayProfileBasic(t *testing.T) {
 				Config: appsecGatewayProfileBasicConfig(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":             nameAttribute,
-						"profile_sub_type": "Aws",
+						"name":                 nameAttribute,
+						"profile_sub_type":     "Aws",
+						"max_number_of_agents": "10",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -46,7 +47,7 @@ func TestAccAppsecGatewayProfileBasic(t *testing.T) {
 						"max_number_of_agents":                   "100",
 						"reverseproxy_additional_settings_ids.#": "2",
 						"additional_settings_ids.#":              "2",
-						"%":                                      "16",
+						"%":                                      "17",
 						"profile_type":                           "CloudGuardAppSecGateway",
 						"additional_settings.%":                  "2",
 						"upgrade_time_week_days.1":               "Monday",
@@ -97,7 +98,7 @@ func TestAccAppsecGatewayProfileFull(t *testing.T) {
 						"max_number_of_agents":                   "100",
 						"reverseproxy_additional_settings_ids.#": "2",
 						"additional_settings_ids.#":              "2",
-						"%":                                      "16",
+						"%":                                      "17",
 						"profile_type":                           "CloudGuardAppSecGateway",
 						"additional_settings.%":                  "2",
 						"upgrade_time_week_days.1":               "Monday",
@@ -151,7 +152,7 @@ func TestAccAppsecGatewayProfileFull(t *testing.T) {
 						"additional_settings_ids.#":              "3",
 						"additional_settings.Key2":               "Value11",
 						"additional_settings.Key5":               "Value5",
-						"%":                                      "16",
+						"%":                                      "17",
 						"upgrade_time_week_days.1":               "Sunday",
 					}),
 						resource.TestCheckTypeSetElemAttr(resourceName, "upgrade_time_week_days.*", "Monday"),
@@ -170,6 +171,7 @@ func appsecGatewayProfileBasicConfig(name string) string {
 resource "inext_appsec_gateway_profile" %[1]q {
 	name = %[1]q
 	profile_sub_type = "Aws"
+	max_number_of_agents = 10
 }
 `, name)
 }

@@ -62,6 +62,7 @@ func TestAccWebUserResponseFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":               nameAttribute,
+						"visibility":         "Shared",
 						"mode":               "BlockPage",
 						"http_response_code": "403",
 						"message_title":      "some message title",
@@ -80,6 +81,7 @@ func TestAccWebUserResponseFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":         nameAttribute,
+						"visibility":   "Local",
 						"mode":         "Redirect",
 						"redirect_url": "http://localhost:1234/test",
 						"x_event_id":   "true",
@@ -129,6 +131,7 @@ func webUserResponseUpdateSourceIdentifiersConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_web_user_response" %[1]q {
 	name                = %[1]q
+	visibility 			= "Local"
 	mode  				= "Redirect"
 	redirect_url 		= "http://localhost:1234/test"
 	x_event_id 			= true

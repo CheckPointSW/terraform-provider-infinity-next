@@ -34,7 +34,7 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"name":            assetNameAttribute,
 						"urls.0":          fmt.Sprintf("http://host/%s/path1", assetNameAttribute),
 						"urls.#":          "1",
-						"%":               "21",
+						"%":               "24",
 						"urls_ids.#":      "1",
 						"main_attributes": fmt.Sprintf("{\"applicationUrls\":\"http://host/%s/path1\"}", assetNameAttribute),
 					}),
@@ -53,14 +53,14 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "21",
+						"%":                                     "24",
 						"read_only":                             "false",
 						"upstream_url":                          "some url 5",
 						"urls.#":                                "2",
 						"urls_ids.#":                            "2",
 						"profiles.#":                            "1",
 						"practice.#":                            "1",
-						"practice.0.%":                          "6",
+						"practice.0.%":                          "5",
 						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
 						"practice.0.sub_practices_modes.WebBot": "AccordingToPractice",
@@ -81,16 +81,19 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
-						"trusted_sources.#":                "1",
-						"class":                            "workload",
-						"category":                         "cloud",
-						"group":                            "",
-						"order":                            "",
-						"kind":                             "",
-						"family":                           "Web Application",
-						"main_attributes":                  fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path2;http://host/%[1]s/path3\"}", assetNameAttribute),
-						"asset_type":                       "WebApplication",
-						"intelligence_tags":                "",
+						//"trusted_sources.#":                "1",
+						"class":             "workload",
+						"category":          "cloud",
+						"group":             "",
+						"order":             "",
+						"kind":              "",
+						"family":            "Web Application",
+						"main_attributes":   fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path2;http://host/%[1]s/path3\"}", assetNameAttribute),
+						"asset_type":        "WebApplication",
+						"intelligence_tags": "",
+						"tags.#":            "1",
+						"tags.0.key":        "tagkey1",
+						"tags.0.value":      "tagvalue1",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -103,6 +106,7 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path2", assetNameAttribute)),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path3", assetNameAttribute)),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -145,14 +149,14 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "21",
+						"%":                                     "24",
 						"read_only":                             "false",
 						"upstream_url":                          "some url 5",
 						"urls.#":                                "2",
 						"urls_ids.#":                            "2",
 						"profiles.#":                            "1",
 						"practice.#":                            "1",
-						"practice.0.%":                          "6",
+						"practice.0.%":                          "5",
 						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
 						"practice.0.sub_practices_modes.WebBot": "AccordingToPractice",
@@ -173,16 +177,22 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
-						"trusted_sources.#":                "1",
-						"class":                            "workload",
-						"category":                         "cloud",
-						"group":                            "",
-						"order":                            "",
-						"kind":                             "",
-						"family":                           "Web Application",
-						"main_attributes":                  fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path1;http://host/%[1]s/path2\"}", assetNameAttribute),
-						"asset_type":                       "WebApplication",
-						"intelligence_tags":                "",
+						//"trusted_sources.#":                "1",
+						"class":             "workload",
+						"category":          "cloud",
+						"group":             "",
+						"order":             "",
+						"kind":              "",
+						"family":            "Web Application",
+						"main_attributes":   fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path1;http://host/%[1]s/path2\"}", assetNameAttribute),
+						"asset_type":        "WebApplication",
+						"intelligence_tags": "",
+						"tags.#":            "2",
+						"tags.0.key":        "tagkey1",
+						"tags.0.value":      "tagvalue1",
+						"tags.1.key":        "tagkey2",
+						"tags.1.value":      "tagvalue2",
+						"is_shares_urls":    "false",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -194,6 +204,8 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "proxy_setting.2.id"),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path1", assetNameAttribute)),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path2", assetNameAttribute)),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tags.1.id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -210,14 +222,14 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "21",
+						"%":                                     "24",
 						"read_only":                             "false",
 						"upstream_url":                          "some url 10",
 						"urls.#":                                "2",
 						"urls_ids.#":                            "2",
 						"profiles.#":                            "1",
 						"practice.#":                            "1",
-						"practice.0.%":                          "6",
+						"practice.0.%":                          "5",
 						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "Learn",
 						"practice.0.sub_practices_modes.WebBot": "Inactive",
@@ -238,16 +250,24 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
-						"trusted_sources.#":                "1",
-						"class":                            "workload",
-						"category":                         "cloud",
-						"group":                            "",
-						"order":                            "",
-						"kind":                             "",
-						"family":                           "Web Application",
-						"main_attributes":                  fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path3;http://host/%[1]s/path4\"}", assetNameAttribute),
-						"asset_type":                       "WebApplication",
-						"intelligence_tags":                "",
+						//"trusted_sources.#":                "1",
+						"class":             "workload",
+						"category":          "cloud",
+						"group":             "",
+						"order":             "",
+						"kind":              "",
+						"family":            "Web Application",
+						"main_attributes":   fmt.Sprintf("{\"applicationUrls\":\"http://host/%[1]s/path3;http://host/%[1]s/path4\"}", assetNameAttribute),
+						"asset_type":        "WebApplication",
+						"intelligence_tags": "",
+						"tags.#":            "3",
+						"tags.0.key":        "tagkey1",
+						"tags.0.value":      "tagvalue2",
+						"tags.1.key":        "tagkey2",
+						"tags.1.value":      "tagvalue1",
+						"tags.2.key":        "tagkey3",
+						"tags.2.value":      "tagvalue3",
+						"is_shares_urls":    "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -259,6 +279,9 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "proxy_setting.2.id"),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path3", assetNameAttribute)),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path4", assetNameAttribute)),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tags.1.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "tags.2.id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -284,7 +307,6 @@ resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path3", "http://host/%[1]s/path2"]
 	profiles        = [inext_appsec_gateway_profile.%[2]s.id]
-	trusted_sources = [inext_trusted_sources.%[3]s.id]
   	upstream_url    = "some url 5"
 	practice {
 		main_mode = "Prevent"
@@ -295,7 +317,6 @@ resource "inext_web_app_asset" %[1]q {
 		}
 		id         = inext_web_app_practice.%[4]s.id
 		triggers   = [inext_log_trigger.%[5]s.id]
-		exceptions = [inext_exceptions.%[6]s.id]
 	}
   	proxy_setting {
     	key   = "some key"
@@ -321,6 +342,10 @@ resource "inext_web_app_asset" %[1]q {
     	identifier = "HeaderKey"
     	values     = ["value1"]
   	}
+	tags {
+		key   = "tagkey1"
+		value = "tagvalue1"
+	}
 }
 
 resource "inext_appsec_gateway_profile" %[2]q {
@@ -417,7 +442,6 @@ resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path1", "http://host/%[1]s/path2"]
 	profiles        = [inext_appsec_gateway_profile.%[2]s.id]
-	trusted_sources = [inext_trusted_sources.%[3]s.id]
 	upstream_url    = "some url 5"
 	practice {
 	  main_mode = "Learn"
@@ -428,7 +452,6 @@ resource "inext_web_app_asset" %[1]q {
 	  }
 	  id         = inext_web_app_practice.%[4]s.id
 	  triggers   = [inext_log_trigger.%[5]s.id]
-	  exceptions = [inext_exceptions.%[6]s.id]
 	}
 
 	proxy_setting {
@@ -455,6 +478,15 @@ resource "inext_web_app_asset" %[1]q {
 	  identifier = "HeaderKey"
 	  values     = ["value1"]
 	}
+	tags {
+	  key   = "tagkey1"
+	  value = "tagvalue1"
+	}
+	tags {
+	  key   = "tagkey2"
+	  value = "tagvalue2"
+	}
+	is_shares_urls = false
 }
 
 resource "inext_appsec_gateway_profile" %[2]q {
@@ -585,7 +617,6 @@ resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path3", "http://host/%[1]s/path4"]
 	profiles        = [inext_appsec_gateway_profile.%[7]s.id]
-	trusted_sources = [inext_trusted_sources.%[8]s.id]
 	upstream_url    = "some url 10"
 	practice {
 	  main_mode = "Prevent"
@@ -596,7 +627,6 @@ resource "inext_web_app_asset" %[1]q {
 	  }
 	  id         = inext_web_app_practice.%[4]s.id
 	  triggers   = [inext_log_trigger.%[9]s.id]
-	  exceptions = [inext_exceptions.%[10]s.id]
 	}
 
 	proxy_setting {
@@ -623,6 +653,19 @@ resource "inext_web_app_asset" %[1]q {
 	  identifier = "Cookie"
 	  values     = ["value8", "value9"]
 	}
+	tags {
+	  key   = "tagkey1"
+	  value = "tagvalue2"
+	}
+	tags {
+	  key   = "tagkey2"
+      value = "tagvalue1"
+	}
+	tags {
+	  key   = "tagkey3"
+	  value = "tagvalue3"
+	}
+	is_shares_urls = true
 }
 
 resource "inext_appsec_gateway_profile" %[2]q {

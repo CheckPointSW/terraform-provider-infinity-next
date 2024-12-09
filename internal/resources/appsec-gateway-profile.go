@@ -12,9 +12,12 @@ import (
 )
 
 func ResourceAppSecGatewayProfile() *schema.Resource {
+	validateSubType := validation.ToDiagFunc(validation.StringInSlice([]string{appsecgatewayprofile.ProfileSubTypeAws, appsecgatewayprofile.ProfileSubTypeAzure, appsecgatewayprofile.ProfileSubTypeVMware, appsecgatewayprofile.ProfileSubTypeHyperV}, false))
+	validateUpgradeMode := validation.ToDiagFunc(validation.StringInSlice([]string{appsecgatewayprofile.UpgradeModeAutomatic, appsecgatewayprofile.UpgradeModeManual, appsecgatewayprofile.UpgradeModeScheduled}, false))
+	validateUpgradeTimeType := validation.ToDiagFunc(validation.StringInSlice([]string{appsecgatewayprofile.ScheduleTypeDaily, appsecgatewayprofile.ScheduleTypeDaysInWeek, appsecgatewayprofile.ScheduleTypeDaysInMonth}, false))
 	return &schema.Resource{
 		Description: "CloudGuard Application Security Gateway profile is deployed as a VM that runs on a Check Point Gaia OS " +
-			"with a reverse proxy and Check Point Nano-Agent",
+			"with a reverse proxy and Check Point Nano-Agent.",
 
 		CreateContext: resourceAppSecGatewayProfileCreate,
 		ReadContext:   resourceAppSecGatewayProfileRead,
@@ -54,10 +57,10 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Computed: true,
 			},
 			"profile_sub_type": {
-				Type:         schema.TypeString,
-				Description:  "The environment of deployment for the AppSec VM: Aws, Azure, VMware or HyperV",
-				Required:     true,
-				ValidateFunc: validation.StringInSlice([]string{appsecgatewayprofile.ProfileSubTypeAws, appsecgatewayprofile.ProfileSubTypeAzure, appsecgatewayprofile.ProfileSubTypeVMware, appsecgatewayprofile.ProfileSubTypeHyperV}, false),
+				Type:             schema.TypeString,
+				Description:      "The environment of deployment for the AppSec VM: Aws, Azure, VMware or HyperV",
+				Required:         true,
+				ValidateDiagFunc: validateSubType,
 			},
 			"additional_settings": {
 				Type:        schema.TypeMap,
@@ -80,13 +83,13 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 					"The default is Automatic",
 				Optional:         true,
 				Default:          appsecgatewayprofile.UpgradeModeAutomatic,
-				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{appsecgatewayprofile.UpgradeModeAutomatic, appsecgatewayprofile.UpgradeModeManual, appsecgatewayprofile.UpgradeModeScheduled}, false)),
+				ValidateDiagFunc: validateUpgradeMode,
 			},
 			"upgrade_time_schedule_type": {
 				Type:             schema.TypeString,
-				Description:      "The schedule type in case upgrade mode is scheduled: DaysInWeek",
+				Description:      "The schedule type in case upgrade mode is scheduled: DaysInWeek, DaysInMonth or Daily",
 				Optional:         true,
-				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"DaysInWeek"}, false)),
+				ValidateDiagFunc: validateUpgradeTimeType,
 			},
 			"upgrade_time_hour": {
 				Type:        schema.TypeString,
@@ -104,6 +107,14 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
+				},
+			},
+			"upgrade_time_days": {
+				Type:        schema.TypeSet,
+				Description: "The days of the month of the upgrade time schedule",
+				Optional:    true,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
 				},
 			},
 			"reverseproxy_upstream_timeout": {

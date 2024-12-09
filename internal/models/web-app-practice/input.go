@@ -24,7 +24,7 @@ type WebApplicationPracticeWebBotInput struct {
 	ValidURIs  []string `json:"validURIs,omitempty"`
 }
 
-type WebApplicationPractcieIPSInput struct {
+type WebApplicationPracticeIPSInput struct {
 	ID                  string `json:"id,omitempty"`
 	PerformanceImpact   string `json:"performanceImpact,omitempty"`
 	SeverityLevel       string `json:"severityLevel,omitempty"`
@@ -34,10 +34,30 @@ type WebApplicationPractcieIPSInput struct {
 	LowConfidence       string `json:"lowConfidence,omitempty"`
 }
 
+type FileSecurityInput struct {
+	ID                        string `json:"id,omitempty"`
+	SeverityLevel             string `json:"severityLevel,omitempty"`
+	HighConfidence            string `json:"highConfidence,omitempty"`
+	MediumConfidence          string `json:"mediumConfidence,omitempty"`
+	LowConfidence             string `json:"lowConfidence,omitempty"`
+	AllowFileSizeLimit        string `json:"allowFileSizeLimit,omitempty"`
+	FileSizeLimit             int    `json:"fileSizeLimit,omitempty"`
+	FileSizeLimitUnit         string `json:"fileSizeLimitUnit,omitempty"`
+	FilesWithoutName          string `json:"filesWithoutName,omitempty"`
+	RequiredArchiveExtraction bool   `json:"requiredArchiveExtraction,omitempty"`
+	ArchiveFileSizeLimit      int    `json:"archiveFileSizeLimit,omitempty"`
+	ArchiveFileSizeLimitUnit  string `json:"archiveFileSizeLimitUnit,omitempty"`
+	AllowArchiveWithinArchive string `json:"allowArchiveWithinArchive,omitempty"`
+	AllowAnUnopenedArchive    string `json:"allowAnUnopenedArchive,omitempty"`
+	AllowFileType             bool   `json:"allowFileType,omitempty"`
+	RequiredThreatEmulation   bool   `json:"requiredThreatEmulation,omitempty"`
+}
+
 type CreateWebApplicationPracticeInput struct {
-	Name       string                                `json:"name"`
-	Visibility string                                `json:"visibility"`
-	IPS        WebApplicationPractcieIPSInput        `json:"IPS,omitempty"`
-	WebBot     WebApplicationPracticeWebBotInput     `json:"WebBot,omitempty"`
-	WebAttacks WebApplicationPracticeWebAttacksInput `json:"WebAttacks,omitempty"`
+	Name         string                                `json:"name"`
+	Visibility   string                                `json:"visibility"`
+	IPS          WebApplicationPracticeIPSInput        `json:"IPS,omitempty"`
+	WebBot       WebApplicationPracticeWebBotInput     `json:"WebBot,omitempty"`
+	WebAttacks   WebApplicationPracticeWebAttacksInput `json:"WebAttacks,omitempty"`
+	FileSecurity FileSecurityInput                     `json:"FileSecurity,omitempty"`
 }

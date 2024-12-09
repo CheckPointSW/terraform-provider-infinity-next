@@ -16,8 +16,8 @@ func ReadLogTriggerToResourceData(logTrigger models.LogTrigger, d *schema.Resour
 	d.Set("verbosity", logTrigger.Verbosity)
 	d.Set("access_control_allow_events", logTrigger.AccessControlAllowEvents)
 	d.Set("access_control_drop_events", logTrigger.AccessControlDropEvents)
-	d.Set("threat_prevention_detect_events", logTrigger.ThreaPreventionDetectEvents)
-	d.Set("threat_prevention_prevent_events", logTrigger.ThreaPreventionPreventEvents)
+	d.Set("threat_prevention_detect_events", logTrigger.ThreatPreventionDetectEvents)
+	d.Set("threat_prevention_prevent_events", logTrigger.ThreatPreventionPreventEvents)
 	d.Set("web_requests", logTrigger.WebRequests)
 	d.Set("web_url_path", logTrigger.WebURLPath)
 	d.Set("web_url_query", logTrigger.WebURLQuery)
@@ -31,10 +31,14 @@ func ReadLogTriggerToResourceData(logTrigger models.LogTrigger, d *schema.Resour
 	d.Set("response_code", logTrigger.ResponseCode)
 	d.Set("log_to_syslog", logTrigger.LogToSyslog)
 	d.Set("syslog_ip_address", logTrigger.SyslogIPAddress)
+	d.Set("syslog_protocol", logTrigger.SyslogProtocol)
 	d.Set("syslog_port", logTrigger.SyslogPort)
 	d.Set("log_to_cef", logTrigger.LogToCEF)
 	d.Set("cef_ip_address", logTrigger.CEFIPAddress)
 	d.Set("cef_port", logTrigger.CEFPort)
+	d.Set("cef_protocol", logTrigger.CEFProtocol)
+	d.Set("compliance_warnings", logTrigger.ComplianceWarnings)
+	d.Set("compliance_violations", logTrigger.ComplianceViolations)
 
 	return nil
 }
@@ -46,6 +50,8 @@ func GetLogTrigger(ctx context.Context, c *api.Client, id string) (models.LogTri
 			id
 			name
 			verbosity
+			complianceWarnings
+			complianceViolations
 			acAllow
 			acDrop
 			tpDetect
@@ -63,10 +69,12 @@ func GetLogTrigger(ctx context.Context, c *api.Client, id string) (models.LogTri
 			responseCode
 			logToSyslog
 			syslogIpAddress
+			syslogProtocol
 			syslogPortNum
 			logToCef
 			cefIpAddress
 			cefPortNum
+			cefProtocol
 		}
 	}
 	`, "getLogTrigger")
