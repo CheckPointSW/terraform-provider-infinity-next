@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"mime"
 	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -92,6 +93,8 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 					mimeType := strings.SplitN(proxySetting.Value, ":", 2)[1]
 					mimeType = strings.SplitN(mimeType, ";", 2)[0]
 					fileExtensionsByType = models.MimeTypeToFileExtension(mimeType)
+					extensions, _ := mime.ExtensionsByType(mimeType)
+					fmt.Printf("\nmime type %s to file extensions %s\n", mimeType, extensions)
 					//fileExtensionsByType, err = mime.ExtensionsByType(mimeType)
 					//if err != nil {
 					//	return fmt.Errorf("failed to get file extension by type %s: %w", mimeType, err)

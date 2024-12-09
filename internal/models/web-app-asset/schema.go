@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/base64"
 	"fmt"
+	"mime"
 )
 
 const (
@@ -63,8 +64,10 @@ func fileExtensionToMimeType(extension string) string {
 		return "application/x-x509-ca-cert"
 	case ".p12", ".pfx":
 		return "application/x-pkcs12"
-	case ".p7b", ".p7c":
+	case ".p7b":
 		return "application/x-pkcs7-certificates"
+	case ".p7c":
+		return "application/pkcs7-mime"
 	default:
 		return "application/octet-stream"
 	}
@@ -80,8 +83,10 @@ func MimeTypeToFileExtension(mimeType string) string {
 		return ".p12"
 	case "application/x-pkcs7-certificates":
 		return ".p7b"
+	case "application/pkcs7-mime":
+		return ".p7c"
 	default:
-		return ""
+		return ".pem"
 	}
 }
 
@@ -90,6 +95,7 @@ type FileSchemas []FileSchema
 func NewFileSchemaEncode(filename, fileData, mTLSType, certificateType string, fileEnable bool) FileSchema {
 	b64Data := base64.StdEncoding.EncodeToString([]byte(fileData))
 	data := fmt.Sprintf(FileDataFormat, fileExtensionToMimeType(certificateType), b64Data)
+	fmt.Println("\nfile extension %s to mime type %s\n", certificateType, mime.TypeByExtension(certificateType))
 	//data := fmt.Sprintf(FileDataFormat, mime.TypeByExtension(certificateType), b64Data)
 	//filenameFmt := fmt.Sprintf(FileDataFilenameFormat, filepath.Base(filename))
 
