@@ -290,7 +290,7 @@ func ResourceWebAppAsset() *schema.Resource {
 							Type:        schema.TypeString,
 							Optional:    true,
 						},
-						"filetype": {
+						"certificate_type": {
 							Description:      "The type of the certificate file - .pem, .crt, .der, .p12, .pfx, .p7b, .p7c, .cer",
 							Type:             schema.TypeString,
 							Optional:         true,
