@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -11,9 +12,27 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+const (
+	mTLSServer = "server"
+	mTLSClient = "client"
+
+	mTLSFileTypePEM = ".pem"
+	mTLSFileTypeCRT = ".crt"
+	mTLSFileTypeDER = ".der"
+	mTLSFileTypeP12 = ".p12"
+	mTLSFileTypePFX = ".pfx"
+	mTLSFileTypeP7B = ".p7b"
+	mTLSFileTypeP7C = ".p7c"
+	mTLSFileTypeCER = ".cer"
+)
+
 func ResourceWebAppAsset() *schema.Resource {
 	validateStateFunc := validation.ToDiagFunc(validation.StringInSlice(
 		[]string{suggestedState, activeState, headerKey, inactiveState}, false))
+	mTLSTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
+		[]string{mTLSServer, mTLSClient}, false))
+	mTLSFileTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
+		[]string{mTLSFileTypePEM, mTLSFileTypeCRT, mTLSFileTypeDER, mTLSFileTypeP12, mTLSFileTypePFX, mTLSFileTypeP7B, mTLSFileTypeP7C, mTLSFileTypeCER}, false))
 	return &schema.Resource{
 		Description: "Web Application Asset",
 
@@ -267,29 +286,41 @@ func ResourceWebAppAsset() *schema.Resource {
 							Computed: true,
 						},
 						"filename": {
-							Type:     schema.TypeString,
-							Optional: true,
+							Description: "The name of the certificate file",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"filetype": {
+							Description:      "The type of the certificate file - .pem, .crt, .der, .p12, .pfx, .p7b, .p7c, .cer",
+							Type:             schema.TypeString,
+							Optional:         true,
+							ValidateDiagFunc: mTLSFileTypeValidation,
 						},
 						"data_id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"data": {
-							Type:      schema.TypeString,
-							Sensitive: true,
-							Optional:  true,
+							Description: "The certificate data",
+							Type:        schema.TypeString,
+							Sensitive:   true,
+							Optional:    true,
 						},
 						"type": {
-							Type:     schema.TypeString,
-							Required: true,
+							Description:      "The type of the mTLS - server or client",
+							Type:             schema.TypeString,
+							Required:         true,
+							ValidateDiagFunc: mTLSTypeValidation,
 						},
 						"enable_id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"enable": {
-							Type:     schema.TypeBool,
-							Optional: true,
+							Description: "Whether the mTLS is enabled",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Default:     false,
 						},
 					},
 				},
@@ -319,7 +350,7 @@ func resourceWebAppAssetCreate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAppAsset Create", err, diags)
 	}
 
-	//fmt.Printf("created asset: %v\n", asset)
+	fmt.Printf("created asset: %v\n", asset)
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
