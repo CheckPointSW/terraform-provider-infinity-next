@@ -2,7 +2,6 @@ package resources
 
 import (
 	"context"
-	"fmt"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -350,7 +349,7 @@ func resourceWebAppAssetCreate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAppAsset Create", err, diags)
 	}
 
-	fmt.Printf("created asset: %v\n", asset)
+	//fmt.Printf("created asset: %v\n", asset)
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
