@@ -3,13 +3,12 @@ package models
 import (
 	"encoding/base64"
 	"fmt"
-	"mime"
+	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
 )
 
 const (
 	SourceIdentifierValueIDSeparator = ";;;"
-	//FileDataFilenameFormat           = "%s;"
-	FileDataFormat = "data:%s;base64,%s"
+	FileDataFormat                   = "data:%s;base64,%s"
 )
 
 // SchemaPracticeMode represents a PracticeMode field of a practice field of a
@@ -45,7 +44,9 @@ type SchemaTag struct {
 	Value string `json:"value"`
 }
 
-type FileSchema struct {
+// MTLSSchema represents a field of web application asset as it is saved in the state file
+// this structure is aligned with the input schema (see web-app-asset.go file)
+type MTLSSchema struct {
 	FilenameID      string `json:"filename_id,omitempty"`
 	Filename        string `json:"filename,omitempty"`
 	CertificateType string `json:"certificate_type,omitempty"`
@@ -56,50 +57,12 @@ type FileSchema struct {
 	Enable          bool   `json:"enable,omitempty"`
 }
 
-func fileExtensionToMimeType(extension string) string {
-	switch extension {
-	case ".pem":
-		return "application/x-pem-file"
-	case ".der", ".cer", ".crt":
-		return "application/x-x509-ca-cert"
-	case ".p12", ".pfx":
-		return "application/x-pkcs12"
-	case ".p7b":
-		return "application/x-pkcs7-certificates"
-	case ".p7c":
-		return "application/pkcs7-mime"
-	default:
-		return "application/octet-stream"
-	}
-}
+type MTLSSchemas []MTLSSchema
 
-func MimeTypeToFileExtension(mimeType string) string {
-	switch mimeType {
-	case "application/x-pem-file":
-		return ".pem"
-	case "application/x-x509-ca-cert":
-		return ".cer"
-	case "application/x-pkcs12":
-		return ".p12"
-	case "application/x-pkcs7-certificates":
-		return ".p7b"
-	case "application/pkcs7-mime":
-		return ".p7c"
-	default:
-		return ".pem"
-	}
-}
-
-type FileSchemas []FileSchema
-
-func NewFileSchemaEncode(filename, fileData, mTLSType, certificateType string, fileEnable bool) FileSchema {
+func NewFileSchemaEncode(filename, fileData, mTLSType, certificateType string, fileEnable bool) MTLSSchema {
 	b64Data := base64.StdEncoding.EncodeToString([]byte(fileData))
-	data := fmt.Sprintf(FileDataFormat, fileExtensionToMimeType(certificateType), b64Data)
-	fmt.Println("\nfile extension %s to mime type %s\n", certificateType, mime.TypeByExtension(certificateType))
-	//data := fmt.Sprintf(FileDataFormat, mime.TypeByExtension(certificateType), b64Data)
-	//filenameFmt := fmt.Sprintf(FileDataFilenameFormat, filepath.Base(filename))
-
-	return FileSchema{
+	data := fmt.Sprintf(FileDataFormat, webAPIAssetModels.FileExtensionToMimeType(certificateType), b64Data)
+	return MTLSSchema{
 		Filename: filename,
 		Data:     data,
 		Type:     mTLSType,

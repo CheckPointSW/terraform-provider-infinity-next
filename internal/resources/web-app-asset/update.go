@@ -34,10 +34,6 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 		updateInput.AddBehaviors, updateInput.RemoveBehaviors = utils.SlicesDiff(oldBehaviorsStringList, newBehaviorsStringList)
 	}
 
-	if _, newIsSharesURLs, hasChange := utils.GetChangeWithParse(d, "is_shares_urls", utils.MustValueAs[bool]); hasChange {
-		updateInput.IsSharesURLs = newIsSharesURLs
-	}
-
 	if oldURLsString, newURLsString, hasChange := utils.GetChangeWithParse(d, "urls", utils.MustSchemaCollectionToSlice[string]); hasChange {
 		oldURLsIDs := utils.MustResourceDataCollectionToSlice[string](d, "urls_ids")
 		oldURLsToIDsMap := make(map[string]string)
@@ -89,9 +85,11 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 
 		newProxySettingsIndicators := newProxySettings.ToIndicatorsMap()
 		for _, oldSetting := range oldProxySettings {
-			if oldSetting.Key == mtlsClientEnable || oldSetting.Key == mtlsClientData || oldSetting.Key == mtlsClientFileName || oldSetting.Key == mtlsServerData || oldSetting.Key == mtlsServerFileName || oldSetting.Key == mtlsServerEnable {
+			// if the key is mTLS type - skip it
+			if proxySettingKeyTomTLSType(oldSetting.Key) != "" {
 				continue
 			}
+
 			if _, ok := newProxySettingsIndicators[oldSetting.Key]; !ok {
 				updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, oldSetting.ID)
 			}
@@ -100,7 +98,7 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 
 	if oldMTLSs, newMTLSs, hasChange := utils.GetChangeWithParse(d, "mtls", parsemTLSs); hasChange {
 		oldMTLSsIndicators := oldMTLSs.ToIndicatorMap()
-		mTLSsToAdd := models.FileSchemas{}
+		mTLSsToAdd := models.MTLSSchemas{}
 		for _, newMTLS := range newMTLSs {
 			oldMTLS, ok := oldMTLSsIndicators[newMTLS.Type]
 			if !ok {
@@ -299,6 +297,6 @@ func parseSchemaTags(tagsFromResourceData any) models.TagsInputs {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](tagsFromResourceData), mapToTagsInputs)
 }
 
-func parsemTLSs(mTLSsFromResourceData any) models.FileSchemas {
+func parsemTLSs(mTLSsFromResourceData any) models.MTLSSchemas {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](mTLSsFromResourceData), mapToMTLSInput)
 }

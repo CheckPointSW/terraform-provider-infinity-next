@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"mime"
+	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
 	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -43,44 +43,37 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	d.Set("is_shares_urls", asset.IsSharesURLs)
 
 	var proxySettingsSchemaMap []map[string]any
-	mTLSsSchemaMap := make(map[string]models.FileSchema)
+	mTLSsSchemaMap := make(map[string]models.MTLSSchema)
 	var mTLSsMap []map[string]any
 
 	for _, proxySetting := range asset.ProxySettings {
 		mTLSType := proxySettingKeyTomTLSType(proxySetting.Key)
 		if mTLSType != "" {
 			if _, ok := mTLSsSchemaMap[mTLSType]; !ok {
-				mTLSsSchemaMap[mTLSType] = models.FileSchema{}
+				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{}
 			}
+
 			switch proxySetting.Key {
 			case mtlsClientEnable, mtlsServerEnable:
+				enable := false
 				if proxySetting.Value == "true" {
-					mTLSsSchemaMap[mTLSType] = models.FileSchema{
-						FilenameID:      mTLSsSchemaMap[mTLSType].FilenameID,
-						Filename:        mTLSsSchemaMap[mTLSType].Filename,
-						CertificateType: mTLSsSchemaMap[mTLSType].CertificateType,
-						DataID:          mTLSsSchemaMap[mTLSType].DataID,
-						Data:            mTLSsSchemaMap[mTLSType].Data,
-						Type:            mTLSType,
-						EnableID:        proxySetting.ID,
-						Enable:          true,
-					}
+					enable = true
 				}
-				if proxySetting.Value == "false" {
-					mTLSsSchemaMap[mTLSType] = models.FileSchema{
-						FilenameID:      mTLSsSchemaMap[mTLSType].FilenameID,
-						Filename:        mTLSsSchemaMap[mTLSType].Filename,
-						CertificateType: mTLSsSchemaMap[mTLSType].CertificateType,
-						DataID:          mTLSsSchemaMap[mTLSType].DataID,
-						Data:            mTLSsSchemaMap[mTLSType].Data,
-						Type:            mTLSType,
-						EnableID:        proxySetting.ID,
-						Enable:          false,
-					}
+
+				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{
+					FilenameID:      mTLSsSchemaMap[mTLSType].FilenameID,
+					Filename:        mTLSsSchemaMap[mTLSType].Filename,
+					CertificateType: mTLSsSchemaMap[mTLSType].CertificateType,
+					DataID:          mTLSsSchemaMap[mTLSType].DataID,
+					Data:            mTLSsSchemaMap[mTLSType].Data,
+					Type:            mTLSType,
+					EnableID:        proxySetting.ID,
+					Enable:          enable,
 				}
 			case mtlsClientData, mtlsServerData:
 				var decodedData string
 				var fileExtensionsByType string
+				// proxySetting.Value format is "data:<mimeType>;base64,<base64Data>"
 				if strings.Contains(proxySetting.Value, "base64,") {
 					b64Data := strings.SplitN(proxySetting.Value, "base64,", 2)[1]
 					bDecodedData, err := base64.StdEncoding.DecodeString(b64Data)
@@ -92,16 +85,10 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 
 					mimeType := strings.SplitN(proxySetting.Value, ":", 2)[1]
 					mimeType = strings.SplitN(mimeType, ";", 2)[0]
-					fileExtensionsByType = models.MimeTypeToFileExtension(mimeType)
-					extensions, _ := mime.ExtensionsByType(mimeType)
-					fmt.Printf("\nmime type %s to file extensions %s\n", mimeType, extensions)
-					//fileExtensionsByType, err = mime.ExtensionsByType(mimeType)
-					//if err != nil {
-					//	return fmt.Errorf("failed to get file extension by type %s: %w", mimeType, err)
-					//}
+					fileExtensionsByType = webAPIAssetModels.MimeTypeToFileExtension(mimeType)
 				}
 
-				mTLSsSchemaMap[mTLSType] = models.FileSchema{
+				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{
 					FilenameID:      mTLSsSchemaMap[mTLSType].FilenameID,
 					Filename:        mTLSsSchemaMap[mTLSType].Filename,
 					CertificateType: fileExtensionsByType,
@@ -112,7 +99,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 					Enable:          mTLSsSchemaMap[mTLSType].Enable,
 				}
 			case mtlsClientFileName, mtlsServerFileName:
-				mTLSsSchemaMap[mTLSType] = models.FileSchema{
+				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{
 					FilenameID:      proxySetting.ID,
 					Filename:        proxySetting.Value,
 					CertificateType: mTLSsSchemaMap[mTLSType].CertificateType,

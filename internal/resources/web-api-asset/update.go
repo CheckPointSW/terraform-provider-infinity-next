@@ -55,10 +55,6 @@ func UpdateWebAPIAssetInputFromResourceData(d *schema.ResourceData) (models.Upda
 		updateInput.AddBehaviors, updateInput.RemoveBehaviors = utils.SlicesDiff(oldBehaviorsStringList, newBehaviorsStringList)
 	}
 
-	if _, newIsSharesURLs, hasChange := utils.GetChangeWithParse(d, "is_shares_urls", utils.MustValueAs[bool]); hasChange {
-		updateInput.IsSharesURLs = newIsSharesURLs
-	}
-
 	if oldURLsString, newURLsString, hasChange := utils.GetChangeWithParse(d, "urls", utils.MustSchemaCollectionToSlice[string]); hasChange {
 		oldURLsIDs := utils.MustResourceDataCollectionToSlice[string](d, "urls_ids")
 		oldURLsToIDsMap := make(map[string]string)
@@ -110,9 +106,81 @@ func UpdateWebAPIAssetInputFromResourceData(d *schema.ResourceData) (models.Upda
 
 		newProxySettingsIndicators := newProxySettings.ToIndicatorsMap()
 		for _, oldSetting := range oldProxySettings {
+			// if the key is a mTLS key - skip it
+			if proxySettingKeyTomTLSType(oldSetting.Key) != "" {
+				continue
+			}
+
 			if _, ok := newProxySettingsIndicators[oldSetting.Key]; !ok {
 				updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, oldSetting.ID)
 			}
+		}
+	}
+
+	if oldMTLSs, newMTLSs, hasChange := utils.GetChangeWithParse(d, "mtls", parsemTLSs); hasChange {
+		oldMTLSsIndicators := oldMTLSs.ToIndicatorMap()
+		mTLSsToAdd := models.MTLSSchemas{}
+		for _, newMTLS := range newMTLSs {
+			oldMTLS, ok := oldMTLSsIndicators[newMTLS.Type]
+			if !ok {
+				mTLSsToAdd = append(mTLSsToAdd, newMTLS)
+				continue
+			}
+			if oldMTLS.Enable != newMTLS.Enable {
+				var enableToString string
+				if newMTLS.Enable {
+					enableToString = "true"
+				} else {
+					enableToString = "false"
+				}
+
+				key := mtlsClientEnable
+				if oldMTLS.Type == mtlsTypeServer {
+					key = mtlsServerEnable
+				}
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldMTLS.EnableID,
+					Key:   key,
+					Value: enableToString,
+				})
+			}
+
+			if oldMTLS.Data != newMTLS.Data {
+				key := mtlsClientData
+				if oldMTLS.Type == mtlsTypeServer {
+					key = mtlsServerData
+				}
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldMTLS.DataID,
+					Key:   key,
+					Value: newMTLS.Data,
+				})
+			}
+
+			if oldMTLS.Filename != newMTLS.Filename {
+				key := mtlsClientFileName
+				if oldMTLS.Type == mtlsTypeServer {
+					key = mtlsServerFileName
+				}
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldMTLS.FilenameID,
+					Key:   key,
+					Value: newMTLS.Filename,
+				})
+			}
+		}
+
+		var proxySettingsToAdd models.ProxySettingInputs
+		if mTLSsToAdd != nil {
+			proxySettingsToAdd = mapMTLSToProxySettingInputs(mTLSsToAdd, models.ProxySettingInputs{})
+		}
+		for _, proxySettingToAdd := range proxySettingsToAdd {
+			updateInput.AddProxySetting = append(updateInput.AddProxySetting, models.AddProxySetting{
+				Key:   proxySettingToAdd.Key,
+				Value: proxySettingToAdd.Value,
+			})
 		}
 	}
 
@@ -211,4 +279,8 @@ func validatePracticeWrapperInput(practice models.PracticeWrapperInput) bool {
 
 func validateTag(tag models.TagInput) bool {
 	return tag.Key != "" && tag.Value != ""
+}
+
+func parsemTLSs(mTLSsFromResourceData any) models.MTLSSchemas {
+	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](mTLSsFromResourceData), mapToMTLSInput)
 }

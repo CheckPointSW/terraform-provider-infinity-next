@@ -41,6 +41,10 @@ func ResourceWebAPIAsset() *schema.Resource {
 		[]string{sourceIP, xForwardedFor, headerKey, cookie, jwtKey}, false))
 	validateStateFunc := validation.ToDiagFunc(validation.StringInSlice(
 		[]string{suggestedState, activeState, headerKey, inactiveState}, false))
+	mTLSTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
+		[]string{mTLSServer, mTLSClient}, false))
+	mTLSFileTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
+		[]string{mTLSFileTypePEM, mTLSFileTypeCRT, mTLSFileTypeDER, mTLSFileTypeP12, mTLSFileTypePFX, mTLSFileTypeP7B, mTLSFileTypeP7C, mTLSFileTypeCER}, false))
 
 	return &schema.Resource{
 		Description:   "Web API Asset",
@@ -278,6 +282,57 @@ func ResourceWebAPIAsset() *schema.Resource {
 			"is_shares_urls": {
 				Type:     schema.TypeBool,
 				Computed: true,
+			},
+			"mtls": {
+				Type:        schema.TypeSet,
+				Description: "The MTLS settings",
+				Optional:    true,
+				Computed:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"filename_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"filename": {
+							Description: "The name of the certificate file",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"certificate_type": {
+							Description:      "The type of the certificate file - .pem, .crt, .der, .p12, .pfx, .p7b, .p7c, .cer",
+							Type:             schema.TypeString,
+							Optional:         true,
+							ValidateDiagFunc: mTLSFileTypeValidation,
+						},
+						"data_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"data": {
+							Description: "The certificate data",
+							Type:        schema.TypeString,
+							Sensitive:   true,
+							Optional:    true,
+						},
+						"type": {
+							Description:      "The type of the mTLS - server or client",
+							Type:             schema.TypeString,
+							Required:         true,
+							ValidateDiagFunc: mTLSTypeValidation,
+						},
+						"enable_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"enable": {
+							Description: "Whether the mTLS is enabled",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Default:     false,
+						},
+					},
+				},
 			},
 		},
 	}

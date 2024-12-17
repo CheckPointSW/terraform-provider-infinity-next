@@ -103,3 +103,12 @@ func (inputs TagsInputs) ToIndicatorsMap() map[string]TagInput {
 
 	return ret
 }
+
+func (mtlsInputs MTLSSchemas) ToIndicatorMap() map[string]MTLSSchema {
+	mTLSs := make(map[string]MTLSSchema)
+	for _, mTLS := range mtlsInputs {
+		mTLSs[mTLS.Type] = mTLS
+	}
+
+	return mTLSs
+}

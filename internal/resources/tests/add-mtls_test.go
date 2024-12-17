@@ -95,12 +95,12 @@ func TestAccWebApplicationAssetWithmTLSBasic(t *testing.T) {
 						"tags.0.key":        "tagkey1",
 						"tags.0.value":      "tagvalue1",
 
-						//"mtls.#":                  "1",
-						//"mtls.0.filename":         "cert.pem",
-						//"mtls.0.certificate_type": ".pem",
-						//"mtls.0.data":             "cert data",
-						//"mtls.0.type":             "client",
-						//"mtls.0.enable":           "true",
+						"mtls.#":                  "1",
+						"mtls.0.filename":         "cert.pem",
+						"mtls.0.certificate_type": ".pem",
+						"mtls.0.data":             "cert data",
+						"mtls.0.type":             "client",
+						"mtls.0.enable":           "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -203,12 +203,12 @@ func TestAccWebApplicationAssetWithmTLSFull(t *testing.T) {
 						"tags.1.key":        "tagkey2",
 						"tags.1.value":      "tagvalue2",
 
-						//"mtls.#":          "1",
-						//"mtls.0.filename": "cert.der",
-						////"mtls.0.certificate_type": ".pem",
-						//"mtls.0.data":   "cert data",
-						//"mtls.0.type":   "client",
-						//"mtls.0.enable": "true",
+						"mtls.#":                  "1",
+						"mtls.0.filename":         "cert.der",
+						"mtls.0.certificate_type": ".der",
+						"mtls.0.data":             "cert data",
+						"mtls.0.type":             "client",
+						"mtls.0.enable":           "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -288,17 +288,17 @@ func TestAccWebApplicationAssetWithmTLSFull(t *testing.T) {
 						"tags.2.key":        "tagkey2",
 						"tags.2.value":      "tagvalue1",
 
-						//"mtls.#":                  "2",
-						//"mtls.0.filename":         "newfile.der",
-						//"mtls.0.certificate_type": ".cer",
-						//"mtls.0.data":             "new cert data",
-						//"mtls.0.type":             "server",
-						//"mtls.0.enable":           "true",
-						//"mtls.1.filename":         "newfile2.p12",
-						//"mtls.1.certificate_type": ".p12",
-						//"mtls.1.data":             "new cert data2",
-						//"mtls.1.type":             "client",
-						//"mtls.1.enable":           "false",
+						"mtls.#":                  "2",
+						"mtls.0.filename":         "newfile.crt",
+						"mtls.0.certificate_type": ".der",
+						"mtls.0.data":             "new cert data",
+						"mtls.0.type":             "server",
+						"mtls.0.enable":           "true",
+						"mtls.1.filename":         "newfile2.p12",
+						"mtls.1.certificate_type": ".p12",
+						"mtls.1.data":             "new cert data2",
+						"mtls.1.type":             "client",
+						"mtls.1.enable":           "false",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -334,20 +334,6 @@ func webApplicationAssetmTLSBasicConfig(name string) string {
 resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
 	urls = ["http://host/%[1]s/path1"]
-	mtls {
-		filename = "cert.pfx"
-		certificate_type = ".pfx"
-		data	 = "cert data"
-		type = "client"
-		enable = true
-	}
-	mtls {
-		filename = "cert.p7b"
-		certificate_type = ".p7b"
-		data	 = "cert data"
-		type = "server"
-		enable = true
-	}
 }
 `, name)
 }
@@ -403,13 +389,6 @@ resource "inext_web_app_asset" %[1]q {
 		certificate_type = ".pem"
 		data	 = "cert data"
 		type = "client"
-		enable = true
-	}
-	mtls {
-		filename = "cert.p7c"
-		certificate_type = ".p7c"
-		data	 = "cert data"
-		type = "server"
 		enable = true
 	}
 }
@@ -557,13 +536,6 @@ resource "inext_web_app_asset" %[1]q {
 		certificate_type = ".der"
 		data	 = "cert data"
 		type = "client"
-		enable = true
-	}
-	mtls {
-		filename = "cert.cer"
-		certificate_type = ".cer"
-		data	 = "cert data"
-		type = "server"
 		enable = true
 	}
 }
@@ -746,7 +718,7 @@ resource "inext_web_app_asset" %[1]q {
 	}
 	mtls {
 		filename = "newfile.crt"
-		certificate_type = ".crt"
+		certificate_type = ".der"
 		data	 = "new cert data"
 		type = "server"
 		enable = true

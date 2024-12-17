@@ -37,7 +37,7 @@ func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (mod
 	res.Tags = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "tags"), mapToTagsInputs)
 	res.IsSharesURLs = d.Get("is_shares_urls").(bool)
 
-	var mtls models.FileSchemas
+	var mtls models.MTLSSchemas
 	mtls = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "mtls"), mapToMTLSInput)
 
 	res.ProxySettings = mapMTLSToProxySettingInputs(mtls, res.ProxySettings)
@@ -196,11 +196,11 @@ func mapToTagsInputs(tagsMap map[string]any) models.TagInput {
 
 }
 
-func mapToMTLSInput(mTLSMap map[string]any) models.FileSchema {
-	mTLSFile, err := utils.UnmarshalAs[models.FileSchema](mTLSMap)
+func mapToMTLSInput(mTLSMap map[string]any) models.MTLSSchema {
+	mTLSFile, err := utils.UnmarshalAs[models.MTLSSchema](mTLSMap)
 	if err != nil {
-		fmt.Printf("Failed to convert input schema validation to FileSchema struct. Error: %+v", err)
-		return models.FileSchema{}
+		fmt.Printf("Failed to convert input schema validation to MTLSSchema struct. Error: %+v", err)
+		return models.MTLSSchema{}
 	}
 
 	mTLSFile = models.NewFileSchemaEncode(mTLSFile.Filename, mTLSFile.Data, mTLSFile.Type, mTLSFile.CertificateType, mTLSFile.Enable)
@@ -220,18 +220,18 @@ func mapToMTLSInput(mTLSMap map[string]any) models.FileSchema {
 	return mTLSFile
 }
 
-func mapMTLSToProxySettingInputs(mTLS models.FileSchemas, proxySettings models.ProxySettingInputs) models.ProxySettingInputs {
+func mapMTLSToProxySettingInputs(mTLS models.MTLSSchemas, proxySettings models.ProxySettingInputs) models.ProxySettingInputs {
 	for _, mTLSFile := range mTLS {
 		var proxySettingEnable, proxySettingData, proxySettingFileName models.ProxySettingInput
 		switch mTLSFile.Type {
-		case "client":
-			proxySettingEnable.Key = "isUpstreamTrustedCAFile"
-			proxySettingData.Key = "upstreamTrustedCAFile"
-			proxySettingFileName.Key = "upstreamTrustedCAFileName"
-		case "server":
-			proxySettingEnable.Key = "isTrustedCAListFile"
-			proxySettingData.Key = "trustedCAListFile"
-			proxySettingFileName.Key = "trustedCAListFileName"
+		case mtlsTypeClient:
+			proxySettingEnable.Key = mtlsClientEnable
+			proxySettingData.Key = mtlsClientData
+			proxySettingFileName.Key = mtlsClientFileName
+		case mtlsTypeServer:
+			proxySettingEnable.Key = mtlsServerEnable
+			proxySettingData.Key = mtlsServerData
+			proxySettingFileName.Key = mtlsServerFileName
 		default:
 			continue
 		}
