@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
@@ -10,7 +11,27 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+const (
+	mTLSServer = "server"
+	mTLSClient = "client"
+
+	mTLSFileTypePEM = ".pem"
+	mTLSFileTypeCRT = ".crt"
+	mTLSFileTypeDER = ".der"
+	mTLSFileTypeP12 = ".p12"
+	mTLSFileTypePFX = ".pfx"
+	mTLSFileTypeP7B = ".p7b"
+	mTLSFileTypeP7C = ".p7c"
+	mTLSFileTypeCER = ".cer"
+)
+
 func ResourceWebAppAsset() *schema.Resource {
+	validateStateFunc := validation.ToDiagFunc(validation.StringInSlice(
+		[]string{suggestedState, activeState, headerKey, inactiveState}, false))
+	mTLSTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
+		[]string{mTLSServer, mTLSClient}, false))
+	mTLSFileTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
+		[]string{mTLSFileTypePEM, mTLSFileTypeCRT, mTLSFileTypeDER, mTLSFileTypeP12, mTLSFileTypePFX, mTLSFileTypeP7B, mTLSFileTypeP7C, mTLSFileTypeCER}, false))
 	return &schema.Resource{
 		Description: "Web Application Asset",
 
@@ -55,6 +76,11 @@ func ResourceWebAppAsset() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"state": {
+				Type:             schema.TypeString,
+				Optional:         true,
+				ValidateDiagFunc: validateStateFunc,
+			},
 			"upstream_url": {
 				Type: schema.TypeString,
 				Description: "The URL of the application's backend server to which the reverse proxy redirects " +
@@ -75,6 +101,27 @@ func ResourceWebAppAsset() *schema.Resource {
 				Computed: true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
+				},
+			},
+			"tags": {
+				Type:        schema.TypeSet,
+				Description: "The tags used by the asset",
+				Optional:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"key": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"value": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
 				},
 			},
 			"practice": {
@@ -148,13 +195,13 @@ func ResourceWebAppAsset() *schema.Resource {
 			},
 			"source_identifier": {
 				Type:        schema.TypeSet,
-				Description: "Defines how the source identifier valuess of the asset are retrieved",
+				Description: "Defines how the source identifier values of the asset are retrieved",
 				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"identifier": {
 							Type:        schema.TypeString,
-							Description: "The identifier of the source: SourceIP, XForwardedFor, HeaderKey or Cookie",
+							Description: "The identifier of the source: SourceIP, XForwardedFor, HeaderKey Cookie or JWTKey",
 							Optional:    true,
 						},
 						"id": {
@@ -222,6 +269,61 @@ func ResourceWebAppAsset() *schema.Resource {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
+			"is_shares_urls": {
+				Type:     schema.TypeBool,
+				Computed: true,
+			},
+			"mtls": {
+				Type:        schema.TypeSet,
+				Description: "The MTLS settings",
+				Optional:    true,
+				Computed:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"filename_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"filename": {
+							Description: "The name of the certificate file",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"certificate_type": {
+							Description:      "The type of the certificate file - .pem, .crt, .der, .p12, .pfx, .p7b, .p7c, .cer",
+							Type:             schema.TypeString,
+							Optional:         true,
+							ValidateDiagFunc: mTLSFileTypeValidation,
+						},
+						"data_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"data": {
+							Description: "The certificate data",
+							Type:        schema.TypeString,
+							Sensitive:   true,
+							Optional:    true,
+						},
+						"type": {
+							Description:      "The type of the mTLS - server or client",
+							Type:             schema.TypeString,
+							Required:         true,
+							ValidateDiagFunc: mTLSTypeValidation,
+						},
+						"enable_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"enable": {
+							Description: "Whether the mTLS is enabled",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Default:     false,
+						},
+					},
+				},
+			},
 		},
 	}
 }
@@ -236,6 +338,8 @@ func resourceWebAppAssetCreate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAppAsset Create", err, diags)
 	}
 
+	//fmt.Printf("created input: %v\n", createInput)
+
 	asset, err := webappasset.NewWebApplicationAsset(ctx, c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
@@ -244,6 +348,8 @@ func resourceWebAppAssetCreate(ctx context.Context, d *schema.ResourceData, meta
 
 		return utils.DiagError("unable to perform WebAppAsset Create", err, diags)
 	}
+
+	//fmt.Printf("created asset: %v\n", asset)
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
@@ -275,9 +381,13 @@ func resourceWebAppAssetRead(ctx context.Context, d *schema.ResourceData, meta a
 		return utils.DiagError("unable to perform WebAppAsset Read", err, diags)
 	}
 
+	//fmt.Printf("read asset: %v\n", asset)
+
 	if err := webappasset.ReadWebApplicationAssetToResourceData(asset, d); err != nil {
 		return utils.DiagError("unable to perform WebAppAsset Read", err, diags)
 	}
+
+	//fmt.Printf("read resource data: %v\n", d)
 
 	return diags
 }
@@ -296,6 +406,8 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 	if err != nil {
 		return utils.DiagError("unable to perform WebAppAsset Update", err, diags)
 	}
+
+	//fmt.Printf("update input: %v\n", updateInput)
 
 	result, err := webappasset.UpdateWebApplicationAsset(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
@@ -324,6 +436,8 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 		return diag.FromErr(err)
 	}
 
+	//fmt.Printf("updated asset: %v\n", asset)
+
 	if err := webappasset.ReadWebApplicationAssetToResourceData(asset, d); err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -331,6 +445,8 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 
 		return diag.FromErr(err)
 	}
+
+	//fmt.Printf("updated resource data: %v\n", d)
 
 	return diags
 }

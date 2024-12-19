@@ -2,13 +2,26 @@ package webappasset
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
+	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
+	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
+
+func proxySettingKeyTomTLSType(proxySettingKey string) string {
+	if proxySettingKey == mtlsClientEnable || proxySettingKey == mtlsClientData || proxySettingKey == mtlsClientFileName {
+		return mtlsTypeClient
+	}
+	if proxySettingKey == mtlsServerEnable || proxySettingKey == mtlsServerData || proxySettingKey == mtlsServerFileName {
+		return mtlsTypeServer
+	}
+	return ""
+}
 
 func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *schema.ResourceData) error {
 	d.SetId(asset.ID)
@@ -27,13 +40,99 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	d.Set("upstream_url", asset.UpstreamURL)
 	d.Set("behaviors", asset.Behaviors.ToSchema())
 	d.Set("profiles", asset.Profiles.ToSchema())
+	d.Set("is_shares_urls", asset.IsSharesURLs)
 
-	proxySettingsSchemaMap, err := utils.UnmarshalAs[[]map[string]any](asset.ProxySettings)
-	if err != nil {
-		return fmt.Errorf("failed to convert proxy settings to slice of maps. Error: %+v", err)
+	var proxySettingsSchemaMap []map[string]any
+	mTLSsSchemaMap := make(map[string]models.MTLSSchema)
+	var mTLSsMap []map[string]any
+
+	for _, proxySetting := range asset.ProxySettings {
+		mTLSType := proxySettingKeyTomTLSType(proxySetting.Key)
+		if mTLSType != "" {
+			if _, ok := mTLSsSchemaMap[mTLSType]; !ok {
+				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{}
+			}
+
+			switch proxySetting.Key {
+			case mtlsClientEnable, mtlsServerEnable:
+				enable := false
+				if proxySetting.Value == "true" {
+					enable = true
+				}
+
+				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{
+					FilenameID:      mTLSsSchemaMap[mTLSType].FilenameID,
+					Filename:        mTLSsSchemaMap[mTLSType].Filename,
+					CertificateType: mTLSsSchemaMap[mTLSType].CertificateType,
+					DataID:          mTLSsSchemaMap[mTLSType].DataID,
+					Data:            mTLSsSchemaMap[mTLSType].Data,
+					Type:            mTLSType,
+					EnableID:        proxySetting.ID,
+					Enable:          enable,
+				}
+			case mtlsClientData, mtlsServerData:
+				var decodedData string
+				var fileExtensionsByType string
+				// proxySetting.Value format is "data:<mimeType>;base64,<base64Data>"
+				if strings.Contains(proxySetting.Value, "base64,") {
+					b64Data := strings.SplitN(proxySetting.Value, "base64,", 2)[1]
+					bDecodedData, err := base64.StdEncoding.DecodeString(b64Data)
+					if err != nil {
+						return fmt.Errorf("failed decoding base64 string %s: %w", b64Data, err)
+					}
+
+					decodedData = string(bDecodedData)
+
+					mimeType := strings.SplitN(proxySetting.Value, ":", 2)[1]
+					mimeType = strings.SplitN(mimeType, ";", 2)[0]
+					fileExtensionsByType = webAPIAssetModels.MimeTypeToFileExtension(mimeType)
+				}
+
+				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{
+					FilenameID:      mTLSsSchemaMap[mTLSType].FilenameID,
+					Filename:        mTLSsSchemaMap[mTLSType].Filename,
+					CertificateType: fileExtensionsByType,
+					DataID:          proxySetting.ID,
+					Data:            decodedData,
+					Type:            mTLSType,
+					EnableID:        mTLSsSchemaMap[mTLSType].EnableID,
+					Enable:          mTLSsSchemaMap[mTLSType].Enable,
+				}
+			case mtlsClientFileName, mtlsServerFileName:
+				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{
+					FilenameID:      proxySetting.ID,
+					Filename:        proxySetting.Value,
+					CertificateType: mTLSsSchemaMap[mTLSType].CertificateType,
+					DataID:          mTLSsSchemaMap[mTLSType].DataID,
+					Data:            mTLSsSchemaMap[mTLSType].Data,
+					Type:            mTLSType,
+					EnableID:        mTLSsSchemaMap[mTLSType].EnableID,
+					Enable:          mTLSsSchemaMap[mTLSType].Enable,
+				}
+			default:
+				continue
+			}
+		} else {
+			proxySettingSchemaMap, err := utils.UnmarshalAs[map[string]any](proxySetting)
+			if err != nil {
+				return fmt.Errorf("failed to convert proxy setting to map. Error: %+v", err)
+			}
+
+			proxySettingsSchemaMap = append(proxySettingsSchemaMap, proxySettingSchemaMap)
+		}
+	}
+
+	for _, mTLSscehma := range mTLSsSchemaMap {
+		mTLS, err := utils.UnmarshalAs[map[string]any](mTLSscehma)
+		if err != nil {
+			return fmt.Errorf("failed to convert mTLS to map. Error: %+v", err)
+		}
+
+		mTLSsMap = append(mTLSsMap, mTLS)
 	}
 
 	d.Set("proxy_setting", proxySettingsSchemaMap)
+	d.Set("mtls", mTLSsMap)
 
 	sourceIdentifiersSchema := asset.SourceIdentifiers.ToSchema()
 	sourceIdentifiersSchemaMap, err := utils.UnmarshalAs[[]map[string]any](sourceIdentifiersSchema)
@@ -54,6 +153,13 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	}
 
 	d.Set("practice", schemaPracticeWrappersMap)
+
+	tagsSchemaMap, err := utils.UnmarshalAs[[]map[string]any](asset.Tags)
+	if err != nil {
+		return fmt.Errorf("failed to convert tags to slice of maps. Error: %+v", err)
+	}
+
+	d.Set("tags", tagsSchemaMap)
 
 	return nil
 }
@@ -88,6 +194,11 @@ func GetWebApplicationAsset(ctx context.Context, c *api.Client, id string) (mode
 				behaviors {
 					id
 				}
+				tags {
+					id
+					key
+					value
+				}
 				sourceIdentifiers {
 					id
 					sourceIdentifier
@@ -116,6 +227,7 @@ func GetWebApplicationAsset(ctx context.Context, c *api.Client, id string) (mode
 				mainAttributes
 				intelligenceTags
 				readOnly
+				isSharesURLs
 			}
 		}
 	`, "getWebApplicationAsset")

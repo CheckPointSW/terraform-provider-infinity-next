@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccWebApplicationAssetBasic(t *testing.T) {
+func TestAccWebApplicationAssetWithmTLSBasic(t *testing.T) {
 	assetNameAttribute := acctest.GenerateResourceName()
 	profileNameAttribute := acctest.GenerateResourceName()
 	trustedSourcesNameAttribute := acctest.GenerateResourceName()
@@ -28,13 +28,13 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 			practiceResourceName, logTriggerResourceName, exceptionsResourceName}),
 		Steps: []resource.TestStep{
 			{
-				Config: webApplicationAssetBasicConfig(assetNameAttribute),
+				Config: webApplicationAssetmTLSBasicConfig(assetNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":            assetNameAttribute,
 						"urls.0":          fmt.Sprintf("http://host/%s/path1", assetNameAttribute),
 						"urls.#":          "1",
-						"%":               "24",
+						"%":               "25",
 						"urls_ids.#":      "1",
 						"main_attributes": fmt.Sprintf("{\"applicationUrls\":\"http://host/%s/path1\"}", assetNameAttribute),
 					}),
@@ -48,12 +48,12 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 				ImportState:  true,
 			},
 			{
-				Config: webApplicationAssetUpdateBasicConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
+				Config: webApplicationAssetUpdatemTLSBasicConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
 					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "24",
+						"%":                                     "25", // was 24
 						"read_only":                             "false",
 						"upstream_url":                          "some url 5",
 						"urls.#":                                "2",
@@ -77,7 +77,7 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"source_identifier.1.values.#":     "1",
 						"source_identifier.0.values.#":     "1",
 						"source_identifier.0.values_ids.#": "1",
-						"proxy_setting.#":                  "3",
+						"proxy_setting.#":                  "3", //was 3
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
@@ -94,6 +94,13 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"tags.#":            "1",
 						"tags.0.key":        "tagkey1",
 						"tags.0.value":      "tagvalue1",
+
+						"mtls.#":                  "1",
+						"mtls.0.filename":         "cert.pem",
+						"mtls.0.certificate_type": ".pem",
+						"mtls.0.data":             "cert data",
+						"mtls.0.type":             "client",
+						"mtls.0.enable":           "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -107,6 +114,9 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path2", assetNameAttribute)),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path3", assetNameAttribute)),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -115,7 +125,7 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 	})
 }
 
-func TestAccWebApplicationAssetFull(t *testing.T) {
+func TestAccWebApplicationAssetWithmTLSFull(t *testing.T) {
 	assetNameAttribute := acctest.GenerateResourceName()
 	profileNameAttribute := acctest.GenerateResourceName()
 	trustedSourcesNameAttribute := acctest.GenerateResourceName()
@@ -144,12 +154,12 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 			anotherLogTriggerResourceName, anotherExceptionsResourceName}),
 		Steps: []resource.TestStep{
 			{
-				Config: webApplicationAssetFullConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
+				Config: webApplicationAssetmTLSFullConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
 					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "24",
+						"%":                                     "25", // was 24
 						"read_only":                             "false",
 						"upstream_url":                          "some url 5",
 						"urls.#":                                "2",
@@ -173,7 +183,7 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"source_identifier.1.values.#":     "1",
 						"source_identifier.0.values.#":     "1",
 						"source_identifier.0.values_ids.#": "1",
-						"proxy_setting.#":                  "3",
+						"proxy_setting.#":                  "3", //was 3
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
@@ -192,7 +202,13 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"tags.0.value":      "tagvalue1",
 						"tags.1.key":        "tagkey2",
 						"tags.1.value":      "tagvalue2",
-						"is_shares_urls":    "false",
+
+						"mtls.#":                  "1",
+						"mtls.0.filename":         "cert.der",
+						"mtls.0.certificate_type": ".der",
+						"mtls.0.data":             "cert data",
+						"mtls.0.type":             "client",
+						"mtls.0.enable":           "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -206,6 +222,10 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path2", assetNameAttribute)),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.1.id"),
+
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -216,13 +236,13 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
-				Config: webApplicationAssetUpdateFullConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
+				Config: webApplicationAssetUpdatemTLSFullConfig(assetNameAttribute, profileNameAttribute, trustedSourcesNameAttribute,
 					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute, anotherProfileNameAttribute,
 					anotherTrustedSourcesNameAttribute, anotherLogTriggerNameAttribute, anotherExceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "24",
+						"%":                                     "25", // was 24
 						"read_only":                             "false",
 						"upstream_url":                          "some url 10",
 						"urls.#":                                "2",
@@ -246,7 +266,7 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"source_identifier.1.values.#":     "2",
 						"source_identifier.0.values.#":     "2",
 						"source_identifier.0.values_ids.#": "2",
-						"proxy_setting.#":                  "3",
+						"proxy_setting.#":                  "3", //was 3
 						"proxy_setting.0.%":                "3",
 						"proxy_setting.1.%":                "3",
 						"proxy_setting.2.%":                "3",
@@ -261,13 +281,24 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"asset_type":        "WebApplication",
 						"intelligence_tags": "",
 						"tags.#":            "3",
-						"tags.0.key":        "tagkey1",
-						"tags.0.value":      "tagvalue2",
-						"tags.1.key":        "tagkey2",
-						"tags.1.value":      "tagvalue1",
-						"tags.2.key":        "tagkey3",
-						"tags.2.value":      "tagvalue3",
-						"is_shares_urls":    "true",
+						"tags.0.key":        "tagkey3",
+						"tags.0.value":      "tagvalue3",
+						"tags.1.key":        "tagkey1",
+						"tags.1.value":      "tagvalue2",
+						"tags.2.key":        "tagkey2",
+						"tags.2.value":      "tagvalue1",
+
+						"mtls.#":                  "2",
+						"mtls.0.filename":         "newfile.crt",
+						"mtls.0.certificate_type": ".der",
+						"mtls.0.data":             "new cert data",
+						"mtls.0.type":             "server",
+						"mtls.0.enable":           "true",
+						"mtls.1.filename":         "newfile2.p12",
+						"mtls.1.certificate_type": ".p12",
+						"mtls.1.data":             "new cert data2",
+						"mtls.1.type":             "client",
+						"mtls.1.enable":           "false",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -282,6 +313,13 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.1.id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.2.id"),
+
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.enable_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -291,7 +329,7 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 
 }
 
-func webApplicationAssetBasicConfig(name string) string {
+func webApplicationAssetmTLSBasicConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_web_app_asset" %[1]q {
 	name = %[1]q
@@ -300,7 +338,7 @@ resource "inext_web_app_asset" %[1]q {
 `, name)
 }
 
-func webApplicationAssetUpdateBasicConfig(assetName, profileName, trustedSourcesName,
+func webApplicationAssetUpdatemTLSBasicConfig(assetName, profileName, trustedSourcesName,
 	practiceName, logTriggerName, exceptionsName string) string {
 	return fmt.Sprintf(`
 resource "inext_web_app_asset" %[1]q {
@@ -345,6 +383,13 @@ resource "inext_web_app_asset" %[1]q {
 	tags {
 		key   = "tagkey1"
 		value = "tagvalue1"
+	}
+	mtls {
+		filename = "cert.pem"
+		certificate_type = ".pem"
+		data	 = "cert data"
+		type = "client"
+		enable = true
 	}
 }
 
@@ -435,7 +480,7 @@ resource "inext_exceptions" %[6]q {
 `, assetName, profileName, trustedSourcesName, practiceName, logTriggerName, exceptionsName)
 }
 
-func webApplicationAssetFullConfig(assetName, profileName,
+func webApplicationAssetmTLSFullConfig(assetName, profileName,
 	trustedSourcesName, practiceName, logTriggerName, exceptionsName string) string {
 	return fmt.Sprintf(`
 resource "inext_web_app_asset" %[1]q {
@@ -486,7 +531,13 @@ resource "inext_web_app_asset" %[1]q {
 	  key   = "tagkey2"
 	  value = "tagvalue2"
 	}
-	is_shares_urls = false
+	mtls {
+		filename = "cert.der"
+		certificate_type = ".der"
+		data	 = "cert data"
+		type = "client"
+		enable = true
+	}
 }
 
 resource "inext_appsec_gateway_profile" %[2]q {
@@ -609,7 +660,7 @@ resource "inext_exceptions" %[6]q {
 `, assetName, profileName, trustedSourcesName, practiceName, logTriggerName, exceptionsName)
 }
 
-func webApplicationAssetUpdateFullConfig(assetName, profileName,
+func webApplicationAssetUpdatemTLSFullConfig(assetName, profileName,
 	trustedSourcesName, practiceName, logTriggerName, exceptionsName,
 	anotherProfileName, anotherTrustedSourcesName, anotherLogTriggerName, anotherExcpetionsName string) string {
 	return fmt.Sprintf(`
@@ -665,7 +716,20 @@ resource "inext_web_app_asset" %[1]q {
 	  key   = "tagkey3"
 	  value = "tagvalue3"
 	}
-	is_shares_urls = true
+	mtls {
+		filename = "newfile.crt"
+		certificate_type = ".der"
+		data	 = "new cert data"
+		type = "server"
+		enable = true
+	}
+	mtls {
+		filename = "newfile2.p12"
+		certificate_type = ".p12"
+		data	 = "new cert data2"
+		type = "client"
+		enable = false
+	}
 }
 
 resource "inext_appsec_gateway_profile" %[2]q {

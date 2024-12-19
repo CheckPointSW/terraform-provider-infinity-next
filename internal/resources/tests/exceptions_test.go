@@ -21,7 +21,7 @@ func TestAccExceptionBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":        nameAttribute,
-						"%":           "3",
+						"%":           "4",
 						"exception.#": "0",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
@@ -36,7 +36,7 @@ func TestAccExceptionBasic(t *testing.T) {
 						"exception.0.match.0.value.#":   "1",
 						"exception.0.match.0.operator":  "equals",
 						"exception.0.comment":           "",
-						"%":                             "3",
+						"%":                             "4",
 						"exception.0.match.0.operand.#": "0",
 						"exception.#":                   "1",
 						"exception.0.match.0.value.0":   "www.google.com",
@@ -57,7 +57,7 @@ func TestAccExceptionBasic(t *testing.T) {
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                                    nameAttribute,
 						"exception.0.action":                      "skip",
-						"%":                                       "3",
+						"%":                                       "4",
 						"exception.0.comment":                     "test comment",
 						"exception.0.match.0.value.#":             "0",
 						"exception.0.match.0.operand.0.value.#":   "1",
@@ -109,7 +109,7 @@ func TestAccExceptionWithExceptionBlock(t *testing.T) {
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                                    nameAttribute,
 						"exception.0.action":                      "skip",
-						"%":                                       "3",
+						"%":                                       "4",
 						"exception.0.comment":                     "test comment",
 						"exception.0.match.0.value.#":             "0",
 						"exception.0.match.0.operand.0.value.#":   "1",
@@ -153,7 +153,7 @@ func TestAccExceptionWithExceptionBlock(t *testing.T) {
 						"exception.1.match.0.operand.0.%":         "4",
 						"exception.1.match.#":                     "1",
 						"exception.0.match.0.operand.0.value.#":   "1",
-						"%":                                       "3",
+						"%":                                       "4",
 						"exception.0.match.0.operand.0.key":       "hostName",
 						"exception.0.match.0.operand.1.operand.#": "0",
 						"exception.0.match.0.operand.#":           "3",
@@ -231,7 +231,7 @@ func TestAccExceptionWithExceptionBlock(t *testing.T) {
 						"exception.0.%":                           "5",
 						"exception.0.match.0.operator":            "and",
 						"exception.0.match.0.%":                   "4",
-						"%":                                       "3",
+						"%":                                       "4",
 						"exception.0.match.0.operand.0.operand.#": "0",
 						"exception.0.match.0.operand.0.value.0":   "www.facebook.com",
 						"exception.0.match.0.operand.1.operand.#": "0",

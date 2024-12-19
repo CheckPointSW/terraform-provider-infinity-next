@@ -12,6 +12,7 @@ import (
 )
 
 func ResourceWebUserResponse() *schema.Resource {
+	validateVisibility := validation.ToDiagFunc(validation.StringInSlice([]string{visibilityShared, visibilityLocal}, false))
 	return &schema.Resource{
 		Description: "Determine the response returned to the client who initiated a blocked traffic." +
 			"The response can be a simple HTTP error code, an HTTP redirect message, or a Block page that a user can view in their browser.",
@@ -39,6 +40,13 @@ func ResourceWebUserResponse() *schema.Resource {
 				Type:        schema.TypeString,
 				Description: "The name of the resource, also acts as its unique ID",
 				Required:    true,
+			},
+			"visibility": {
+				Type:             schema.TypeString,
+				Description:      "The visibility of the web user response object",
+				Optional:         true,
+				Default:          "Shared",
+				ValidateDiagFunc: validateVisibility,
 			},
 			"mode": {
 				Type:             schema.TypeString,

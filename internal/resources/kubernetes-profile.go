@@ -11,7 +11,16 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+const (
+	profileSubTypeAppSec        string = "AppSec"
+	profileSubTypeAccessControl string = "AccessControl"
+	profileSubTypeKong          string = "Kong"
+	profileSubTypeIstio         string = "Istio"
+)
+
 func ResourceKubernetesProfile() *schema.Resource {
+	validateSubType := validation.ToDiagFunc(
+		validation.StringInSlice([]string{profileSubTypeAppSec, profileSubTypeAccessControl, profileSubTypeKong, profileSubTypeIstio}, false))
 	return &schema.Resource{
 		Description: "Kubernetes profile",
 
@@ -46,8 +55,9 @@ func ResourceKubernetesProfile() *schema.Resource {
 			},
 			"profile_sub_type": {
 				Type:             schema.TypeString,
+				Description:      "The sub type of the profile (AppSec, AccessControl, Kong, Istio)",
 				Required:         true,
-				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"AccessControl", "AppSec"}, false)),
+				ValidateDiagFunc: validateSubType,
 			},
 			"additional_settings": {
 				Type:        schema.TypeMap,

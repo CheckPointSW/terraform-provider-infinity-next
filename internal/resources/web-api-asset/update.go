@@ -51,7 +51,7 @@ func UpdateWebAPIAssetInputFromResourceData(d *schema.ResourceData) (models.Upda
 		updateInput.AddProfiles, updateInput.RemoveProfiles = utils.SlicesDiff(oldProfilesString, newProfilesString)
 	}
 
-	if oldBehaviorsStringList, newBehaviorsStringList, hasChange := utils.GetChangeWithParse(d, "trusted_sources", utils.MustSchemaCollectionToSlice[string]); hasChange {
+	if oldBehaviorsStringList, newBehaviorsStringList, hasChange := utils.GetChangeWithParse(d, "behaviors", utils.MustSchemaCollectionToSlice[string]); hasChange {
 		updateInput.AddBehaviors, updateInput.RemoveBehaviors = utils.SlicesDiff(oldBehaviorsStringList, newBehaviorsStringList)
 	}
 
@@ -106,9 +106,81 @@ func UpdateWebAPIAssetInputFromResourceData(d *schema.ResourceData) (models.Upda
 
 		newProxySettingsIndicators := newProxySettings.ToIndicatorsMap()
 		for _, oldSetting := range oldProxySettings {
+			// if the key is a mTLS key - skip it
+			if proxySettingKeyTomTLSType(oldSetting.Key) != "" {
+				continue
+			}
+
 			if _, ok := newProxySettingsIndicators[oldSetting.Key]; !ok {
 				updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, oldSetting.ID)
 			}
+		}
+	}
+
+	if oldMTLSs, newMTLSs, hasChange := utils.GetChangeWithParse(d, "mtls", parsemTLSs); hasChange {
+		oldMTLSsIndicators := oldMTLSs.ToIndicatorMap()
+		mTLSsToAdd := models.MTLSSchemas{}
+		for _, newMTLS := range newMTLSs {
+			oldMTLS, ok := oldMTLSsIndicators[newMTLS.Type]
+			if !ok {
+				mTLSsToAdd = append(mTLSsToAdd, newMTLS)
+				continue
+			}
+			if oldMTLS.Enable != newMTLS.Enable {
+				var enableToString string
+				if newMTLS.Enable {
+					enableToString = "true"
+				} else {
+					enableToString = "false"
+				}
+
+				key := mtlsClientEnable
+				if oldMTLS.Type == mtlsTypeServer {
+					key = mtlsServerEnable
+				}
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldMTLS.EnableID,
+					Key:   key,
+					Value: enableToString,
+				})
+			}
+
+			if oldMTLS.Data != newMTLS.Data {
+				key := mtlsClientData
+				if oldMTLS.Type == mtlsTypeServer {
+					key = mtlsServerData
+				}
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldMTLS.DataID,
+					Key:   key,
+					Value: newMTLS.Data,
+				})
+			}
+
+			if oldMTLS.Filename != newMTLS.Filename {
+				key := mtlsClientFileName
+				if oldMTLS.Type == mtlsTypeServer {
+					key = mtlsServerFileName
+				}
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldMTLS.FilenameID,
+					Key:   key,
+					Value: newMTLS.Filename,
+				})
+			}
+		}
+
+		var proxySettingsToAdd models.ProxySettingInputs
+		if mTLSsToAdd != nil {
+			proxySettingsToAdd = mapMTLSToProxySettingInputs(mTLSsToAdd, models.ProxySettingInputs{})
+		}
+		for _, proxySettingToAdd := range proxySettingsToAdd {
+			updateInput.AddProxySetting = append(updateInput.AddProxySetting, models.AddProxySetting{
+				Key:   proxySettingToAdd.Key,
+				Value: proxySettingToAdd.Value,
+			})
 		}
 	}
 
@@ -139,7 +211,7 @@ func UpdateWebAPIAssetInputFromResourceData(d *schema.ResourceData) (models.Upda
 				SourceIdentifier: oldSourceIdentifier.SourceIdentifier,
 				AddValues:        valuesToAdd,
 				RemoveValues:     valuesIDsToRemove,
-				UpdateValues:     []string{},
+				UpdateValues:     []models.UpdateSourceIdentifierValue{},
 			})
 		}
 
@@ -149,42 +221,66 @@ func UpdateWebAPIAssetInputFromResourceData(d *schema.ResourceData) (models.Upda
 				updateInput.RemoveSourceIdentifiers = append(updateInput.RemoveSourceIdentifiers, oldSourceIdentifier.ID)
 			}
 		}
+
+		if oldTags, newTags, hasChange := utils.GetChangeWithParse(d, "tags", parseSchemaTags); hasChange {
+			tagsInputsToAdd, tagsInputsToRemove := utils.SlicesDiff(oldTags, newTags)
+			tagsInputsToAdd = utils.Filter(tagsInputsToAdd, validateTag)
+			tagsInputsToRemove = utils.Filter(tagsInputsToRemove, validateTag)
+			tagsToAdd := utils.Map(tagsInputsToAdd, utils.MustUnmarshalAs[models.AddTag, models.TagInput])
+			tagsToRemove := utils.Map(tagsInputsToRemove, func(tag models.TagInput) string { return tag.ID })
+			updateInput.AddTags = tagsToAdd
+			updateInput.RemoveTags = tagsToRemove
+		}
 	}
 
 	return updateInput, nil
 }
 
 // parseSchemaSourceIdentifiers converts the source identifiers (type schema.TypeSet) to a slice of map[string]any
-// and than converts the it to a slice of modles.SourceIdentifierInput
+// and then converts it to a slice of models.SourceIdentifierInput
 func parseSchemaSourceIdentifiers(sourceIdentifiersFromResourceData any) models.SourceIdentifiersInputs {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](sourceIdentifiersFromResourceData), mapToSourceIdentifierInput)
 }
 
 // parseSchemaPracticeWrappers converts the practice wrappers (type schema.TypeSet) to a slice of map[string]any
-// and than converts the it to a slice of modles.PracticeWrapperInput
+// and then converts it to a slice of models.PracticeWrapperInput
 func parseSchemaPracticeWrappers(practiceWrappersFromResourceData any) models.PracticeWrappersInputs {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](practiceWrappersFromResourceData), mapToPracticeWrapperInput)
 }
 
 // parseSchemaProxySettings converts the proxy settings (type schema.TypeSet) to a slice of map[string]any
-// and than converts the it to a slice of modles.PracticeWrapperInput
+// and then converts it to a slice of models.PracticeWrapperInput
 func parseSchemaProxySettings(proxySettingsInterfaceFromResourceData any) models.ProxySettingInputs {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](proxySettingsInterfaceFromResourceData), mapToProxySettingInput)
+}
+
+// parseSchemaTags converts the tags (type schema.TypeSet) to a slice of map[string]any
+// and then converts it to a slice of models.TagInput
+func parseSchemaTags(tagsFromResourceData any) models.TagsInputs {
+	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](tagsFromResourceData), mapToTagInput)
 }
 
 // validatePracticeWrapperInput validates that there is no empty modes in the input (because this fails the update api call)
 // this function is used during update of a practice since the getChange func of the terraform helper package
 // sometimes returns an extra empty practice
-func validatePracticeWrapperInput(pracitce models.PracticeWrapperInput) bool {
-	if pracitce.PracticeID == "" || pracitce.MainMode == "" {
+func validatePracticeWrapperInput(practice models.PracticeWrapperInput) bool {
+	if practice.PracticeID == "" || practice.MainMode == "" {
 		return false
 	}
 
-	for _, mode := range pracitce.SubPracticeModes {
+	for _, mode := range practice.SubPracticeModes {
 		if mode.Mode == "" {
 			return false
 		}
 	}
 
 	return true
+}
+
+func validateTag(tag models.TagInput) bool {
+	return tag.Key != "" && tag.Value != ""
+}
+
+func parsemTLSs(mTLSsFromResourceData any) models.MTLSSchemas {
+	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](mTLSsFromResourceData), mapToMTLSInput)
 }

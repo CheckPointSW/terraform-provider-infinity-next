@@ -91,6 +91,15 @@ type Profile struct {
 
 type Profiles []Profile
 
+// Tag represents a tag field of a web application asset as it is returned from mgmt
+type Tag struct {
+	ID    string `json:"id"`
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+type Tags []Tag
+
 // WebApplicationAsset represents a web application asset as it is returned from mgmt
 type WebApplicationAsset struct {
 	ID                string            `json:"id"`
@@ -113,7 +122,9 @@ type WebApplicationAsset struct {
 	Behaviors         Behaviors         `json:"behaviors,omitempty"`
 	Profiles          Profiles          `json:"profiles,omitempty"`
 	Practices         PracticesWrappers `json:"practices,omitempty"`
+	Tags              Tags              `json:"tags,omitempty"`
 	ReadOnly          bool              `json:"readOnly"`
+	IsSharesURLs      bool              `json:"isSharesURLs,omitempty"`
 }
 
 // ToSchema returns a slice of profiles IDs to be saved in the state file
@@ -132,6 +143,22 @@ func (behaviors Behaviors) ToSchema() []string {
 	}
 
 	return utils.Map(behaviors, mapFunc)
+}
+
+func (tags Tags) ToSchema() []SchemaTag {
+	mapFunc := func(tag Tag) SchemaTag {
+		return tag.ToSchema()
+	}
+
+	return utils.Map(tags, mapFunc)
+}
+
+func (tag Tag) ToSchema() SchemaTag {
+	return SchemaTag{
+		ID:    tag.ID,
+		Key:   tag.Key,
+		Value: tag.Value,
+	}
 }
 
 // ToSchema converts the URLs as returned from the APi to 2 slices of strings to be saved in the state file:

@@ -1,6 +1,8 @@
 package models
 
-import "strings"
+import (
+	"strings"
+)
 
 // PracticeModeInput represents the api input for creating a practice mode field
 // in the practice field of the web application asset
@@ -8,6 +10,15 @@ type PracticeModeInput struct {
 	Mode        string `json:"mode"`
 	SubPractice string `json:"subPractice,omitempty"`
 }
+
+// TagInput represents the api input for creating a tag field in the web application asset
+type TagInput struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+	ID    string `json:"id,omitempty"`
+}
+
+type TagsInputs []TagInput
 
 // PracticeWrapperInput represents the api input for creating a practice field in the web application asset
 type PracticeWrapperInput struct {
@@ -47,10 +58,12 @@ type CreateWebApplicationAssetInput struct {
 	PracticeWrappers  PracticeWrappersInputs  `json:"practices,omitempty"`
 	Profiles          []string                `json:"profiles,omitempty"`
 	Behaviors         []string                `json:"behaviors,omitempty"`
+	Tags              TagsInputs              `json:"tags,omitempty"`
 	ProxySettings     ProxySettingInputs      `json:"proxySetting,omitempty"`
 	UpstreamURL       string                  `json:"upstreamURL,omitempty"`
 	URLs              []string                `json:"URLs,omitempty"`
 	SourceIdentifiers SourceIdentifiersInputs `json:"sourceIdentifiers,omitempty"`
+	IsSharesURLs      bool                    `json:"isSharesURLs,omitempty"`
 }
 
 // ToIndicatorsMap converts a ProxySettingInputs to a map from a proxy setting key to the proxy setting struct itself
@@ -81,4 +94,22 @@ func (ids ValuesIDs) ToIndicatorsMap() map[string]string {
 	}
 
 	return ret
+}
+
+func (inputs TagsInputs) ToIndicatorsMap() map[string]TagInput {
+	ret := make(map[string]TagInput)
+	for _, input := range inputs {
+		ret[input.Key] = input
+	}
+
+	return ret
+}
+
+func (mtlsInputs MTLSSchemas) ToIndicatorMap() map[string]MTLSSchema {
+	mTLSs := make(map[string]MTLSSchema)
+	for _, mTLS := range mtlsInputs {
+		mTLSs[mTLS.Type] = mTLS
+	}
+
+	return mTLSs
 }

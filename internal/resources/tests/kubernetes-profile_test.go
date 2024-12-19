@@ -20,8 +20,9 @@ func TestAccKubernetesProfileBasic(t *testing.T) {
 				Config: kubernetesProfileBasicConfig(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":             nameAttribute,
-						"profile_sub_type": "AccessControl",
+						"name":                 nameAttribute,
+						"profile_sub_type":     "AccessControl",
+						"max_number_of_agents": "10",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -119,6 +120,7 @@ func kubernetesProfileBasicConfig(name string) string {
 resource "inext_kubernetes_profile" %[1]q {
 	name = %[1]q
 	profile_sub_type = "AccessControl"
+	max_number_of_agents = 10
 }
 `, name)
 }

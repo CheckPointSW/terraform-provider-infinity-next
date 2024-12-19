@@ -14,6 +14,7 @@ type ScheduleTimeInput struct {
 	Time         string   `json:"time,omitempty"`
 	WeekDays     []string `json:"weekDays,omitempty"`
 	Duration     int      `json:"duration,omitempty"`
+	Days         []int    `json:"days,omitempty"`
 }
 
 type CreateEmbeddedProfileInput struct {

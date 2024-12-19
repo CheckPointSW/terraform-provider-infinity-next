@@ -12,6 +12,8 @@ import (
 )
 
 func ResourceEmbeddedProfile() *schema.Resource {
+	validateUpgradeMode := validation.ToDiagFunc(validation.StringInSlice([]string{embeddedprofile.UpgradeModeAutomatic, embeddedprofile.UpgradeModeManual, embeddedprofile.UpgradeModeScheduled}, false))
+	validateUpgradeTimeType := validation.ToDiagFunc(validation.StringInSlice([]string{embeddedprofile.ScheduleTypeDaily, embeddedprofile.ScheduleTypeDaysInWeek, embeddedprofile.ScheduleTypeDaysInMonth}, false))
 	return &schema.Resource{
 		Description: "Embedded profile",
 
@@ -70,13 +72,13 @@ func ResourceEmbeddedProfile() *schema.Resource {
 					"The default is Automatic",
 				Optional:         true,
 				Default:          embeddedprofile.UpgradeModeAutomatic,
-				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{embeddedprofile.UpgradeModeAutomatic, embeddedprofile.UpgradeModeManual, embeddedprofile.UpgradeModeScheduled}, false)),
+				ValidateDiagFunc: validateUpgradeMode,
 			},
 			"upgrade_time_schedule_type": {
 				Type:             schema.TypeString,
-				Description:      "The schedule type in case upgrade mode is scheduled: DaysInWeek",
+				Description:      "The schedule type in case upgrade mode is scheduled: DaysInWeek, DaysInMonth or Daily",
 				Optional:         true,
-				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"DaysInWeek"}, false)),
+				ValidateDiagFunc: validateUpgradeTimeType,
 			},
 			"upgrade_time_hour": {
 				Type:        schema.TypeString,
@@ -94,6 +96,14 @@ func ResourceEmbeddedProfile() *schema.Resource {
 				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
+				},
+			},
+			"upgrade_time_days": {
+				Type:        schema.TypeSet,
+				Description: "The days of the month of the upgrade time schedule",
+				Optional:    true,
+				Elem: &schema.Schema{
+					Type: schema.TypeInt,
 				},
 			},
 			"max_number_of_agents": {

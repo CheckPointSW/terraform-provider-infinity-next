@@ -71,9 +71,9 @@ func mapToExceptionObjectInput(exceptionMap map[string]any) models.ExceptionObje
 	}
 
 	ret.Actions = []string{string(actionBytes)}
-	matchExprssion := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](exceptionMap["match"]), mapToSchemaMatchExpression)
-	if len(matchExprssion) > 0 {
-		inputMatch := ParseSchemaMatchToInput(matchExprssion[0])
+	matchExpression := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](exceptionMap["match"]), mapToSchemaMatchExpression)
+	if len(matchExpression) > 0 {
+		inputMatch := ParseSchemaMatchToInput(matchExpression[0])
 		matchBytes, err := json.Marshal(inputMatch)
 		if err != nil {
 			fmt.Printf("[WARN] failed to marshal MatchExpression struct: %+v", err)
@@ -89,7 +89,7 @@ func CreateExceptionBehaviorInputFromResourceData(d *schema.ResourceData) (model
 	var res models.CreateExceptionBehaviorInput
 
 	res.Name = d.Get("name").(string)
-	res.Visibility = "Shared"
+	res.Visibility = d.Get("visibility").(string)
 	res.Exceptions = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "exception"), mapToExceptionObjectInput)
 
 	return res, nil
@@ -103,6 +103,7 @@ func NewExceptionBehavior(ctx context.Context, c *api.Client, input models.Creat
 						newExceptionBehavior(ownerId: $ownerId, practiceId: $practiceId, behaviorInput: $behaviorInput) {
 							id
 							name
+							visibility
 							exceptions {
 								id
 								match

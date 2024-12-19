@@ -17,6 +17,10 @@ func UpdateTrustedSourceBehaviorInputFromResourceData(d *schema.ResourceData) (m
 		res.Name = newName
 	}
 
+	if _, newVisibility, hasChange := utils.MustGetChange[string](d, "visibility"); hasChange {
+		res.Visibility = newVisibility
+	}
+
 	if _, newMinNumberOfSources, hasChange := utils.MustGetChange[int](d, "min_num_of_sources"); hasChange {
 		res.NumOfSources = newMinNumberOfSources
 	}
