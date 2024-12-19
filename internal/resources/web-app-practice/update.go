@@ -134,7 +134,7 @@ func UpdateWebApplicationPractice(ctx context.Context, c *api.Client, id string,
 	return value, err
 }
 
-func parseSchemaFileSecurity(schemaFileSecurity any) []models.UpdateFileSecurity {
-	input := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaFileSecurity), mapToFileSecurityInput)
-	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateFileSecurity, models.FileSecurityInput])
-}
+//func parseSchemaFileSecurity(schemaFileSecurity any) []models.UpdateFileSecurity {
+//	input := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaFileSecurity), mapToFileSecurityInput)
+//	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateFileSecurity, models.FileSecurityInput])
+//}
