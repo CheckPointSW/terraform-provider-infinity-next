@@ -486,7 +486,6 @@ resource "inext_web_app_asset" %[1]q {
 	  key   = "tagkey2"
 	  value = "tagvalue2"
 	}
-	is_shares_urls = false
 }
 
 resource "inext_appsec_gateway_profile" %[2]q {
@@ -665,7 +664,6 @@ resource "inext_web_app_asset" %[1]q {
 	  key   = "tagkey3"
 	  value = "tagvalue3"
 	}
-	is_shares_urls = true
 }
 
 resource "inext_appsec_gateway_profile" %[2]q {

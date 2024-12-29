@@ -351,6 +351,7 @@ func webAPIPracticeFullConfig(name, filename, data string) string {
 	return fmt.Sprintf(`
 resource "inext_web_api_practice" %[1]q {
 	name                          = %[1]q
+	Visibility                   = "Shared"
 	ips {
 		performance_impact    = "LowOrLower"   
 		severity_level        = "LowOrAbove"

@@ -58,7 +58,7 @@ func TestAccWebAppPracticeBasic(t *testing.T) {
 						"file_security.0.allow_file_size_limit":                 "AccordingToPractice",
 						"file_security.0.file_size_limit":                       "10",
 						"file_security.0.file_size_limit_unit":                  "MB",
-						"file_security.0.files_without_name":                    "AccordingToPractice",
+						"file_security.0.file_without_name":                     "AccordingToPractice",
 						"file_security.0.required_archive_extraction":           "false",
 						"file_security.0.archive_file_size_limit":               "10",
 						"file_security.0.archive_file_size_limit_unit":          "MB",
@@ -126,7 +126,7 @@ func TestAccWebAppPracticeBasic(t *testing.T) {
 						"file_security.0.allow_file_size_limit":                 "AccordingToPractice",
 						"file_security.0.file_size_limit":                       "10",
 						"file_security.0.file_size_limit_unit":                  "MB",
-						"file_security.0.files_without_name":                    "AccordingToPractice",
+						"file_security.0.file_without_name":                     "AccordingToPractice",
 						"file_security.0.required_archive_extraction":           "false",
 						"file_security.0.archive_file_size_limit":               "10",
 						"file_security.0.archive_file_size_limit_unit":          "MB",
@@ -209,7 +209,7 @@ func TestAccWebAppPracticeFull(t *testing.T) {
 						"file_security.0.allow_file_size_limit":                 "AccordingToPractice",
 						"file_security.0.file_size_limit":                       "10",
 						"file_security.0.file_size_limit_unit":                  "MB",
-						"file_security.0.files_without_name":                    "AccordingToPractice",
+						"file_security.0.file_without_name":                     "AccordingToPractice",
 						"file_security.0.required_archive_extraction":           "false",
 						"file_security.0.archive_file_size_limit":               "10",
 						"file_security.0.archive_file_size_limit_unit":          "MB",
@@ -285,7 +285,7 @@ func TestAccWebAppPracticeFull(t *testing.T) {
 						"file_security.0.allow_file_size_limit":                 "Prevent",
 						"file_security.0.file_size_limit":                       "1000",
 						"file_security.0.file_size_limit_unit":                  "GB",
-						"file_security.0.files_without_name":                    "Detect",
+						"file_security.0.file_without_name":                     "Detect",
 						"file_security.0.required_archive_extraction":           "true",
 						"file_security.0.archive_file_size_limit":               "10000",
 						"file_security.0.archive_file_size_limit_unit":          "KB",
@@ -413,7 +413,7 @@ resource "inext_web_app_practice" %[1]q {
 		allow_file_size_limit      = "AccordingToPractice"	
 		file_size_limit            = "10"
 		file_size_limit_unit       = "MB"
-		files_without_name         = "AccordingToPractice"
+		file_without_name         = "AccordingToPractice"
 		required_archive_extraction = "false"
 		archive_file_size_limit     = "10"
 		archive_file_size_limit_unit = "MB"
@@ -463,7 +463,7 @@ resource "inext_web_app_practice" %[1]q {
 		allow_file_size_limit      = "Prevent"
 		file_size_limit            = "1000"
 		file_size_limit_unit       = "GB"
-		files_without_name         = "Detect"
+		file_without_name         = "Detect"
 		required_archive_extraction = "true"
 		archive_file_size_limit     = "10000"
 		archive_file_size_limit_unit = "KB"

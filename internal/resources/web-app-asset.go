@@ -275,7 +275,7 @@ func ResourceWebAppAsset() *schema.Resource {
 			},
 			"mtls": {
 				Type:        schema.TypeSet,
-				Description: "The MTLS settings",
+				Description: "The mutual TLS settings",
 				Optional:    true,
 				Computed:    true,
 				Elem: &schema.Resource{
