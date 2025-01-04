@@ -99,7 +99,7 @@ func ReadWebApplicationPracticeToResourceData(practice models.WebApplicationPrac
 
 	d.Set("web_bot", []map[string]any{webBotMap})
 
-	fileSecurity := models.FileSecurity{
+	fileSecurity := models.FileSecuritySchema{
 		ID:                        practice.FileSecurity.ID,
 		SeverityLevel:             practice.FileSecurity.SeverityLevel,
 		HighConfidence:            practice.FileSecurity.HighConfidence,
