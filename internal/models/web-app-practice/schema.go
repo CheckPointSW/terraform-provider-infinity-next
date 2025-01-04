@@ -42,21 +42,21 @@ type WebApplicationPracticeWebAttacksSchema struct {
 
 type FileSecuritySchema struct {
 	ID                        string `json:"id,omitempty"`
-	SeverityLevel             string `json:"severityLevel,omitempty"`
-	HighConfidence            string `json:"highConfidence,omitempty"`
-	MediumConfidence          string `json:"mediumConfidence,omitempty"`
-	LowConfidence             string `json:"lowConfidence,omitempty"`
-	AllowFileSizeLimit        string `json:"allowFileSizeLimit,omitempty"`
-	FileSizeLimit             int    `json:"fileSizeLimit,omitempty"`
-	FileSizeLimitUnit         string `json:"fileSizeLimitUnit,omitempty"`
-	FilesWithoutName          string `json:"filesWithoutName,omitempty"`
-	RequiredArchiveExtraction bool   `json:"requiredArchiveExtraction,omitempty"`
-	ArchiveFileSizeLimit      int    `json:"archiveFileSizeLimit,omitempty"`
-	ArchiveFileSizeLimitUnit  string `json:"archiveFileSizeLimitUnit,omitempty"`
-	AllowArchiveWithinArchive string `json:"allowArchiveWithinArchive,omitempty"`
-	AllowAnUnopenedArchive    string `json:"allowAnUnopenedArchive,omitempty"`
-	AllowFileType             bool   `json:"allowFileType,omitempty"`
-	RequiredThreatEmulation   bool   `json:"requiredThreatEmulation,omitempty"`
+	SeverityLevel             string `json:"severity_level,omitempty"`
+	HighConfidence            string `json:"high_confidence,omitempty"`
+	MediumConfidence          string `json:"medium_confidence,omitempty"`
+	LowConfidence             string `json:"low_confidence,omitempty"`
+	AllowFileSizeLimit        string `json:"allow_file_size_limit,omitempty"`
+	FileSizeLimit             int    `json:"file_size_limit,omitempty"`
+	FileSizeLimitUnit         string `json:"file_size_limit_unit,omitempty"`
+	FilesWithoutName          string `json:"files_without_name,omitempty"`
+	RequiredArchiveExtraction bool   `json:"required_archive_extraction,omitempty"`
+	ArchiveFileSizeLimit      int    `json:"archive_file_size_limit,omitempty"`
+	ArchiveFileSizeLimitUnit  string `json:"archive_file_size_limit_unit,omitempty"`
+	AllowArchiveWithinArchive string `json:"allow_archive_within_archive,omitempty"`
+	AllowAnUnopenedArchive    string `json:"allow_an_unopened_archive,omitempty"`
+	AllowFileType             bool   `json:"allow_file_type,omitempty"`
+	RequiredThreatEmulation   bool   `json:"required_threat_emulation,omitempty"`
 }
 
 func (schemaIDs IDs) ToIndicatorsMap() map[string]string {
