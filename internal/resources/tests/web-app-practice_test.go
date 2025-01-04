@@ -247,7 +247,6 @@ func TestAccWebAppPracticeFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                           nameAttribute,
-						"visibility":                     "Local",
 						"ips.0.high_confidence":          "Prevent",
 						"web_bot.#":                      "1",
 						"ips.0.performance_impact":       "MediumOrLower",

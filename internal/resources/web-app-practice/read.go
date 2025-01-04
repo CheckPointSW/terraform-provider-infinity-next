@@ -112,10 +112,10 @@ func ReadWebApplicationPracticeToResourceData(practice models.WebApplicationPrac
 		RequiredArchiveExtraction: practice.FileSecurity.RequiredArchiveExtraction,
 		ArchiveFileSizeLimit:      practice.FileSecurity.ArchiveFileSizeLimit,
 		ArchiveFileSizeLimitUnit:  practice.FileSecurity.ArchiveFileSizeLimitUnit,
-		//AllowArchiveWithinArchive: practice.FileSecurity.AllowArchiveWithinArchive,
-		AllowAnUnopenedArchive:  practice.FileSecurity.AllowAnUnopenedArchive,
-		AllowFileType:           practice.FileSecurity.AllowFileType,
-		RequiredThreatEmulation: practice.FileSecurity.RequiredThreatEmulation,
+		AllowArchiveWithinArchive: practice.FileSecurity.AllowArchiveWithinArchive,
+		AllowAnUnopenedArchive:    practice.FileSecurity.AllowAnUnopenedArchive,
+		AllowFileType:             practice.FileSecurity.AllowFileType,
+		RequiredThreatEmulation:   practice.FileSecurity.RequiredThreatEmulation,
 	}
 
 	fileSecurityMap, err := utils.UnmarshalAs[map[string]any](fileSecurity)

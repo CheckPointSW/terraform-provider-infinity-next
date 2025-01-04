@@ -59,29 +59,23 @@ func mapToWebBotInput(webBotMap map[string]any) models.WebApplicationPracticeWeb
 }
 
 func mapToFileSecurityInput(fileSecurityMap map[string]any) models.FileSecurityInput {
-	var ret models.FileSecurityInput
-
-	if id, ok := fileSecurityMap["id"]; ok {
-		ret.ID = id.(string)
+	return models.FileSecurityInput{
+		SeverityLevel:             fileSecurityMap["severity_level"].(string),
+		HighConfidence:            fileSecurityMap["high_confidence"].(string),
+		MediumConfidence:          fileSecurityMap["medium_confidence"].(string),
+		LowConfidence:             fileSecurityMap["low_confidence"].(string),
+		AllowFileSizeLimit:        fileSecurityMap["allow_file_size_limit"].(string),
+		FileSizeLimit:             fileSecurityMap["file_size_limit"].(int),
+		FileSizeLimitUnit:         fileSecurityMap["file_size_limit_unit"].(string),
+		FilesWithoutName:          fileSecurityMap["files_without_name"].(string),
+		RequiredArchiveExtraction: fileSecurityMap["required_archive_extraction"].(bool),
+		ArchiveFileSizeLimit:      fileSecurityMap["archive_file_size_limit"].(int),
+		ArchiveFileSizeLimitUnit:  fileSecurityMap["archive_file_size_limit_unit"].(string),
+		AllowArchiveWithinArchive: fileSecurityMap["allow_archive_within_archive"].(string),
+		AllowAnUnopenedArchive:    fileSecurityMap["allow_an_unopened_archive"].(string),
+		AllowFileType:             fileSecurityMap["allow_file_type"].(bool),
+		RequiredThreatEmulation:   fileSecurityMap["required_threat_emulation"].(bool),
 	}
-
-	ret.SeverityLevel = fileSecurityMap["severity_level"].(string)
-	ret.HighConfidence = fileSecurityMap["high_confidence"].(string)
-	ret.MediumConfidence = fileSecurityMap["medium_confidence"].(string)
-	ret.LowConfidence = fileSecurityMap["low_confidence"].(string)
-	ret.AllowFileSizeLimit = fileSecurityMap["allow_file_size_limit"].(string)
-	ret.FileSizeLimit = fileSecurityMap["file_size_limit"].(int)
-	ret.FileSizeLimitUnit = fileSecurityMap["file_size_limit_unit"].(string)
-	ret.FilesWithoutName = fileSecurityMap["files_without_name"].(string)
-	ret.RequiredArchiveExtraction = fileSecurityMap["required_archive_extraction"].(bool)
-	ret.ArchiveFileSizeLimit = fileSecurityMap["archive_file_size_limit"].(int)
-	ret.ArchiveFileSizeLimitUnit = fileSecurityMap["archive_file_size_limit_unit"].(string)
-	ret.AllowArchiveWithinArchive = fileSecurityMap["allow_archive_within_archive"].(string)
-	ret.AllowAnUnopenedArchive = fileSecurityMap["allow_an_unopened_archive"].(string)
-	ret.AllowFileType = fileSecurityMap["allow_file_type"].(bool)
-	ret.RequiredThreatEmulation = fileSecurityMap["required_threat_emulation"].(bool)
-
-	return ret
 }
 
 func CreateWebApplicationPracticeInputFromResourceData(d *schema.ResourceData) (models.CreateWebApplicationPracticeInput, error) {
