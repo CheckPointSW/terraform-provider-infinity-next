@@ -34,7 +34,7 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 						"name":            assetNameAttribute,
 						"urls.0":          fmt.Sprintf("http://host/%s/path1", assetNameAttribute),
 						"urls.#":          "1",
-						"%":               "24",
+						"%":               "25",
 						"urls_ids.#":      "1",
 						"main_attributes": fmt.Sprintf("{\"applicationUrls\":\"http://host/%s/path1\"}", assetNameAttribute),
 					}),
@@ -53,7 +53,7 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "24",
+						"%":                                     "25",
 						"read_only":                             "false",
 						"upstream_url":                          "some url 5",
 						"urls.#":                                "2",
@@ -149,7 +149,7 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "24",
+						"%":                                     "25",
 						"read_only":                             "false",
 						"upstream_url":                          "some url 5",
 						"urls.#":                                "2",
@@ -221,7 +221,7 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "24",
+						"%":                                     "25",
 						"read_only":                             "false",
 						"upstream_url":                          "some url 10",
 						"urls.#":                                "2",

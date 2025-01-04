@@ -171,7 +171,7 @@ func TestAccWebAppPracticeFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                           nameAttribute,
-						"Visibility":                     "Shared",
+						"visibility":                     "Shared",
 						"category":                       "ThreatPrevention",
 						"ips.0.protections_from_year":    "2016",
 						"ips.0.performance_impact":       "LowOrLower",
@@ -247,7 +247,7 @@ func TestAccWebAppPracticeFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                           nameAttribute,
-						"Visibility":                     "Local",
+						"visibility":                     "Local",
 						"ips.0.high_confidence":          "Prevent",
 						"web_bot.#":                      "1",
 						"ips.0.performance_impact":       "MediumOrLower",

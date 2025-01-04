@@ -166,7 +166,7 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                                                  nameAttribute,
-						"Visibility":                                            "Shared",
+						"visibility":                                            "Shared",
 						"schema_validation.0.name":                              "New File 1",
 						"schema_validation.0.data":                              schemaValidationData,
 						"api_attacks.0.minimum_severity":                        "Critical",
@@ -229,7 +229,7 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                     nameAttribute,
-						"Visibility":               "Local",
+						"visibility":               "Local",
 						"schema_validation.0.name": "New File 2",
 						"schema_validation.0.data": schemaValidationDataUpdate,
 						"api_attacks.#":            "1",
@@ -351,7 +351,6 @@ func webAPIPracticeFullConfig(name, filename, data string) string {
 	return fmt.Sprintf(`
 resource "inext_web_api_practice" %[1]q {
 	name                          = %[1]q
-	Visibility                   = "Shared"
 	ips {
 		performance_impact    = "LowOrLower"   
 		severity_level        = "LowOrAbove"
