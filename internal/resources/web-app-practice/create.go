@@ -104,10 +104,10 @@ func CreateWebApplicationPracticeInputFromResourceData(d *schema.ResourceData) (
 		res.WebBot = webBotSlice[0]
 	}
 
-	//fileSecuritySlice := utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "file_security"), mapToFileSecurityInput)
-	//if len(fileSecuritySlice) > 0 {
-	//	res.FileSecurity = fileSecuritySlice[0]
-	//}
+	fileSecuritySlice := utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "file_security"), mapToFileSecurityInput)
+	if len(fileSecuritySlice) > 0 {
+		res.FileSecurity = fileSecuritySlice[0]
+	}
 
 	return res, nil
 }
