@@ -28,7 +28,7 @@ func UpdateExceptionBehaviorInputFromResourceData(d *schema.ResourceData) (model
 		oldExceptionsIndicators := oldExceptions.ToIndicatorsMap()
 		for _, newException := range newExceptions {
 			// if key does not exist then this is a new Exception to add
-			if _, ok := oldExceptionsIndicators[newException.ID]; !ok {
+			if _, ok := oldExceptionsIndicators[newException.Match]; !ok {
 				res.AddExceptions = append(res.AddExceptions, models.AddExceptionObjectInput{
 					Match:   newException.Match,
 					Actions: newException.Actions,
