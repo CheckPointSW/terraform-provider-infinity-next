@@ -323,14 +323,14 @@ func ResourceWebAppPractice() *schema.Resource {
 						"high_confidence": {
 							Type:             schema.TypeString,
 							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
-							Default:          "Prevent",
+							Default:          "AccordingToPractice",
 							Optional:         true,
 							ValidateDiagFunc: validationFileSecurityMode,
 						},
 						"medium_confidence": {
 							Type:             schema.TypeString,
 							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
-							Default:          "Prevent",
+							Default:          "AccordingToPractice",
 							Optional:         true,
 							ValidateDiagFunc: validationFileSecurityMode,
 						},
@@ -360,7 +360,7 @@ func ResourceWebAppPractice() *schema.Resource {
 							Optional:         true,
 							ValidateDiagFunc: validationFileSizeUnits,
 						},
-						"file_without_name": {
+						"files_without_name": {
 							Type:             schema.TypeString,
 							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
 							Default:          "AccordingToPractice",

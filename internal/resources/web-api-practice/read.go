@@ -114,7 +114,7 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 
 	fileSecurityMap, err := utils.UnmarshalAs[map[string]any](fileSecurity)
 	if err != nil {
-		return fmt.Errorf("failed to convert FileSecurity struct to map: %w", err)
+		return fmt.Errorf("failed to convert FileSecurity struct to map. Error: %w", err)
 	}
 
 	d.Set("file_security", []map[string]any{fileSecurityMap})

@@ -46,22 +46,22 @@ type WebApplicationIPS struct {
 }
 
 type FileSecurity struct {
-	ID                        string `json:"id,omitempty"`
-	SeverityLevel             string `json:"severityLevel,omitempty"`
-	HighConfidence            string `json:"highConfidence,omitempty"`
-	MediumConfidence          string `json:"mediumConfidence,omitempty"`
-	LowConfidence             string `json:"lowConfidence,omitempty"`
-	AllowFileSizeLimit        string `json:"allowFileSizeLimit,omitempty"`
-	FileSizeLimit             int    `json:"fileSizeLimit,omitempty"`
-	FileSizeLimitUnit         string `json:"fileSizeLimitUnit,omitempty"`
-	FilesWithoutName          string `json:"filesWithoutName,omitempty"`
-	RequiredArchiveExtraction bool   `json:"requiredArchiveExtraction,omitempty"`
-	ArchiveFileSizeLimit      int    `json:"archiveFileSizeLimit,omitempty"`
-	ArchiveFileSizeLimitUnit  string `json:"archiveFileSizeLimitUnit,omitempty"`
-	AllowArchiveWithinArchive string `json:"allowArchiveWithinArchive,omitempty"`
-	AllowAnUnopenedArchive    string `json:"allowAnUnopenedArchive,omitempty"`
-	AllowFileType             bool   `json:"allowFileType,omitempty"`
-	RequiredThreatEmulation   bool   `json:"requiredThreatEmulation,omitempty"`
+	ID                        string `json:"id"`
+	SeverityLevel             string `json:"severityLevel"`
+	HighConfidence            string `json:"highConfidence"`
+	MediumConfidence          string `json:"mediumConfidence"`
+	LowConfidence             string `json:"lowConfidence"`
+	AllowFileSizeLimit        string `json:"allowFileSizeLimit"`
+	FileSizeLimit             int    `json:"fileSizeLimit"`
+	FileSizeLimitUnit         string `json:"fileSizeLimitUnit"`
+	FilesWithoutName          string `json:"filesWithoutName"`
+	RequiredArchiveExtraction bool   `json:"requiredArchiveExtraction"`
+	ArchiveFileSizeLimit      int    `json:"archiveFileSizeLimit"`
+	ArchiveFileSizeLimitUnit  string `json:"archiveFileSizeLimitUnit"`
+	AllowArchiveWithinArchive string `json:"allowArchiveWithinArchive"`
+	AllowAnUnopenedArchive    string `json:"allowAnUnopenedArchive"`
+	AllowFileType             bool   `json:"allowFileType"`
+	RequiredThreatEmulation   bool   `json:"requiredThreatEmulation"`
 }
 
 type WebApplicationPractice struct {
