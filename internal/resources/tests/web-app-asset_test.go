@@ -94,6 +94,13 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"tags.#":            "1",
 						"tags.0.key":        "tagkey1",
 						"tags.0.value":      "tagvalue1",
+
+						"mtls.#":                  "1",
+						"mtls.0.filename":         "cert.pem",
+						"mtls.0.certificate_type": ".pem",
+						"mtls.0.data":             "cert data",
+						"mtls.0.type":             "client",
+						"mtls.0.enable":           "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -107,6 +114,9 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path2", assetNameAttribute)),
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path3", assetNameAttribute)),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -192,6 +202,13 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"tags.0.value":      "tagvalue1",
 						"tags.1.key":        "tagkey2",
 						"tags.1.value":      "tagvalue2",
+
+						"mtls.#":                  "1",
+						"mtls.0.filename":         "cert.der",
+						"mtls.0.certificate_type": ".der",
+						"mtls.0.data":             "cert data",
+						"mtls.0.type":             "client",
+						"mtls.0.enable":           "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -205,6 +222,9 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckTypeSetElemAttr(assetResourceName, "urls.*", fmt.Sprintf("http://host/%s/path2", assetNameAttribute)),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.1.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -266,6 +286,18 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"tags.1.value":      "tagvalue2",
 						"tags.2.key":        "tagkey2",
 						"tags.2.value":      "tagvalue1",
+
+						"mtls.#":                  "2",
+						"mtls.0.filename":         "newfile.crt",
+						"mtls.0.certificate_type": ".der",
+						"mtls.0.data":             "new cert data",
+						"mtls.0.type":             "server",
+						"mtls.0.enable":           "true",
+						"mtls.1.filename":         "newfile2.p12",
+						"mtls.1.certificate_type": ".p12",
+						"mtls.1.data":             "new cert data2",
+						"mtls.1.type":             "client",
+						"mtls.1.enable":           "false",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -280,6 +312,12 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.0.id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.1.id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "tags.2.id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.enable_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -343,6 +381,13 @@ resource "inext_web_app_asset" %[1]q {
 	tags {
 		key   = "tagkey1"
 		value = "tagvalue1"
+	}
+	mtls {
+		filename = "cert.pem"
+		certificate_type = ".pem"
+		data	 = "cert data"
+		type = "client"
+		enable = true
 	}
 }
 
@@ -483,6 +528,13 @@ resource "inext_web_app_asset" %[1]q {
 	tags {
 	  key   = "tagkey2"
 	  value = "tagvalue2"
+	}
+	mtls {
+		filename = "cert.der"
+		certificate_type = ".der"
+		data	 = "cert data"
+		type = "client"
+		enable = true
 	}
 }
 
@@ -661,6 +713,20 @@ resource "inext_web_app_asset" %[1]q {
 	tags {
 	  key   = "tagkey3"
 	  value = "tagvalue3"
+	}
+	mtls {
+		filename = "newfile.crt"
+		certificate_type = ".der"
+		data	 = "new cert data"
+		type = "server"
+		enable = true
+	}
+	mtls {
+		filename = "newfile2.p12"
+		certificate_type = ".p12"
+		data	 = "new cert data2"
+		type = "client"
+		enable = false
 	}
 }
 

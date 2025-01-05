@@ -29,12 +29,12 @@ type CreateExceptionBehaviorInput struct {
 	Exceptions ExceptionObjectInputs `json:"exceptions,omitempty"`
 }
 
-// ToIndicatorsMap converts a models.ExceptionObjectInput to a map from an exception match to the exception object struct itself
-func (inputs ExceptionObjectInputs) ToIndicatorsMap() map[string]ExceptionObjectInput {
-	ret := make(map[string]ExceptionObjectInput)
-	for _, input := range inputs {
-		ret[input.Match] = input
-	}
-
-	return ret
-}
+//// ToIndicatorsMap converts a models.ExceptionObjectInput to a map from an exception match to the exception object struct itself
+//func (inputs ExceptionObjectInputs) ToIndicatorsMap() map[string]ExceptionObjectInput {
+//	ret := make(map[string]ExceptionObjectInput)
+//	for _, input := range inputs {
+//		ret[input.Match] = input
+//	}
+//
+//	return ret
+//}

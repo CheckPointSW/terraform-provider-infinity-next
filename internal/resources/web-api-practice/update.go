@@ -95,5 +95,5 @@ func parseSchemaValidation(validation any) []models.UpdateSchemaValidationInput 
 
 func parseSchemaFileSecurity(schemaFileSecurity any) []models.UpdateWebApplicationFileSecurityInput {
 	input := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaFileSecurity), mapToFileSecurityInput)
-	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateWebApplicationFileSecurityInput, models.WebApplicationFileSecurityInput])
+	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateWebApplicationFileSecurityInput, models.WebAPIFileSecurityInput])
 }

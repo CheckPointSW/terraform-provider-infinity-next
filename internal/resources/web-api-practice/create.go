@@ -164,8 +164,8 @@ func mapToSchemaValidationInput(schemaValidationFromResourceData any) models.Sch
 	}
 }
 
-func mapToFileSecurityInput(fileSecurityMap map[string]any) models.WebApplicationFileSecurityInput {
-	return models.WebApplicationFileSecurityInput{
+func mapToFileSecurityInput(fileSecurityMap map[string]any) models.WebAPIFileSecurityInput {
+	return models.WebAPIFileSecurityInput{
 		SeverityLevel:             fileSecurityMap["severity_level"].(string),
 		HighConfidence:            fileSecurityMap["high_confidence"].(string),
 		MediumConfidence:          fileSecurityMap["medium_confidence"].(string),

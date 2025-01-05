@@ -30,7 +30,7 @@ type IPSInput struct {
 	LowConfidence       string `json:"lowConfidence,omitempty"`
 }
 
-type WebApplicationFileSecurityInput struct {
+type WebAPIFileSecurityInput struct {
 	ID                        string `json:"id,omitempty"`
 	SeverityLevel             string `json:"severityLevel,omitempty"`
 	HighConfidence            string `json:"highConfidence,omitempty"`
@@ -51,10 +51,10 @@ type WebApplicationFileSecurityInput struct {
 
 // CreateWebAPIPracticeInput represents the api input for creating a web API practice
 type CreateWebAPIPracticeInput struct {
-	Name             string                          `json:"name"`
-	Visibility       string                          `json:"visibility,omitempty"`
-	IPS              IPSInput                        `json:"IPS,omitempty"`
-	APIAttacks       APIAttacksInput                 `json:"APIAttacks,omitempty"`
-	SchemaValidation SchemaValidationInput           `json:"SchemaValidation,omitempty"`
-	FileSecurity     WebApplicationFileSecurityInput `json:"FileSecurity,omitempty"`
+	Name             string                  `json:"name"`
+	Visibility       string                  `json:"visibility,omitempty"`
+	IPS              IPSInput                `json:"IPS,omitempty"`
+	APIAttacks       APIAttacksInput         `json:"APIAttacks,omitempty"`
+	SchemaValidation SchemaValidationInput   `json:"SchemaValidation,omitempty"`
+	FileSecurity     WebAPIFileSecurityInput `json:"FileSecurity,omitempty"`
 }
