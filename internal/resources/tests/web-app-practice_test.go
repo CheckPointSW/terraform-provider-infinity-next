@@ -109,7 +109,7 @@ func TestAccWebAppPracticeBasic(t *testing.T) {
 						"web_bot.0.inject_uris_ids.#":                       "2",
 						"web_bot.#":                                         "1",
 						"default":                                           "false",
-						"%":                                                 "8",
+						"%":                                                 "10",
 						"web_attacks.0.advanced_setting.0.illegal_http_methods": "true",
 						"web_attacks.0.advanced_setting.0.url_size":             "1000",
 						"web_attacks.0.advanced_setting.0.body_size":            "1000",

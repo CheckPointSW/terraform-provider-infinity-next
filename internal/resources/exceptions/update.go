@@ -25,38 +25,10 @@ func UpdateExceptionBehaviorInputFromResourceData(d *schema.ResourceData) (model
 	}
 
 	if oldExceptions, newExceptions, hasChange := utils.GetChangeWithParse(d, "exception", parseSchemaExceptions); hasChange {
-		oldExceptionsIndicators := oldExceptions.ToIndicatorsMap()
-		for _, newException := range newExceptions {
-			// if key does not exist then this is a new Exception to add
-			if _, ok := oldExceptionsIndicators[newException.Match]; !ok {
-				res.AddExceptions = append(res.AddExceptions, models.AddExceptionObjectInput{
-					Match:   newException.Match,
-					Actions: newException.Actions,
-					Comment: newException.Comment,
-				})
-
-			}
-
-			// we know the key exist
-			// if the value is different - update the Exception
-			oldException := oldExceptionsIndicators[newException.Match]
-			actionsToAdd, actionsToRemove := utils.SlicesDiff(oldException.Actions, newException.Actions)
-			res.UpdateExceptions = append(res.UpdateExceptions, models.ExceptionObjectActionUpdate{
-				ID:            newException.ID,
-				Match:         newException.Match,
-				AddActions:    actionsToAdd,
-				RemoveActions: actionsToRemove,
-				UpdateActions: models.UpdateExceptionsObjectInputs{},
-				Comment:       newException.Comment,
-			})
-		}
-
-		newExceptionsIndicators := newExceptions.ToIndicatorsMap()
-		for _, oldException := range oldExceptions {
-			if _, ok := newExceptionsIndicators[oldException.ID]; !ok {
-				res.RemoveExceptions = append(res.RemoveExceptions, oldException.ID)
-			}
-		}
+		exceptionsToAdd, exceptionsToRemove := utils.SlicesDiff(oldExceptions, newExceptions)
+		res.AddExceptions = utils.Map(exceptionsToAdd, utils.MustUnmarshalAs[models.AddExceptionObjectInput, models.ExceptionObjectInput])
+		res.RemoveExceptions = utils.Map(exceptionsToRemove, func(toRemove models.ExceptionObjectInput) string { return toRemove.ID })
+		res.UpdateExceptions = models.ExceptionObjectActionsUpdate{}
 	}
 
 	return res, nil
