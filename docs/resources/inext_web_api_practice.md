@@ -16,8 +16,8 @@ Practice for securing a web API
 terraform {
   required_providers {
     inext = {
-      source  = "CheckPointSW/infinity-next"
-      version = "1.0.3"
+      source = "CheckPointSW/infinity-next"
+      version = "~>1.1.0"
     }
   }
 }
@@ -29,14 +29,15 @@ provider "inext" {
 }
 
 resource "inext_web_api_practice" "my-webapi-practice" {
-  name = "some name"
+  name       = "some name"
+  visibility = "Shared" # enum of ["Shared", "Local"]
   ips {
-    performance_impact    = "MediumOrLower" # enum of ["LowOrLower", "MediumOrLower", "HighOrLower"]
-    severity_level        = "LowOrAbove"    # enum of ["LowOrAbove", "MediumOrAbove", "HighOrAbove", "Critical"]
-    protections_from_year = "2020"          # enum of ["1999", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020"]
-    high_confidence       = "Prevent"       # enum of ["Detect", "Prevent", "Inactive"]
-    medium_confidence     = "Detect"        # enum of ["Detect", "Prevent", "Inactive"]
-    low_confidence        = "Inactive"      # enum of ["Detect", "Prevent", "Inactive"]
+    performance_impact    = "MediumOrLower"       # enum of ["LowOrLower", "MediumOrLower", "HighOrLower"]
+    severity_level        = "LowOrAbove"          # enum of ["LowOrAbove", "MediumOrAbove", "HighOrAbove", "Critical"]
+    protections_from_year = "2020"                # enum of ["1999", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020"]
+    high_confidence       = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    medium_confidence     = "Detect"              # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    low_confidence        = "Inactive"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
   }
   api_attacks {
     minimum_severity = "Critical" # enum of ["Critical", "High", "Medium"]
@@ -52,6 +53,23 @@ resource "inext_web_api_practice" "my-webapi-practice" {
     filename = basename(data.local_file.schema_validation_file.filename)
     data     = data.local_file.schema_validation_file.content
   }
+  file_security {
+    severity_level               = "LowOrAbove"          # enum of ["LowOrAbove", "MediumOrAbove", "HighOrAbove", "Critical"]
+    high_confidence              = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    medium_confidence            = "Detect"              # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    low_confidence               = "Inactive"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    allow_file_size_limit        = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    file_size_limit              = 10
+    file_size_limit_unit         = "MB"                  # enum of ["Bytes","KB", "MB", "GB"]
+    file_without_name            = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    required_archive_extraction  = true
+    archive_file_size_limit      = 100
+    archive_file_size_limit_unit = "MB"                  # enum of ["Bytes","KB", "MB", "GB"]
+    allow_archive_within_archive = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    allow_an_unopened_archive    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    allow_file_type              = true
+    required_threat_emulation    = true
+  }
 }
 ```
 
@@ -65,8 +83,10 @@ resource "inext_web_api_practice" "my-webapi-practice" {
 ### Optional
 
 - `api_attacks` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--api_attacks))
+- `file_security` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--file_security))
 - `ips` (Block Set, Max: 1) IPS protection (see [below for nested schema](#nestedblock--ips))
 - `schema_validation` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--schema_validation))
+- `visibility` (String) The visibility of the resource, Shared or Local
 
 ### Read-Only
 
@@ -104,14 +124,40 @@ Read-Only:
 
 
 
+<a id="nestedblock--file_security"></a>
+### Nested Schema for `file_security`
+
+Optional:
+
+- `allow_an_unopened_archive` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `allow_archive_within_archive` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `allow_file_size_limit` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `allow_file_type` (Boolean)
+- `archive_file_size_limit` (Number)
+- `archive_file_size_limit_unit` (String) Bytes, KB, MB or GB
+- `file_size_limit` (Number)
+- `file_size_limit_unit` (String) Bytes, KB, MB or GB
+- `file_without_name` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `high_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `low_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `medium_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `required_archive_extraction` (Boolean)
+- `required_threat_emulation` (Boolean)
+- `severity_level` (String) LowOrAbove, MediumOrAbove, HighOrAbove or Critical
+
+Read-Only:
+
+- `id` (String) The ID of this resource.
+
+
 <a id="nestedblock--ips"></a>
 ### Nested Schema for `ips`
 
 Optional:
 
-- `high_confidence` (String) Detect, Prevent or Inactive
-- `low_confidence` (String) Detect, Prevent or Inactive
-- `medium_confidence` (String) Detect, Prevent or Inactive
+- `high_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `low_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `medium_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
 - `performance_impact` (String) The performance impact: LowOrLower, MediumOrLower or HighOrLower
 - `protections_from_year` (String) The year to apply protections from: 1999, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020
 - `severity_level` (String) The severity level: LowOrAbove, MediumOrAbove, HighOrAbove or Critical
@@ -127,10 +173,15 @@ Read-Only:
 Required:
 
 - `data` (String, Sensitive)
-- `filename` (String)
+- `name` (String)
+
+Optional:
+
+- `is_file_exist` (Boolean)
 
 Read-Only:
 
 - `id` (String) The ID of this resource.
+- `size` (Number)
 
 

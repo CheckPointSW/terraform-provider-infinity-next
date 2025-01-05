@@ -16,8 +16,8 @@ Web API Asset
 terraform {
   required_providers {
     inext = {
-      source  = "CheckPointSW/infinity-next"
-      version = "1.0.3"
+      source = "CheckPointSW/infinity-next"
+      version = "~>1.1.0"
     }
   }
 }
@@ -29,11 +29,11 @@ provider "inext" {
 }
 
 resource "inext_web_api_asset" "my-webapi-asset" {
-  name            = "some name"
-  profiles        = [inext_appsec_gateway_profile.my-appsec-gateway-profile.id, inext_docker_profile.my-docker-profile.id, inext_embedded_profile.my-embedded-profile.id, inext_kubernetes_profile.my-kubernetes-profile.id]
-  trusted_sources = [inext_trusted_sources.my-trusted-source-behavior.id]
-  upstream_url    = "some url"
-  urls            = ["some url"]
+  name         = "some name"
+  profiles     = [inext_appsec_gateway_profile.my-appsec-gateway-profile.id, inext_docker_profile.my-docker-profile.id, inext_embedded_profile.my-embedded-profile.id, inext_kubernetes_profile.my-kubernetes-profile.id]
+  behaviors    = [inext_trusted_sources.my-trusted-source-behavior.id, inext_exceptions.my-exceptions-behavior.id]
+  upstream_url = "some url"
+  urls         = ["some url"]
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
@@ -41,9 +41,8 @@ resource "inext_web_api_asset" "my-webapi-asset" {
       WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
       Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
     }
-    id         = inext_web_api_practice.my-webapi-practice.id # required
-    triggers   = [inext_log_trigger.mytrigger.id]
-    exceptions = [inext_exceptions.my-exceptions-behavior.id]
+    id       = inext_web_api_practice.my-webapi-practice.id # required
+    triggers = [inext_log_trigger.mytrigger.id]
   }
   proxy_setting {
     key   = "some key"
@@ -52,6 +51,17 @@ resource "inext_web_api_asset" "my-webapi-asset" {
   source_identifier {
     identifier = "XForwardedFor" # enum of ["SourceIP", "XForwardedFor", "HeaderKey", "Cookie"]
     values     = ["value1", "value2"]
+  }
+  tags {
+    key   = "tagkey"
+    value = "tagvalue"
+  }
+  mtls {
+    filename         = "cert.der"
+    certificate_type = ".der"
+    data             = "cert data"
+    type             = "client"
+    enable           = true
   }
 }
 ```
@@ -66,12 +76,14 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 
 ### Optional
 
+- `behaviors` (Set of String) behaviors used by the asset
+- `mtls` (Block Set) The mTLS settings (see [below for nested schema](#nestedblock--mtls))
 - `practice` (Block Set) The practices used by the asset (see [below for nested schema](#nestedblock--practice))
 - `profiles` (Set of String) Profiles linked to the asset
 - `proxy_setting` (Block Set) Settings for the proxy (see [below for nested schema](#nestedblock--proxy_setting))
-- `source_identifier` (Block Set) Defines how the source identifier valuess of the asset are retrieved (see [below for nested schema](#nestedblock--source_identifier))
+- `source_identifier` (Block Set) Defines how the source identifier values of the asset are retrieved (see [below for nested schema](#nestedblock--source_identifier))
 - `state` (String)
-- `trusted_sources` (Set of String) Trusted sources behavior used by the asset
+- `tags` (Block Set) The tags used by the asset (see [below for nested schema](#nestedblock--tags))
 - `upstream_url` (String) The URL of the application's backend server to which the reverse proxy redirects the relevant traffic sent to the exposed URL
 
 ### Read-Only
@@ -83,12 +95,34 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 - `group` (String)
 - `id` (String, Sensitive) The ID of this resource.
 - `intelligence_tags` (String)
+- `is_shares_urls` (Boolean)
 - `kind` (String)
 - `main_attributes` (String)
 - `order` (String)
 - `read_only` (Boolean)
 - `sources` (String)
 - `urls_ids` (Set of String)
+
+<a id="nestedblock--mtls"></a>
+### Nested Schema for `mtls`
+
+Required:
+
+- `type` (String) The type of the mTLS: server or client
+
+Optional:
+
+- `certificate_type` (String) The type of the certificate file: .pem, .crt, .der, .p12, .pfx, .p7b, .p7c, .cer
+- `data` (String, Sensitive) The certificate data
+- `enable` (Boolean) Whether the mTLS is enabled
+- `filename` (String) The name of the certificate file
+
+Read-Only:
+
+- `data_id` (String)
+- `enable_id` (String)
+- `filename_id` (String)
+
 
 <a id="nestedblock--practice"></a>
 ### Nested Schema for `practice`
@@ -100,7 +134,6 @@ Required:
 
 Optional:
 
-- `exceptions` (Set of String) The exceptions used with the practice
 - `practice_wrapper_id` (String)
 - `sub_practices_modes` (Map of String) The name of the sub practice as the key and its mode as the value. Allowed modes: Detect, Prevent, Inactive, AccordingToPractice, Disabled, Learn or Active
 - `triggers` (Set of String) The triggers used with the practice
@@ -124,12 +157,25 @@ Read-Only:
 
 Optional:
 
-- `identifier` (String) The identifier of the source: SourceIP, XForwardedFor, HeaderKey or Cookie
+- `identifier` (String) The identifier of the source: SourceIP, XForwardedFor, HeaderKey, Cookie or JWTKey
 - `values` (Set of String)
 
 Read-Only:
 
 - `id` (String) The ID of this resource.
 - `values_ids` (Set of String)
+
+
+<a id="nestedblock--tags"></a>
+### Nested Schema for `tags`
+
+Required:
+
+- `key` (String)
+- `value` (String)
+
+Read-Only:
+
+- `id` (String) The ID of this resource.
 
 

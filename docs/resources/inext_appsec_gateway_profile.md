@@ -17,7 +17,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.0.3"
+      version = "1.1.0"
     }
   }
 }
@@ -65,9 +65,10 @@ resource "inext_appsec_gateway_profile" "my-appsec-gateway-profile" {
 - `reverseproxy_upstream_timeout` (Number) Sets the reverse proxy upstream timeout in seconds
 - `upgrade_mode` (String) The upgrade mode of the profile: Automatic, Manual or Scheduled.
 The default is Automatic
+- `upgrade_time_days` (Set of Number) The days of the month of the upgrade time schedule
 - `upgrade_time_duration` (Number) The duration of the upgrade in hours
 - `upgrade_time_hour` (String) The hour of the upgrade time start, for example: 10:00 or 20:00
-- `upgrade_time_schedule_type` (String) The schedule type in case upgrade mode is scheduled: DaysInWeek
+- `upgrade_time_schedule_type` (String) The schedule type in case upgrade mode is scheduled: DaysInWeek, DaysInMonth or Daily
 - `upgrade_time_week_days` (Set of String) The week days of the upgrade time schedule: Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday
 
 ### Read-Only

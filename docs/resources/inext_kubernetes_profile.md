@@ -16,8 +16,8 @@ Kubernetes profile
 terraform {
   required_providers {
     inext = {
-      version = "~> 1.0.0"
-      source  = "checkpointsw/infinitynext"
+      source = "CheckPointSW/infinity-next"
+      version = "~>1.1.0"
     }
   }
 }
@@ -46,7 +46,7 @@ resource "inext_kubernetes_profile" "my-kubernetes-profile" {
 ### Required
 
 - `name` (String) The name of the resource, also acts as its unique ID
-- `profile_sub_type` (String)
+- `profile_sub_type` (String) The sub type of the profile: (AppSec, AccessControl, Kong, Istio)
 
 ### Optional
 

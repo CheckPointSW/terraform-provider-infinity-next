@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     inext = {
-      source  = "CheckPointSW/infinity-next"
-      version = "1.0.3"
+      source = "CheckPointSW/infinity-next"
+      version = "1.1.0"
     }
   }
 }
@@ -29,7 +29,6 @@ resource "inext_web_app_asset" "prod_eu_acme" {
     }
     id       = inext_web_app_practice.eu_acme_protection.id # required
     triggers = [inext_log_trigger.log_trigger.id]
-
   }
   source_identifier {
     identifier = "HeaderKey"

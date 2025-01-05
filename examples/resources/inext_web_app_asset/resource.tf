@@ -1,8 +1,8 @@
 terraform {
   required_providers {
     inext = {
-      source  = "CheckPointSW/infinity-next"
-      version = "1.0.3"
+      source = "CheckPointSW/infinity-next"
+      version = "1.1.0"
     }
   }
 }
@@ -16,7 +16,7 @@ provider "inext" {
 resource "inext_web_app_asset" "my-webapp-asset" {
   name         = "some name"
   profiles     = [inext_appsec_gateway_profile.my-appsec-gateway-profile.id, inext_docker_profile.my-docker-profile.id, inext_embedded_profile.my-embedded-profile.id, inext_kubernetes_profile.my-kubernetes-profile.id]
-  behaviors    = [inext_trusted_sources.my-trusted-source-behavior.id, inext_exceptions.my-exceptions-behavior.id]
+  behaviors    = [inext_trusted_sources.my-trusted-source-behavior.id, inext_exceptions.my-exception-behavior.id]
   upstream_url = "some url"
   urls         = ["http://host/path"]
   practice {
@@ -36,5 +36,16 @@ resource "inext_web_app_asset" "my-webapp-asset" {
   source_identifier {
     identifier = "HeaderKey" # enum of ["SourceIP", "XForwardedFor", "HeaderKey", "Cookie"]
     values     = ["value"]
+  }
+  tags {
+    key   = "tagkey"
+    value = "tagvalue"
+  }
+  mtls {
+    filename         = "cert.der"
+    certificate_type = ".der"
+    data             = " cert data"
+    type             = "client"
+    enable           = true
   }
 }
