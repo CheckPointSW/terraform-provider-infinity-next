@@ -31,7 +31,7 @@ provider "inext" {
 resource "inext_web_app_asset" "my-webapp-asset" {
   name         = "some name"
   profiles     = [inext_appsec_gateway_profile.my-appsec-gateway-profile.id, inext_docker_profile.my-docker-profile.id, inext_embedded_profile.my-embedded-profile.id, inext_kubernetes_profile.my-kubernetes-profile.id]
-  behaviors    = [inext_trusted_sources.my-trusted-source-behavior.id, inext_exceptions.my-exception-behavior.id]
+  behaviors    = [inext_trusted_sources.my-trusted-source-behavior.id, inext_exceptions.my-exceptions-behavior.id]
   upstream_url = "some url"
   urls         = ["http://host/path"]
   practice {

@@ -104,7 +104,7 @@ func ResourceWebAppAsset() *schema.Resource {
 				},
 			},
 			"tags": {
-				Type:        schema.TypeSet,
+				Type:        schema.TypeList,
 				Description: "The tags used by the asset",
 				Optional:    true,
 				Elem: &schema.Resource{
@@ -338,8 +338,6 @@ func resourceWebAppAssetCreate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAppAsset Create", err, diags)
 	}
 
-	//fmt.Printf("created input: %v\n", createInput)
-
 	asset, err := webappasset.NewWebApplicationAsset(ctx, c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
@@ -348,8 +346,6 @@ func resourceWebAppAssetCreate(ctx context.Context, d *schema.ResourceData, meta
 
 		return utils.DiagError("unable to perform WebAppAsset Create", err, diags)
 	}
-
-	//fmt.Printf("created asset: %v\n", asset)
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
@@ -381,13 +377,9 @@ func resourceWebAppAssetRead(ctx context.Context, d *schema.ResourceData, meta a
 		return utils.DiagError("unable to perform WebAppAsset Read", err, diags)
 	}
 
-	//fmt.Printf("read asset: %v\n", asset)
-
 	if err := webappasset.ReadWebApplicationAssetToResourceData(asset, d); err != nil {
 		return utils.DiagError("unable to perform WebAppAsset Read", err, diags)
 	}
-
-	//fmt.Printf("read resource data: %v\n", d)
 
 	return diags
 }
@@ -406,8 +398,6 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 	if err != nil {
 		return utils.DiagError("unable to perform WebAppAsset Update", err, diags)
 	}
-
-	//fmt.Printf("update input: %v\n", updateInput)
 
 	result, err := webappasset.UpdateWebApplicationAsset(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
@@ -436,8 +426,6 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 		return diag.FromErr(err)
 	}
 
-	//fmt.Printf("updated asset: %v\n", asset)
-
 	if err := webappasset.ReadWebApplicationAssetToResourceData(asset, d); err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
 			diags = utils.DiagError("failed to discard changes", discardErr, diags)
@@ -445,8 +433,6 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 
 		return diag.FromErr(err)
 	}
-
-	//fmt.Printf("updated resource data: %v\n", d)
 
 	return diags
 }

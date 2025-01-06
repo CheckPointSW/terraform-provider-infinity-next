@@ -46,7 +46,7 @@ func CreateWebAPIAssetInputFromResourceData(d *schema.ResourceData) (models.Crea
 	return res, nil
 }
 
-// NewWebAPIAsset sends a request to create the WebAPIAsset and retruns the newly created asset
+// NewWebAPIAsset sends a request to create the WebAPIAsset and returns the newly created asset
 func NewWebAPIAsset(ctx context.Context, c *api.Client, input models.CreateWebAPIAssetInput) (models.WebAPIAsset, error) {
 	vars := map[string]any{"assetInput": input}
 	res, err := c.MakeGraphQLRequest(ctx, `
