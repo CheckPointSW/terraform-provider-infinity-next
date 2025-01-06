@@ -54,6 +54,7 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 			if _, ok := mTLSsSchemaMap[mTLSType]; !ok {
 				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{}
 			}
+
 			switch proxySetting.Key {
 			case mtlsClientEnable, mtlsServerEnable:
 				enable := false

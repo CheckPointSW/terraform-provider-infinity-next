@@ -49,13 +49,6 @@ type FileSchema struct {
 	Size     uint64 `json:"size,omitempty"`
 }
 
-//type OASSchema struct {
-//	Data        string `json:"data"`
-//	Name        string `json:"name"`
-//	Size        uint64 `json:"size"`
-//	IsFileExist bool   `json:"isFileExist"`
-//}
-
 type WebApplicationFileSecuritySchema struct {
 	ID                        string `json:"id,omitempty"`
 	SeverityLevel             string `json:"severity_level,omitempty"`

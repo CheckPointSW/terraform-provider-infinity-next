@@ -104,7 +104,7 @@ func ResourceWebAppAsset() *schema.Resource {
 				},
 			},
 			"tags": {
-				Type:        schema.TypeList,
+				Type:        schema.TypeSet,
 				Description: "The tags used by the asset",
 				Optional:    true,
 				Elem: &schema.Resource{

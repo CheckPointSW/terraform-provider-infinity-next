@@ -91,8 +91,6 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 						"intelligence_tags":                     "",
 						"tags.#":                                "1",
 						"tags.0.%":                              "3",
-						"tags.0.key":                            "tagkey1",
-						"tags.0.value":                          "tagvalue1",
 
 						"mtls.#":                  "1",
 						"mtls.0.filename":         "cert.pem",
@@ -197,10 +195,6 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"tags.#":                                "2",
 						"tags.0.%":                              "3",
 						"tags.1.%":                              "3",
-						"tags.0.key":                            "tagkey1",
-						"tags.0.value":                          "tagvalue1",
-						"tags.1.key":                            "tagkey2",
-						"tags.1.value":                          "tagvalue2",
 
 						"mtls.#":                  "1",
 						"mtls.0.filename":         "cert.der",
@@ -280,12 +274,6 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"tags.0.%":                              "3",
 						"tags.1.%":                              "3",
 						"tags.2.%":                              "3",
-						"tags.1.key":                            "tagkey1",
-						"tags.1.value":                          "tagvalue2",
-						"tags.2.key":                            "tagkey2",
-						"tags.2.value":                          "tagvalue1",
-						"tags.0.key":                            "tagkey3",
-						"tags.0.value":                          "tagvalue3",
 
 						"mtls.#":                  "2",
 						"mtls.0.filename":         "newfile.crt",
