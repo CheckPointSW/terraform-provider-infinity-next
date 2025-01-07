@@ -20,9 +20,11 @@ type ExceptionObjectInput struct {
 	Comment string   `json:"comment,omitempty"`
 }
 
+type ExceptionObjectInputs []ExceptionObjectInput
+
 // CreateExceptionBehaviorInput represents the api input for creating an Exception behavior object
 type CreateExceptionBehaviorInput struct {
-	Name       string                 `json:"name,omitempty"`
-	Visibility string                 `json:"visibility,omitempty"`
-	Exceptions []ExceptionObjectInput `json:"exceptions,omitempty"`
+	Name       string                `json:"name,omitempty"`
+	Visibility string                `json:"visibility,omitempty"`
+	Exceptions ExceptionObjectInputs `json:"exceptions,omitempty"`
 }

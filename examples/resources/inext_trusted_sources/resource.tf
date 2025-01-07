@@ -2,7 +2,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.0.3"
+      version = "1.1.1"
     }
   }
 }
@@ -15,6 +15,7 @@ provider "inext" {
 
 resource "inext_trusted_sources" "my-trusted-source-behavior" {
   name                = "some name"
+  visibility          = "Shared"
   min_num_of_sources  = 1
   sources_identifiers = ["identifier1", "identifier2"]
 }

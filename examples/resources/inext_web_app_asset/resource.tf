@@ -2,7 +2,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.0.3"
+      version = "1.1.1"
     }
   }
 }
@@ -36,5 +36,16 @@ resource "inext_web_app_asset" "my-webapp-asset" {
   source_identifier {
     identifier = "HeaderKey" # enum of ["SourceIP", "XForwardedFor", "HeaderKey", "Cookie"]
     values     = ["value"]
+  }
+  tags {
+    key   = "tagkey"
+    value = "tagvalue"
+  }
+  mtls {
+    filename         = "cert.der"
+    certificate_type = ".der"
+    data             = " cert data"
+    type             = "client"
+    enable           = true
   }
 }

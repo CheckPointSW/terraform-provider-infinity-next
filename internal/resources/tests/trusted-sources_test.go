@@ -22,6 +22,7 @@ func TestAccTrustedSourcesBasic(t *testing.T) {
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":               nameAttribute,
 						"min_num_of_sources": "1",
+						"visibility":         "Shared",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 					)...,
@@ -36,6 +37,7 @@ func TestAccTrustedSourcesBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                      nameAttribute,
+						"visibility":                "Local",
 						"min_num_of_sources":        "2",
 						"sources_identifiers.#":     "3",
 						"sources_identifiers_ids.#": "3",
@@ -64,6 +66,7 @@ func TestAccTrustedSourcesFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                      nameAttribute,
+						"visibility":                "Shared",
 						"min_num_of_sources":        "1",
 						"sources_identifiers.#":     "3",
 						"sources_identifiers_ids.#": "3",
@@ -84,6 +87,7 @@ func TestAccTrustedSourcesFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                      nameAttribute,
+						"visibility":                "Local",
 						"min_num_of_sources":        "2",
 						"sources_identifiers.#":     "4",
 						"sources_identifiers_ids.#": "4",
@@ -113,6 +117,7 @@ func trustedSourcesWithIdentifiersConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_trusted_sources" %[1]q {
 	name                = %[1]q
+	visibility          = "Shared"
 	min_num_of_sources  = 1
 	sources_identifiers = ["identifier1", "identifier2", "identifier3"]
 }
@@ -123,6 +128,7 @@ func trustedSourcesUpdateCreateSourceIdentifiersConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_trusted_sources" %[1]q {
 	name                = %[1]q
+	visibility          = "Local"
 	min_num_of_sources  = 2
 	sources_identifiers = ["identifier1", "identifier2", "identifier3"]
 }
@@ -133,6 +139,7 @@ func trustedSourcesUpdateSourceIdentifiersConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_trusted_sources" %[1]q {
 	name                = %[1]q
+	visibility          = "Local"
 	min_num_of_sources  = 2
 	sources_identifiers = ["identifier1", "identifier3", "identifier4", "identifier5"]
 }

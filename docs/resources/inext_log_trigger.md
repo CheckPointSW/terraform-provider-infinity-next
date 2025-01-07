@@ -17,7 +17,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.0.3"
+      version = "~>1.1.1"
     }
   }
 }
@@ -47,9 +47,11 @@ resource "inext_log_trigger" "mytrigger" {
   log_to_cef                       = false
   cef_ip_address                   = "10.0.0.1"
   cef_port_num                     = 2000
+  cef_protocol                     = "TCP" # enum of ["TCP", "UDP"]
   log_to_cloud                     = true
   log_to_syslog                    = true
   syslog_ip_address                = "10.10.10.10"
+  syslog_protocol                  = "TCP" # enum of ["TCP", "UDP"]
   syslog_port_num                  = 5004
   compliance_violations            = true
   compliance_warnings              = true
@@ -70,6 +72,9 @@ resource "inext_log_trigger" "mytrigger" {
 - `access_control_drop_events` (Boolean) Log Access Control drops
 - `cef_ip_address` (String)
 - `cef_port` (Number)
+- `cef_protocol` (String) CEF protocol: UDP or TCP
+- `compliance_violations` (Boolean)
+- `compliance_warnings` (Boolean)
 - `extend_logging` (Boolean)
 - `extend_logging_min_severity` (String) Minimum severity of events that will trigger extended logging: High or Critical
 - `log_to_agent` (Boolean)
@@ -80,6 +85,7 @@ resource "inext_log_trigger" "mytrigger" {
 - `response_code` (Boolean) Add response code to log if true
 - `syslog_ip_address` (String)
 - `syslog_port` (Number)
+- `syslog_protocol` (String) Syslog protocol: UDP or TCP
 - `threat_prevention_detect_events` (Boolean) Log Threat Prevention Prevents
 - `threat_prevention_prevent_events` (Boolean) Log Threat Prevention Detects
 - `verbosity` (String) The verbosity of the log: Standard, Minimal or Extended

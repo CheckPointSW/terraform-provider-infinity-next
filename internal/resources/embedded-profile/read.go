@@ -25,6 +25,7 @@ func ReadEmbeddedProfileToResourceData(profile models.EmbeddedProfile, d *schema
 		d.Set("upgrade_time_hour", profile.UpgradeTime.Time)
 		d.Set("upgrade_time_duration", profile.UpgradeTime.Duration)
 		d.Set("upgrade_time_week_days", profile.UpgradeTime.WeekDays)
+		d.Set("upgrade_time_days", profile.UpgradeTime.Days)
 	}
 
 	d.Set("max_number_of_agents", profile.Authentication.MaxNumberOfAgents)
@@ -67,6 +68,9 @@ func GetEmbeddedProfile(ctx context.Context, c *api.Client, id string) (models.E
 					time
 					... on ScheduleDaysInWeek {
 						weekDays
+					}
+					... on ScheduleDaysInMonth {
+						days
 					}
 				}
 				onlyDefinedApplications

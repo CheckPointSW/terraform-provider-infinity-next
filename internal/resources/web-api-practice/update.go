@@ -17,6 +17,10 @@ func UpdateWebAPIPracticeInputFromResourceData(d *schema.ResourceData) (models.U
 		updateInput.Name = newName
 	}
 
+	if _, newVisibility, hasChange := utils.MustGetChange[string](d, "visibility"); hasChange {
+		updateInput.Visibility = newVisibility
+	}
+
 	if oldIPSSlice, newIPSSlice, hasChange := utils.GetChangeWithParse(d, "ips", parseSchemaIPS); hasChange && len(newIPSSlice) > 0 {
 		if len(oldIPSSlice) > 0 {
 			newIPSSlice[0].ID = oldIPSSlice[0].ID
@@ -39,6 +43,14 @@ func UpdateWebAPIPracticeInputFromResourceData(d *schema.ResourceData) (models.U
 		}
 
 		updateInput.SchemaValidation = newSchemaValidation[0]
+	}
+
+	if oldFileSecuritySlice, newFileSecuritySlice, hasChange := utils.GetChangeWithParse(d, "file_security", parseSchemaFileSecurity); hasChange && len(newFileSecuritySlice) > 0 {
+		if len(oldFileSecuritySlice) > 0 {
+			newFileSecuritySlice[0].ID = oldFileSecuritySlice[0].ID
+		}
+
+		updateInput.FileSecurity = newFileSecuritySlice[0]
 	}
 
 	return updateInput, nil
@@ -77,6 +89,11 @@ func parseSchemaAPIAttacks(schemaAPIAttacks any) []models.UpdateAPIAttacksInput 
 }
 
 func parseSchemaValidation(validation any) []models.UpdateSchemaValidationInput {
-	input := utils.Map(utils.MustSchemaCollectionToSlice[any](validation), createSchemaValidationInput)
+	input := utils.Map(utils.MustSchemaCollectionToSlice[any](validation), mapToSchemaValidationInput)
 	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateSchemaValidationInput, models.SchemaValidationInput])
+}
+
+func parseSchemaFileSecurity(schemaFileSecurity any) []models.UpdateWebApplicationFileSecurityInput {
+	input := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaFileSecurity), mapToFileSecurityInput)
+	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateWebApplicationFileSecurityInput, models.WebAPIFileSecurityInput])
 }

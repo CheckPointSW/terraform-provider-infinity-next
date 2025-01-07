@@ -10,6 +10,19 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
+const (
+	mtlsTypeClient = "client"
+	mtlsTypeServer = "server"
+
+	mtlsClientEnable   = "isUpstreamTrustedCAFile"
+	mtlsClientData     = "upstreamTrustedCAFile"
+	mtlsClientFileName = "upstreamTrustedCAFileName"
+
+	mtlsServerEnable   = "isTrustedCAListFile"
+	mtlsServerData     = "trustedCAListFile"
+	mtlsServerFileName = "trustedCAListFileName"
+)
+
 func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (models.CreateWebApplicationAssetInput, error) {
 	var res models.CreateWebApplicationAssetInput
 
@@ -21,6 +34,13 @@ func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (mod
 	res.PracticeWrappers = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "practice"), mapToPracticeWrapperInput)
 	res.ProxySettings = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "proxy_setting"), mapToProxySettingInput)
 	res.SourceIdentifiers = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "source_identifier"), mapToSourceIdentifierInput)
+	res.Tags = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "tags"), mapToTagsInputs)
+	res.IsSharesURLs = d.Get("is_shares_urls").(bool)
+
+	var mtls models.MTLSSchemas
+	mtls = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "mtls"), mapToMTLSInput)
+
+	res.ProxySettings = mapMTLSToProxySettingInputs(mtls, res.ProxySettings)
 
 	return res, nil
 }
@@ -54,6 +74,11 @@ func NewWebApplicationAsset(ctx context.Context, c *api.Client, input models.Cre
 							profiles {
 								id
 							}
+							tags {
+								id
+								key
+								value
+							}
 							behaviors {
 								id
 							}
@@ -85,6 +110,7 @@ func NewWebApplicationAsset(ctx context.Context, c *api.Client, input models.Cre
 							mainAttributes
 							intelligenceTags
 							readOnly
+							isSharesURLs
 						}
 					}
 				`, "newWebApplicationAsset", vars)
@@ -111,15 +137,15 @@ func mapToPracticeWrapperInput(practiceWrapperMap map[string]any) models.Practic
 	practicesModesMap := make(map[string]string)
 
 	if subPracticesModes, ok := practiceWrapperMap["sub_practices_modes"]; ok {
-		for subPratice, mode := range subPracticesModes.(map[string]any) {
-			practicesModesMap[subPratice] = mode.(string)
+		for subPractice, mode := range subPracticesModes.(map[string]any) {
+			practicesModesMap[subPractice] = mode.(string)
 		}
 	}
 
 	practiceWrapper.SubPracticeModes = make([]models.PracticeModeInput, 0, len(practicesModesMap))
-	for subPratice, mode := range practicesModesMap {
+	for subPractice, mode := range practicesModesMap {
 		practiceWrapper.SubPracticeModes = append(practiceWrapper.SubPracticeModes,
-			models.PracticeModeInput{Mode: mode, SubPractice: subPratice})
+			models.PracticeModeInput{Mode: mode, SubPractice: subPractice})
 	}
 
 	if triggersInterface, ok := practiceWrapperMap["triggers"]; ok {
@@ -156,4 +182,71 @@ func mapToSourceIdentifierInput(sourceIdentifierMap map[string]any) models.Sourc
 	}
 
 	return ret
+}
+
+func mapToTagsInputs(tagsMap map[string]any) models.TagInput {
+	var ret models.TagInput
+	ret.Key, ret.Value = tagsMap["key"].(string), tagsMap["value"].(string)
+
+	if id, ok := tagsMap["id"]; ok {
+		ret.ID = id.(string)
+	}
+
+	return ret
+
+}
+
+func mapToMTLSInput(mTLSMap map[string]any) models.MTLSSchema {
+	mTLSFile, err := utils.UnmarshalAs[models.MTLSSchema](mTLSMap)
+	if err != nil {
+		fmt.Printf("Failed to convert input schema validation to MTLSSchema struct. Error: %+v", err)
+		return models.MTLSSchema{}
+	}
+
+	mTLSFile = models.NewFileSchemaEncode(mTLSFile.Filename, mTLSFile.Data, mTLSFile.Type, mTLSFile.CertificateType, mTLSFile.Enable)
+
+	if mTLSMap["filename_id"] != nil {
+		mTLSFile.FilenameID = mTLSMap["filename_id"].(string)
+	}
+
+	if mTLSMap["data_id"] != nil {
+		mTLSFile.DataID = mTLSMap["data_id"].(string)
+	}
+
+	if mTLSMap["enable_id"] != nil {
+		mTLSFile.EnableID = mTLSMap["enable_id"].(string)
+	}
+
+	return mTLSFile
+}
+
+func mapMTLSToProxySettingInputs(mTLS models.MTLSSchemas, proxySettings models.ProxySettingInputs) models.ProxySettingInputs {
+	for _, mTLSFile := range mTLS {
+		var proxySettingEnable, proxySettingData, proxySettingFileName models.ProxySettingInput
+		switch mTLSFile.Type {
+		case mtlsTypeClient:
+			proxySettingEnable.Key = mtlsClientEnable
+			proxySettingData.Key = mtlsClientData
+			proxySettingFileName.Key = mtlsClientFileName
+		case mtlsTypeServer:
+			proxySettingEnable.Key = mtlsServerEnable
+			proxySettingData.Key = mtlsServerData
+			proxySettingFileName.Key = mtlsServerFileName
+		default:
+			continue
+		}
+
+		if mTLSFile.Enable {
+			proxySettingEnable.Value = "true"
+		} else {
+			proxySettingEnable.Value = "false"
+		}
+
+		proxySettingData.Value = mTLSFile.Data
+		proxySettingFileName.Value = mTLSFile.Filename
+
+		proxySettings = append(proxySettings, proxySettingEnable, proxySettingData, proxySettingFileName)
+	}
+
+	return proxySettings
 }

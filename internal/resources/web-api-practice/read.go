@@ -18,6 +18,7 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 	d.Set("practice_type", practice.PracticeType)
 	d.Set("category", practice.Category)
 	d.Set("default", practice.Default)
+	d.Set("visibility", practice.Visibility)
 
 	ipsSchema := models.SchemaIPS{
 		ID:                  practice.IPS.ID,
@@ -81,14 +82,42 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 		ID:       practice.SchemaValidation.ID,
 		Filename: practice.SchemaValidation.OASSchema.Name,
 		Data:     decodedData,
+		Size:     practice.SchemaValidation.OASSchema.Size,
+		//IsFileExist: practice.SchemaValidation.OASSchema.IsFileExist,
 	}
 
 	schemaValidationMap, err := utils.UnmarshalAs[map[string]any](schemaValidation)
 	if err != nil {
-		return fmt.Errorf("failed to convert FileSchema struct to map. Error: %w", err)
+		return fmt.Errorf("failed to convert SchemaValidation struct to map. Error: %w", err)
 	}
 
 	d.Set("schema_validation", []map[string]any{schemaValidationMap})
+
+	fileSecurity := models.WebApplicationFileSecuritySchema{
+		ID:                        practice.FileSecurity.ID,
+		SeverityLevel:             practice.FileSecurity.SeverityLevel,
+		HighConfidence:            practice.FileSecurity.HighConfidence,
+		MediumConfidence:          practice.FileSecurity.MediumConfidence,
+		LowConfidence:             practice.FileSecurity.LowConfidence,
+		AllowFileSizeLimit:        practice.FileSecurity.AllowFileSizeLimit,
+		FileSizeLimit:             practice.FileSecurity.FileSizeLimit,
+		FileSizeLimitUnit:         practice.FileSecurity.FileSizeLimitUnit,
+		FilesWithoutName:          practice.FileSecurity.FilesWithoutName,
+		RequiredArchiveExtraction: practice.FileSecurity.RequiredArchiveExtraction,
+		ArchiveFileSizeLimit:      practice.FileSecurity.ArchiveFileSizeLimit,
+		ArchiveFileSizeLimitUnit:  practice.FileSecurity.ArchiveFileSizeLimitUnit,
+		AllowArchiveWithinArchive: practice.FileSecurity.AllowArchiveWithinArchive,
+		AllowAnUnopenedArchive:    practice.FileSecurity.AllowAnUnopenedArchive,
+		AllowFileType:             practice.FileSecurity.AllowFileType,
+		RequiredThreatEmulation:   practice.FileSecurity.RequiredThreatEmulation,
+	}
+
+	fileSecurityMap, err := utils.UnmarshalAs[map[string]any](fileSecurity)
+	if err != nil {
+		return fmt.Errorf("failed to convert FileSecurity struct to map. Error: %w", err)
+	}
+
+	d.Set("file_security", []map[string]any{fileSecurityMap})
 
 	return nil
 }
@@ -99,6 +128,7 @@ func GetWebAPIPractice(ctx context.Context, c *api.Client, id string) (models.We
 			getWebAPIPractice(id: "`+id+`") {
 				id
 				name
+				visibility
 				practiceType
 				category
 				default
@@ -128,7 +158,27 @@ func GetWebAPIPractice(ctx context.Context, c *api.Client, id string) (models.We
 					OasSchema {
 						data
 						name
+						size
+						isFileExist
 					}
+				}
+				FileSecurity {
+					id
+					severityLevel
+					highConfidence
+					mediumConfidence
+					lowConfidence
+					allowFileSizeLimit
+					fileSizeLimit
+					fileSizeLimitUnit
+					filesWithoutName
+					requiredArchiveExtraction
+					archiveFileSizeLimit
+					archiveFileSizeLimitUnit
+					allowArchiveWithinArchive
+					allowAnUnopenedArchive
+					allowFileType
+					requiredThreatEmulation
 				}
 			}
 		}

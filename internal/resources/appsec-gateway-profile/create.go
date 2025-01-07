@@ -72,6 +72,7 @@ func handleScheduledUpgradeMode(d *schema.ResourceData) models.UpgradeTimeInput 
 	res.Time = d.Get("upgrade_time_hour").(string)
 	res.Duration = d.Get("upgrade_time_duration").(int)
 	res.WeekDays = utils.MustResourceDataCollectionToSlice[string](d, "upgrade_time_week_days")
+	res.Days = utils.MustResourceDataCollectionToSlice[int](d, "upgrade_time_days")
 
 	return res
 }
@@ -103,6 +104,9 @@ func NewAppSecGatewayProfile(ctx context.Context, c *api.Client, input models.Cr
 								time
 								... on ScheduleDaysInWeek {
 									weekDays
+								}
+								... on ScheduleDaysInMonth {
+									days
 								}
 							}
 							reverseProxyUpstreamTimeout

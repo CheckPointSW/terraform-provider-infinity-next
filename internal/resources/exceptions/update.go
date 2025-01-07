@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func parseSchemaExceptions(exceptionsFromResourceData any) []models.ExceptionObjectInput {
+func parseSchemaExceptions(exceptionsFromResourceData any) models.ExceptionObjectInputs {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](exceptionsFromResourceData), mapToExceptionObjectInput)
 }
 
@@ -20,10 +20,15 @@ func UpdateExceptionBehaviorInputFromResourceData(d *schema.ResourceData) (model
 		res.Name = newName
 	}
 
+	if _, newVisibility, hasChange := utils.MustGetChange[string](d, "visibility"); hasChange {
+		res.Visibility = newVisibility
+	}
+
 	if oldExceptions, newExceptions, hasChange := utils.GetChangeWithParse(d, "exception", parseSchemaExceptions); hasChange {
 		exceptionsToAdd, exceptionsToRemove := utils.SlicesDiff(oldExceptions, newExceptions)
 		res.AddExceptions = utils.Map(exceptionsToAdd, utils.MustUnmarshalAs[models.AddExceptionObjectInput, models.ExceptionObjectInput])
 		res.RemoveExceptions = utils.Map(exceptionsToRemove, func(toRemove models.ExceptionObjectInput) string { return toRemove.ID })
+		res.UpdateExceptions = models.ExceptionObjectActionsUpdate{}
 	}
 
 	return res, nil

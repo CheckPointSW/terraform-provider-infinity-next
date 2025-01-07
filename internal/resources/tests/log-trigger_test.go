@@ -29,6 +29,10 @@ func TestAccLogTriggerBasic(t *testing.T) {
 						"extend_logging_min_severity":      "High",
 						"extend_logging":                   "true",
 						"verbosity":                        "Standard",
+						"compliance_warnings":              "true",
+						"compliance_violations":            "true",
+						"syslog_protocol":                  "UDP",
+						"cef_protocol":                     "UDP",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -65,6 +69,10 @@ func TestAccLogTriggerBasic(t *testing.T) {
 						"response_code":                    "true",
 						"syslog_ip_address":                "10.0.0.2",
 						"syslog_port":                      "82",
+						"compliance_warnings":              "false",
+						"compliance_violations":            "false",
+						"syslog_protocol":                  "TCP",
+						"cef_protocol":                     "TCP",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -89,6 +97,9 @@ resource "inext_log_trigger" %[1]q {
 	access_control_drop_events       = true
 	cef_ip_address                   = "10.0.0.1"
 	cef_port                         = 81
+	cef_protocol                     = "TCP"
+	compliance_violations            = false
+	compliance_warnings              = false
 	extend_logging                   = false
 	extend_logging_min_severity      = "Critical"
 	log_to_agent                     = true
@@ -99,6 +110,7 @@ resource "inext_log_trigger" %[1]q {
 	response_body                    = true
 	response_code                    = true
 	syslog_ip_address                = "10.0.0.2"
+	syslog_protocol                  = "TCP"
 	syslog_port                      = 82
 	threat_prevention_detect_events  = false
 	threat_prevention_prevent_events = false

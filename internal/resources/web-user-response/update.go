@@ -12,6 +12,7 @@ import (
 func UpdateWebUserResponseBehaviorInputFromResourceData(d *schema.ResourceData) (models.UpdateWebUserResponseBehaviorInput, error) {
 	var res models.UpdateWebUserResponseBehaviorInput
 	res.Name = d.Get("name").(string)
+	res.Visibility = d.Get("visibility").(string)
 	res.Mode = d.Get("mode").(string)
 	res.MessageTitle = d.Get("message_title").(string)
 	res.MessageBody = d.Get("message_body").(string)

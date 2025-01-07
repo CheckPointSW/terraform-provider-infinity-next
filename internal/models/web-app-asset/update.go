@@ -9,11 +9,11 @@ type UpdateSourceIdentifierValue struct {
 
 // UpdateSourceIdentifier represents the input for updating an existing proxy setting field of an existing WebApplicationAsset object
 type UpdateSourceIdentifier struct {
-	ID               string   `json:"id"`
-	SourceIdentifier string   `json:"sourceIdentifier"`
-	AddValues        []string `json:"addValues"`
-	RemoveValues     []string `json:"removeValues"`
-	UpdateValues     []string `json:"updateValues"`
+	ID               string                        `json:"id"`
+	SourceIdentifier string                        `json:"sourceIdentifier"`
+	AddValues        []string                      `json:"addValues"`
+	RemoveValues     []string                      `json:"removeValues"`
+	UpdateValues     []UpdateSourceIdentifierValue `json:"updateValues"`
 }
 
 // AddSourceIdentifier represents the input for adding a source identifier field to an existing WebApplicationAsset object
@@ -56,6 +56,13 @@ type AddPracticeWrapper struct {
 	Triggers         []string          `json:"triggers"`
 }
 
+type AddTag struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
+}
+
+type AddTags []AddTag
+
 // UpdateWebApplicationAssetInput represents the input for updating an existing WebApplicationAsset object
 type UpdateWebApplicationAssetInput struct {
 	Name                    string                   `json:"name,omitempty"`
@@ -65,6 +72,8 @@ type UpdateWebApplicationAssetInput struct {
 	RemoveProfiles          []string                 `json:"removeProfiles,omitempty"`
 	AddBehaviors            []string                 `json:"addBehaviors,omitempty"`
 	RemoveBehaviors         []string                 `json:"removeBehaviors,omitempty"`
+	AddTags                 AddTags                  `json:"addTags,omitempty"`
+	RemoveTags              []string                 `json:"removeTags,omitempty"`
 	State                   string                   `json:"state,omitempty"`
 	AddProxySetting         []AddProxySetting        `json:"addProxySetting,omitempty"`
 	RemoveProxySetting      []string                 `json:"removeProxySetting,omitempty"`
@@ -76,4 +85,5 @@ type UpdateWebApplicationAssetInput struct {
 	AddSourceIdentifiers    []AddSourceIdentifier    `json:"addSourceIdentifiers,omitempty"`
 	RemoveSourceIdentifiers []string                 `json:"removeSourceIdentifiers,omitempty"`
 	UpdateSourceIdentifiers []UpdateSourceIdentifier `json:"updateSourceIdentifiers,omitempty"`
+	IsSharesURLs            bool                     `json:"isSharesURLs,omitempty"`
 }

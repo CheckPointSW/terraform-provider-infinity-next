@@ -17,7 +17,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.0.3"
+      version = "~>1.1.1"
     }
   }
 }
@@ -62,6 +62,7 @@ resource "inext_exceptions" "my-exceptions-behavior" {
 ### Optional
 
 - `exception` (Block Set) Overrides AppSec ML engine decision based on match and action (see [below for nested schema](#nestedblock--exception))
+- `visibility` (String) The visibility of the exception: Shared or Local
 
 ### Read-Only
 

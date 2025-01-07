@@ -2,7 +2,6 @@ package resources
 
 import (
 	"context"
-
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	webapppractice "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-practice"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
@@ -11,7 +10,43 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
+const (
+	severityLevelLowOrAbove    = "LowOrAbove"
+	severityLevelMediumOrAbove = "MediumOrAbove"
+	severityLevelHighOrAbove   = "HighOrAbove"
+	severityLevelCritical      = "Critical"
+
+	fileSecurityModeDetect              = "Detect"
+	fileSecurityModePrevent             = "Prevent"
+	fileSecurityModeInactive            = "Inactive"
+	fileSecurityModeAccordingToPractice = "AccordingToPractice"
+
+	fileSizeUnitsBytes = "Bytes"
+	fileSizeUnitsKB    = "KB"
+	fileSizeUnitsMB    = "MB"
+	fileSizeUnitsGB    = "GB"
+
+	waapModeDisabled = "Disabled"
+	waapModeLearn    = "Learn"
+	waapModePrevent  = "Prevent"
+	waapModePractice = "AccordingToPractice"
+)
+
 func ResourceWebAppPractice() *schema.Resource {
+	validationSeverityLevel := validation.ToDiagFunc(
+		validation.StringInSlice([]string{severityLevelLowOrAbove, severityLevelMediumOrAbove, severityLevelHighOrAbove, severityLevelCritical}, false))
+	validationFileSecurityMode := validation.ToDiagFunc(
+		validation.StringInSlice([]string{fileSecurityModeDetect, fileSecurityModePrevent, fileSecurityModeInactive, fileSecurityModeAccordingToPractice}, false))
+	validationFileSizeUnits := validation.ToDiagFunc(
+		validation.StringInSlice([]string{fileSizeUnitsBytes, fileSizeUnitsKB, fileSizeUnitsMB, fileSizeUnitsGB}, false))
+	validationVisibility := validation.ToDiagFunc(
+		validation.StringInSlice([]string{visibilityShared, visibilityLocal}, false))
+	validationPerformanceImpact := validation.ToDiagFunc(
+		validation.StringInSlice([]string{performanceImpactVeryLow, performanceImpactLowOrLower, performanceImpactMediumOrLower, performanceImpactHighOrLower}, false))
+	validationMinimumSeverity := validation.ToDiagFunc(
+		validation.StringInSlice([]string{severityLevelCritical, severityLevelHigh, severityLevelMedium}, false))
+	validationWAAPMode := validation.ToDiagFunc(
+		validation.StringInSlice([]string{waapModeDisabled, waapModeLearn, waapModePrevent, waapModePractice}, false))
 	return &schema.Resource{
 		Description: "Web Application Practice",
 
@@ -32,6 +67,13 @@ func ResourceWebAppPractice() *schema.Resource {
 				Type:        schema.TypeString,
 				Description: "The name of the resource, also acts as its unique ID",
 				Required:    true,
+			},
+			"visibility": {
+				Type:             schema.TypeString,
+				Description:      "The visibility of the resource, Shared or Local",
+				Default:          "Shared",
+				Optional:         true,
+				ValidateDiagFunc: validationVisibility,
 			},
 			"practice_type": {
 				Type:     schema.TypeString,
@@ -60,17 +102,17 @@ func ResourceWebAppPractice() *schema.Resource {
 						},
 						"performance_impact": {
 							Type:             schema.TypeString,
-							Description:      "The performance impact: LowOrLower, MediumOrLower or HighOrLower",
+							Description:      "The performance impact: VeryLow, LowOrLower, MediumOrLower or HighOrLower",
 							Default:          "MediumOrLower",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"LowOrLower", "MediumOrLower", "HighOrLower"}, false)),
+							ValidateDiagFunc: validationPerformanceImpact,
 						},
 						"severity_level": {
 							Type:             schema.TypeString,
 							Description:      "The severity level: LowOrAbove, MediumOrAbove, HighOrAbove or Critical",
 							Default:          "MediumOrAbove",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"LowOrAbove", "MediumOrAbove", "HighOrAbove", "Critical"}, false)),
+							ValidateDiagFunc: validationSeverityLevel,
 						},
 						"protections_from_year": {
 							Type:        schema.TypeString,
@@ -80,57 +122,25 @@ func ResourceWebAppPractice() *schema.Resource {
 						},
 						"high_confidence": {
 							Type:             schema.TypeString,
-							Description:      "Detect, Prevent or Inactive",
-							Default:          "Prevent",
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Detect", "Prevent", "Inactive"}, false)),
+							ValidateDiagFunc: validationFileSecurityMode,
 						},
 						"medium_confidence": {
 							Type:             schema.TypeString,
-							Description:      "Detect, Prevent or Inactive",
-							Default:          "Prevent",
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Detect", "Prevent", "Inactive"}, false)),
+							ValidateDiagFunc: validationFileSecurityMode,
 						},
 						"low_confidence": {
 							Type:             schema.TypeString,
-							Description:      "Detect, Prevent or Inactive",
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
 							Default:          "Detect",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Detect", "Prevent", "Inactive"}, false)),
+							ValidateDiagFunc: validationFileSecurityMode,
 						},
-						// "advanced_policy": {
-						// 	Type:     schema.TypeSet,
-						// 	Optional: true,
-						// 	MaxItems: 1,
-						// 	Elem: &schema.Resource{
-						// 		Schema: map[string]*schema.Schema{
-						// 			"id": {
-						// 				Type:     schema.TypeString,
-						// 				Computed: true,
-						// 			},
-						// 			"filename": {
-						// 				Type:     schema.TypeString,
-						// 				Required: true,
-						// 			},
-						// 			"data": {
-						// 				Type:      schema.TypeString,
-						// 				Sensitive: true,
-						// 				Required:  true,
-						// 			},
-						// 			"size": {
-						// 				Type:     schema.TypeInt,
-						// 				Optional: true,
-						// 				Computed: true,
-						// 			},
-						// 			"override_setting": {
-						// 				Type:     schema.TypeBool,
-						// 				Default:  false,
-						// 				Optional: true,
-						// 			},
-						// 		},
-						// 	},
-						// },
 					},
 				},
 			},
@@ -150,7 +160,7 @@ func ResourceWebAppPractice() *schema.Resource {
 							Description:      "Medium, High or Critical",
 							Default:          "High",
 							Optional:         true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Critical", "High", "Medium"}, false)),
+							ValidateDiagFunc: validationMinimumSeverity,
 						},
 						"advanced_setting": {
 							Type:     schema.TypeSet,
@@ -168,21 +178,21 @@ func ResourceWebAppPractice() *schema.Resource {
 										Description:      "Prevent, AccordingToPractice, Disabled or Learn",
 										Default:          "Disabled",
 										Optional:         true,
-										ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Disabled", "Learn", "Prevent", "AccordingToPractice"}, false)),
+										ValidateDiagFunc: validationWAAPMode,
 									},
 									"open_redirect": {
 										Type:             schema.TypeString,
 										Description:      "Prevent, AccordingToPractice, Disabled or Learn",
 										Default:          "Disabled",
 										Optional:         true,
-										ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Disabled", "Learn", "Prevent", "AccordingToPractice"}, false)),
+										ValidateDiagFunc: validationWAAPMode,
 									},
 									"error_disclosure": {
 										Type:             schema.TypeString,
 										Description:      "Prevent, AccordingToPractice, Disabled or Learn",
 										Default:          "Disabled",
 										Optional:         true,
-										ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"Disabled", "Learn", "Prevent", "AccordingToPractice"}, false)),
+										ValidateDiagFunc: validationWAAPMode,
 									},
 									"body_size": {
 										Type:     schema.TypeInt,
@@ -256,6 +266,115 @@ func ResourceWebAppPractice() *schema.Resource {
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
+						},
+					},
+				},
+			},
+			"file_security": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Computed: true,
+				MaxItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"severity_level": {
+							Type:             schema.TypeString,
+							Description:      "LowOrAbove, MediumOrAbove, HighOrAbove or Critical",
+							Default:          "MediumOrAbove",
+							Optional:         true,
+							ValidateDiagFunc: validationSeverityLevel,
+						},
+						"high_confidence": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"medium_confidence": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"low_confidence": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "Detect",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"allow_file_size_limit": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"file_size_limit": {
+							Type:     schema.TypeInt,
+							Default:  10,
+							Optional: true,
+						},
+						"file_size_limit_unit": {
+							Type:             schema.TypeString,
+							Description:      "Bytes, KB, MB or GB",
+							Default:          "MB",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSizeUnits,
+						},
+						"files_without_name": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"required_archive_extraction": {
+							Type:     schema.TypeBool,
+							Default:  false,
+							Optional: true,
+						},
+						"archive_file_size_limit": {
+							Type:     schema.TypeInt,
+							Default:  10,
+							Optional: true,
+						},
+						"archive_file_size_limit_unit": {
+							Type:             schema.TypeString,
+							Description:      "Bytes, KB, MB or GB",
+							Default:          "MB",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSizeUnits,
+						},
+						"allow_archive_within_archive": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"allow_an_unopened_archive": {
+							Type:             schema.TypeString,
+							Description:      "Detect, Prevent, Inactive or AccordingToPractice",
+							Default:          "AccordingToPractice",
+							Optional:         true,
+							ValidateDiagFunc: validationFileSecurityMode,
+						},
+						"allow_file_type": {
+							Type:     schema.TypeBool,
+							Default:  false,
+							Optional: true,
+						},
+						"required_threat_emulation": {
+							Type:     schema.TypeBool,
+							Default:  false,
+							Optional: true,
 						},
 					},
 				},

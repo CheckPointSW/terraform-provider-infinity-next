@@ -16,6 +16,7 @@ func GetTrustedSourceBehavior(ctx context.Context, c *api.Client, id string) (mo
 				getTrustedSourceBehavior(id: "`+id+`") {
 					id
 					name
+					visibility
 					behaviorType
 					numOfSources
 					sourcesIdentifiers {
@@ -41,6 +42,7 @@ func GetTrustedSourceBehavior(ctx context.Context, c *api.Client, id string) (mo
 func ReadTrustedSourceBehaviorToResourceData(behavior models.TrustedSourceBehavior, d *schema.ResourceData) error {
 	d.SetId(behavior.ID)
 	d.Set("name", behavior.Name)
+	d.Set("visibility", behavior.Visibility)
 	d.Set("min_num_of_sources", behavior.NumOfSources)
 
 	sourcesIdentifiers := make([]string, len(behavior.SourcesIdentifiers))

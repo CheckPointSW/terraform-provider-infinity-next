@@ -16,8 +16,8 @@ Docker profile
 terraform {
   required_providers {
     inext = {
-      version = "~> 1.0.0"
-      source  = "checkpointsw/infinitynext"
+      source  = "CheckPointSW/infinity-next"
+      version = "~>1.1.1"
     }
   }
 }

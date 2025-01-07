@@ -17,7 +17,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.0.3"
+      version = "1.1.1"
     }
   }
 }
@@ -29,14 +29,15 @@ provider "inext" {
 }
 
 resource "inext_web_app_practice" "my-webapp-practice" {
-  name = "some name"
+  name       = "some name"
+  visibility = "Shared" # enum of ["Shared", "Local"]
   ips {
     performance_impact    = "VeryLow"    # enum of ["VeryLow", "LowOrLower", "MediumOrLower", "HighOrLower"]
     severity_level        = "LowOrAbove" # enum of ["LowOrAbove", "MediumOrAbove", "HighOrAbove", "Critical"]
     protections_from_year = "2020"       # enum of ["1999", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020"]
-    high_confidence       = "Detect"     # enum of ["Detect", "Prevent", "Inactive"]
-    medium_confidence     = "Detect"     # enum of ["Detect", "Prevent", "Inactive"]
-    low_confidence        = "Detect"     # enum of ["Detect", "Prevent", "Inactive"]
+    high_confidence       = "Detect"     # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    medium_confidence     = "Detect"     # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    low_confidence        = "Detect"     # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
   }
   web_attacks {
     minimum_severity = "Critical" # enum of ["Critical", "High", "Medium"]
@@ -55,6 +56,23 @@ resource "inext_web_app_practice" "my-webapp-practice" {
     inject_uris = ["url1", "url2"]
     valid_uris  = ["url1", "url2"]
   }
+  file_security {
+    severity_level               = "LowOrAbove"          # enum of ["LowOrAbove", "MediumOrAbove", "HighOrAbove", "Critical"]
+    high_confidence              = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    medium_confidence            = "Detect"              # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    low_confidence               = "Inactive"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    allow_file_size_limit        = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    file_size_limit              = 10
+    file_size_limit_unit         = "MB"                  # enum of ["Bytes","KB", "MB", "GB"]
+    file_without_name            = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    required_archive_extraction  = true
+    archive_file_size_limit      = 100
+    archive_file_size_limit_unit = "MB"                  # enum of ["Bytes","KB", "MB", "GB"]
+    allow_archive_within_archive = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    allow_an_unopened_archive    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    allow_file_type              = true
+    required_threat_emulation    = true
+  }
 }
 ```
 
@@ -67,7 +85,9 @@ resource "inext_web_app_practice" "my-webapp-practice" {
 
 ### Optional
 
+- `file_security` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--file_security))
 - `ips` (Block Set, Max: 1) IPS protection (see [below for nested schema](#nestedblock--ips))
+- `visibility` (String) The visibility of the resource, Shared or Local
 - `web_attacks` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--web_attacks))
 - `web_bot` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--web_bot))
 
@@ -78,16 +98,42 @@ resource "inext_web_app_practice" "my-webapp-practice" {
 - `id` (String) The ID of this resource.
 - `practice_type` (String)
 
+<a id="nestedblock--file_security"></a>
+### Nested Schema for `file_security`
+
+Optional:
+
+- `allow_an_unopened_archive` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `allow_archive_within_archive` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `allow_file_size_limit` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `allow_file_type` (Boolean)
+- `archive_file_size_limit` (Number)
+- `archive_file_size_limit_unit` (String) Bytes, KB, MB or GB
+- `file_size_limit` (Number)
+- `file_size_limit_unit` (String) Bytes, KB, MB or GB
+- `files_without_name` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `high_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `low_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `medium_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `required_archive_extraction` (Boolean)
+- `required_threat_emulation` (Boolean)
+- `severity_level` (String) LowOrAbove, MediumOrAbove, HighOrAbove or Critical
+
+Read-Only:
+
+- `id` (String) The ID of this resource.
+
+
 <a id="nestedblock--ips"></a>
 ### Nested Schema for `ips`
 
 Optional:
 
-- `high_confidence` (String) Detect, Prevent or Inactive
+- `high_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
 - `id` (String) The ID of this resource.
-- `low_confidence` (String) Detect, Prevent or Inactive
-- `medium_confidence` (String) Detect, Prevent or Inactive
-- `performance_impact` (String) The performance impact: LowOrLower, MediumOrLower or HighOrLower
+- `low_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `medium_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `performance_impact` (String) The performance impact: VeryLow, LowOrLower, MediumOrLower or HighOrLower
 - `protections_from_year` (String) The year to apply protections from: 1999, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020
 - `severity_level` (String) The severity level: LowOrAbove, MediumOrAbove, HighOrAbove or Critical
 

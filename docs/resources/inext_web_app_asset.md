@@ -17,7 +17,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.0.3"
+      version = "1.1.1"
     }
   }
 }
@@ -52,6 +52,17 @@ resource "inext_web_app_asset" "my-webapp-asset" {
     identifier = "HeaderKey" # enum of ["SourceIP", "XForwardedFor", "HeaderKey", "Cookie"]
     values     = ["value"]
   }
+  tags {
+    key   = "tagkey"
+    value = "tagvalue"
+  }
+  mtls {
+    filename         = "cert.der"
+    certificate_type = ".der"
+    data             = " cert data"
+    type             = "client"
+    enable           = true
+  }
 }
 ```
 
@@ -66,10 +77,13 @@ resource "inext_web_app_asset" "my-webapp-asset" {
 ### Optional
 
 - `behaviors` (Set of String) behaviors used by the asset
+- `mtls` (Block Set) The mutual TLS settings (see [below for nested schema](#nestedblock--mtls))
 - `practice` (Block Set) The practices used by the asset (see [below for nested schema](#nestedblock--practice))
 - `profiles` (Set of String) Profiles linked to the asset
 - `proxy_setting` (Block Set) Settings for the proxy (see [below for nested schema](#nestedblock--proxy_setting))
-- `source_identifier` (Block Set) Defines how the source identifier valuess of the asset are retrieved (see [below for nested schema](#nestedblock--source_identifier))
+- `source_identifier` (Block Set) Defines how the source identifier values of the asset are retrieved (see [below for nested schema](#nestedblock--source_identifier))
+- `state` (String)
+- `tags` (Block Set) The tags used by the asset (see [below for nested schema](#nestedblock--tags))
 - `upstream_url` (String) The URL of the application's backend server to which the reverse proxy redirects the relevant traffic sent to the exposed URL
 
 ### Read-Only
@@ -81,12 +95,34 @@ resource "inext_web_app_asset" "my-webapp-asset" {
 - `group` (String)
 - `id` (String, Sensitive) The ID of this resource.
 - `intelligence_tags` (String)
+- `is_shares_urls` (Boolean)
 - `kind` (String)
 - `main_attributes` (String)
 - `order` (String)
 - `read_only` (Boolean)
 - `sources` (String)
 - `urls_ids` (Set of String)
+
+<a id="nestedblock--mtls"></a>
+### Nested Schema for `mtls`
+
+Required:
+
+- `type` (String) The type of the mTLS - server or client
+
+Optional:
+
+- `certificate_type` (String) The type of the certificate file - .pem, .crt, .der, .p12, .pfx, .p7b, .p7c, .cer
+- `data` (String, Sensitive) The certificate data
+- `enable` (Boolean) Whether the mTLS is enabled
+- `filename` (String) The name of the certificate file
+
+Read-Only:
+
+- `data_id` (String)
+- `enable_id` (String)
+- `filename_id` (String)
+
 
 <a id="nestedblock--practice"></a>
 ### Nested Schema for `practice`
@@ -124,12 +160,25 @@ Read-Only:
 
 Optional:
 
-- `identifier` (String) The identifier of the source: SourceIP, XForwardedFor, HeaderKey or Cookie
+- `identifier` (String) The identifier of the source: SourceIP, XForwardedFor, HeaderKey Cookie or JWTKey
 - `values` (Set of String)
 
 Read-Only:
 
 - `id` (String) The ID of this resource.
 - `values_ids` (Set of String)
+
+
+<a id="nestedblock--tags"></a>
+### Nested Schema for `tags`
+
+Required:
+
+- `key` (String)
+- `value` (String)
+
+Read-Only:
+
+- `id` (String) The ID of this resource.
 
 

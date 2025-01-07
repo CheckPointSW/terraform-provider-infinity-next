@@ -20,7 +20,8 @@ func TestAccEmbeddedProfileBasic(t *testing.T) {
 				Config: embeddedProfileBasicConfig(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name": nameAttribute,
+						"name":                 nameAttribute,
+						"max_number_of_agents": "10",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -42,7 +43,7 @@ func TestAccEmbeddedProfileBasic(t *testing.T) {
 						"upgrade_time_week_days.#":   "3",
 						"max_number_of_agents":       "100",
 						"additional_settings_ids.#":  "2",
-						"%":                          "13",
+						"%":                          "14",
 						"profile_type":               "Embedded",
 						"additional_settings.%":      "2",
 						"upgrade_time_week_days.1":   "Monday",
@@ -85,7 +86,7 @@ func TestAccEmbeddedProfileFull(t *testing.T) {
 						"upgrade_time_week_days.#":   "3",
 						"max_number_of_agents":       "100",
 						"additional_settings_ids.#":  "2",
-						"%":                          "13",
+						"%":                          "14",
 						"profile_type":               "Embedded",
 						"additional_settings.%":      "2",
 						"upgrade_time_week_days.1":   "Monday",
@@ -127,7 +128,7 @@ func TestAccEmbeddedProfileFull(t *testing.T) {
 						"additional_settings_ids.#":  "3",
 						"additional_settings.Key2":   "Value11",
 						"additional_settings.Key5":   "Value5",
-						"%":                          "13",
+						"%":                          "14",
 						"upgrade_time_week_days.1":   "Sunday",
 					}),
 						resource.TestCheckTypeSetElemAttr(resourceName, "upgrade_time_week_days.*", "Monday"),
@@ -145,6 +146,7 @@ func embeddedProfileBasicConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_embedded_profile" %[1]q {
 	name = %[1]q
+	max_number_of_agents = 10
 }
 `, name)
 }

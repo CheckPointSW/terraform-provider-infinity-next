@@ -2,7 +2,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.0.3"
+      version = "~>1.1.1"
     }
   }
 }
@@ -32,9 +32,11 @@ resource "inext_log_trigger" "mytrigger" {
   log_to_cef                       = false
   cef_ip_address                   = "10.0.0.1"
   cef_port_num                     = 2000
+  cef_protocol                     = "TCP" # enum of ["TCP", "UDP"]
   log_to_cloud                     = true
   log_to_syslog                    = true
   syslog_ip_address                = "10.10.10.10"
+  syslog_protocol                  = "TCP" # enum of ["TCP", "UDP"]
   syslog_port_num                  = 5004
   compliance_violations            = true
   compliance_warnings              = true

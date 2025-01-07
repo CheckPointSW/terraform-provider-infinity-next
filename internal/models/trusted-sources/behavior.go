@@ -14,6 +14,7 @@ type TrustedSourceSource struct {
 type TrustedSourceBehavior struct {
 	ID                 string                `json:"id"`
 	Name               string                `json:"name"`
+	Visibility         string                `json:"visibility"`
 	NumOfSources       int                   `json:"numOfSources"`
 	SourcesIdentifiers []TrustedSourceSource `json:"sourcesIdentifiers,omitempty"`
 }

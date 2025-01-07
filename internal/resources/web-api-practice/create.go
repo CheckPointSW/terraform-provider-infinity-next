@@ -14,7 +14,7 @@ func CreateWebAPIPracticeInputFromResourceData(d *schema.ResourceData) (models.C
 	var res models.CreateWebAPIPracticeInput
 
 	res.Name = d.Get("name").(string)
-	res.Visibility = "Shared"
+	res.Visibility = d.Get("visibility").(string)
 	ipsSlice := utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "ips"), mapToIPSInput)
 	if len(ipsSlice) > 0 {
 		res.IPS = ipsSlice[0]
@@ -25,9 +25,14 @@ func CreateWebAPIPracticeInputFromResourceData(d *schema.ResourceData) (models.C
 		res.APIAttacks = apiAttacksSlice[0]
 	}
 
-	schemaValidationSlice := utils.Map(utils.MustResourceDataCollectionToSlice[any](d, "schema_validation"), createSchemaValidationInput)
+	schemaValidationSlice := utils.Map(utils.MustResourceDataCollectionToSlice[any](d, "schema_validation"), mapToSchemaValidationInput)
 	if len(schemaValidationSlice) > 0 {
 		res.SchemaValidation = schemaValidationSlice[0]
+	}
+
+	fileSecuritySlice := utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "file_security"), mapToFileSecurityInput)
+	if len(fileSecuritySlice) > 0 {
+		res.FileSecurity = fileSecuritySlice[0]
 	}
 
 	return res, nil
@@ -41,6 +46,7 @@ func NewWebAPIPractice(ctx context.Context, c *api.Client, input models.CreateWe
 						newWebAPIPractice(ownerId: $ownerId, subPracticeModes: $subPracticeModes, mainMode: $mainMode, practiceInput: $practiceInput) {
 							id
 							name
+							visibility
 							practiceType
 							category
 							default
@@ -70,7 +76,27 @@ func NewWebAPIPractice(ctx context.Context, c *api.Client, input models.CreateWe
 								OasSchema {
 									data
 									name
+									size
+									isFileExist
 								}
+							}
+							FileSecurity {
+								id
+								severityLevel
+								highConfidence
+								mediumConfidence
+								lowConfidence
+								allowFileSizeLimit
+								fileSizeLimit
+								fileSizeLimitUnit
+								filesWithoutName
+								requiredArchiveExtraction
+								archiveFileSizeLimit
+								archiveFileSizeLimitUnit
+								allowArchiveWithinArchive
+								allowAnUnopenedArchive
+								allowFileType
+								requiredThreatEmulation
 							}
 						}
 					}
@@ -125,8 +151,8 @@ func mapToAPIAttacksInput(apiAttacksMap map[string]any) models.APIAttacksInput {
 	return res
 }
 
-func createSchemaValidationInput(schemaValidtionFromResourceData any) models.SchemaValidationInput {
-	schemaValidation, err := utils.UnmarshalAs[models.FileSchema](schemaValidtionFromResourceData)
+func mapToSchemaValidationInput(schemaValidationFromResourceData any) models.SchemaValidationInput {
+	schemaValidation, err := utils.UnmarshalAs[models.FileSchema](schemaValidationFromResourceData)
 	if err != nil {
 		fmt.Printf("Failed to convert input schema validation to FileSchema struct. Error: %+v", err)
 		return models.SchemaValidationInput{}
@@ -135,5 +161,25 @@ func createSchemaValidationInput(schemaValidtionFromResourceData any) models.Sch
 	schemaValidation = models.NewFileSchemaEncode(schemaValidation.Filename, schemaValidation.Data)
 	return models.SchemaValidationInput{
 		OASSchema: schemaValidation.Data,
+	}
+}
+
+func mapToFileSecurityInput(fileSecurityMap map[string]any) models.WebAPIFileSecurityInput {
+	return models.WebAPIFileSecurityInput{
+		SeverityLevel:             fileSecurityMap["severity_level"].(string),
+		HighConfidence:            fileSecurityMap["high_confidence"].(string),
+		MediumConfidence:          fileSecurityMap["medium_confidence"].(string),
+		LowConfidence:             fileSecurityMap["low_confidence"].(string),
+		AllowFileSizeLimit:        fileSecurityMap["allow_file_size_limit"].(string),
+		FileSizeLimit:             fileSecurityMap["file_size_limit"].(int),
+		FileSizeLimitUnit:         fileSecurityMap["file_size_limit_unit"].(string),
+		FilesWithoutName:          fileSecurityMap["files_without_name"].(string),
+		RequiredArchiveExtraction: fileSecurityMap["required_archive_extraction"].(bool),
+		ArchiveFileSizeLimit:      fileSecurityMap["archive_file_size_limit"].(int),
+		ArchiveFileSizeLimitUnit:  fileSecurityMap["archive_file_size_limit_unit"].(string),
+		AllowArchiveWithinArchive: fileSecurityMap["allow_archive_within_archive"].(string),
+		AllowAnUnopenedArchive:    fileSecurityMap["allow_an_unopened_archive"].(string),
+		AllowFileType:             fileSecurityMap["allow_file_type"].(bool),
+		RequiredThreatEmulation:   fileSecurityMap["required_threat_emulation"].(bool),
 	}
 }

@@ -2,7 +2,6 @@ package resources
 
 import (
 	"context"
-
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/exceptions"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
@@ -77,6 +76,8 @@ func matchSchema(nestLevel int) *schema.Resource {
 }
 
 func ResourceExceptions() *schema.Resource {
+	validateVisibility := validation.ToDiagFunc(
+		validation.StringInSlice([]string{visibilityShared, visibilityLocal}, false))
 	return &schema.Resource{
 		Description: "Exceptions allows overriding the AppSec ML engine decision based on specific parameters",
 
@@ -97,6 +98,13 @@ func ResourceExceptions() *schema.Resource {
 				Type:        schema.TypeString,
 				Description: "The name of the resource, also acts as its unique ID",
 				Required:    true,
+			},
+			"visibility": {
+				Type:             schema.TypeString,
+				Description:      "The visibility of the exception: Shared or Local",
+				Default:          "Shared",
+				Optional:         true,
+				ValidateDiagFunc: validateVisibility,
 			},
 			"exception": {
 				Type:        schema.TypeSet,
