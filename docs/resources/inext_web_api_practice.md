@@ -16,8 +16,8 @@ Practice for securing a web API
 terraform {
   required_providers {
     inext = {
-      source = "CheckPointSW/infinity-next"
-      version = "~>1.1.1"
+      source  = "CheckPointSW/infinity-next"
+      version = "1.1.1"
     }
   }
 }
@@ -137,7 +137,7 @@ Optional:
 - `archive_file_size_limit_unit` (String) Bytes, KB, MB or GB
 - `file_size_limit` (Number)
 - `file_size_limit_unit` (String) Bytes, KB, MB or GB
-- `file_without_name` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `files_without_name` (String) Detect, Prevent, Inactive or AccordingToPractice
 - `high_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
 - `low_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
 - `medium_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
@@ -158,7 +158,7 @@ Optional:
 - `high_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
 - `low_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
 - `medium_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
-- `performance_impact` (String) The performance impact: LowOrLower, MediumOrLower or HighOrLower
+- `performance_impact` (String) The performance impact: VeryLow, LowOrLower, MediumOrLower or HighOrLower
 - `protections_from_year` (String) The year to apply protections from: 1999, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020
 - `severity_level` (String) The severity level: LowOrAbove, MediumOrAbove, HighOrAbove or Critical
 
@@ -178,10 +178,10 @@ Required:
 Optional:
 
 - `is_file_exist` (Boolean)
+- `size` (Number)
 
 Read-Only:
 
 - `id` (String) The ID of this resource.
-- `size` (Number)
 
 

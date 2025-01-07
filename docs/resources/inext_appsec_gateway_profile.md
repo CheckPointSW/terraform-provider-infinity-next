@@ -3,12 +3,12 @@
 page_title: "inext_appsec_gateway_profile Resource - terraform-provider-infinity-next"
 subcategory: ""
 description: |-
-  CloudGuard Application Security Gateway profile is deployed as a VM that runs on a Check Point Gaia OS with a reverse proxy and Check Point Nano-Agent
+  CloudGuard Application Security Gateway profile is deployed as a VM that runs on a Check Point Gaia OS with a reverse proxy and Check Point Nano-Agent.
 ---
 
 # inext_appsec_gateway_profile (Resource)
 
-CloudGuard Application Security Gateway profile is deployed as a VM that runs on a Check Point Gaia OS with a reverse proxy and Check Point Nano-Agent
+CloudGuard Application Security Gateway profile is deployed as a VM that runs on a Check Point Gaia OS with a reverse proxy and Check Point Nano-Agent.
 
 ## Example Usage
 

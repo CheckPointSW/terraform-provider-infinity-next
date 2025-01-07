@@ -16,8 +16,8 @@ Web Application Asset
 terraform {
   required_providers {
     inext = {
-      source = "CheckPointSW/infinity-next"
-      version = "~>1.1.1"
+      source  = "CheckPointSW/infinity-next"
+      version = "1.1.1"
     }
   }
 }
@@ -77,7 +77,7 @@ resource "inext_web_app_asset" "my-webapp-asset" {
 ### Optional
 
 - `behaviors` (Set of String) behaviors used by the asset
-- `mtls` (Block Set) The mTLS settings (see [below for nested schema](#nestedblock--mtls))
+- `mtls` (Block Set) The mutual TLS settings (see [below for nested schema](#nestedblock--mtls))
 - `practice` (Block Set) The practices used by the asset (see [below for nested schema](#nestedblock--practice))
 - `profiles` (Set of String) Profiles linked to the asset
 - `proxy_setting` (Block Set) Settings for the proxy (see [below for nested schema](#nestedblock--proxy_setting))
@@ -112,7 +112,7 @@ Required:
 
 Optional:
 
-- `certificate_type` (String) The type of the certificate file: .pem, .crt, .der, .p12, .pfx, .p7b, .p7c, .cer
+- `certificate_type` (String) The type of the certificate file - .pem, .crt, .der, .p12, .pfx, .p7b, .p7c, .cer
 - `data` (String, Sensitive) The certificate data
 - `enable` (Boolean) Whether the mTLS is enabled
 - `filename` (String) The name of the certificate file
@@ -160,7 +160,7 @@ Read-Only:
 
 Optional:
 
-- `identifier` (String) The identifier of the source: SourceIP, XForwardedFor, HeaderKey or Cookie or JWTKey
+- `identifier` (String) The identifier of the source: SourceIP, XForwardedFor, HeaderKey Cookie or JWTKey
 - `values` (Set of String)
 
 Read-Only:

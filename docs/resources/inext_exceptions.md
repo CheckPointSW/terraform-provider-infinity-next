@@ -16,7 +16,7 @@ Exceptions allows overriding the AppSec ML engine decision based on specific par
 terraform {
   required_providers {
     inext = {
-      source = "CheckPointSW/infinity-next"
+      source  = "CheckPointSW/infinity-next"
       version = "~>1.1.1"
     }
   }

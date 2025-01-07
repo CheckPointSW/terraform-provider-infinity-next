@@ -16,8 +16,8 @@ Web Application Practice
 terraform {
   required_providers {
     inext = {
-      source = "CheckPointSW/infinity-next"
-      version = "~>1.1.1"
+      source  = "CheckPointSW/infinity-next"
+      version = "1.1.1"
     }
   }
 }
@@ -87,7 +87,7 @@ resource "inext_web_app_practice" "my-webapp-practice" {
 
 - `file_security` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--file_security))
 - `ips` (Block Set, Max: 1) IPS protection (see [below for nested schema](#nestedblock--ips))
-- `visibility` (String) The visibility of the resource: Shared or Local
+- `visibility` (String) The visibility of the resource, Shared or Local
 - `web_attacks` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--web_attacks))
 - `web_bot` (Block Set, Max: 1) (see [below for nested schema](#nestedblock--web_bot))
 
@@ -111,7 +111,7 @@ Optional:
 - `archive_file_size_limit_unit` (String) Bytes, KB, MB or GB
 - `file_size_limit` (Number)
 - `file_size_limit_unit` (String) Bytes, KB, MB or GB
-- `file_without_name` (String) Detect, Prevent, Inactive or AccordingToPractice
+- `files_without_name` (String) Detect, Prevent, Inactive or AccordingToPractice
 - `high_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
 - `low_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
 - `medium_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
@@ -129,11 +129,11 @@ Read-Only:
 
 Optional:
 
-- `high_confidence` (String) Detect, Prevent, Inactive, or AccordingToPractice
+- `high_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
 - `id` (String) The ID of this resource.
 - `low_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
 - `medium_confidence` (String) Detect, Prevent, Inactive or AccordingToPractice
-- `performance_impact` (String) The performance impact: LowOrLower, MediumOrLower or HighOrLower
+- `performance_impact` (String) The performance impact: VeryLow, LowOrLower, MediumOrLower or HighOrLower
 - `protections_from_year` (String) The year to apply protections from: 1999, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020
 - `severity_level` (String) The severity level: LowOrAbove, MediumOrAbove, HighOrAbove or Critical
 

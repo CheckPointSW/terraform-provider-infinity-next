@@ -16,8 +16,8 @@ Web API Asset
 terraform {
   required_providers {
     inext = {
-      source = "CheckPointSW/infinity-next"
-      version = "~>1.1.1"
+      source  = "CheckPointSW/infinity-next"
+      version = "1.1.1"
     }
   }
 }
@@ -77,7 +77,7 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 ### Optional
 
 - `behaviors` (Set of String) behaviors used by the asset
-- `mtls` (Block Set) The mTLS settings (see [below for nested schema](#nestedblock--mtls))
+- `mtls` (Block Set) The MTLS settings (see [below for nested schema](#nestedblock--mtls))
 - `practice` (Block Set) The practices used by the asset (see [below for nested schema](#nestedblock--practice))
 - `profiles` (Set of String) Profiles linked to the asset
 - `proxy_setting` (Block Set) Settings for the proxy (see [below for nested schema](#nestedblock--proxy_setting))
@@ -108,11 +108,11 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 
 Required:
 
-- `type` (String) The type of the mTLS: server or client
+- `type` (String) The type of the mTLS - server or client
 
 Optional:
 
-- `certificate_type` (String) The type of the certificate file: .pem, .crt, .der, .p12, .pfx, .p7b, .p7c, .cer
+- `certificate_type` (String) The type of the certificate file - .pem, .crt, .der, .p12, .pfx, .p7b, .p7c, .cer
 - `data` (String, Sensitive) The certificate data
 - `enable` (Boolean) Whether the mTLS is enabled
 - `filename` (String) The name of the certificate file

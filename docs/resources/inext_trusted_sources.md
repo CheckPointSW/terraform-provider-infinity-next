@@ -3,12 +3,12 @@
 page_title: "inext_trusted_sources Resource - terraform-provider-infinity-next"
 subcategory: ""
 description: |-
-  Trusted sources that serve as a baseline for comparison for "benign" behavior, and how many users or addresses must exhibit similar activity for it to be considered "benign" by the learning model
+  Trusted sources that serve as a baseline for comparison for benign behavior, and how many users or addresses must exhibit similar activity for it to be considered bengin by the learning model
 ---
 
 # inext_trusted_sources (Resource)
 
-Trusted sources that serve as a baseline for comparison for "benign" behavior, and how many users or addresses must exhibit similar activity for it to be considered "bengin" by the learning model
+Trusted sources that serve as a baseline for comparison for benign behavior, and how many users or addresses must exhibit similar activity for it to be considered bengin by the learning model
 
 ## Example Usage
 
@@ -16,8 +16,8 @@ Trusted sources that serve as a baseline for comparison for "benign" behavior, a
 terraform {
   required_providers {
     inext = {
-      source = "CheckPointSW/infinity-next"
-      version = "~>1.1.1"
+      source  = "CheckPointSW/infinity-next"
+      version = "1.1.1"
     }
   }
 }
@@ -41,13 +41,13 @@ resource "inext_trusted_sources" "my-trusted-source-behavior" {
 
 ### Required
 
-- `min_num_of_sources` (Number) Minimum number of users or addresses that must exhibit similar activity for the behavior to be considered "benign"
+- `min_num_of_sources` (Number) Minimum number of users or addresses that must exhibit similar activity for the behavior to be considered benign
 - `name` (String) The name of the resource, also acts as its unique ID
 
 ### Optional
 
 - `sources_identifiers` (Set of String) The trusted sources identifier values
-- `visibility` (String) The visibility of the resource: Shared or Local
+- `visibility` (String) The visibility of the resource - Shared or Local
 
 ### Read-Only
 
