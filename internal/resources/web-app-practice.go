@@ -502,7 +502,7 @@ func resourceWebAppPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 
 	if usedBy != nil {
 		for _, usedByResource := range usedBy {
-			if usedByResource.ObjectStatus == "Deleted" {
+			if usedByResource.ObjectStatus == "Deleted" || usedByResource.Type == "Wrapper" {
 				continue
 			}
 
