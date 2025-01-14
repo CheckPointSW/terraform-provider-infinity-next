@@ -3,6 +3,8 @@ package resources
 import (
 	"context"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
+	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
+	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
 	webapppractice "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-practice"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
@@ -492,6 +494,35 @@ func resourceWebAppPracticeUpdate(ctx context.Context, d *schema.ResourceData, m
 func resourceWebAppPracticeDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
+
+	usedBy, err := webapppractice.UsedByWebApplicationPractice(ctx, c, d.Id())
+	if err != nil {
+		return utils.DiagError("unable to perform WebAppPractice Delete", err, diags)
+	}
+
+	if usedBy != nil {
+		for _, usedByResource := range usedBy {
+			objectToUpdate, err := webappasset.GetWebApplicationAsset(ctx, c, usedByResource.ID)
+			if err != nil {
+				return utils.DiagError("unable to perform WebAppAsset Read", err, diags)
+			}
+
+			webAppAsset := models.UpdateWebApplicationAssetInput{
+				RemovePracticeWrappers: []string{d.Id()},
+			}
+
+			updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, objectToUpdate.ID, webAppAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("unable to perform WebAppPractice Delete", err, diags)
+			}
+
+		}
+
+	}
 
 	result, err := webapppractice.DeleteWebApplicationPractice(ctx, c, d.Id())
 	if err != nil || !result {

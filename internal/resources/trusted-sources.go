@@ -2,6 +2,10 @@ package resources
 
 import (
 	"context"
+	webAPIModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
+	webAppModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
+	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
+	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -185,6 +189,58 @@ func resourceTrustedSourcesUpdate(ctx context.Context, d *schema.ResourceData, m
 func resourceTrustedSourcesDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
+
+	usedBy, err := trustedsources.UsedByTrustedSourceBehavior(ctx, c, d.Id())
+	if err != nil {
+		return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+	}
+
+	if usedBy != nil {
+		for _, usedByResource := range usedBy {
+			switch usedByResource.SubType {
+			case "WebAPI":
+				objectToUpdate, err := webapiasset.GetWebAPIAsset(ctx, c, usedByResource.ID)
+				if err != nil {
+					return utils.DiagError("unable to perform WebAPIAsset Read", err, diags)
+				}
+
+				webAPIAsset := webAPIModels.UpdateWebAPIAssetInput{
+					RemovePracticeWrappers: []string{d.Id()},
+				}
+
+				updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, objectToUpdate.ID, webAPIAsset)
+				if err != nil || !updated {
+					if _, discardErr := c.DiscardChanges(); discardErr != nil {
+						diags = utils.DiagError("failed to discard changes", discardErr, diags)
+					}
+
+					return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+				}
+
+			case "WebApplication":
+				objectToUpdate, err := webappasset.GetWebApplicationAsset(ctx, c, usedByResource.ID)
+				if err != nil {
+					return utils.DiagError("unable to perform WebApplicationAsset Read", err, diags)
+				}
+
+				webAppAsset := webAppModels.UpdateWebApplicationAssetInput{
+					RemovePracticeWrappers: []string{d.Id()},
+				}
+
+				updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, objectToUpdate.ID, webAppAsset)
+				if err != nil || !updated {
+					if _, discardErr := c.DiscardChanges(); discardErr != nil {
+						diags = utils.DiagError("failed to discard changes", discardErr, diags)
+					}
+
+					return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+				}
+
+			default:
+				return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+			}
+		}
+	}
 
 	result, err := trustedsources.DeleteTrustedSourceBehavior(ctx, c, d.Id())
 	if err != nil || !result {

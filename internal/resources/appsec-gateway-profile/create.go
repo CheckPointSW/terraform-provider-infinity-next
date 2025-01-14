@@ -97,6 +97,13 @@ func NewAppSecGatewayProfile(ctx context.Context, c *api.Client, input models.Cr
 								key
 								value
 							}
+							usedBy {
+								id
+								name
+								type
+								subType
+								objectStatus
+							}	
 							upgradeMode
 							upgradeTime {
 								scheduleType

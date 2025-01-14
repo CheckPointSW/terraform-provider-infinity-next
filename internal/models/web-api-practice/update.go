@@ -48,3 +48,13 @@ type UpdatePracticeInput struct {
 	SchemaValidation UpdateSchemaValidationInput           `json:"SchemaValidation,omitempty"`
 	FileSecurity     UpdateWebApplicationFileSecurityInput `json:"FileSecurity,omitempty"`
 }
+
+type DisplayObject struct {
+	ID           string `json:"id,omitempty"`
+	Name         string `json:"name,omitempty"`
+	Type         string `json:"type,omitempty"`
+	SubType      string `json:"subType,omitempty"`
+	ObjectStatus string `json:"objectStatus,omitempty"`
+}
+
+type DisplayObjects []DisplayObject

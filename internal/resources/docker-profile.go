@@ -2,6 +2,10 @@ package resources
 
 import (
 	"context"
+	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
+	webAppAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
+	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
+	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	dockerprofile "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/docker-profile"
@@ -180,6 +184,56 @@ func resourceDockerProfileUpdate(ctx context.Context, d *schema.ResourceData, me
 func resourceDockerProfileDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
+
+	profile, err := dockerprofile.GetDockerProfile(ctx, c, d.Id())
+	if err != nil {
+		return utils.DiagError("failed get DockerProfile before delete", err, diags)
+	}
+
+	for _, usedByResource := range profile.UsedBy {
+		switch usedByResource.SubType {
+		case "WebAPI":
+			objectToUpdate, err := webapiasset.GetWebAPIAsset(ctx, c, usedByResource.ID)
+			if err != nil {
+				return utils.DiagError("failed get WebAPIAsset before update", err, diags)
+			}
+
+			webAPIAssert := webAPIAssetModels.UpdateWebAPIAssetInput{
+				RemovePracticeWrappers: []string{d.Id()},
+			}
+
+			updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, objectToUpdate.ID, webAPIAssert)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("unable to perform DockerProfile Delete", err, diags)
+			}
+
+		case "WebApplication":
+			objectToUpdate, err := webappasset.GetWebApplicationAsset(ctx, c, usedByResource.ID)
+			if err != nil {
+				return utils.DiagError("failed get WebAppAsset before update", err, diags)
+			}
+
+			webAPIAsset := webAppAssetModels.UpdateWebApplicationAssetInput{
+				RemovePracticeWrappers: []string{d.Id()},
+			}
+
+			updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, objectToUpdate.ID, webAPIAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("unable to perform DockerProfile Delete", err, diags)
+			}
+
+		default:
+			return utils.DiagError("failed to update usedByResource", err, diags)
+		}
+	}
 
 	ID := d.Id()
 	result, err := dockerprofile.DeleteDockerProfile(ctx, c, ID)

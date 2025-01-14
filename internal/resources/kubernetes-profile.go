@@ -2,6 +2,10 @@ package resources
 
 import (
 	"context"
+	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
+	webAppAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
+	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
+	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	kubernetesprofile "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/kubernetes-profile"
@@ -195,6 +199,57 @@ func resourceKubernetesProfileUpdate(ctx context.Context, d *schema.ResourceData
 func resourceKubernetesProfileDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
+
+	profile, err := kubernetesprofile.GetKubernetesProfile(ctx, c, d.Id())
+	if err != nil {
+		return utils.DiagError("failed get KubernetesProfile before delete", err, diags)
+	}
+
+	for _, usedByResource := range profile.UsedBy {
+		switch usedByResource.SubType {
+		case "WebAPI":
+			objectToUpdate, err := webapiasset.GetWebAPIAsset(ctx, c, usedByResource.ID)
+			if err != nil {
+				return utils.DiagError("failed get WebAPIAsset before update", err, diags)
+			}
+
+			webAPIAssert := webAPIAssetModels.UpdateWebAPIAssetInput{
+				RemovePracticeWrappers: []string{d.Id()},
+			}
+
+			updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, objectToUpdate.ID, webAPIAssert)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("unable to perform KubernetesProfile Delete", err, diags)
+			}
+
+		case "WebApplication":
+			objectToUpdate, err := webappasset.GetWebApplicationAsset(ctx, c, usedByResource.ID)
+			if err != nil {
+				return utils.DiagError("failed get WebAppAsset before update", err, diags)
+			}
+
+			webAPIAsset := webAppAssetModels.UpdateWebApplicationAssetInput{
+				RemovePracticeWrappers: []string{d.Id()},
+			}
+
+			updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, objectToUpdate.ID, webAPIAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("unable to perform KubernetesProfile Delete", err, diags)
+			}
+
+		default:
+			return utils.DiagError("failed to update usedByResource", err, diags)
+		}
+
+	}
 
 	ID := d.Id()
 	result, err := kubernetesprofile.DeleteKubernetesProfile(ctx, c, ID)

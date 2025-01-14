@@ -104,6 +104,13 @@ func NewEmbeddedProfile(ctx context.Context, c *api.Client, input models.CreateE
 								key
 								value
 							}
+							usedBy {
+								id
+								name
+								type
+								subType
+								objectStatus
+							}
 							upgradeMode
 							upgradeTime {
 								scheduleType
