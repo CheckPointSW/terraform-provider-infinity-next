@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"fmt"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
 	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
@@ -452,6 +453,8 @@ func resourceWebAPIPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 	if err != nil {
 		return utils.DiagError("unable to perform WebAPIPractice Delete", err, diags)
 	}
+
+	fmt.Printf("usedBy: %v\n", usedBy)
 
 	if usedBy != nil {
 		for _, usedByResource := range usedBy {
