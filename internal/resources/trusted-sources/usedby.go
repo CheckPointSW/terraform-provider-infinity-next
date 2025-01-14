@@ -11,8 +11,14 @@ import (
 
 func UsedByTrustedSourceBehavior(ctx context.Context, c *api.Client, id string) (models.DisplayObjects, error) {
 	res, err := c.MakeGraphQLRequest(ctx, `
-			query behaviorUsedBy($id: ID!){
-				behaviorUsedBy(id: "`+id+`")
+			{
+				behaviorUsedBy(id: "`+id+`") {
+					id
+					name
+					type
+					subType
+					objectStatus
+				}
 			}
 		`, "behaviorUsedBy")
 

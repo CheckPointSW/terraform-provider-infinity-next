@@ -11,8 +11,14 @@ import (
 
 func UsedByWebApplicationPractice(ctx context.Context, c *api.Client, id string) (models.DisplayObjects, error) {
 	res, err := c.MakeGraphQLRequest(ctx, `
-			query practiceUsedBy($id: ID!) {
-				practiceUsedBy(id: "`+id+`")
+			{
+				practiceUsedBy(id: "`+id+`") {
+					id
+					name
+					type
+					subType
+					objectStatus
+				}
 			}
 		`, "practiceUsedBy")
 
