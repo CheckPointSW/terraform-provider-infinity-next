@@ -267,6 +267,10 @@ func resourceExceptionsDelete(ctx context.Context, d *schema.ResourceData, meta 
 
 	if usedBy != nil {
 		for _, usedByResource := range usedBy {
+			if usedByResource.ObjectStatus == "Deleted" {
+				continue
+			}
+
 			switch usedByResource.SubType {
 			case "WebAPI":
 				objectToUpdate, err := webapiasset.GetWebAPIAsset(ctx, c, usedByResource.ID)

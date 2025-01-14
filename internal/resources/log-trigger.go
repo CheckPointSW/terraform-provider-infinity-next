@@ -2,9 +2,10 @@ package resources
 
 import (
 	"context"
-
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	logtrigger "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/log-trigger"
+	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
+	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -282,6 +283,52 @@ func resourceLogTriggerUpdate(ctx context.Context, d *schema.ResourceData, meta 
 func resourceLogTriggerDelete(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
+
+	usedBy, err := logtrigger.UsedByLogTrigger(ctx, c, d.Id())
+	if err != nil {
+		return utils.DiagError("failed get LogTrigger before delete", err, diags)
+	}
+
+	for _, usedByResource := range usedBy {
+		objectToUpdate, err := webapiasset.GetWebAPIAsset(ctx, c, usedByResource.Container)
+		if err == nil {
+			preparedAssetToUpdate, err := webapiasset.RemoveTriggerFromWebAPIAsset(ctx, objectToUpdate, usedByResource.Practices, d.Id())
+			if err != nil {
+				return utils.DiagError("failed to prepare asset to update", err, diags)
+			}
+
+			updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, objectToUpdate.ID, preparedAssetToUpdate)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("unable to perform WebAPIAsset Delete", err, diags)
+			}
+
+		} else {
+			objectToUpdate, err := webappasset.GetWebApplicationAsset(ctx, c, usedByResource.Container)
+			if err != nil {
+				return utils.DiagError("failed to get Container", err, diags)
+			}
+
+			preparedAssetToUpdate, err := webappasset.RemoveTriggerFromWebAppAsset(ctx, objectToUpdate, usedByResource.Practices, d.Id())
+			if err != nil {
+				return utils.DiagError("failed to prepare asset to update", err, diags)
+			}
+
+			updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, objectToUpdate.ID, preparedAssetToUpdate)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("unable to perform WebAppAsset Delete", err, diags)
+			}
+
+		}
+
+	}
 
 	ID := d.Id()
 	result, err := logtrigger.DeleteLogTrigger(ctx, c, ID)

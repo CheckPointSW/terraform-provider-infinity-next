@@ -455,9 +455,13 @@ func resourceWebAPIPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 
 	if usedBy != nil {
 		for _, usedByResource := range usedBy {
+			if usedByResource.ObjectStatus == "Deleted" {
+				continue
+			}
+
 			objectToUpdate, err := webapiasset.GetWebAPIAsset(ctx, c, usedByResource.ID)
 			if err != nil {
-				return utils.DiagError("unable to perform WebAPIAsset Read", err, diags)
+				return utils.DiagError("WebAPIPractice Delete: unable to perform WebAPIAsset Read", err, diags)
 			}
 
 			webAPIAsset := models.UpdateWebAPIAssetInput{

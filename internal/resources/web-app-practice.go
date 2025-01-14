@@ -502,9 +502,13 @@ func resourceWebAppPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 
 	if usedBy != nil {
 		for _, usedByResource := range usedBy {
+			if usedByResource.ObjectStatus == "Deleted" {
+				continue
+			}
+
 			objectToUpdate, err := webappasset.GetWebApplicationAsset(ctx, c, usedByResource.ID)
 			if err != nil {
-				return utils.DiagError("unable to perform WebAppAsset Read", err, diags)
+				return utils.DiagError("WebAppPracticeDelete: unable to perform WebAppAsset Read", err, diags)
 			}
 
 			webAppAsset := models.UpdateWebApplicationAssetInput{
