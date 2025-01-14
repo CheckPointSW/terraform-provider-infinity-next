@@ -11,10 +11,10 @@ import (
 
 func UsedByWebUserResponse(ctx context.Context, c *api.Client, id string) (models.DisplayObjects, error) {
 	res, err := c.MakeGraphQLRequest(ctx, `
-			query usedByBehavior($id: ID!){
-				usedByBehavior(id: "`+id+`")
+			query behaviorUsedBy($id: ID!){
+				behaviorUsedBy(id: "`+id+`")
 			}
-		`, "usedByBehavior")
+		`, "behaviorUsedBy")
 
 	if err != nil {
 		return nil, err
@@ -22,7 +22,7 @@ func UsedByWebUserResponse(ctx context.Context, c *api.Client, id string) (model
 
 	usedBy, err := utils.UnmarshalAs[models.DisplayObjects](res)
 	if err != nil {
-		return models.DisplayObjects{}, fmt.Errorf("failed to unmarshal usedByBehavior response: %w", err)
+		return models.DisplayObjects{}, fmt.Errorf("failed to unmarshal behaviorUsedBy response: %w", err)
 	}
 
 	return usedBy, nil
