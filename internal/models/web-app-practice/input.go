@@ -35,7 +35,7 @@ type WebApplicationPracticeIPSInput struct {
 }
 
 type FileSecurityInput struct {
-	ID                        string `json:"id,omitempty"`
+	ID                        string `json:"id"`
 	SeverityLevel             string `json:"severityLevel,omitempty"`
 	HighConfidence            string `json:"highConfidence,omitempty"`
 	MediumConfidence          string `json:"mediumConfidence,omitempty"`

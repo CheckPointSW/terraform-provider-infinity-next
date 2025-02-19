@@ -2,14 +2,17 @@ package resources
 
 import (
 	"context"
-	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
-	webAppAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
-	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
-	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
+	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
+	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/appsec-gateway-profile"
+	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
+	webAppAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
 	appsecgatewayprofile "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/appsec-gateway-profile"
+	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
+	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -258,64 +261,39 @@ func resourceAppSecGatewayProfileDelete(ctx context.Context, d *schema.ResourceD
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	profile, err := appsecgatewayprofile.GetCloudGuardAppSecGatewayProfile(ctx, c, d.Id())
-	if err != nil {
-		return utils.DiagError("failed get AppSecGatewayProfile before delete", err, diags)
-	}
-
-	for _, usedByResource := range profile.UsedBy {
-		switch usedByResource.SubType {
-		case "WebAPI":
-			objectToUpdate, err := webapiasset.GetWebAPIAsset(ctx, c, usedByResource.ID)
-			if err != nil {
-				return utils.DiagError("failed get WebAPIAsset before update", err, diags)
-			}
-
-			webAPIAssert := webAPIAssetModels.UpdateWebAPIAssetInput{
-				RemovePracticeWrappers: []string{d.Id()},
-			}
-
-			updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, objectToUpdate.ID, webAPIAssert)
-			if err != nil || !updated {
-				if _, discardErr := c.DiscardChanges(); discardErr != nil {
-					diags = utils.DiagError("failed to discard changes", discardErr, diags)
-				}
-
-				return utils.DiagError("unable to perform AppSecGatewayProfile Delete", err, diags)
-			}
-
-		case "WebApplication":
-			objectToUpdate, err := webappasset.GetWebApplicationAsset(ctx, c, usedByResource.ID)
-			if err != nil {
-				return utils.DiagError("failed get WebAppAsset before update", err, diags)
-			}
-
-			webAPIAsset := webAppAssetModels.UpdateWebApplicationAssetInput{
-				RemovePracticeWrappers: []string{d.Id()},
-			}
-
-			updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, objectToUpdate.ID, webAPIAsset)
-			if err != nil || !updated {
-				if _, discardErr := c.DiscardChanges(); discardErr != nil {
-					diags = utils.DiagError("failed to discard changes", discardErr, diags)
-				}
-
-				return utils.DiagError("unable to perform AppSecGatewayProfile Delete", err, diags)
-			}
-
-		default:
-			return utils.DiagError("failed to update usedByResource", err, diags)
-		}
-	}
-
 	ID := d.Id()
 	result, err := appsecgatewayprofile.DeleteAppSecGatewayProfile(ctx, c, ID)
 	if err != nil || !result {
-		if _, discardErr := c.DiscardChanges(); discardErr != nil {
-			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		// Check if the error is due to the profile being used by other resources
+		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
+			// Get AppSecGatewayProfile to check if it is used by other resources
+			profile, err := appsecgatewayprofile.GetCloudGuardAppSecGatewayProfile(ctx, c, ID)
+			if err != nil {
+				return utils.DiagError("unable to perform AppSecGatewayProfile Delete", err, diags)
+			}
+
+			// Remove references
+			if err2 := handleAppSecGatewayProfileReferences(ctx, profile.UsedBy, c, ID); err2 != nil {
+				return err2
+			}
+
+			// Retry delete after removing references
+			result, err := appsecgatewayprofile.DeleteAppSecGatewayProfile(ctx, c, ID)
+			if err != nil || !result {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("unable to perform AppSecGatewayProfile Delete", err, diags)
+			}
+		} else {
+			if _, discardErr := c.DiscardChanges(); discardErr != nil {
+				diags = utils.DiagError("failed to discard changes", discardErr, diags)
+			}
+
+			return utils.DiagError("unable to perform AppSecGatewayProfile Delete", err, diags)
 		}
 
-		return utils.DiagError("unable to perform AppSecGatewayProfile Delete", err, diags)
 	}
 
 	isValid, err := c.PublishChanges()
@@ -330,4 +308,46 @@ func resourceAppSecGatewayProfileDelete(ctx context.Context, d *schema.ResourceD
 	d.SetId("")
 
 	return diags
+}
+
+func handleAppSecGatewayProfileReferences(ctx context.Context, usedBy models.DisplayObjects, c *api.Client, profileID string) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	for _, usedByResource := range usedBy {
+		switch usedByResource.SubType {
+		case "WebAPI":
+			webAPIAsset := webAPIAssetModels.UpdateWebAPIAssetInput{
+				RemoveProfiles: []string{profileID},
+			}
+
+			updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, usedByResource.ID, webAPIAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("failed to update usedByResource", err, diags)
+			}
+
+		case "WebApplication":
+			webAppAsset := webAppAssetModels.UpdateWebApplicationAssetInput{
+				RemoveProfiles: []string{profileID},
+			}
+
+			updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, usedByResource.ID, webAppAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("failed to update usedByResource", err, diags)
+			}
+
+		default:
+			return utils.DiagError("failed to update usedByResource", nil, diags)
+		}
+
+	}
+
+	return nil
 }

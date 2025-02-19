@@ -54,13 +54,6 @@ func NewDockerProfile(ctx context.Context, c *api.Client, input models.CreateDoc
 								key
 								value
 							}
-							usedBy {
-								id
-								name
-								type
-								subType
-								objectStatus
-							}
 							onlyDefinedApplications
 						}
 					}

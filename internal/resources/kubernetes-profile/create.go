@@ -56,13 +56,6 @@ func NewKubernetesProfile(ctx context.Context, c *api.Client, input models.Creat
 								key
 								value
 							}
-							usedBy {
-								id
-								name
-								type
-								subType
-								objectStatus
-							}
 							onlyDefinedApplications
 						}
 					}

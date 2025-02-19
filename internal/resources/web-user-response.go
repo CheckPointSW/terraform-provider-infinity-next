@@ -2,14 +2,17 @@ package resources
 
 import (
 	"context"
-	webAPIModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
-	webAppModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
-	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
-	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
+	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
+	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
+	webAppAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
+	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-user-response"
+	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
+	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
 	webuserresponse "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-user-response"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -201,70 +204,41 @@ func resourceWebUserResponseDelete(ctx context.Context, d *schema.ResourceData, 
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	usedBy, err := webuserresponse.UsedByWebUserResponse(ctx, c, d.Id())
-	if err != nil {
-		return utils.DiagError("unable to perform WebUserResponseBehavior Delete", err, diags)
-	}
-
-	if usedBy != nil {
-		for _, usedByResource := range usedBy {
-			if usedByResource.ObjectStatus == "Deleted" {
-				continue
-			}
-
-			switch usedByResource.SubType {
-			case "WebAPI":
-				objectToUpdate, err := webapiasset.GetWebAPIAsset(ctx, c, usedByResource.ID)
-				if err != nil {
-					return utils.DiagError("unable to perform WebAPIAsset Read", err, diags)
-				}
-
-				webAPIAsset := webAPIModels.UpdateWebAPIAssetInput{
-					RemovePracticeWrappers: []string{d.Id()},
-				}
-
-				updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, objectToUpdate.ID, webAPIAsset)
-				if err != nil || !updated {
-					if _, discardErr := c.DiscardChanges(); discardErr != nil {
-						diags = utils.DiagError("failed to discard changes", discardErr, diags)
-					}
-
-					return utils.DiagError("unable to perform WebUserResponseBehavior Delete", err, diags)
-				}
-
-			case "WebApplication":
-				objectToUpdate, err := webappasset.GetWebApplicationAsset(ctx, c, usedByResource.ID)
-				if err != nil {
-					return utils.DiagError("unable to perform WebApplicationAsset Read", err, diags)
-				}
-
-				webAppAsset := webAppModels.UpdateWebApplicationAssetInput{
-					RemovePracticeWrappers: []string{d.Id()},
-				}
-
-				updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, objectToUpdate.ID, webAppAsset)
-				if err != nil || !updated {
-					if _, discardErr := c.DiscardChanges(); discardErr != nil {
-						diags = utils.DiagError("failed to discard changes", discardErr, diags)
-					}
-
-					return utils.DiagError("unable to perform WebUserResponseBehavior Delete", err, diags)
-				}
-
-			default:
-				return utils.DiagError("unable to perform WebUserResponseBehavior Delete", err, diags)
-			}
-		}
-
-	}
-
 	result, err := webuserresponse.DeleteWebUserResponseBehavior(ctx, c, d.Id())
 	if err != nil || !result {
-		if _, discardErr := c.DiscardChanges(); discardErr != nil {
-			diags = utils.DiagError("failed to discard changes", discardErr, diags)
-		}
+		// Check if the error is due to the web user response behavior being used by other resources
+		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
+			// Get the resources that are using the web user response behavior
+			usedBy, err := webuserresponse.UsedByWebUserResponse(ctx, c, d.Id())
+			if err != nil {
+				return utils.DiagError("unable to perform WebUserResponse Delete", err, diags)
+			}
 
-		return utils.DiagError("unable to perform WebUserResponseBehavior Delete", err, diags)
+			if usedBy != nil || len(usedBy) > 0 {
+				// Remove the web user response behavior from the resources that are using it
+				if err2 := handleWebUserResponseReferences(ctx, usedBy, c, d.Id()); err2 != nil {
+					return err2
+				}
+
+				// Retry to delete the web user response behavior
+				result, err := webuserresponse.DeleteWebUserResponseBehavior(ctx, c, d.Id())
+				if err != nil || !result {
+					if _, discardErr := c.DiscardChanges(); discardErr != nil {
+						diags = utils.DiagError("failed to discard changes", discardErr, diags)
+					}
+
+					return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+				}
+
+			}
+
+		} else {
+			if _, discardErr := c.DiscardChanges(); discardErr != nil {
+				diags = utils.DiagError("failed to discard changes", discardErr, diags)
+			}
+
+			return utils.DiagError("unable to perform WebUserResponseBehavior Delete", err, diags)
+		}
 	}
 
 	isValid, err := c.PublishChanges()
@@ -279,4 +253,50 @@ func resourceWebUserResponseDelete(ctx context.Context, d *schema.ResourceData, 
 	d.SetId("")
 
 	return diags
+}
+
+func handleWebUserResponseReferences(ctx context.Context, usedBy models.DisplayObjects, c *api.Client, behaviorID string) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	for _, usedByResource := range usedBy {
+		if usedByResource.ObjectStatus == "Deleted" {
+			continue
+		}
+
+		switch usedByResource.SubType {
+		case "WebAPI":
+			webAPIAsset := webAPIAssetModels.UpdateWebAPIAssetInput{
+				RemoveBehaviors: []string{behaviorID},
+			}
+
+			updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, usedByResource.ID, webAPIAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("failed to update usedByResource", err, diags)
+			}
+
+		case "WebApplication":
+			webAppAsset := webAppAssetModels.UpdateWebApplicationAssetInput{
+				RemoveBehaviors: []string{behaviorID},
+			}
+
+			updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, usedByResource.ID, webAppAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("failed to update usedByResource", err, diags)
+			}
+
+		default:
+			return utils.DiagError("failed to update usedByResource", nil, diags)
+		}
+
+	}
+
+	return nil
 }

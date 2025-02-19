@@ -58,7 +58,7 @@ func GetDockerProfile(ctx context.Context, c *api.Client, id string) (models.Doc
 					type
 					subType
 					objectStatus
-			}
+				}
 				onlyDefinedApplications
 			}
 		}

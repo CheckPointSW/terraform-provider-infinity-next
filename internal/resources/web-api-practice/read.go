@@ -93,7 +93,7 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 
 	d.Set("schema_validation", []map[string]any{schemaValidationMap})
 
-	fileSecurity := models.WebApplicationFileSecuritySchema{
+	fileSecurity := models.WebAPIFileSecuritySchema{
 		ID:                        practice.FileSecurity.ID,
 		SeverityLevel:             practice.FileSecurity.SeverityLevel,
 		HighConfidence:            practice.FileSecurity.HighConfidence,

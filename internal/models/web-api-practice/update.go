@@ -21,7 +21,7 @@ type UpdateIPSInput struct {
 	LowConfidence       string `json:"lowConfidence,omitempty"`
 }
 
-type UpdateWebApplicationFileSecurityInput struct {
+type UpdateWebAPIFileSecurityInput struct {
 	ID                        string `json:"id,omitempty"`
 	SeverityLevel             string `json:"severityLevel,omitempty"`
 	HighConfidence            string `json:"highConfidence,omitempty"`
@@ -41,12 +41,12 @@ type UpdateWebApplicationFileSecurityInput struct {
 }
 
 type UpdatePracticeInput struct {
-	Name             string                                `json:"name,omitempty"`
-	Visibility       string                                `json:"visibility,omitempty"`
-	IPS              UpdateIPSInput                        `json:"IPS,omitempty"`
-	APIAttacks       UpdateAPIAttacksInput                 `json:"APIAttacks,omitempty"`
-	SchemaValidation UpdateSchemaValidationInput           `json:"SchemaValidation,omitempty"`
-	FileSecurity     UpdateWebApplicationFileSecurityInput `json:"FileSecurity,omitempty"`
+	Name             string                        `json:"name,omitempty"`
+	Visibility       string                        `json:"visibility,omitempty"`
+	IPS              UpdateIPSInput                `json:"IPS,omitempty"`
+	APIAttacks       UpdateAPIAttacksInput         `json:"APIAttacks,omitempty"`
+	SchemaValidation UpdateSchemaValidationInput   `json:"SchemaValidation,omitempty"`
+	FileSecurity     UpdateWebAPIFileSecurityInput `json:"FileSecurity,omitempty"`
 }
 
 type DisplayObject struct {

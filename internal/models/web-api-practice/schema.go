@@ -49,7 +49,7 @@ type FileSchema struct {
 	Size     uint64 `json:"size,omitempty"`
 }
 
-type WebApplicationFileSecuritySchema struct {
+type WebAPIFileSecuritySchema struct {
 	ID                        string `json:"id,omitempty"`
 	SeverityLevel             string `json:"severity_level,omitempty"`
 	HighConfidence            string `json:"high_confidence,omitempty"`

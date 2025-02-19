@@ -2,9 +2,13 @@ package resources
 
 import (
 	"context"
+	"strings"
+
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
+	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/log-trigger"
 	logtrigger "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/log-trigger"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -282,60 +286,37 @@ func resourceLogTriggerDelete(ctx context.Context, d *schema.ResourceData, meta 
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	//usedBy, err := logtrigger.UsedByLogTrigger(ctx, c, d.Id())
-	//if err != nil {
-	//	return utils.DiagError("failed get LogTrigger before delete", err, diags)
-	//}
-	//
-	//for _, usedByResource := range usedBy {
-	//	objectToUpdate, err := webapiasset.GetWebAPIAsset(ctx, c, usedByResource.Container)
-	//	if err == nil {
-	//		preparedAssetToUpdate, err := webapiasset.RemoveTriggerFromWebAPIAsset(ctx, objectToUpdate, usedByResource.Practices, d.Id())
-	//		if err != nil {
-	//			return utils.DiagError("failed to prepare asset to update", err, diags)
-	//		}
-	//
-	//		updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, objectToUpdate.ID, preparedAssetToUpdate)
-	//		if err != nil || !updated {
-	//			if _, discardErr := c.DiscardChanges(); discardErr != nil {
-	//				diags = utils.DiagError("failed to discard changes", discardErr, diags)
-	//			}
-	//
-	//			return utils.DiagError("unable to perform WebAPIAsset Delete", err, diags)
-	//		}
-	//
-	//	} else {
-	//		objectToUpdate, err := webappasset.GetWebApplicationAsset(ctx, c, usedByResource.Container)
-	//		if err != nil {
-	//			return utils.DiagError("failed to get Container", err, diags)
-	//		}
-	//
-	//		preparedAssetToUpdate, err := webappasset.RemoveTriggerFromWebAppAsset(ctx, objectToUpdate, usedByResource.Practices, d.Id())
-	//		if err != nil {
-	//			return utils.DiagError("failed to prepare asset to update", err, diags)
-	//		}
-	//
-	//		updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, objectToUpdate.ID, preparedAssetToUpdate)
-	//		if err != nil || !updated {
-	//			if _, discardErr := c.DiscardChanges(); discardErr != nil {
-	//				diags = utils.DiagError("failed to discard changes", discardErr, diags)
-	//			}
-	//
-	//			return utils.DiagError("unable to perform WebAppAsset Delete", err, diags)
-	//		}
-	//
-	//	}
-	//
-	//}
-
 	ID := d.Id()
 	result, err := logtrigger.DeleteLogTrigger(ctx, c, ID)
 	if err != nil || !result {
-		if _, discardErr := c.DiscardChanges(); discardErr != nil {
-			diags = utils.DiagError("failed to discard changes", discardErr, diags)
-		}
+		// If the error is due to the log trigger being used by other objects, discard changes and return
+		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
+			usedBy, err := logtrigger.UsedByLogTrigger(ctx, c, ID)
+			if err != nil {
+				return utils.DiagError("Unable to get LogTrigger references", err, diags)
+			}
 
-		return utils.DiagError("Unable to perform LogTrigger Delete", err, diags)
+			// Update the practices that use the log trigger
+			if err2 := handleLogTriggerReferences(ctx, usedBy, c, ID); err2 != nil {
+				return err2
+			}
+
+			// Retry the delete operation
+			result, err = logtrigger.DeleteLogTrigger(ctx, c, ID)
+			if err != nil || !result {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("Unable to perform LogTrigger Delete", err, diags)
+			}
+		} else {
+			if _, discardErr := c.DiscardChanges(); discardErr != nil {
+				diags = utils.DiagError("failed to discard changes", discardErr, diags)
+			}
+
+			return utils.DiagError("Unable to perform LogTrigger Delete", err, diags)
+		}
 	}
 
 	isValid, err := c.PublishChanges()
@@ -349,4 +330,24 @@ func resourceLogTriggerDelete(ctx context.Context, d *schema.ResourceData, meta 
 
 	d.SetId("")
 	return diags
+}
+
+func handleLogTriggerReferences(ctx context.Context, triggersUsedBy models.TriggersUsedBy, c *api.Client, triggerID string) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	for _, triggerUsedBy := range triggersUsedBy {
+		for _, practice := range triggerUsedBy.Practices {
+			result, err := logtrigger.UpdatePracticeTriggers(ctx, c, triggerID, practice, triggerUsedBy.Container)
+			if err != nil || !result {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("Unable to perform LogTrigger Update", err, diags)
+			}
+		}
+
+	}
+
+	return nil
 }

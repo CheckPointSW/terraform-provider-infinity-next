@@ -2,14 +2,17 @@ package resources
 
 import (
 	"context"
-	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
-	webAppAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
-	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
-	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
+	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
+	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/kubernetes-profile"
+	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
+	webAppAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
 	kubernetesprofile "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/kubernetes-profile"
+	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
+	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -200,65 +203,39 @@ func resourceKubernetesProfileDelete(ctx context.Context, d *schema.ResourceData
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	profile, err := kubernetesprofile.GetKubernetesProfile(ctx, c, d.Id())
-	if err != nil {
-		return utils.DiagError("failed get KubernetesProfile before delete", err, diags)
-	}
-
-	for _, usedByResource := range profile.UsedBy {
-		switch usedByResource.SubType {
-		case "WebAPI":
-			objectToUpdate, err := webapiasset.GetWebAPIAsset(ctx, c, usedByResource.ID)
-			if err != nil {
-				return utils.DiagError("failed get WebAPIAsset before update", err, diags)
-			}
-
-			webAPIAssert := webAPIAssetModels.UpdateWebAPIAssetInput{
-				RemovePracticeWrappers: []string{d.Id()},
-			}
-
-			updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, objectToUpdate.ID, webAPIAssert)
-			if err != nil || !updated {
-				if _, discardErr := c.DiscardChanges(); discardErr != nil {
-					diags = utils.DiagError("failed to discard changes", discardErr, diags)
-				}
-
-				return utils.DiagError("unable to perform KubernetesProfile Delete", err, diags)
-			}
-
-		case "WebApplication":
-			objectToUpdate, err := webappasset.GetWebApplicationAsset(ctx, c, usedByResource.ID)
-			if err != nil {
-				return utils.DiagError("failed get WebAppAsset before update", err, diags)
-			}
-
-			webAPIAsset := webAppAssetModels.UpdateWebApplicationAssetInput{
-				RemovePracticeWrappers: []string{d.Id()},
-			}
-
-			updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, objectToUpdate.ID, webAPIAsset)
-			if err != nil || !updated {
-				if _, discardErr := c.DiscardChanges(); discardErr != nil {
-					diags = utils.DiagError("failed to discard changes", discardErr, diags)
-				}
-
-				return utils.DiagError("unable to perform KubernetesProfile Delete", err, diags)
-			}
-
-		default:
-			return utils.DiagError("failed to update usedByResource", err, diags)
-		}
-
-	}
-
 	ID := d.Id()
 	result, err := kubernetesprofile.DeleteKubernetesProfile(ctx, c, ID)
 	if err != nil || !result {
-		if _, discardErr := c.DiscardChanges(); discardErr != nil {
-			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		// Check if the error is due to the profile being used by other resources
+		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
+			// Get KubernetesProfile to check if it is used by other resources
+			profile, err := kubernetesprofile.GetKubernetesProfile(ctx, c, ID)
+			if err != nil {
+				return utils.DiagError("unable to perform KubernetesProfile Delete", err, diags)
+			}
+
+			// Remove references
+			if err2 := handleKubernetesProfileReferences(ctx, profile.UsedBy, c, ID); err2 != nil {
+				return err2
+			}
+
+			// Retry delete after removing references
+			result, err := kubernetesprofile.DeleteKubernetesProfile(ctx, c, ID)
+			if err != nil || !result {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("unable to perform KubernetesProfile Delete", err, diags)
+			}
+		} else {
+			if _, discardErr := c.DiscardChanges(); discardErr != nil {
+				diags = utils.DiagError("failed to discard changes", discardErr, diags)
+			}
+
+			return utils.DiagError("unable to perform KubernetesProfile Delete", err, diags)
 		}
 
-		return utils.DiagError("unable to perform KubernetesProfile Delete", err, diags)
 	}
 
 	isValid, err := c.PublishChanges()
@@ -273,4 +250,46 @@ func resourceKubernetesProfileDelete(ctx context.Context, d *schema.ResourceData
 	d.SetId("")
 
 	return diags
+}
+
+func handleKubernetesProfileReferences(ctx context.Context, usedBy models.DisplayObjects, c *api.Client, profileID string) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	for _, usedByResource := range usedBy {
+		switch usedByResource.SubType {
+		case "WebAPI":
+			webAPIAsset := webAPIAssetModels.UpdateWebAPIAssetInput{
+				RemoveProfiles: []string{profileID},
+			}
+
+			updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, usedByResource.ID, webAPIAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("failed to update usedByResource", err, diags)
+			}
+
+		case "WebApplication":
+			webAppAsset := webAppAssetModels.UpdateWebApplicationAssetInput{
+				RemoveProfiles: []string{profileID},
+			}
+
+			updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, usedByResource.ID, webAppAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("failed to update usedByResource", err, diags)
+			}
+
+		default:
+			return utils.DiagError("failed to update usedByResource", nil, diags)
+		}
+
+	}
+
+	return nil
 }
