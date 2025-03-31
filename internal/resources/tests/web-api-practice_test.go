@@ -343,7 +343,7 @@ resource "inext_web_api_practice" omritheking {
         medium_confidence          = "Prevent"
     }
 }
-`, filename, data)
+`, name, filename, data)
 }
 
 func webAPIPracticeFullConfig(name, filename, data string) string {
@@ -390,7 +390,7 @@ resource "inext_web_api_practice" omritheking {
         required_threat_emulation    = "false"
     }
 }
-`, filename, data)
+`, name, filename, data)
 }
 
 func webAPIPracticeUpdateFullConfig(name, filename, data string) string {
@@ -437,5 +437,5 @@ resource "inext_web_api_practice" omritheking {
         required_threat_emulation    = "true"
     }
 }
-`, filename, data)
+`, name, filename, data)
 }
