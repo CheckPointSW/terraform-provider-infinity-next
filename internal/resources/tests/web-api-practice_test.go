@@ -287,155 +287,155 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 
 func webAPIPracticeBasicConfig(name string) string {
 	return fmt.Sprintf(`
-resource "inext_web_api_practice" %[1]q {
-	name = %[1]q
-	ips {
-		performance_impact    = "MediumOrLower"
-		severity_level        = "MediumOrAbove"
-		protections_from_year = "2016"
-		high_confidence       = "AccordingToPractice"
-		medium_confidence     = "AccordingToPractice"
-		low_confidence        = "Detect"
-	}
-	api_attacks {
-		minimum_severity = "High"
-		advanced_setting {
-			body_size            = 1000000
-			url_size             = 32768
-			header_size          = 102400
-			max_object_depth     = 40
-			illegal_http_methods = false
-		}
-	}
+resource "inext_web_api_practice" omritheking {
+    name = omritheking
+    ips {
+        performance_impact    = "MediumOrLower"
+        severity_level        = "MediumOrAbove"
+        protections_from_year = "2016"
+        high_confidence       = "AccordingToPractice"
+        medium_confidence     = "AccordingToPractice"
+        low_confidence        = "Detect"
+    }
+    api_attacks {
+        minimum_severity = "High"
+        advanced_setting {
+            body_size            = 1000000
+            url_size             = 32768
+            header_size          = 102400
+            max_object_depth     = 40
+            illegal_http_methods = false
+        }
+    }
 }
-`, name)
+`)
 }
 
 func webAPIPracticeUpdateBasicConfig(name, filename, data string) string {
 	return fmt.Sprintf(`
-resource "inext_web_api_practice" %[1]q {
-	name                          = %[1]q
-	ips {
-		performance_impact    = "LowOrLower"   
-		severity_level        = "LowOrAbove"
-		protections_from_year = "2016"      
-		high_confidence       = "Detect"    
-		medium_confidence     = "Detect"    
-		low_confidence        = "Detect"
-	}
-	api_attacks {
-		minimum_severity = "Critical"
-		advanced_setting {
-		  body_size            = 1000
-		  url_size             = 1000
-		  header_size          = 1000
-		  max_object_depth     = 1000
-		  illegal_http_methods = true
-		}
-	}
-	schema_validation {
-		name = "New File"
-		data     = %[3]q
-	}
-	file_security {
-		severity_level             = "Critical"
-		high_confidence            = "Prevent"
-		medium_confidence          = "Prevent"
-	}
+resource "inext_web_api_practice" omritheking {
+    name                          = omritheking
+    ips {
+        performance_impact    = "LowOrLower"   
+        severity_level        = "LowOrAbove"
+        protections_from_year = "2016"      
+        high_confidence       = "Detect"    
+        medium_confidence     = "Detect"    
+        low_confidence        = "Detect"
+    }
+    api_attacks {
+        minimum_severity = "Critical"
+        advanced_setting {
+          body_size            = 1000
+          url_size             = 1000
+          header_size          = 1000
+          max_object_depth     = 1000
+          illegal_http_methods = true
+        }
+    }
+    schema_validation {
+        name = "New File"
+        data     = %[3]q
+    }
+    file_security {
+        severity_level             = "Critical"
+        high_confidence            = "Prevent"
+        medium_confidence          = "Prevent"
+    }
 }
-`, name, filename, data)
+`, filename, data)
 }
 
 func webAPIPracticeFullConfig(name, filename, data string) string {
 	return fmt.Sprintf(`
-resource "inext_web_api_practice" %[1]q {
-	name                          = %[1]q
-	ips {
-		performance_impact    = "LowOrLower"   
-		severity_level        = "LowOrAbove"
-		protections_from_year = "2016"      
-		high_confidence       = "AccordingToPractice"    
-		medium_confidence     = "AccordingToPractice"    
-		low_confidence        = "Detect" 
-	}
-	api_attacks {
-		minimum_severity = "Critical"
-		advanced_setting {
-			body_size            = 1000
-			url_size             = 1000
-			header_size          = 1000
-			max_object_depth     = 1000
-			illegal_http_methods = true
-		}
-	}
-	schema_validation {
-		name = "New File 1"
-		data     = %[3]q
-	}
-	file_security {
-		severity_level             = "MediumOrAbove"
-		high_confidence            = "AccordingToPractice"
-		medium_confidence          = "AccordingToPractice"
-		low_confidence             = "Detect"
-		allow_file_size_limit      = "AccordingToPractice"	
-		file_size_limit            = "10"
-		file_size_limit_unit       = "MB"
-		files_without_name         = "AccordingToPractice"
-		required_archive_extraction = "false"
-		archive_file_size_limit     = "10"
-		archive_file_size_limit_unit = "MB"
-		allow_archive_within_archive = "AccordingToPractice"
-		allow_an_unopened_archive    = "AccordingToPractice"
-		allow_file_type              = "false"
-		required_threat_emulation    = "false"
-	}
+resource "inext_web_api_practice" omritheking {
+    name                          = omritheking
+    ips {
+        performance_impact    = "LowOrLower"   
+        severity_level        = "LowOrAbove"
+        protections_from_year = "2016"      
+        high_confidence       = "AccordingToPractice"    
+        medium_confidence     = "AccordingToPractice"    
+        low_confidence        = "Detect" 
+    }
+    api_attacks {
+        minimum_severity = "Critical"
+        advanced_setting {
+            body_size            = 1000
+            url_size             = 1000
+            header_size          = 1000
+            max_object_depth     = 1000
+            illegal_http_methods = true
+        }
+    }
+    schema_validation {
+        name = "New File 1"
+        data     = %[3]q
+    }
+    file_security {
+        severity_level             = "MediumOrAbove"
+        high_confidence            = "AccordingToPractice"
+        medium_confidence          = "AccordingToPractice"
+        low_confidence             = "Detect"
+        allow_file_size_limit      = "AccordingToPractice"  
+        file_size_limit            = "10"
+        file_size_limit_unit       = "MB"
+        files_without_name         = "AccordingToPractice"
+        required_archive_extraction = "false"
+        archive_file_size_limit     = "10"
+        archive_file_size_limit_unit = "MB"
+        allow_archive_within_archive = "AccordingToPractice"
+        allow_an_unopened_archive    = "AccordingToPractice"
+        allow_file_type              = "false"
+        required_threat_emulation    = "false"
+    }
 }
-`, name, filename, data)
+`, filename, data)
 }
 
 func webAPIPracticeUpdateFullConfig(name, filename, data string) string {
 	return fmt.Sprintf(`
-resource "inext_web_api_practice" %[1]q {
-	name                          = %[1]q
-	ips {
-		performance_impact    = "MediumOrLower"   
-		severity_level        = "Critical"
-		protections_from_year = "2020"      
-		high_confidence       = "Prevent"    
-		medium_confidence     = "Inactive"    
-		low_confidence        = "Detect"
-	}
-	api_attacks {
-		minimum_severity = "High"
-		advanced_setting {
-			body_size            = 1001
-			url_size             = 1002
-			header_size          = 1003
-			max_object_depth     = 1004
-			illegal_http_methods = false
-		}
-	}
-	schema_validation {
-		data = %[3]q
-		name = "New File 2"
-	}
-	file_security {
-		severity_level             = "LowOrAbove"
-		high_confidence            = "Detect"
-		medium_confidence          = "Inactive"
-		low_confidence             = "Inactive"
-		allow_file_size_limit      = "Prevent"
-		file_size_limit            = "1000"
-		file_size_limit_unit       = "GB"
-		files_without_name         = "Detect"
-		required_archive_extraction = "true"
-		archive_file_size_limit     = "10000"
-		archive_file_size_limit_unit = "KB"
-		allow_archive_within_archive = "Prevent"
-		allow_an_unopened_archive    = "Detect"
-		allow_file_type              = "true"
-		required_threat_emulation    = "true"
-	}
+resource "inext_web_api_practice" omritheking {
+    name                          = omritheking
+    ips {
+        performance_impact    = "MediumOrLower"   
+        severity_level        = "Critical"
+        protections_from_year = "2020"      
+        high_confidence       = "Prevent"    
+        medium_confidence     = "Inactive"    
+        low_confidence        = "Detect"
+    }
+    api_attacks {
+        minimum_severity = "High"
+        advanced_setting {
+            body_size            = 1001
+            url_size             = 1002
+            header_size          = 1003
+            max_object_depth     = 1004
+            illegal_http_methods = false
+        }
+    }
+    schema_validation {
+        data = %[3]q
+        name = "New File 2"
+    }
+    file_security {
+        severity_level             = "LowOrAbove"
+        high_confidence            = "Detect"
+        medium_confidence          = "Inactive"
+        low_confidence             = "Inactive"
+        allow_file_size_limit      = "Prevent"
+        file_size_limit            = "1000"
+        file_size_limit_unit       = "GB"
+        files_without_name         = "Detect"
+        required_archive_extraction = "true"
+        archive_file_size_limit     = "10000"
+        archive_file_size_limit_unit = "KB"
+        allow_archive_within_archive = "Prevent"
+        allow_an_unopened_archive    = "Detect"
+        allow_file_type              = "true"
+        required_threat_emulation    = "true"
+    }
 }
-`, name, filename, data)
+`, filename, data)
 }

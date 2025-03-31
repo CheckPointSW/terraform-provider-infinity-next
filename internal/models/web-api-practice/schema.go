@@ -50,7 +50,7 @@ type FileSchema struct {
 }
 
 type WebApplicationFileSecuritySchema struct {
-	ID                        string `json:"id,omitempty"`
+	ID                        string `json:"id"`
 	SeverityLevel             string `json:"severity_level,omitempty"`
 	HighConfidence            string `json:"high_confidence,omitempty"`
 	MediumConfidence          string `json:"medium_confidence,omitempty"`
