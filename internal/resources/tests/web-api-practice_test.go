@@ -22,7 +22,7 @@ var (
 )
 
 func TestAccWebAPIPracticeBasic(t *testing.T) {
-	nameAttribute := "omritheking"
+	nameAttribute := acctest.GenerateResourceName()
 	resourceName := "inext_web_api_practice." + nameAttribute
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { acctest.PreCheck(t) },
@@ -154,7 +154,7 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 }
 
 func TestAccWebAPIPracticeFull(t *testing.T) {
-	nameAttribute := "omritheking"
+	nameAttribute := acctest.GenerateResourceName()
 	resourceName := "inext_web_api_practice." + nameAttribute
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { acctest.PreCheck(t) },

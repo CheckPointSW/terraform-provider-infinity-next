@@ -123,7 +123,7 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 }
 
 func GetWebAPIPractice(ctx context.Context, c *api.Client, id string) (models.WebAPIPractice, error) {
-	_, err := c.MakeGraphQLRequest(ctx, `
+	res, err := c.MakeGraphQLRequest(ctx, `
 		{
 			getWebAPIPractice(id: "`+id+`") {
 				id
@@ -188,11 +188,10 @@ func GetWebAPIPractice(ctx context.Context, c *api.Client, id string) (models.We
 		return models.WebAPIPractice{}, fmt.Errorf("failed to get WebAPIPractice: %w", err)
 	}
 
-	return models.WebAPIPractice{}, nil
-	//practice, err := utils.UnmarshalAs[models.WebAPIPractice](res)
-	//if err != nil {
-	//	return models.WebAPIPractice{}, fmt.Errorf("failed to convert response to WebAPIPractice struct. Error: %w", err)
-	//}
-	//
-	//	return practice, nil
+	practice, err := utils.UnmarshalAs[models.WebAPIPractice](res)
+	if err != nil {
+		return models.WebAPIPractice{}, fmt.Errorf("failed to convert response to WebAPIPractice struct. Error: %w", err)
+	}
+
+	return practice, nil
 }
