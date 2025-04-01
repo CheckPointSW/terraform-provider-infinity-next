@@ -84,10 +84,10 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (any, diag.D
 	switch region {
 	case "eu":
 		client.SetHost("https://cloudinfra-gw.portal.checkpoint.com")
-		client.SetEndpoint("/app/i2/graphql/V1")
+		client.SetEndpoint("/app/waf/graphql/V1")
 	case "us":
 		client.SetHost("https://cloudinfra-gw-us.portal.checkpoint.com")
-		client.SetEndpoint("/app/i2/graphql/V1")
+		client.SetEndpoint("/app/waf/graphql/V1")
 	case "dev":
 		client.SetHost("https://dev-cloudinfra-gw.kube1.iaas.checkpoint.com")
 		client.SetEndpoint("/app/infinity2gem/graphql/V1")
