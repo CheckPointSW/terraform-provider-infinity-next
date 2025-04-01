@@ -457,15 +457,17 @@ func resourceWebAPIPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 		// Check if the error is due to the web api practice being used by other resources
 		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
 			// Get the resources that are using the web api practice
-			usedBy, err := webapipractice.UsedByWebAPIPractice(ctx, c, d.Id())
-			if err != nil {
+			usedBy, err2 := webapipractice.UsedByWebAPIPractice(ctx, c, d.Id())
+			if err2 != nil {
+				diags = utils.DiagError("unable to perform WebAPIPractice UsedBy", err2, diags)
 				return utils.DiagError("unable to perform WebAPIPractice Delete", err, diags)
 			}
 
 			if usedBy != nil || len(usedBy) > 0 {
 				// Remove the web api practice from the resources that are using it
 				if err2 := handleWebAPIPracticeReferences(ctx, usedBy, c, d.Id()); err2 != nil {
-					return err2
+					diags = err2
+					return utils.DiagError("unable to perform WebAPIPractice Delete", err, diags)
 				}
 
 				// Retry to delete the web api practice

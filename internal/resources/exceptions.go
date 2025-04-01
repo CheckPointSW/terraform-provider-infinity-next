@@ -269,15 +269,17 @@ func resourceExceptionsDelete(ctx context.Context, d *schema.ResourceData, meta 
 		// Check if the error is due to the exception behavior being used by other resources
 		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
 			// Get the resources that are using the exception behavior
-			usedBy, err := exceptions.UsedByExceptionBehavior(ctx, c, d.Id())
-			if err != nil {
+			usedBy, err2 := exceptions.UsedByExceptionBehavior(ctx, c, d.Id())
+			if err2 != nil {
+				diags = utils.DiagError("unable to perform ExceptionBehavior UsedBy", err2, diags)
 				return utils.DiagError("unable to perform ExceptionBehavior Delete", err, diags)
 			}
 
 			if usedBy != nil || len(usedBy) > 0 {
 				// Remove the exception behavior from the resources that are using it
 				if err2 := handleExceptionsReferences(ctx, usedBy, c, d.Id()); err2 != nil {
-					return err2
+					diags = err2
+					return utils.DiagError("unable to perform ExceptionBehavior Delete", err, diags)
 				}
 
 				// Retry to delete the exception behavior

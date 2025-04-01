@@ -194,14 +194,16 @@ func resourceDockerProfileDelete(ctx context.Context, d *schema.ResourceData, me
 		// Check if the error is due to the profile being used by other resources
 		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
 			// Get DockerProfile to check if it is used by other resources
-			profile, err := dockerprofile.GetDockerProfile(ctx, c, ID)
-			if err != nil {
+			profile, err2 := dockerprofile.GetDockerProfile(ctx, c, ID)
+			if err2 != nil {
+				diags = utils.DiagError("unable to Get DockerProfile references", err2, diags)
 				return utils.DiagError("unable to perform DockerProfile Delete", err, diags)
 			}
 
 			// Remove references
 			if err2 := handleDockerProfileReferences(ctx, profile.UsedBy, c, ID); err2 != nil {
-				return err2
+				diags = err2
+				return utils.DiagError("unable to perform DockerProfile Delete", err, diags)
 			}
 
 			// Retry delete after removing references

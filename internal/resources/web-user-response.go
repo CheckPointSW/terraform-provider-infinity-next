@@ -209,15 +209,17 @@ func resourceWebUserResponseDelete(ctx context.Context, d *schema.ResourceData, 
 		// Check if the error is due to the web user response behavior being used by other resources
 		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
 			// Get the resources that are using the web user response behavior
-			usedBy, err := webuserresponse.UsedByWebUserResponse(ctx, c, d.Id())
-			if err != nil {
+			usedBy, err2 := webuserresponse.UsedByWebUserResponse(ctx, c, d.Id())
+			if err2 != nil {
+				diags = utils.DiagError("unable to perform WebUserResponse UsedBy", err2, diags)
 				return utils.DiagError("unable to perform WebUserResponse Delete", err, diags)
 			}
 
 			if usedBy != nil || len(usedBy) > 0 {
 				// Remove the web user response behavior from the resources that are using it
 				if err2 := handleWebUserResponseReferences(ctx, usedBy, c, d.Id()); err2 != nil {
-					return err2
+					diags = err2
+					return utils.DiagError("unable to perform WebUserResponse Delete", err, diags)
 				}
 
 				// Retry to delete the web user response behavior

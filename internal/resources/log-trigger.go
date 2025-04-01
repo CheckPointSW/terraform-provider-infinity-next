@@ -291,14 +291,16 @@ func resourceLogTriggerDelete(ctx context.Context, d *schema.ResourceData, meta 
 	if err != nil || !result {
 		// If the error is due to the log trigger being used by other objects, discard changes and return
 		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
-			usedBy, err := logtrigger.UsedByLogTrigger(ctx, c, ID)
-			if err != nil {
-				return utils.DiagError("Unable to get LogTrigger references", err, diags)
+			usedBy, err2 := logtrigger.UsedByLogTrigger(ctx, c, ID)
+			if err2 != nil {
+				diags = utils.DiagError("Unable to perform LogTrigger UsedBy", err2, diags)
+				return utils.DiagError("Unable to perform LogTrigger Delete", err, diags)
 			}
 
 			// Update the practices that use the log trigger
 			if err2 := handleLogTriggerReferences(ctx, usedBy, c, ID); err2 != nil {
-				return err2
+				diags = err2
+				return utils.DiagError("Unable to perform LogTrigger Delete", err, diags)
 			}
 
 			// Retry the delete operation

@@ -209,14 +209,16 @@ func resourceKubernetesProfileDelete(ctx context.Context, d *schema.ResourceData
 		// Check if the error is due to the profile being used by other resources
 		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
 			// Get KubernetesProfile to check if it is used by other resources
-			profile, err := kubernetesprofile.GetKubernetesProfile(ctx, c, ID)
-			if err != nil {
+			profile, err2 := kubernetesprofile.GetKubernetesProfile(ctx, c, ID)
+			if err2 != nil {
+				diags = utils.DiagError("unable to Get KubernetesProfile references", err2, diags)
 				return utils.DiagError("unable to perform KubernetesProfile Delete", err, diags)
 			}
 
 			// Remove references
 			if err2 := handleKubernetesProfileReferences(ctx, profile.UsedBy, c, ID); err2 != nil {
-				return err2
+				diags = err2
+				return utils.DiagError("unable to perform KubernetesProfile Delete", err, diags)
 			}
 
 			// Retry delete after removing references

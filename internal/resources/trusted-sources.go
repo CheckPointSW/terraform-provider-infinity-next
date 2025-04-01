@@ -198,15 +198,17 @@ func resourceTrustedSourcesDelete(ctx context.Context, d *schema.ResourceData, m
 		// Check if the error is due to the trusted source behavior being used by other resources
 		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
 			// Get the resources that are using the trusted source behavior
-			usedBy, err := trustedsources.UsedByTrustedSourceBehavior(ctx, c, d.Id())
-			if err != nil {
+			usedBy, err2 := trustedsources.UsedByTrustedSourceBehavior(ctx, c, d.Id())
+			if err2 != nil {
+				diags = utils.DiagError("unable to perform TrustedSourceBehavior UsedBy", err2, diags)
 				return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
 			}
 
 			if usedBy != nil || len(usedBy) > 0 {
 				// Remove the trusted source behavior from the resources that are using it
 				if err2 := handleTrustedSourceReferences(ctx, usedBy, c, d.Id()); err2 != nil {
-					return err2
+					diags = err2
+					return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
 				}
 
 				// Retry to delete the trusted source behavior
