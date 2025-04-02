@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"io"
 	"net/http"
 	"net/url"
@@ -171,6 +172,7 @@ func (c *Client) MakeGraphQLRequest(ctx context.Context, gql, responseKey string
 		bearer := "Bearer " + c.token
 		httpRequest.Header.Set("Content-Type", "application/json")
 		httpRequest.Header.Set("Authorization", bearer)
+		httpRequest.Header.Set("X-Trace-Id", uuid.NewString())
 
 		res, err = client.Do(httpRequest)
 		if err != nil {
