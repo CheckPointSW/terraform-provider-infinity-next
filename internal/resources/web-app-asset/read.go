@@ -160,7 +160,9 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 		return fmt.Errorf("failed to convert tags to slice of maps. Error: %+v", err)
 	}
 
-	d.Set("tags", tagsSchemaMap)
+	if len(tagsSchemaMap) > 0 {
+		d.Set("tags", tagsSchemaMap)
+	}
 
 	return nil
 }
