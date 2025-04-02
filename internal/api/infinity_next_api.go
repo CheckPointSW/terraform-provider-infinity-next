@@ -173,6 +173,7 @@ func (c *Client) MakeGraphQLRequest(ctx context.Context, gql, responseKey string
 		httpRequest.Header.Set("Content-Type", "application/json")
 		httpRequest.Header.Set("Authorization", bearer)
 		httpRequest.Header.Set("X-Trace-Id", uuid.NewString())
+		fmt.Println("X-Trace-Id: " + httpRequest.Header.Get("X-Trace-Id"))
 
 		res, err = client.Do(httpRequest)
 		if err != nil {
