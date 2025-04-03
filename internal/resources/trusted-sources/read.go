@@ -52,8 +52,10 @@ func ReadTrustedSourceBehaviorToResourceData(behavior models.TrustedSourceBehavi
 		sourcesIdentifiersIDs[i] = sourceIdentifier.CreateSchemaID()
 	}
 
-	d.Set("sources_identifiers", sourcesIdentifiers)
-	d.Set("sources_identifiers_ids", sourcesIdentifiersIDs)
+	if len(sourcesIdentifiers) > 0 {
+		d.Set("sources_identifiers", sourcesIdentifiers)
+		d.Set("sources_identifiers_ids", sourcesIdentifiersIDs)
+	}
 
 	return nil
 }

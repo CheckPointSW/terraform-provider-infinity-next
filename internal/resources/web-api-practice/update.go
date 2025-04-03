@@ -93,7 +93,7 @@ func parseSchemaValidation(validation any) []models.UpdateSchemaValidationInput 
 	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateSchemaValidationInput, models.SchemaValidationInput])
 }
 
-func parseSchemaFileSecurity(schemaFileSecurity any) []models.UpdateWebApplicationFileSecurityInput {
+func parseSchemaFileSecurity(schemaFileSecurity any) []models.UpdateWebAPIFileSecurityInput {
 	input := utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](schemaFileSecurity), mapToFileSecurityInput)
-	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateWebApplicationFileSecurityInput, models.WebAPIFileSecurityInput])
+	return utils.Map(input, utils.MustUnmarshalAs[models.UpdateWebAPIFileSecurityInput, models.WebAPIFileSecurityInput])
 }

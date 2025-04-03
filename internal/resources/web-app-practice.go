@@ -2,9 +2,15 @@ package resources
 
 import (
 	"context"
+	"strings"
+
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
+	webAppAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
+	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-practice"
+	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
 	webapppractice "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-practice"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -30,6 +36,8 @@ const (
 	waapModeLearn    = "Learn"
 	waapModePrevent  = "Prevent"
 	waapModePractice = "AccordingToPractice"
+
+	errorMsgPointedObjects = "can't be deleted since it is pointed from other objects"
 )
 
 func ResourceWebAppPractice() *schema.Resource {
@@ -504,14 +512,76 @@ func resourceWebAppPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 
 	isValid, err := c.PublishChanges()
 	if err != nil || !isValid {
-		if _, discardErr := c.DiscardChanges(); discardErr != nil {
-			diags = utils.DiagError("failed to discard changes", discardErr, diags)
-		}
+		// Check if the error is due to the web app practice being used by other resources
+		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
+			// Get the resources that are using the web app practice
+			usedBy, err2 := webapppractice.UsedByWebApplicationPractice(ctx, c, d.Id())
+			if err2 != nil {
+				diags = utils.DiagError("unable to perform WebAppPractice UsedBy", err2, diags)
+				return utils.DiagError("unable to perform WebAppPractice Delete", err, diags)
+			}
 
-		return utils.DiagError("failed to Publish following WebAppPractice Delete", err, diags)
+			if usedBy != nil || len(usedBy) > 0 {
+				// Remove the web app practice from the resources that are using it
+				if err2 := handleWebAppPracticeReferences(ctx, usedBy, c, d.Id()); err2 != nil {
+					diags = err2
+					return utils.DiagError("unable to perform WebAppPractice Delete", err, diags)
+				}
+
+				// Retry to delete the web app practice
+				result, err := webapppractice.DeleteWebApplicationPractice(ctx, c, d.Id())
+				if err != nil || !result {
+					if _, discardErr := c.DiscardChanges(); discardErr != nil {
+						diags = utils.DiagError("failed to discard changes", discardErr, diags)
+					}
+
+					return utils.DiagError("unable to perform WebAppPractice Delete", err, diags)
+				}
+
+			}
+
+		} else {
+			if _, discardErr := c.DiscardChanges(); discardErr != nil {
+				diags = utils.DiagError("failed to discard changes", discardErr, diags)
+			}
+
+			return utils.DiagError("failed to Publish following WebAppPractice Delete", err, diags)
+		}
 	}
 
 	d.SetId("")
 
 	return diags
+}
+
+func handleWebAppPracticeReferences(ctx context.Context, usedBy models.DisplayObjects, c *api.Client, practiceID string) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	for _, usedByResource := range usedBy {
+		if usedByResource.ObjectStatus == "Deleted" || usedByResource.Type == "Wrapper" {
+			continue
+		}
+
+		switch usedByResource.SubType {
+		case "WebApp":
+			webAppAsset := webAppAssetModels.UpdateWebApplicationAssetInput{
+				RemovePracticeWrappers: []string{practiceID},
+			}
+
+			updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, usedByResource.ID, webAppAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("failed to update usedByResource", err, diags)
+			}
+
+		default:
+			return utils.DiagError("failed to update usedByResource", nil, diags)
+		}
+
+	}
+
+	return nil
 }

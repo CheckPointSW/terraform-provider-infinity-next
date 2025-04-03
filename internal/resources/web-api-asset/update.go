@@ -284,3 +284,37 @@ func validateTag(tag models.TagInput) bool {
 func parsemTLSs(mTLSsFromResourceData any) models.MTLSSchemas {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](mTLSsFromResourceData), mapToMTLSInput)
 }
+
+//func RemoveTriggerFromWebAPIAsset(ctx context.Context, asset models.WebAPIAsset, practicesIDs []string, triggerID string) (models.UpdateWebAPIAssetInput, error) {
+//	updateInput := models.UpdateWebAPIAssetInput{}
+//
+//	for _, practiceWrapper := range asset.Practices {
+//		for _, practiceID := range practicesIDs {
+//			if practiceWrapper.Practice.ID == practiceID {
+//				var triggerIDs []string
+//				for _, trigger := range practiceWrapper.Triggers {
+//					if trigger.ID != triggerID {
+//						triggerIDs = append(triggerIDs, trigger.ID)
+//					}
+//
+//				}
+//
+//				updateInput.RemovePracticeWrappers = append(updateInput.RemovePracticeWrappers, practiceWrapper.Practice.ID)
+//				practiceWrapperToAdd := utils.Map([]models.PracticeWrapper{practiceWrapper}, utils.MustUnmarshalAs[models.AddPracticeWrapper, models.PracticeWrapper])
+//				if len(practiceWrapperToAdd) != 0 {
+//					updateInput.AddPracticeWrappers = append(updateInput.AddPracticeWrappers, models.AddPracticeWrapper{
+//						PracticeID:       practiceID,
+//						Triggers:         triggerIDs,
+//						MainMode:         practiceWrapper.MainMode,
+//						SubPracticeModes: practiceWrapperToAdd[0].SubPracticeModes,
+//					})
+//				}
+//
+//			}
+//
+//			break
+//		}
+//	}
+//
+//	return updateInput, nil
+//}

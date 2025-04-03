@@ -61,6 +61,13 @@ func GetEmbeddedProfile(ctx context.Context, c *api.Client, id string) (models.E
 					key
 					value
 				}
+				usedBy {
+					id
+					name
+					type
+					subType
+					objectStatus
+				}
 				upgradeMode
 				upgradeTime {
 					scheduleType

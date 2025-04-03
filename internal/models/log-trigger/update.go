@@ -29,3 +29,10 @@ type UpdateLogTriggerInput struct {
 	CEFPort                       int    `json:"cefPortNum,omitempty"`
 	CEFProtocol                   string `json:"cefProtocol,omitempty"`
 }
+
+type TriggerUsedBy struct {
+	Container string   `json:"container"`
+	Practices []string `json:"practices"`
+}
+
+type TriggersUsedBy []TriggerUsedBy

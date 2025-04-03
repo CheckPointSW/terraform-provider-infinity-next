@@ -75,6 +75,13 @@ func GetCloudGuardAppSecGatewayProfile(ctx context.Context, c *api.Client, id st
 					key
 					value
 				}
+				usedBy {
+					id
+					name
+					type	
+					subType
+					objectStatus
+				}
 				upgradeMode
 				upgradeTime {
 					scheduleType

@@ -217,7 +217,7 @@ func GetChangeWithParse[T any](d *schema.ResourceData, key string, parseFunc fun
 
 }
 
-// GetChangeWithParse checks if there has been any changes made to the value saved under the given key in the resourceData object
+// MustGetChange GetChangeWithParse checks if there has been any changes made to the value saved under the given key in the resourceData object
 // if so, the functon converts the the old and new values to the desired type
 // note that if the conversion fails the function will panic!
 func MustGetChange[T any](d *schema.ResourceData, key string) (T, T, bool) {
