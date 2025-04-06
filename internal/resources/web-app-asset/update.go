@@ -85,8 +85,8 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 
 		newProxySettingsIndicators := newProxySettings.ToIndicatorsMap()
 		for _, oldSetting := range oldProxySettings {
-			// if the key is mTLS type - skip it
-			if proxySettingKeyTomTLSType(oldSetting.Key) != "" {
+			// if the key is mTLS, location or server block type - skip it
+			if proxySettingKeyToBlockType(oldSetting.Key) != "" {
 				continue
 			}
 
@@ -155,6 +155,114 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 		if mTLSsToAdd != nil {
 			proxySettingsToAdd = mapMTLSToProxySettingInputs(mTLSsToAdd, models.ProxySettingInputs{})
 		}
+
+		for _, proxySettingToAdd := range proxySettingsToAdd {
+			updateInput.AddProxySetting = append(updateInput.AddProxySetting, models.AddProxySetting{
+				Key:   proxySettingToAdd.Key,
+				Value: proxySettingToAdd.Value,
+			})
+		}
+
+	}
+
+	if oldBlocks, newBlocks, hasChange := utils.GetChangeWithParse(d, "block", parseBlocks); hasChange {
+		oldBlocksIndicatorMap := oldBlocks.ToIndicatorMap()
+		additionalBlocksToAdd := models.BlockSchemas{}
+		for _, newBlock := range newBlocks {
+			oldBlock, ok := oldBlocksIndicatorMap[newBlock.Type]
+			if !ok {
+				if newBlock.Enable {
+					additionalBlocksToAdd = append(additionalBlocksToAdd, newBlock)
+				}
+
+				continue
+			}
+
+			if !newBlock.Enable {
+				key := locationConfigEnable
+				if newBlock.Type == blockTypeServer {
+					key = serverConfigEnable
+				}
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldBlock.EnableID,
+					Key:   key,
+					Value: "false",
+				})
+
+				if oldBlock.Enable {
+					if oldBlock.FilenameID != "" {
+						updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, oldBlock.FilenameID)
+					}
+
+					if oldBlock.DataID != "" {
+						updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, oldBlock.DataID)
+					}
+
+				}
+
+				continue
+			}
+
+			if oldBlock.Enable != newBlock.Enable {
+				enableKey := locationConfigEnable
+				dataKey := locationConfigData
+				filenameKey := locationConfigFileName
+				if newBlock.Type == blockTypeServer {
+					enableKey = serverConfigEnable
+					dataKey = serverConfigData
+					filenameKey = serverConfigFileName
+				}
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldBlock.EnableID,
+					Key:   enableKey,
+					Value: "true",
+				})
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldBlock.DataID,
+					Key:   dataKey,
+					Value: newBlock.Data,
+				})
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldBlock.FilenameID,
+					Key:   filenameKey,
+					Value: newBlock.Filename,
+				})
+
+			}
+
+			if oldBlock.Data != newBlock.Data || oldBlock.Filename != newBlock.Filename {
+				dataKey := locationConfigData
+				filenameKey := locationConfigFileName
+				if newBlock.Type == blockTypeServer {
+					dataKey = serverConfigData
+					filenameKey = serverConfigFileName
+				}
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldBlock.DataID,
+					Key:   dataKey,
+					Value: newBlock.Data,
+				})
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldBlock.FilenameID,
+					Key:   filenameKey,
+					Value: newBlock.Filename,
+				})
+
+			}
+
+		}
+
+		var proxySettingsToAdd models.ProxySettingInputs
+		if additionalBlocksToAdd != nil {
+			proxySettingsToAdd = mapBlocksToProxySettingInputs(additionalBlocksToAdd, models.ProxySettingInputs{})
+		}
+
 		for _, proxySettingToAdd := range proxySettingsToAdd {
 			updateInput.AddProxySetting = append(updateInput.AddProxySetting, models.AddProxySetting{
 				Key:   proxySettingToAdd.Key,
@@ -299,4 +407,8 @@ func parseSchemaTags(tagsFromResourceData any) models.TagsInputs {
 
 func parsemTLSs(mTLSsFromResourceData any) models.MTLSSchemas {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](mTLSsFromResourceData), mapToMTLSInput)
+}
+
+func parseBlocks(blocksFromResourceData any) models.BlockSchemas {
+	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](blocksFromResourceData), mapToBlocksInput)
 }

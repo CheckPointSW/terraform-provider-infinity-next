@@ -21,6 +21,17 @@ const (
 	mtlsServerEnable   = "isTrustedCAListFile"
 	mtlsServerData     = "trustedCAListFile"
 	mtlsServerFileName = "trustedCAListFileName"
+
+	blockTypeLocation = "location"
+	blockTypeServer   = "server"
+
+	locationConfigEnable   = "isLocationConfigFile"
+	locationConfigData     = "locationConfigFile"
+	locationConfigFileName = "locationConfigFileName"
+
+	serverConfigEnable   = "isServerConfigFile"
+	serverConfigData     = "serverConfigFile"
+	serverConfigFileName = "serverConfigFileName"
 )
 
 func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (models.CreateWebApplicationAssetInput, error) {
@@ -41,6 +52,11 @@ func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (mod
 	mtls = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "mtls"), mapToMTLSInput)
 
 	res.ProxySettings = mapMTLSToProxySettingInputs(mtls, res.ProxySettings)
+
+	var additionalBlocks models.BlockSchemas
+	additionalBlocks = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "additional_instructions_blocks"), mapToBlocksInput)
+
+	res.ProxySettings = mapBlocksToProxySettingInputs(additionalBlocks, res.ProxySettings)
 
 	return res, nil
 }
@@ -244,6 +260,70 @@ func mapMTLSToProxySettingInputs(mTLS models.MTLSSchemas, proxySettings models.P
 
 		proxySettingData.Value = mTLSFile.Data
 		proxySettingFileName.Value = mTLSFile.Filename
+
+		proxySettings = append(proxySettings, proxySettingEnable, proxySettingData, proxySettingFileName)
+	}
+
+	return proxySettings
+}
+
+func mapToBlocksInput(blocksMap map[string]any) models.BlockSchema {
+	blockFile, err := utils.UnmarshalAs[models.BlockSchema](blocksMap)
+	if err != nil {
+		fmt.Printf("Failed to convert input schema validation to BlockSchema struct. Error: %+v", err)
+		return models.BlockSchema{}
+	}
+
+	blockFile = models.NewFileSchemaEncodeBlocks(blockFile.Filename, blockFile.Data, blockFile.FilenameType, blockFile.Type, blockFile.Enable)
+
+	if blocksMap["filename_id"] != nil {
+		blockFile.FilenameID = blocksMap["filename_id"].(string)
+	}
+
+	if blocksMap["data_id"] != nil {
+		blockFile.DataID = blocksMap["data_id"].(string)
+	}
+
+	if blocksMap["enable_id"] != nil {
+		blockFile.EnableID = blocksMap["enable_id"].(string)
+	}
+
+	return blockFile
+}
+
+func mapBlocksToProxySettingInputs(blocks models.BlockSchemas, proxySettings models.ProxySettingInputs) models.ProxySettingInputs {
+	blockTypes := make(map[string]bool)
+	for _, block := range blocks {
+		blockType := block.Type
+		if blockTypes[blockType] {
+			continue
+		} else {
+			blockTypes[blockType] = true
+		}
+
+		var proxySettingEnable, proxySettingData, proxySettingFileName models.ProxySettingInput
+		switch blockType {
+		case blockTypeLocation:
+			proxySettingEnable.Key = locationConfigEnable
+			proxySettingData.Key = locationConfigData
+			proxySettingFileName.Key = locationConfigFileName
+		case blockTypeServer:
+			proxySettingEnable.Key = serverConfigEnable
+			proxySettingData.Key = serverConfigData
+			proxySettingFileName.Key = serverConfigFileName
+		default:
+			continue
+		}
+
+		blockEnable := "false"
+		if block.Enable {
+			blockEnable = "true"
+		}
+
+		proxySettingEnable.Value = blockEnable
+
+		proxySettingData.Value = block.Data
+		proxySettingFileName.Value = block.Filename
 
 		proxySettings = append(proxySettings, proxySettingEnable, proxySettingData, proxySettingFileName)
 	}

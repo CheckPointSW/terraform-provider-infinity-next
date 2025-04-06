@@ -273,6 +273,57 @@ func ResourceWebAppAsset() *schema.Resource {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
+			"additional_instructions_blocks": {
+				Type:        schema.TypeSet,
+				Description: "The additional instructions blocks settings - location or server blocks",
+				Optional:    true,
+				Computed:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"filename_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"filename": {
+							Description: "The name of the instructions block file",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"filename_type": {
+							Description: "The type of the instructions block file - .conf, .json, .xml, .yaml, .yml",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"data_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"data": {
+							Description: "The instructions block data",
+							Type:        schema.TypeString,
+							Sensitive:   true,
+							Optional:    true,
+						},
+						"type": {
+							Description: "The type of the additional instructions block - location or server",
+							Type:        schema.TypeString,
+							Required:    true,
+							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice(
+								[]string{"location", "server"}, false)),
+						},
+						"enable_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"enable": {
+							Description: "Whether the instructions block is enabled",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Default:     false,
+						},
+					},
+				},
+			},
 			"mtls": {
 				Type:        schema.TypeSet,
 				Description: "The mutual TLS settings",

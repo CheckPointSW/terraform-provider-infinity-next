@@ -113,3 +113,12 @@ func (mtlsInputs MTLSSchemas) ToIndicatorMap() map[string]MTLSSchema {
 
 	return mTLSs
 }
+
+func (blockInputs BlockSchemas) ToIndicatorMap() map[string]BlockSchema {
+	blocks := make(map[string]BlockSchema)
+	for _, block := range blocks {
+		blocks[block.Type] = block
+	}
+
+	return blocks
+}

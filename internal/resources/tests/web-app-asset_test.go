@@ -98,6 +98,13 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"mtls.0.data":             "cert data",
 						"mtls.0.type":             "client",
 						"mtls.0.enable":           "true",
+
+						"additional_instructions_blocks.#":               "1",
+						"additional_instructions_blocks.0.filename":      "location.json",
+						"additional_instructions_blocks.0.filename_type": "json",
+						"additional_instructions_blocks.0.data":          "location data",
+						"additional_instructions_blocks.0.type":          "location",
+						"additional_instructions_blocks.0.enable":        "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -114,6 +121,9 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.enable_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -196,12 +206,18 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"tags.0.%":                              "3",
 						"tags.1.%":                              "3",
 
-						"mtls.#":                  "1",
-						"mtls.0.filename":         "cert.der",
-						"mtls.0.certificate_type": ".der",
-						"mtls.0.data":             "cert data",
-						"mtls.0.type":             "client",
-						"mtls.0.enable":           "true",
+						"mtls.#":                           "1",
+						"mtls.0.filename":                  "cert.der",
+						"mtls.0.certificate_type":          ".der",
+						"mtls.0.data":                      "cert data",
+						"mtls.0.type":                      "client",
+						"mtls.0.enable":                    "true",
+						"additional_instructions_blocks.#": "1",
+						"additional_instructions_blocks.0.filename":      "location.json",
+						"additional_instructions_blocks.0.filename_type": "json",
+						"additional_instructions_blocks.0.data":          "location data",
+						"additional_instructions_blocks.0.type":          "location",
+						"additional_instructions_blocks.0.enable":        "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -218,6 +234,9 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.enable_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -275,17 +294,28 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"tags.1.%":                              "3",
 						"tags.2.%":                              "3",
 
-						"mtls.#":                  "2",
-						"mtls.0.filename":         "newfile.crt",
-						"mtls.0.certificate_type": ".der",
-						"mtls.0.data":             "new cert data",
-						"mtls.0.type":             "server",
-						"mtls.0.enable":           "true",
-						"mtls.1.filename":         "newfile2.p12",
-						"mtls.1.certificate_type": ".p12",
-						"mtls.1.data":             "new cert data2",
-						"mtls.1.type":             "client",
-						"mtls.1.enable":           "false",
+						"mtls.#":                           "2",
+						"mtls.0.filename":                  "newfile.crt",
+						"mtls.0.certificate_type":          ".der",
+						"mtls.0.data":                      "new cert data",
+						"mtls.0.type":                      "server",
+						"mtls.0.enable":                    "true",
+						"mtls.1.filename":                  "newfile2.p12",
+						"mtls.1.certificate_type":          ".p12",
+						"mtls.1.data":                      "new cert data2",
+						"mtls.1.type":                      "client",
+						"mtls.1.enable":                    "false",
+						"additional_instructions_blocks.#": "2",
+						"additional_instructions_blocks.0.filename":      "location.json",
+						"additional_instructions_blocks.0.filename_type": "json",
+						"additional_instructions_blocks.0.data":          "location data",
+						"additional_instructions_blocks.0.type":          "location",
+						"additional_instructions_blocks.0.enable":        "false",
+						"additional_instructions_blocks.1.filename":      "server.json",
+						"additional_instructions_blocks.1.filename_type": "json",
+						"additional_instructions_blocks.1.data":          "server data",
+						"additional_instructions_blocks.1.type":          "server",
+						"additional_instructions_blocks.1.enable":        "true",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -306,6 +336,10 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.filename_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.data_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.1.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.1.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.1.enable_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -375,6 +409,13 @@ resource "inext_web_app_asset" %[1]q {
 		certificate_type = ".pem"
 		data	 = "cert data"
 		type = "client"
+		enable = true
+	}
+	additional_instructions_blocks {
+		filename = "location.json"
+		filename_type = ".json"
+		data	 = "location data"
+		type = "location"
 		enable = true
 	}
 }
@@ -522,6 +563,13 @@ resource "inext_web_app_asset" %[1]q {
 		certificate_type = ".der"
 		data	 = "cert data"
 		type = "client"
+		enable = true
+	}
+	additional_instructions_blocks {
+		filename = "location.json"
+		filename_type = ".json"
+		data	 = "location data"
+		type = "location"
 		enable = true
 	}
 }
@@ -715,6 +763,20 @@ resource "inext_web_app_asset" %[1]q {
 		data	 = "new cert data2"
 		type = "client"
 		enable = false
+	}
+	additional_instructions_blocks {
+		filename = "location.json"
+		filename_type = ".json"
+		data	 = "location data"
+		type = "location"
+		enable = false
+	}
+	additional_instructions_blocks {
+		filename = "server.json"
+		filename_type = ".json"
+		data	 = "server data"
+		type = "server"
+		enable = true
 	}
 }
 
