@@ -31,4 +31,6 @@ type CloudGuardAppSecGatewayProfile struct {
 	ReverseProxyAdditionalSettings []KeyValue     `json:"reverseProxyAdditionalSettings,omitempty"`
 	UpgradeTime                    *UpgradeTime   `json:"upgradeTime,omitempty"`
 	ReverseProxyUpstreamTimeout    int            `json:"reverseProxyUpstreamTimeout,omitempty"`
+	CertificateType                string         `json:"certificateType,omitempty"`
+	FailOpenInspection             bool           `json:"failOpenInspection,omitempty"`
 }

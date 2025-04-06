@@ -36,4 +36,6 @@ type UpdateCloudGuardAppSecGatewayProfileInput struct {
 	RemoveReverseProxyAdditionalSettings []string                  `json:"removeReverseProxyAdditionalSettings,omitempty"`
 	ReverseProxyUpstreamTimeout          int                       `json:"reverseProxyUpstreamTimeout,omitempty"`
 	Authentication                       UpdateAuthenticationInput `json:"authentication,omitempty"`
+	CertificateType                      string                    `json:"certificateType,omitempty"`
+	FailOpenInspection                   bool                      `json:"failOpenInspection,omitempty"`
 }

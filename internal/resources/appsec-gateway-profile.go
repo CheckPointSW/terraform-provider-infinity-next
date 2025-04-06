@@ -15,6 +15,8 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 	validateSubType := validation.ToDiagFunc(validation.StringInSlice([]string{appsecgatewayprofile.ProfileSubTypeAws, appsecgatewayprofile.ProfileSubTypeAzure, appsecgatewayprofile.ProfileSubTypeVMware, appsecgatewayprofile.ProfileSubTypeHyperV}, false))
 	validateUpgradeMode := validation.ToDiagFunc(validation.StringInSlice([]string{appsecgatewayprofile.UpgradeModeAutomatic, appsecgatewayprofile.UpgradeModeManual, appsecgatewayprofile.UpgradeModeScheduled}, false))
 	validateUpgradeTimeType := validation.ToDiagFunc(validation.StringInSlice([]string{appsecgatewayprofile.ScheduleTypeDaily, appsecgatewayprofile.ScheduleTypeDaysInWeek, appsecgatewayprofile.ScheduleTypeDaysInMonth}, false))
+	validateCertificateType := validation.ToDiagFunc(validation.StringInSlice([]string{appsecgatewayprofile.CertificateTypeVault, appsecgatewayprofile.CertificateTypeGateway}, false))
+
 	return &schema.Resource{
 		Description: "CloudGuard Application Security Gateway profile is deployed as a VM that runs on a Check Point Gaia OS " +
 			"with a reverse proxy and Check Point Nano-Agent.",
@@ -147,6 +149,17 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Type:        schema.TypeString,
 				Description: "The token used to register an agent to the profile",
 				Computed:    true,
+			},
+			"certificate_type": {
+				Type:             schema.TypeString,
+				Description:      "The type of the certificate used for the profile: Vault or Gateway",
+				Optional:         true,
+				ValidateDiagFunc: validateCertificateType,
+			},
+			"fail_open_inspection": {
+				Type:        schema.TypeBool,
+				Description: "Allow traffic upon internal failures or high CPU utilization: true or false",
+				Optional:    true,
 			},
 		},
 	}

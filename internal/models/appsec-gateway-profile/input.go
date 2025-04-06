@@ -26,4 +26,6 @@ type CreateCloudGuardAppSecGatewayProfileInput struct {
 	ReverseProxyAdditionalSettings []KeyValueInput     `json:"reverseProxyAdditionalSettings,omitempty"`
 	ReverseProxyUpstreamTimeout    int                 `json:"reverseProxyUpstreamTimeout,omitempty"`
 	Authentication                 AuthenticationInput `json:"authentication,omitempty"`
+	CertificateType                string              `json:"certificateType,omitempty"`
+	FailOpenInspection             bool                `json:"failOpenInspection,omitempty"`
 }

@@ -58,6 +58,8 @@ func TestAccAppsecGatewayProfileBasic(t *testing.T) {
 						"reverseproxy_additional_settings.Key3":  "Value5",
 						"additional_settings.Key1":               "Value1",
 						"additional_settings.Key2":               "Value2",
+						"certificate_type":                       "Gateway",
+						"failOpenInspection":                     "true",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 						resource.TestCheckResourceAttrSet(resourceName, "authentication_token"),
@@ -109,6 +111,8 @@ func TestAccAppsecGatewayProfileFull(t *testing.T) {
 						"reverseproxy_additional_settings.Key3":  "Value5",
 						"additional_settings.Key1":               "Value1",
 						"additional_settings.Key2":               "Value2",
+						"certificate_type":                       "Vault",
+						"failOpenInspection":                     "true",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 						resource.TestCheckResourceAttrSet(resourceName, "authentication_token"),
@@ -154,6 +158,8 @@ func TestAccAppsecGatewayProfileFull(t *testing.T) {
 						"additional_settings.Key5":               "Value5",
 						"%":                                      "17",
 						"upgrade_time_week_days.1":               "Sunday",
+						"certificate_type":                       "Vault",
+						"failOpenInspection":                     "false",
 					}),
 						resource.TestCheckTypeSetElemAttr(resourceName, "upgrade_time_week_days.*", "Monday"),
 						resource.TestCheckTypeSetElemAttr(resourceName, "upgrade_time_week_days.*", "Sunday"),
@@ -196,6 +202,8 @@ resource "inext_appsec_gateway_profile" %[1]q {
 		Key1 = "Value1"
 		Key2 = "Value2"
 	}
+	certificate_type = "Gateway"
+    failOpenInspection = true
 }
 `, name)
 }
@@ -220,6 +228,8 @@ resource "inext_appsec_gateway_profile" %[1]q {
 		Key1 = "Value1"
 		Key2 = "Value2"
 	}
+	certificate_type = "Vault"
+    failOpenInspection = true
 }
 `, name)
 }
@@ -246,6 +256,8 @@ resource "inext_appsec_gateway_profile" %[1]q {
 		Key5 = "Value5"
 		Key6 = "Value6"
 	}
+	certificate_type = "Vault"
+    failOpenInspection = false
 }
 `, name)
 }
