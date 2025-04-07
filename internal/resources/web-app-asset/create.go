@@ -32,6 +32,11 @@ const (
 	serverConfigEnable   = "isServerConfigFile"
 	serverConfigData     = "serverConfigFile"
 	serverConfigFileName = "serverConfigFileName"
+
+	redirectToHTTPSEnable = "redirectToHttps"
+	accessLogEnable       = "accessLog"
+	customHeaderEnable    = "isSetHeader"
+	customHeaderData      = "setHeader"
 )
 
 func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (models.CreateWebApplicationAssetInput, error) {
@@ -57,6 +62,10 @@ func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (mod
 	additionalBlocks = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "additional_instructions_blocks"), mapToBlocksInput)
 
 	res.ProxySettings = mapBlocksToProxySettingInputs(additionalBlocks, res.ProxySettings)
+
+	var customHeaders models.CustomHeadersSchemas
+	customHeaders = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "custom_headers"), mapToCustomHeaderInput)
+	res.ProxySettings = mapAdvancedToProxySettingInputs(d.Get("redirect_to_https").(bool), d.Get("access_log").(bool), customHeaders, res.ProxySettings)
 
 	return res, nil
 }
@@ -326,6 +335,57 @@ func mapBlocksToProxySettingInputs(blocks models.BlockSchemas, proxySettings mod
 		proxySettingFileName.Value = block.Filename
 
 		proxySettings = append(proxySettings, proxySettingEnable, proxySettingData, proxySettingFileName)
+	}
+
+	return proxySettings
+}
+
+func mapToCustomHeaderInput(customHeadersMap map[string]any) models.CustomHeaderSchema {
+	var customHeader models.CustomHeaderSchema
+
+	customHeader.Name = customHeadersMap["name"].(string)
+	customHeader.Value = customHeadersMap["value"].(string)
+
+	if id, ok := customHeadersMap["header_id"]; ok {
+		customHeader.HeaderID = id.(string)
+	}
+
+	return customHeader
+}
+
+func mapAdvancedToProxySettingInputs(redirectToHTTPS, accessLog bool, customHeaders models.CustomHeadersSchemas, proxySettings models.ProxySettingInputs) models.ProxySettingInputs {
+	if redirectToHTTPS {
+		proxySettingEnable := models.ProxySettingInput{
+			Key:   redirectToHTTPSEnable,
+			Value: "true",
+		}
+		proxySettings = append(proxySettings, proxySettingEnable)
+	}
+
+	if accessLog {
+		proxySettingEnable := models.ProxySettingInput{
+			Key:   accessLogEnable,
+			Value: "true",
+		}
+		proxySettings = append(proxySettings, proxySettingEnable)
+	}
+
+	if len(customHeaders) == 0 {
+		return proxySettings
+	}
+
+	proxySettingEnable := models.ProxySettingInput{
+		Key:   customHeaderEnable,
+		Value: "true",
+	}
+
+	proxySettings = append(proxySettings, proxySettingEnable)
+	for _, customHeader := range customHeaders {
+		var proxySetting models.ProxySettingInput
+
+		proxySetting.Key = customHeaderData
+		proxySetting.Value = fmt.Sprintf("%s:%s", customHeader.Name, customHeader.Value)
+		proxySettings = append(proxySettings, proxySettingEnable)
 	}
 
 	return proxySettings

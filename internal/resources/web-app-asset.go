@@ -273,6 +273,51 @@ func ResourceWebAppAsset() *schema.Resource {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
+			"redirect_to_https": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+				Computed: true,
+			},
+			"redirect_to_https_id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"access_log": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+				Computed: true,
+			},
+			"access_log_id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"custom_headers": {
+				Type:        schema.TypeSet,
+				Description: "The custom headers settings",
+				Optional:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"header_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"name": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"value": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+					},
+				},
+			},
+			"custom_headers_id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"additional_instructions_blocks": {
 				Type:        schema.TypeSet,
 				Description: "The additional instructions blocks settings - location or server blocks",

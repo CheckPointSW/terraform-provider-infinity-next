@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -121,4 +122,14 @@ func (blockInputs BlockSchemas) ToIndicatorMap() map[string]BlockSchema {
 	}
 
 	return blocks
+}
+
+func (customHeadersInputs CustomHeadersSchemas) ToIndicatorMap() map[string]CustomHeaderSchema {
+	customHeaders := make(map[string]CustomHeaderSchema)
+	for _, customHeader := range customHeaders {
+		nameAndValue := fmt.Sprintf("%s:%s", customHeader.Name, customHeader.Value)
+		customHeaders[nameAndValue] = customHeader
+	}
+
+	return customHeaders
 }

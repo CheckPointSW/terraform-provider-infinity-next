@@ -34,7 +34,7 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"name":            assetNameAttribute,
 						"urls.0":          fmt.Sprintf("http://host/%s/path1", assetNameAttribute),
 						"urls.#":          "1",
-						"%":               "25",
+						"%":               "29",
 						"urls_ids.#":      "1",
 						"main_attributes": fmt.Sprintf("{\"applicationUrls\":\"http://host/%s/path1\"}", assetNameAttribute),
 					}),
@@ -53,7 +53,7 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "25",
+						"%":                                     "29",
 						"read_only":                             "false",
 						"upstream_url":                          "some url 5",
 						"urls.#":                                "2",
@@ -105,6 +105,9 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"additional_instructions_blocks.0.data":          "location data",
 						"additional_instructions_blocks.0.type":          "location",
 						"additional_instructions_blocks.0.enable":        "true",
+						"custom_headers.#":                               "1",
+						"custom_headers.0.name":                          "header1",
+						"custom_headers.0.value":                         "value1",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -124,6 +127,8 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.filename_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.data_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers.0.header_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -166,7 +171,7 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "25",
+						"%":                                     "29",
 						"read_only":                             "false",
 						"upstream_url":                          "some url 5",
 						"urls.#":                                "2",
@@ -218,6 +223,11 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"additional_instructions_blocks.0.data":          "location data",
 						"additional_instructions_blocks.0.type":          "location",
 						"additional_instructions_blocks.0.enable":        "true",
+						"redirect_to_https":                              "true",
+						"access_log":                                     "true",
+						"custom_headers.#":                               "1",
+						"custom_headers.0.name":                          "header1",
+						"custom_headers.0.value":                         "value1",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -237,6 +247,10 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.filename_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.data_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "redirect_to_https_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "access_log_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers.0.header_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -253,7 +267,7 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
 						"name":                                  assetNameAttribute,
-						"%":                                     "25",
+						"%":                                     "29",
 						"read_only":                             "false",
 						"upstream_url":                          "some url 10",
 						"urls.#":                                "2",
@@ -316,6 +330,13 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"additional_instructions_blocks.1.data":          "server data",
 						"additional_instructions_blocks.1.type":          "server",
 						"additional_instructions_blocks.1.enable":        "true",
+						"redirect_to_https":                              "false",
+						"access_log":                                     "false",
+						"custom_headers.#":                               "2",
+						"custom_headers.0.name":                          "header1",
+						"custom_headers.0.value":                         "value",
+						"custom_headers.1.name":                          "header2",
+						"custom_headers.1.value":                         "value2",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -340,6 +361,11 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.1.filename_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.1.data_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.1.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "redirect_to_https_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "access_log_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers.0.header_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers.1.header_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -417,6 +443,10 @@ resource "inext_web_app_asset" %[1]q {
 		data	 = "location data"
 		type = "location"
 		enable = true
+	}
+	custom_headers {
+		name   = "header1"
+		value  = "value1"
 	}
 }
 
@@ -571,6 +601,12 @@ resource "inext_web_app_asset" %[1]q {
 		data	 = "location data"
 		type = "location"
 		enable = true
+	}
+	redirect_to_https = "true"
+	access_log = "true"
+	custom_headers {
+		name   = "header1"
+		value  = "value1"
 	}
 }
 
@@ -777,6 +813,16 @@ resource "inext_web_app_asset" %[1]q {
 		data	 = "server data"
 		type = "server"
 		enable = true
+	}
+	redirect_to_https = "false"
+	access_log = "false"
+	custom_headers {
+		name   = "header1"
+		value  = "value"
+	}
+	custom_headers {
+		name   = "header2"
+		value  = "value2"
 	}
 }
 

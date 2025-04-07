@@ -28,6 +28,9 @@ func proxySettingKeyToBlockType(proxySettingKey string) string {
 	if proxySettingKey == serverConfigEnable || proxySettingKey == serverConfigData || proxySettingKey == serverConfigFileName {
 		return blockTypeServer
 	}
+	if proxySettingKey == redirectToHTTPSEnable || proxySettingKey == accessLogEnable || proxySettingKey == customHeaderEnable || proxySettingKey == customHeaderData {
+		return proxySettingKey
+	}
 
 	return ""
 }
@@ -56,10 +59,41 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	var mTLSsMap []map[string]any
 	blocksSchemaMap := make(map[string]models.BlockSchema)
 	var additionalBlocksMap []map[string]any
+	customHeadersSchemaMap := make(map[string]models.CustomHeaderSchema)
+	var customHeadersMap []map[string]any
 
 	for _, proxySetting := range asset.ProxySettings {
 		blockType := proxySettingKeyToBlockType(proxySetting.Key)
 		if blockType != "" {
+			if blockType == redirectToHTTPSEnable {
+				d.Set("redirect_to_https", proxySetting.Value == "true")
+				d.Set("redirect_to_https_id", proxySetting.ID)
+				continue
+			}
+
+			if blockType == accessLogEnable {
+				d.Set("access_log", proxySetting.Value == "true")
+				d.Set("access_log_id", proxySetting.ID)
+				continue
+			}
+
+			if blockType == customHeaderEnable {
+				d.Set("custom_header_id", proxySetting.ID)
+				continue
+			}
+
+			if blockType == customHeaderData {
+				nameAndValue := strings.SplitN(proxySetting.Value, ":", 2)
+				customHeaderSchema := models.CustomHeaderSchema{
+					HeaderID: proxySetting.ID,
+					Name:     nameAndValue[0],
+					Value:    nameAndValue[1],
+				}
+
+				customHeadersSchemaMap[proxySetting.ID] = customHeaderSchema
+				continue
+			}
+
 			if blockType == blockTypeLocation || blockType == blockTypeServer {
 				if _, ok := blocksSchemaMap[blockType]; !ok {
 					blocksSchemaMap[blockType] = models.BlockSchema{}
@@ -200,9 +234,19 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 		additionalBlocksMap = append(additionalBlocksMap, block)
 	}
 
+	for _, customHeaderSchema := range customHeadersSchemaMap {
+		customHeader, err := utils.UnmarshalAs[map[string]any](customHeaderSchema)
+		if err != nil {
+			return fmt.Errorf("failed to convert custom header to map. Error: %+v", err)
+		}
+
+		customHeadersMap = append(customHeadersMap, customHeader)
+	}
+
 	d.Set("proxy_setting", proxySettingsSchemaMap)
 	d.Set("mtls", mTLSsMap)
 	d.Set("additional_instructions_blocks", additionalBlocksMap)
+	d.Set("custom_headers", customHeadersMap)
 
 	sourceIdentifiersSchema := asset.SourceIdentifiers.ToSchema()
 	sourceIdentifiersSchemaMap, err := utils.UnmarshalAs[[]map[string]any](sourceIdentifiersSchema)
