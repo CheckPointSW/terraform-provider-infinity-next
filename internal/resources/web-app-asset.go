@@ -277,7 +277,6 @@ func ResourceWebAppAsset() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
-				Computed: true,
 			},
 			"redirect_to_https_id": {
 				Type:     schema.TypeString,
@@ -287,7 +286,6 @@ func ResourceWebAppAsset() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
-				Computed: true,
 			},
 			"access_log_id": {
 				Type:     schema.TypeString,
