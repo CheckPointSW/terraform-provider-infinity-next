@@ -14,25 +14,21 @@ import (
 )
 
 func proxySettingKeyToBlockType(proxySettingKey string) string {
-	if proxySettingKey == mtlsClientEnable || proxySettingKey == mtlsClientData || proxySettingKey == mtlsClientFileName {
+	switch proxySettingKey {
+	case mtlsClientEnable, mtlsClientData, mtlsClientFileName:
 		return mtlsTypeClient
-	}
-	if proxySettingKey == mtlsServerEnable || proxySettingKey == mtlsServerData || proxySettingKey == mtlsServerFileName {
+	case mtlsServerEnable, mtlsServerData, mtlsServerFileName:
 		return mtlsTypeServer
-	}
-
-	if proxySettingKey == locationConfigEnable || proxySettingKey == locationConfigData || proxySettingKey == locationConfigFileName {
+	case locationConfigEnable, locationConfigData, locationConfigFileName:
 		return blockTypeLocation
-	}
-
-	if proxySettingKey == serverConfigEnable || proxySettingKey == serverConfigData || proxySettingKey == serverConfigFileName {
+	case serverConfigEnable, serverConfigData, serverConfigFileName:
 		return blockTypeServer
-	}
-	if proxySettingKey == redirectToHTTPSEnable || proxySettingKey == accessLogEnable || proxySettingKey == customHeaderEnable || proxySettingKey == customHeaderData {
+	case redirectToHTTPSEnable, accessLogEnable, customHeaderEnable, customHeaderData:
 		return proxySettingKey
+	default:
+		return ""
 	}
 
-	return ""
 }
 
 func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *schema.ResourceData) error {
@@ -65,24 +61,16 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	for _, proxySetting := range asset.ProxySettings {
 		blockType := proxySettingKeyToBlockType(proxySetting.Key)
 		if blockType != "" {
-			if blockType == redirectToHTTPSEnable {
+			switch blockType {
+			case redirectToHTTPSEnable:
 				d.Set("redirect_to_https", proxySetting.Value == "true")
 				d.Set("redirect_to_https_id", proxySetting.ID)
-				continue
-			}
-
-			if blockType == accessLogEnable {
+			case accessLogEnable:
 				d.Set("access_log", proxySetting.Value == "true")
 				d.Set("access_log_id", proxySetting.ID)
-				continue
-			}
-
-			if blockType == customHeaderEnable {
+			case customHeaderEnable:
 				d.Set("custom_headers_id", proxySetting.ID)
-				continue
-			}
-
-			if blockType == customHeaderData {
+			case customHeaderData:
 				nameAndValue := strings.SplitN(proxySetting.Value, ":", 2)
 				customHeaderSchema := models.CustomHeaderSchema{
 					HeaderID: proxySetting.ID,
@@ -91,18 +79,16 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 				}
 
 				customHeadersSchemaMap[proxySetting.ID] = customHeaderSchema
-				continue
-			}
-
-			if blockType == blockTypeLocation || blockType == blockTypeServer {
+			case blockTypeLocation, blockTypeServer:
 				if _, ok := blocksSchemaMap[blockType]; !ok {
 					blocksSchemaMap[blockType] = models.BlockSchema{}
 				}
 
-			}
+			default:
+				if _, ok := mTLSsSchemaMap[blockType]; !ok {
+					mTLSsSchemaMap[blockType] = models.MTLSSchema{}
+				}
 
-			if _, ok := mTLSsSchemaMap[blockType]; !ok {
-				mTLSsSchemaMap[blockType] = models.MTLSSchema{}
 			}
 
 			switch proxySetting.Key {

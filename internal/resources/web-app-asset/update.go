@@ -85,7 +85,7 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 
 		newProxySettingsIndicators := newProxySettings.ToIndicatorsMap()
 		for _, oldSetting := range oldProxySettings {
-			// if the key is mTLS, location or server block type - skip it
+			// if the key is one of the advanced proxy settings - skip it
 			if proxySettingKeyToBlockType(oldSetting.Key) != "" {
 				continue
 			}
@@ -253,8 +253,7 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 		}
 
 		for _, customHeaderToAdd := range customHeadersToAdd {
-			updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
-				ID:    customHeaderToAdd.HeaderID,
+			updateInput.AddProxySetting = append(updateInput.AddProxySetting, models.AddProxySetting{
 				Key:   customHeaderData,
 				Value: fmt.Sprintf("%s:%s", customHeaderToAdd.Name, customHeaderToAdd.Value),
 			})

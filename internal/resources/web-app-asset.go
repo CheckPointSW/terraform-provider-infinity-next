@@ -274,18 +274,20 @@ func ResourceWebAppAsset() *schema.Resource {
 				Computed: true,
 			},
 			"redirect_to_https": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+				Type:        schema.TypeBool,
+				Description: "Advanced Proxy Setting - Redirect incoming HTTP requests to the same URL using HTTPS. (The configured application URLs for this asset must include both the HTTP and the HTTPS version of each URL)",
+				Optional:    true,
+				Default:     false,
 			},
 			"redirect_to_https_id": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
 			"access_log": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
+				Type:        schema.TypeBool,
+				Description: "Advanced Proxy Setting - Activate access log on gateway.",
+				Optional:    true,
+				Default:     false,
 			},
 			"access_log_id": {
 				Type:     schema.TypeString,
@@ -293,7 +295,7 @@ func ResourceWebAppAsset() *schema.Resource {
 			},
 			"custom_headers": {
 				Type:        schema.TypeSet,
-				Description: "The custom headers settings",
+				Description: "Advanced Proxy Settings - The custom headers settings",
 				Optional:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
