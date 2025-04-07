@@ -100,8 +100,8 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 
 				if blockType == blockTypeServer || blockType == blockTypeLocation {
 					blocksSchemaMap[blockType] = models.BlockSchema{
-						FilenameID:   proxySetting.ID,
-						Filename:     proxySetting.Value,
+						FilenameID:   blocksSchemaMap[blockType].FilenameID,
+						Filename:     blocksSchemaMap[blockType].Filename,
 						FilenameType: blocksSchemaMap[blockType].FilenameType,
 						DataID:       blocksSchemaMap[blockType].DataID,
 						Data:         blocksSchemaMap[blockType].Data,
@@ -142,8 +142,8 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 
 				if blockType == blockTypeServer || blockType == blockTypeLocation {
 					blocksSchemaMap[blockType] = models.BlockSchema{
-						FilenameID:   proxySetting.ID,
-						Filename:     proxySetting.Value,
+						FilenameID:   blocksSchemaMap[blockType].FilenameID,
+						Filename:     blocksSchemaMap[blockType].Filename,
 						FilenameType: blocksSchemaMap[blockType].FilenameType,
 						DataID:       proxySetting.ID,
 						Data:         decodedData,

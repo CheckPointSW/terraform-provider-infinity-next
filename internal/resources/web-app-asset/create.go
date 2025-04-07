@@ -370,6 +370,7 @@ func mapAdvancedToProxySettingInputs(redirectToHTTPS, accessLog bool, customHead
 		proxySettings = append(proxySettings, proxySettingEnable)
 	}
 
+	fmt.Printf("customHeaders: %+d\n", len(customHeaders))
 	if len(customHeaders) == 0 {
 		return proxySettings
 	}
