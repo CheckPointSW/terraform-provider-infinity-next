@@ -2,7 +2,7 @@ package resources
 
 import (
 	"context"
-
+	"fmt"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
@@ -348,6 +348,7 @@ func resourceWebApiAssetCreate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAPIAsset Create", err, diags)
 	}
 
+	fmt.Printf("Creating WebAPIAsset with name: %s\n", createInput.Name)
 	asset, err := webapiasset.NewWebAPIAsset(ctx, c, createInput)
 	if err != nil {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
@@ -382,6 +383,7 @@ func resourceWebApiAssetRead(ctx context.Context, d *schema.ResourceData, meta a
 
 	c := meta.(*api.Client)
 
+	fmt.Printf("Reading WebAPIAsset with ID: %s\n", d.Id())
 	asset, err := webapiasset.GetWebAPIAsset(ctx, c, d.Id())
 	if err != nil {
 		return utils.DiagError("unable to perform get WebAPIAsset", err, diags)
@@ -404,6 +406,7 @@ func resourceWebApiAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform WebAPIAsset update", err, diags)
 	}
 
+	fmt.Printf("Updating WebAPIAsset with ID: %s\n", d.Id())
 	result, err := webapiasset.UpdateWebAPIAsset(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
@@ -422,6 +425,7 @@ func resourceWebApiAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("failed to Publish following WebAPIAsset Update", err, diags)
 	}
 
+	fmt.Printf("GetWebAPIAsset with ID: %s updated successfully\n", d.Id())
 	// get the newly created asset and read it into the state
 	newAsset, err := webapiasset.GetWebAPIAsset(ctx, c, d.Id())
 	if err != nil {
@@ -440,6 +444,7 @@ func resourceWebApiAssetDelete(ctx context.Context, d *schema.ResourceData, meta
 	c := meta.(*api.Client)
 
 	ID := d.Id()
+	fmt.Printf("Deleting WebAPIAsset with ID: %s\n", ID)
 	result, err := webapiasset.DeleteWebAPIAsset(ctx, c, ID)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
