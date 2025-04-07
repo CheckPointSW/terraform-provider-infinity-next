@@ -78,7 +78,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 			}
 
 			if blockType == customHeaderEnable {
-				d.Set("custom_header_id", proxySetting.ID)
+				d.Set("custom_headers_id", proxySetting.ID)
 				continue
 			}
 
