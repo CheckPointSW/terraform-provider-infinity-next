@@ -87,7 +87,7 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 
 					mimeType := strings.SplitN(proxySetting.Value, ":", 2)[1]
 					mimeType = strings.SplitN(mimeType, ";", 2)[0]
-					fileExtensionsByType = models.MimeTypeToFileExtension(mimeType)
+					fileExtensionsByType = models.MimeTypeToFileExtension(mimeType, true)
 				}
 
 				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{

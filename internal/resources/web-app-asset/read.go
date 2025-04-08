@@ -137,7 +137,12 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 
 					mimeType := strings.SplitN(proxySetting.Value, ":", 2)[1]
 					mimeType = strings.SplitN(mimeType, ";", 2)[0]
-					fileExtensionsByType = webAPIAssetModels.MimeTypeToFileExtension(mimeType)
+					if blockType == blockTypeServer || blockType == blockTypeLocation {
+						fileExtensionsByType = webAPIAssetModels.MimeTypeToFileExtension(mimeType, false)
+					} else {
+						fileExtensionsByType = webAPIAssetModels.MimeTypeToFileExtension(mimeType, true)
+					}
+
 				}
 
 				if blockType == blockTypeServer || blockType == blockTypeLocation {

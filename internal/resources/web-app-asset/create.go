@@ -346,7 +346,7 @@ func mapToCustomHeaderInput(customHeadersMap map[string]any) models.CustomHeader
 	customHeader.Name = customHeadersMap["name"].(string)
 	customHeader.Value = customHeadersMap["value"].(string)
 
-	if id, ok := customHeadersMap["header_id"]; ok {
+	if id, _ := customHeadersMap["header_id"]; id != nil {
 		customHeader.HeaderID = id.(string)
 	}
 

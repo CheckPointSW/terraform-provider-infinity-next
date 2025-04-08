@@ -18,11 +18,16 @@ const (
 	mTLSFileTypeP7C = ".p7c"
 	mTLSFileTypeCER = ".cer"
 
-	mimeTypePEM = "application/octet-stream"
-	mimeTypeDER = "application/x-x509-ca-cert"
-	mimeTypeP12 = "application/x-pkcs12"
-	mimeTypeP7B = "application/x-pkcs7-certificates"
-	mimeTypeP7C = "application/pkcs7-mime"
+	instructionsBlockTypeJSON = ".json"
+	instructionsBlockTypeYAML = ".yaml"
+
+	mimeTypePEM  = "application/octet-stream"
+	mimeTypeDER  = "application/x-x509-ca-cert"
+	mimeTypeP12  = "application/x-pkcs12"
+	mimeTypeP7B  = "application/x-pkcs7-certificates"
+	mimeTypeP7C  = "application/pkcs7-mime"
+	mimeTypeJSON = "application/json"
+	mimeTypeYAML = "application/octet-stream"
 )
 
 // SchemaPracticeMode represents a PracticeMode field of a practice field of a web API asset as it is saved in the state file
@@ -88,6 +93,10 @@ func FileExtensionToMimeType(extension string) string {
 		return mimeTypeP7B
 	case mTLSFileTypeP7C:
 		return mimeTypeP7C
+	case instructionsBlockTypeJSON:
+		return mimeTypeJSON
+	case instructionsBlockTypeYAML:
+		return mimeTypeYAML
 	default:
 		return mimeTypePEM
 	}
@@ -95,7 +104,18 @@ func FileExtensionToMimeType(extension string) string {
 
 // MimeTypeToFileExtension returns the file extension for a given MIME type
 // the function is used to set the certificate type in the MTLSSchema
-func MimeTypeToFileExtension(mimeType string) string {
+func MimeTypeToFileExtension(mimeType string, isMTLS bool) string {
+	if !isMTLS {
+		switch mimeType {
+		case instructionsBlockTypeJSON:
+			return instructionsBlockTypeJSON
+		case instructionsBlockTypeYAML:
+			return instructionsBlockTypeYAML
+		default:
+			return instructionsBlockTypeYAML
+		}
+	}
+
 	switch mimeType {
 	case mimeTypePEM:
 		return mTLSFileTypePEM
