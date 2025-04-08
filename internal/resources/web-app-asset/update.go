@@ -263,6 +263,8 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 	if oldBlocks, newBlocks, hasChange := utils.GetChangeWithParse(d, "additional_instructions_blocks", parseBlocks); hasChange {
 		oldBlocksIndicatorMap := oldBlocks.ToIndicatorMap()
 		additionalBlocksToAdd := models.BlockSchemas{}
+		fmt.Printf("oldBlocks: %v\n", oldBlocks)
+		fmt.Printf("newBlocks: %v\n", newBlocks)
 		for _, newBlock := range newBlocks {
 			oldBlock, ok := oldBlocksIndicatorMap[newBlock.Type]
 			if !ok {
@@ -272,6 +274,8 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 
 				continue
 			}
+
+			fmt.Printf("oldBlock=%v newBlock=%v\n", oldBlock, newBlock)
 
 			if !newBlock.Enable {
 				key := serverConfigEnable
