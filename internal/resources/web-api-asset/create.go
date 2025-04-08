@@ -102,7 +102,6 @@ func NewWebAPIAsset(ctx context.Context, c *api.Client, input models.CreateWebAP
 								id
 								URL
 							}
-							assetType
 							sources
 							class
 							category

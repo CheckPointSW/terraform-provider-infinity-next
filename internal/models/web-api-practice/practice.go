@@ -42,7 +42,7 @@ type IPS struct {
 	LowConfidence       string `json:"lowConfidence"`
 }
 
-type WebApplicationFileSecurity struct {
+type WebAPIFileSecurity struct {
 	ID                        string `json:"id"`
 	SeverityLevel             string `json:"severityLevel"`
 	HighConfidence            string `json:"highConfidence"`
@@ -63,14 +63,14 @@ type WebApplicationFileSecurity struct {
 
 // WebAPIPractice represents the response from the API after creating the web API practice
 type WebAPIPractice struct {
-	ID               string                     `json:"id"`
-	IPS              IPS                        `json:"IPS"`
-	Name             string                     `json:"name"`
-	Category         string                     `json:"category"`
-	PracticeType     string                     `json:"practiceType"`
-	Visibility       string                     `json:"visibility"`
-	APIAttacks       APIAttacks                 `json:"APIAttacks"`
-	Default          bool                       `json:"default"`
-	SchemaValidation SchemaValidation           `json:"SchemaValidation"`
-	FileSecurity     WebApplicationFileSecurity `json:"FileSecurity"`
+	ID               string             `json:"id"`
+	IPS              IPS                `json:"IPS"`
+	Name             string             `json:"name"`
+	Category         string             `json:"category"`
+	PracticeType     string             `json:"practiceType"`
+	Visibility       string             `json:"visibility"`
+	APIAttacks       APIAttacks         `json:"APIAttacks"`
+	Default          bool               `json:"default"`
+	SchemaValidation SchemaValidation   `json:"SchemaValidation"`
+	FileSecurity     WebAPIFileSecurity `json:"FileSecurity"`
 }

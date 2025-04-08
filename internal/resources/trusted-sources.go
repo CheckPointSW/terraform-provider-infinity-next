@@ -2,13 +2,20 @@ package resources
 
 import (
 	"context"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
+	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
+	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/trusted-sources"
+	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
+	webAppAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
 	trustedsources "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/trusted-sources"
+	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
+	webappasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-app-asset"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 )
 
 func ResourceTrustedSources() *schema.Resource {
@@ -188,11 +195,41 @@ func resourceTrustedSourcesDelete(ctx context.Context, d *schema.ResourceData, m
 
 	result, err := trustedsources.DeleteTrustedSourceBehavior(ctx, c, d.Id())
 	if err != nil || !result {
-		if _, discardErr := c.DiscardChanges(); discardErr != nil {
-			diags = utils.DiagError("failed to discard changes", discardErr, diags)
-		}
+		// Check if the error is due to the trusted source behavior being used by other resources
+		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
+			// Get the resources that are using the trusted source behavior
+			usedBy, err2 := trustedsources.UsedByTrustedSourceBehavior(ctx, c, d.Id())
+			if err2 != nil {
+				diags = utils.DiagError("unable to perform TrustedSourceBehavior UsedBy", err2, diags)
+				return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+			}
 
-		return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+			if usedBy != nil || len(usedBy) > 0 {
+				// Remove the trusted source behavior from the resources that are using it
+				if err2 := handleTrustedSourceReferences(ctx, usedBy, c, d.Id()); err2 != nil {
+					diags = err2
+					return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+				}
+
+				// Retry to delete the trusted source behavior
+				result, err := trustedsources.DeleteTrustedSourceBehavior(ctx, c, d.Id())
+				if err != nil || !result {
+					if _, discardErr := c.DiscardChanges(); discardErr != nil {
+						diags = utils.DiagError("failed to discard changes", discardErr, diags)
+					}
+
+					return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+				}
+
+			}
+
+		} else {
+			if _, discardErr := c.DiscardChanges(); discardErr != nil {
+				diags = utils.DiagError("failed to discard changes", discardErr, diags)
+			}
+
+			return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+		}
 	}
 
 	isValid, err := c.PublishChanges()
@@ -207,4 +244,50 @@ func resourceTrustedSourcesDelete(ctx context.Context, d *schema.ResourceData, m
 	d.SetId("")
 
 	return diags
+}
+
+func handleTrustedSourceReferences(ctx context.Context, usedBy models.DisplayObjects, c *api.Client, behaviorID string) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	for _, usedByResource := range usedBy {
+		if usedByResource.ObjectStatus == "Deleted" {
+			continue
+		}
+
+		switch usedByResource.SubType {
+		case "WebAPI":
+			webAPIAsset := webAPIAssetModels.UpdateWebAPIAssetInput{
+				RemoveBehaviors: []string{behaviorID},
+			}
+
+			updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, usedByResource.ID, webAPIAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("failed to update usedByResource", err, diags)
+			}
+
+		case "WebApplication":
+			webAppAsset := webAppAssetModels.UpdateWebApplicationAssetInput{
+				RemoveBehaviors: []string{behaviorID},
+			}
+
+			updated, err := webappasset.UpdateWebApplicationAsset(ctx, c, usedByResource.ID, webAppAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("failed to update usedByResource", err, diags)
+			}
+
+		default:
+			return utils.DiagError("failed to update usedByResource", nil, diags)
+		}
+
+	}
+
+	return nil
 }
