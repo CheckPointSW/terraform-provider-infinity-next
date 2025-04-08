@@ -117,7 +117,7 @@ func (mtlsInputs MTLSSchemas) ToIndicatorMap() map[string]MTLSSchema {
 
 func (blockInputs BlockSchemas) ToIndicatorMap() map[string]BlockSchema {
 	blocks := make(map[string]BlockSchema)
-	for _, block := range blocks {
+	for _, block := range blockInputs {
 		blocks[block.Type] = block
 	}
 
