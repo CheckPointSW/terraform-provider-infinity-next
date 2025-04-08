@@ -263,19 +263,18 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 	if oldBlocks, newBlocks, hasChange := utils.GetChangeWithParse(d, "additional_instructions_blocks", parseBlocks); hasChange {
 		oldBlocksIndicatorMap := oldBlocks.ToIndicatorMap()
 		additionalBlocksToAdd := models.BlockSchemas{}
-		fmt.Printf("oldBlocks: %v\n", oldBlocks)
-		fmt.Printf("newBlocks: %v\n", newBlocks)
+		fmt.Printf("oldBlocks: %+v\n", oldBlocks)
+		fmt.Printf("newBlocks: %+v\n", newBlocks)
 		for _, newBlock := range newBlocks {
 			oldBlock, ok := oldBlocksIndicatorMap[newBlock.Type]
+			fmt.Printf("oldBlock=%+v newBlock=%+v. oldBlocksIndicatorMap=%+v\n", oldBlock, newBlock, oldBlocksIndicatorMap)
 			if !ok {
 				if newBlock.Enable {
 					additionalBlocksToAdd = append(additionalBlocksToAdd, newBlock)
 				}
-
+				fmt.Printf("Continuing\n")
 				continue
 			}
-
-			fmt.Printf("oldBlock=%v newBlock=%v\n", oldBlock, newBlock)
 
 			if !newBlock.Enable {
 				key := serverConfigEnable
@@ -283,6 +282,7 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 					key = locationConfigEnable
 				}
 
+				fmt.Printf("adding to updateProxySetting 1: %s", oldBlock.EnableID)
 				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
 					ID:    oldBlock.EnableID,
 					Key:   key,
@@ -312,7 +312,7 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 					dataKey = locationConfigData
 					filenameKey = locationConfigFileName
 				}
-
+				fmt.Printf("adding to updateProxySetting 2: %s", oldBlock.EnableID)
 				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
 					ID:    oldBlock.EnableID,
 					Key:   enableKey,
