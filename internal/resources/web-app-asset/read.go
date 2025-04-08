@@ -149,7 +149,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 					blocksSchemaMap[blockType] = models.BlockSchema{
 						FilenameID:   blocksSchemaMap[blockType].FilenameID,
 						Filename:     blocksSchemaMap[blockType].Filename,
-						FilenameType: blocksSchemaMap[blockType].FilenameType,
+						FilenameType: fileExtensionsByType,
 						DataID:       proxySetting.ID,
 						Data:         decodedData,
 						Type:         blockType,
