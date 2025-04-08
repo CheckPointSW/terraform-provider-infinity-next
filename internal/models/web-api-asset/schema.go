@@ -107,9 +107,9 @@ func FileExtensionToMimeType(extension string) string {
 func MimeTypeToFileExtension(mimeType string, isMTLS bool) string {
 	if !isMTLS {
 		switch mimeType {
-		case instructionsBlockTypeJSON:
+		case mimeTypeJSON:
 			return instructionsBlockTypeJSON
-		case instructionsBlockTypeYAML:
+		case mimeTypeYAML:
 			return instructionsBlockTypeYAML
 		default:
 			return instructionsBlockTypeYAML

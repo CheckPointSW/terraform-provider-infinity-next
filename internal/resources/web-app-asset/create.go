@@ -382,11 +382,11 @@ func mapAdvancedToProxySettingInputs(redirectToHTTPS, accessLog bool, customHead
 
 	proxySettings = append(proxySettings, proxySettingEnable)
 	for _, customHeader := range customHeaders {
-		var proxySetting models.ProxySettingInput
+		var proxySettingData models.ProxySettingInput
 
-		proxySetting.Key = customHeaderData
-		proxySetting.Value = fmt.Sprintf("%s:%s", customHeader.Name, customHeader.Value)
-		proxySettings = append(proxySettings, proxySettingEnable)
+		proxySettingData.Key = customHeaderData
+		proxySettingData.Value = fmt.Sprintf("%s:%s", customHeader.Name, customHeader.Value)
+		proxySettings = append(proxySettings, proxySettingData)
 	}
 
 	return proxySettings
