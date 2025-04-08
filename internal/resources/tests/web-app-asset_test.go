@@ -801,18 +801,18 @@ resource "inext_web_app_asset" %[1]q {
 		enable = false
 	}
 	additional_instructions_blocks {
-		filename = "location.json"
-		filename_type = ".json"
-		data	 = "location data"
-		type = "location"
-		enable = false
-	}
-	additional_instructions_blocks {
 		filename = "server.json"
 		filename_type = ".json"
 		data	 = "server data"
 		type = "server"
 		enable = true
+	}
+	additional_instructions_blocks {
+		filename = "location.json"
+		filename_type = ".json"
+		data	 = "location data"
+		type = "location"
+		enable = false
 	}
 	redirect_to_https = "false"
 	access_log = "false"
