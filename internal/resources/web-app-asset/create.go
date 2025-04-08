@@ -22,8 +22,9 @@ const (
 	mtlsServerData     = "trustedCAListFile"
 	mtlsServerFileName = "trustedCAListFileName"
 
-	blockTypeLocation = "location"
-	blockTypeServer   = "server"
+	blockTypeLocation    = "location"
+	inputBlockTypeServer = "server"
+	blockTypeServer      = "server_block"
 
 	locationConfigEnable   = "isLocationConfigFile"
 	locationConfigData     = "locationConfigFile"
@@ -316,7 +317,7 @@ func mapBlocksToProxySettingInputs(blocks models.BlockSchemas, proxySettings mod
 			proxySettingEnable.Key = locationConfigEnable
 			proxySettingData.Key = locationConfigData
 			proxySettingFileName.Key = locationConfigFileName
-		case blockTypeServer:
+		case inputBlockTypeServer:
 			proxySettingEnable.Key = serverConfigEnable
 			proxySettingData.Key = serverConfigData
 			proxySettingFileName.Key = serverConfigFileName
@@ -370,7 +371,6 @@ func mapAdvancedToProxySettingInputs(redirectToHTTPS, accessLog bool, customHead
 		proxySettings = append(proxySettings, proxySettingEnable)
 	}
 
-	fmt.Printf("customHeaders: %+d\n", len(customHeaders))
 	if len(customHeaders) == 0 {
 		return proxySettings
 	}

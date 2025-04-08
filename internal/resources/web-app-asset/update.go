@@ -274,9 +274,9 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 			}
 
 			if !newBlock.Enable {
-				key := locationConfigEnable
-				if newBlock.Type == blockTypeServer {
-					key = serverConfigEnable
+				key := serverConfigEnable
+				if newBlock.Type == blockTypeLocation {
+					key = locationConfigEnable
 				}
 
 				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
@@ -300,13 +300,13 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 			}
 
 			if oldBlock.Enable != newBlock.Enable {
-				enableKey := locationConfigEnable
-				dataKey := locationConfigData
-				filenameKey := locationConfigFileName
-				if newBlock.Type == blockTypeServer {
-					enableKey = serverConfigEnable
-					dataKey = serverConfigData
-					filenameKey = serverConfigFileName
+				enableKey := serverConfigEnable
+				dataKey := serverConfigData
+				filenameKey := serverConfigFileName
+				if newBlock.Type == blockTypeLocation {
+					enableKey = locationConfigEnable
+					dataKey = locationConfigData
+					filenameKey = locationConfigFileName
 				}
 
 				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
@@ -330,11 +330,11 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 			}
 
 			if oldBlock.Data != newBlock.Data || oldBlock.Filename != newBlock.Filename {
-				dataKey := locationConfigData
-				filenameKey := locationConfigFileName
-				if newBlock.Type == blockTypeServer {
-					dataKey = serverConfigData
-					filenameKey = serverConfigFileName
+				dataKey := serverConfigData
+				filenameKey := serverConfigFileName
+				if newBlock.Type == blockTypeLocation {
+					dataKey = locationConfigData
+					filenameKey = locationConfigFileName
 				}
 
 				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
