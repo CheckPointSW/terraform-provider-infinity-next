@@ -282,6 +282,102 @@ func ResourceWebAPIAsset() *schema.Resource {
 				Type:     schema.TypeBool,
 				Computed: true,
 			},
+			"redirect_to_https": {
+				Type:        schema.TypeBool,
+				Description: "Advanced Proxy Setting - Redirect incoming HTTP requests to the same URL using HTTPS. (The configured application URLs for this asset must include both the HTTP and the HTTPS version of each URL)",
+				Optional:    true,
+				Default:     false,
+			},
+			"redirect_to_https_id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"access_log": {
+				Type:        schema.TypeBool,
+				Description: "Advanced Proxy Setting - Activate access log on gateway.",
+				Optional:    true,
+				Default:     false,
+			},
+			"access_log_id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"custom_headers": {
+				Type:        schema.TypeSet,
+				Description: "Advanced Proxy Settings - The custom headers settings",
+				Optional:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"header_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"name": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+						"value": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+					},
+				},
+			},
+			"custom_headers_id": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"additional_instructions_blocks": {
+				Type:        schema.TypeSet,
+				Description: "The additional instructions blocks settings - location or server blocks",
+				Optional:    true,
+				Computed:    true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						"filename_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"filename": {
+							Description: "The name of the instructions block file",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"filename_type": {
+							Description: "The type of the instructions block file - .conf, .json, .xml, .yaml, .yml",
+							Type:        schema.TypeString,
+							Optional:    true,
+						},
+						"data_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"data": {
+							Description: "The instructions block data",
+							Type:        schema.TypeString,
+							Sensitive:   true,
+							Optional:    true,
+						},
+						"type": {
+							Description: "The type of the additional instructions block - location or server",
+							Type:        schema.TypeString,
+							Required:    true,
+							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice(
+								[]string{"location", "server"}, false)),
+						},
+						"enable_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"enable": {
+							Description: "Whether the instructions block is enabled",
+							Type:        schema.TypeBool,
+							Optional:    true,
+							Default:     false,
+						},
+					},
+				},
+			},
 			"mtls": {
 				Type:        schema.TypeSet,
 				Description: "The MTLS settings",

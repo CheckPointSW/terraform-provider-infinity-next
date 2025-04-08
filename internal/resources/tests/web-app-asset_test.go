@@ -817,12 +817,12 @@ resource "inext_web_app_asset" %[1]q {
 	redirect_to_https = "false"
 	access_log = "false"
 	custom_headers {
-		name   = "header1"
-		value  = "value"
-	}
-	custom_headers {
 		name   = "header2"
 		value  = "value2"
+	}
+	custom_headers {
+		name   = "header1"
+		value  = "value"
 	}
 }
 

@@ -1,6 +1,9 @@
 package models
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 // SourceIdentifierInput represents the api input for creating a source identifier field in the web API asset
 type SourceIdentifierInput struct {
@@ -111,4 +114,23 @@ func (mtlsInputs MTLSSchemas) ToIndicatorMap() map[string]MTLSSchema {
 	}
 
 	return mTLSs
+}
+
+func (blockInputs BlockSchemas) ToIndicatorMap() map[string]BlockSchema {
+	blocks := make(map[string]BlockSchema)
+	for _, block := range blocks {
+		blocks[block.Type] = block
+	}
+
+	return blocks
+}
+
+func (customHeadersInputs CustomHeadersSchemas) ToIndicatorMap() map[string]CustomHeaderSchema {
+	customHeaders := make(map[string]CustomHeaderSchema)
+	for _, customHeader := range customHeaders {
+		nameAndValue := fmt.Sprintf("%s:%s", customHeader.Name, customHeader.Value)
+		customHeaders[nameAndValue] = customHeader
+	}
+
+	return customHeaders
 }
