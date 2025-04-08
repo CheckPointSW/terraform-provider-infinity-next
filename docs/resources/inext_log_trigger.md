@@ -30,8 +30,8 @@ provider "inext" {
 
 resource "inext_log_trigger" "mytrigger" {
   name                             = "mytrigger"
-  acesss_control_allow_events      = false
-  acesss_control_drop_events       = true
+  access_control_allow_events      = false
+  access_control_drop_events       = true
   threat_prevention_detect_events  = true
   threat_prevention_prevent_events = true
   web_body                         = false
@@ -46,13 +46,13 @@ resource "inext_log_trigger" "mytrigger" {
   log_to_agent                     = false
   log_to_cef                       = false
   cef_ip_address                   = "10.0.0.1"
-  cef_port_num                     = 2000
+  cef_port                     = 2000
   cef_protocol                     = "TCP" # enum of ["TCP", "UDP"]
   log_to_cloud                     = true
   log_to_syslog                    = true
   syslog_ip_address                = "10.10.10.10"
   syslog_protocol                  = "TCP" # enum of ["TCP", "UDP"]
-  syslog_port_num                  = 5004
+  syslog_port                  = 5004
   compliance_violations            = true
   compliance_warnings              = true
   verbosity                        = "Standard" # enum of ["Minimal", "Standard", "Extended"]
