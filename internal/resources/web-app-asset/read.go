@@ -94,6 +94,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 				}
 			}
 
+			fmt.Printf("proxySetting: %+v\n", proxySetting)
 			switch proxySetting.Key {
 			case mtlsClientEnable, mtlsServerEnable, locationConfigEnable, serverConfigEnable:
 				enable := false
@@ -140,17 +141,15 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 
 					decodedData = string(bDecodedData)
 
-					fmt.Printf("proxySetting: %+v\n", proxySetting)
 					mimeType := strings.SplitN(proxySetting.Value, ":", 2)[1]
 					mimeType = strings.SplitN(mimeType, ";", 2)[0]
-					fmt.Printf("mimeType: %s\n, blockType:%s", mimeType, blockType)
+					fmt.Printf("decodedData:%s mimeType: %s, blockType:%s\n", decodedData, mimeType, blockType)
 
 					if blockType == inputBlockTypeServer || blockType == blockTypeLocation {
 						fileExtensionsByType = webAPIAssetModels.MimeTypeToFileExtension(mimeType, false)
 					} else {
 						fileExtensionsByType = webAPIAssetModels.MimeTypeToFileExtension(mimeType, true)
 					}
-
 				}
 
 				if blockType == inputBlockTypeServer || blockType == blockTypeLocation {
@@ -164,6 +163,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 						EnableID:     blocksSchemaMap[blockType].EnableID,
 						Enable:       blocksSchemaMap[blockType].Enable,
 					}
+					fmt.Printf("Here 1 with: %+v\n", blocksSchemaMap[blockType])
 					continue
 				}
 
@@ -190,6 +190,8 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 						EnableID:     blocksSchemaMap[blockType].EnableID,
 						Enable:       blocksSchemaMap[blockType].Enable,
 					}
+					fmt.Printf("Here 2 with: %+v\n", blocksSchemaMap[blockType])
+
 					continue
 				}
 
