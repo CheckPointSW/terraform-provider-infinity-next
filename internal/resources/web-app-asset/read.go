@@ -245,6 +245,8 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 		customHeadersMap = append(customHeadersMap, customHeader)
 	}
 
+	fmt.Printf("blocksSchemaMap:%+v, additionalBlocksMap: %+v\n", blocksSchemaMap, additionalBlocksMap)
+
 	d.Set("proxy_setting", proxySettingsSchemaMap)
 	d.Set("mtls", mTLSsMap)
 	d.Set("additional_instructions_blocks", additionalBlocksMap)
