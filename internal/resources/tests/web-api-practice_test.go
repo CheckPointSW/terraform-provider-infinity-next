@@ -34,7 +34,7 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                           nameAttribute,
-						"schema_validation.#":            "0",
+						"schema_validation.#":            "1",
 						"ips.0.protections_from_year":    "2016",
 						"ips.#":                          "1",
 						"api_attacks.0.minimum_severity": "High",

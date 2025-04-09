@@ -143,7 +143,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 					fmt.Printf("proxySetting: %+v\n", proxySetting)
 					mimeType := strings.SplitN(proxySetting.Value, ":", 2)[1]
 					mimeType = strings.SplitN(mimeType, ";", 2)[0]
-					fmt.Printf("mimeType: %s\n", mimeType)
+					fmt.Printf("mimeType: %s\n, blockType:%s", mimeType, blockType)
 
 					if blockType == inputBlockTypeServer || blockType == blockTypeLocation {
 						fileExtensionsByType = webAPIAssetModels.MimeTypeToFileExtension(mimeType, false)

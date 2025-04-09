@@ -94,6 +94,7 @@ func CreateWebApplicationPracticeInputFromResourceData(d *schema.ResourceData) (
 	}
 
 	webBotSlice := utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "web_bot"), mapToWebBotInput)
+	fmt.Printf("webAttacksSlice: %v\n", webAttacksSlice)
 	if len(webBotSlice) > 0 {
 		res.WebBot = webBotSlice[0]
 	}
