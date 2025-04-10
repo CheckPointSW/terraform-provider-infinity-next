@@ -92,7 +92,7 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
-				Config: webAPIPracticeUpdateBasicConfig(nameAttribute, schemaValidationFilename, schemaValidationData),
+				Config: webAPIPracticeUpdateBasicConfig(nameAttribute, schemaValidationData),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                                         nameAttribute,
@@ -161,7 +161,7 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 		CheckDestroy:      acctest.CheckResourceDestroyed([]string{resourceName}),
 		Steps: []resource.TestStep{
 			{
-				Config: webAPIPracticeFullConfig(nameAttribute, schemaValidationFilename, schemaValidationData),
+				Config: webAPIPracticeFullConfig(nameAttribute, schemaValidationData),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                           nameAttribute,
