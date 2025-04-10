@@ -211,7 +211,8 @@ func ResourceWebAPIPractice() *schema.Resource {
 						},
 						"name": {
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
+							Computed: true,
 						},
 						"data": {
 							Type:      schema.TypeString,
