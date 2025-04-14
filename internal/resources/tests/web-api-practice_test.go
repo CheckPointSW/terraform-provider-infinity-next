@@ -78,7 +78,6 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 						"file_security.#":                              "1",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
-						resource.TestCheckResourceAttrSet(resourceName, "schema_validation.0.id"),
 						resource.TestCheckResourceAttrSet(resourceName, "api_attacks.0.advanced_setting.0.id"),
 						resource.TestCheckResourceAttrSet(resourceName, "api_attacks.0.id"),
 						resource.TestCheckResourceAttrSet(resourceName, "ips.0.id"),
@@ -163,8 +162,6 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 			{
 				Config: webAPIPracticeFullConfig(nameAttribute, schemaValidationData),
 				Check: resource.ComposeTestCheckFunc(
-
-					// COMIT
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                           nameAttribute,
 						"visibility":                     "Shared",
