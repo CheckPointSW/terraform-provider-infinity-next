@@ -35,7 +35,6 @@ resource "inext_web_api_practice" "my-webapi-practice" {
     }
   }
   schema_validation {
-    filename = basename(data.local_file.schema_validation_file.filename)
     data     = data.local_file.schema_validation_file.content
   }
   file_security {

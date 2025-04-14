@@ -4,13 +4,11 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"path/filepath"
 	"strings"
 )
 
 const (
-	FileDataFilenameFormat = "%s;$$:$$;"
-	FileDataFormat         = "data:application/octet-stream;base64,%s"
+	FileDataFormat = "data:application/octet-stream;base64,%s"
 )
 
 var (
@@ -68,14 +66,12 @@ type WebAPIFileSecuritySchema struct {
 	RequiredThreatEmulation   bool   `json:"required_threat_emulation,omitempty"`
 }
 
-func NewFileSchemaEncode(filename, fileData string) FileSchema {
+func NewFileSchemaEncode(fileData string) FileSchema {
 	b64Data := base64.StdEncoding.EncodeToString([]byte(fileData))
-	data := fmt.Sprintf(FileDataFormat, b64Data)
-	filenameFmt := fmt.Sprintf(FileDataFilenameFormat, filepath.Base(filename))
+	fileDataFmt := fmt.Sprintf(FileDataFormat, b64Data)
 
 	return FileSchema{
-		Filename: filename,
-		Data:     filenameFmt + data,
+		Data: fileDataFmt,
 	}
 }
 
