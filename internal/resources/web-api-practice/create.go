@@ -158,7 +158,7 @@ func mapToSchemaValidationInput(schemaValidationFromResourceData any) models.Sch
 		return models.SchemaValidationInput{}
 	}
 
-	schemaValidation = models.NewFileSchemaEncode(schemaValidation.Filename, schemaValidation.Data)
+	schemaValidation = models.NewFileSchemaEncode(schemaValidation.Data)
 	return models.SchemaValidationInput{
 		OASSchema: schemaValidation.Data,
 	}
