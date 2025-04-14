@@ -91,18 +91,17 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
-				Config: webAPIPracticeUpdateBasicConfig(nameAttribute, schemaValidationFilename, schemaValidationData),
+				Config: webAPIPracticeUpdateBasicConfig(nameAttribute, schemaValidationData),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                                                  nameAttribute,
-						"schema_validation.0.name":                              "New File",
-						"schema_validation.0.data":                              schemaValidationData,
-						"api_attacks.0.minimum_severity":                        "Critical",
-						"ips.0.high_confidence":                                 "Detect",
-						"practice_type":                                         "WebAPI",
-						"ips.0.medium_confidence":                               "Detect",
-						"ips.0.performance_impact":                              "LowOrLower",
-						"api_attacks.0.advanced_setting.0.header_size":          "1000",
+						"name":                                         nameAttribute,
+						"schema_validation.0.data":                     schemaValidationData,
+						"api_attacks.0.minimum_severity":               "Critical",
+						"ips.0.high_confidence":                        "Detect",
+						"practice_type":                                "WebAPI",
+						"ips.0.medium_confidence":                      "Detect",
+						"ips.0.performance_impact":                     "LowOrLower",
+						"api_attacks.0.advanced_setting.0.header_size": "1000",
 						"api_attacks.0.advanced_setting.0.illegal_http_methods": "true",
 						"api_attacks.0.advanced_setting.0.body_size":            "1000",
 						"api_attacks.0.advanced_setting.0.url_size":             "1000",
@@ -161,16 +160,15 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 		CheckDestroy:      acctest.CheckResourceDestroyed([]string{resourceName}),
 		Steps: []resource.TestStep{
 			{
-				Config: webAPIPracticeFullConfig(nameAttribute, schemaValidationFilename, schemaValidationData),
+				Config: webAPIPracticeFullConfig(nameAttribute, schemaValidationData),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                                                  nameAttribute,
-						"visibility":                                            "Shared",
-						"schema_validation.0.name":                              "New File 1",
-						"schema_validation.0.data":                              schemaValidationData,
-						"api_attacks.0.minimum_severity":                        "Critical",
-						"ips.0.high_confidence":                                 "AccordingToPractice",
-						"practice_type":                                         "WebAPI",
+						"name":                           nameAttribute,
+						"visibility":                     "Shared",
+						"schema_validation.0.data":       schemaValidationData,
+						"api_attacks.0.minimum_severity": "Critical",
+						"ips.0.high_confidence":          "AccordingToPractice",
+						"practice_type":                  "WebAPI",
 						"api_attacks.0.advanced_setting.0.url_size":             "1000",
 						"api_attacks.0.advanced_setting.0.%":                    "6",
 						"ips.0.medium_confidence":                               "AccordingToPractice",
@@ -228,7 +226,6 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":                     nameAttribute,
-						"schema_validation.0.name": "New File 2",
 						"schema_validation.0.data": schemaValidationDataUpdate,
 						"api_attacks.#":            "1",
 						"category":                 "ThreatPrevention",
@@ -310,7 +307,7 @@ resource "inext_web_api_practice" %[1]q {
 `, name)
 }
 
-func webAPIPracticeUpdateBasicConfig(name, filename, data string) string {
+func webAPIPracticeUpdateBasicConfig(name, data string) string {
 	return fmt.Sprintf(`
 resource "inext_web_api_practice" %[1]q {
 	name                          = %[1]q
@@ -333,8 +330,7 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		name = "New File"
-		data     = %[3]q
+		data     = %[2]q
 	}
 	file_security {
 		severity_level             = "Critical"
@@ -342,10 +338,10 @@ resource "inext_web_api_practice" %[1]q {
 		medium_confidence          = "Prevent"
 	}
 }
-`, name, filename, data)
+`, name, data)
 }
 
-func webAPIPracticeFullConfig(name, filename, data string) string {
+func webAPIPracticeFullConfig(name, data string) string {
 	return fmt.Sprintf(`
 resource "inext_web_api_practice" %[1]q {
 	name                          = %[1]q
@@ -368,8 +364,7 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		name = "New File 1"
-		data     = %[3]q
+		data     = %[2]q
 	}
 	file_security {
 		severity_level             = "MediumOrAbove"
@@ -389,7 +384,7 @@ resource "inext_web_api_practice" %[1]q {
 		required_threat_emulation    = "false"
 	}
 }
-`, name, filename, data)
+`, name, data)
 }
 
 func webAPIPracticeUpdateFullConfig(name, filename, data string) string {

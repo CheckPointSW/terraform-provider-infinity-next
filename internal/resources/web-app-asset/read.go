@@ -4,12 +4,13 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
 	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
+	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
 	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-app-asset"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -277,7 +278,9 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 		return fmt.Errorf("failed to convert tags to slice of maps. Error: %+v", err)
 	}
 
-	d.Set("tags", tagsSchemaMap)
+	if len(tagsSchemaMap) > 0 {
+		d.Set("tags", tagsSchemaMap)
+	}
 
 	return nil
 }

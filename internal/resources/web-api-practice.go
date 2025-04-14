@@ -2,9 +2,15 @@ package resources
 
 import (
 	"context"
+	"strings"
+
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
+	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
+	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-practice"
+	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
 	webapipractice "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-practice"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
@@ -205,7 +211,8 @@ func ResourceWebAPIPractice() *schema.Resource {
 						},
 						"name": {
 							Type:     schema.TypeString,
-							Required: true,
+							Optional: true,
+							Computed: true,
 						},
 						"data": {
 							Type:      schema.TypeString,
@@ -448,11 +455,41 @@ func resourceWebAPIPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 
 	result, err := webapipractice.DeleteWebAPIPractice(ctx, c, d.Id())
 	if err != nil || !result {
-		if _, discardErr := c.DiscardChanges(); discardErr != nil {
-			diags = utils.DiagError("failed to discard changes", discardErr, diags)
-		}
+		// Check if the error is due to the web api practice being used by other resources
+		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
+			// Get the resources that are using the web api practice
+			usedBy, err2 := webapipractice.UsedByWebAPIPractice(ctx, c, d.Id())
+			if err2 != nil {
+				diags = utils.DiagError("unable to perform WebAPIPractice UsedBy", err2, diags)
+				return utils.DiagError("unable to perform WebAPIPractice Delete", err, diags)
+			}
 
-		return utils.DiagError("unable to perform WebAPIPractice Delete", err, diags)
+			if usedBy != nil || len(usedBy) > 0 {
+				// Remove the web api practice from the resources that are using it
+				if err2 := handleWebAPIPracticeReferences(ctx, usedBy, c, d.Id()); err2 != nil {
+					diags = err2
+					return utils.DiagError("unable to perform WebAPIPractice Delete", err, diags)
+				}
+
+				// Retry to delete the web api practice
+				result, err := webapipractice.DeleteWebAPIPractice(ctx, c, d.Id())
+				if err != nil || !result {
+					if _, discardErr := c.DiscardChanges(); discardErr != nil {
+						diags = utils.DiagError("failed to discard changes", discardErr, diags)
+					}
+
+					return utils.DiagError("unable to perform WebAPIPractice Delete", err, diags)
+				}
+
+			}
+
+		} else {
+			if _, discardErr := c.DiscardChanges(); discardErr != nil {
+				diags = utils.DiagError("failed to discard changes", discardErr, diags)
+			}
+
+			return utils.DiagError("unable to perform WebAPIPractice Delete", err, diags)
+		}
 	}
 
 	isValid, err := c.PublishChanges()
@@ -467,4 +504,36 @@ func resourceWebAPIPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 	d.SetId("")
 
 	return diags
+}
+
+func handleWebAPIPracticeReferences(ctx context.Context, usedBy models.DisplayObjects, c *api.Client, practiceID string) diag.Diagnostics {
+	var diags diag.Diagnostics
+
+	for _, usedByResource := range usedBy {
+		if usedByResource.ObjectStatus == "Deleted" || usedByResource.Type == "Wrapper" {
+			continue
+		}
+
+		switch usedByResource.SubType {
+		case "WebAPI":
+			webAPIAsset := webAPIAssetModels.UpdateWebAPIAssetInput{
+				RemovePracticeWrappers: []string{practiceID},
+			}
+
+			updated, err := webapiasset.UpdateWebAPIAsset(ctx, c, usedByResource.ID, webAPIAsset)
+			if err != nil || !updated {
+				if _, discardErr := c.DiscardChanges(); discardErr != nil {
+					diags = utils.DiagError("failed to discard changes", discardErr, diags)
+				}
+
+				return utils.DiagError("failed to update usedByResource", err, diags)
+			}
+
+		default:
+			return utils.DiagError("failed to update usedByResource", nil, diags)
+		}
+
+	}
+
+	return nil
 }

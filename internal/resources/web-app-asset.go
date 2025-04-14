@@ -27,7 +27,7 @@ const (
 
 func ResourceWebAppAsset() *schema.Resource {
 	validateStateFunc := validation.ToDiagFunc(validation.StringInSlice(
-		[]string{suggestedState, activeState, headerKey, inactiveState}, false))
+		[]string{suggestedState, activeState, inactiveState}, false))
 	mTLSTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
 		[]string{mTLSServer, mTLSClient}, false))
 	mTLSFileTypeValidation := validation.ToDiagFunc(validation.StringInSlice(

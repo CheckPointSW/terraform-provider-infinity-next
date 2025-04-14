@@ -19,7 +19,6 @@ resource "inext_web_api_practice" "test" {
     }
   }
   schema_validation {
-    filename = basename(data.local_file.schema_validation_file.filename)
     data     = data.local_file.schema_validation_file.content
   }
   file_security {

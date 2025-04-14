@@ -54,6 +54,13 @@ func GetKubernetesProfile(ctx context.Context, c *api.Client, id string) (models
 					key
 					value
 				}
+				usedBy {
+					id
+					name
+					type
+					subType
+					objectStatus
+				}
 				onlyDefinedApplications
 			}
 		}
