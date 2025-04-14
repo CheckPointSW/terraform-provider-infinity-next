@@ -411,7 +411,6 @@ resource "inext_web_api_practice" %[1]q {
 	}
 	schema_validation {
 		data = %[3]q
-		name = "New File 2"
 	}
 	file_security {
 		severity_level             = "LowOrAbove"
