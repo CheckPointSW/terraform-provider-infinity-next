@@ -173,21 +173,7 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 					EnableID:        mTLSsSchemaMap[blockType].EnableID,
 					Enable:          mTLSsSchemaMap[blockType].Enable,
 				}
-			case mtlsClientFileName, mtlsServerFileName, locationConfigFileName, serverConfigFileName:
-				if blockType == inputBlockTypeServer || blockType == blockTypeLocation {
-					blocksSchemaMap[blockType] = models.BlockSchema{
-						FilenameID:   proxySetting.ID,
-						Filename:     proxySetting.Value,
-						FilenameType: blocksSchemaMap[blockType].FilenameType,
-						DataID:       blocksSchemaMap[blockType].DataID,
-						Data:         blocksSchemaMap[blockType].Data,
-						Type:         blockType,
-						EnableID:     blocksSchemaMap[blockType].EnableID,
-						Enable:       blocksSchemaMap[blockType].Enable,
-					}
-					continue
-				}
-
+			case mtlsClientFileName, mtlsServerFileName:
 				mTLSsSchemaMap[blockType] = models.MTLSSchema{
 					FilenameID:      proxySetting.ID,
 					Filename:        proxySetting.Value,
@@ -197,6 +183,17 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 					Type:            blockType,
 					EnableID:        mTLSsSchemaMap[blockType].EnableID,
 					Enable:          mTLSsSchemaMap[blockType].Enable,
+				}
+			case locationConfigFileName, serverConfigFileName:
+				blocksSchemaMap[blockType] = models.BlockSchema{
+					FilenameID:   proxySetting.ID,
+					Filename:     proxySetting.Value,
+					FilenameType: blocksSchemaMap[blockType].FilenameType,
+					DataID:       blocksSchemaMap[blockType].DataID,
+					Data:         blocksSchemaMap[blockType].Data,
+					Type:         blockType,
+					EnableID:     blocksSchemaMap[blockType].EnableID,
+					Enable:       blocksSchemaMap[blockType].Enable,
 				}
 			default:
 				continue
