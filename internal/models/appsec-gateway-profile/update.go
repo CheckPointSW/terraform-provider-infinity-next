@@ -37,5 +37,5 @@ type UpdateCloudGuardAppSecGatewayProfileInput struct {
 	ReverseProxyUpstreamTimeout          int                       `json:"reverseProxyUpstreamTimeout,omitempty"`
 	Authentication                       UpdateAuthenticationInput `json:"authentication,omitempty"`
 	CertificateType                      string                    `json:"certificateType,omitempty"`
-	FailOpenInspection                   bool                      `json:"failOpenInspection,omitempty"`
+	FailOpenInspection                   bool                      `json:"failOpenInspection"`
 }
