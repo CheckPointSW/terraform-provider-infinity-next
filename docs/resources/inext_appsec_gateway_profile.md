@@ -46,8 +46,6 @@ resource "inext_appsec_gateway_profile" "my-appsec-gateway-profile" {
     Key1 = "Value"
     Key2 = "Value2"
   }
-  certificate_type = "Vault" # enum of ["Vault", "Gateway"]
-  fail_open_inspection = true
 }
 ```
 
@@ -62,12 +60,12 @@ resource "inext_appsec_gateway_profile" "my-appsec-gateway-profile" {
 ### Optional
 
 - `additional_settings` (Map of String) Controls the settings of the connected agents
+- `certificate_type` (String) The type of the certificate used for the profile: Vault or Gateway
+- `fail_open_inspection` (Boolean) Allow traffic upon internal failures or high CPU utilization: true or false
 - `max_number_of_agents` (Number) Sets the maximum number of agents that can be connected to this profile
 - `reverseproxy_additional_settings` (Map of String) Sets the reverse proxy settings of linked assets
 - `reverseproxy_upstream_timeout` (Number) Sets the reverse proxy upstream timeout in seconds
-- `upgrade_mode` (String) The upgrade mode of the profile: Automatic, Manual or Scheduled
-- `certificate_type` (String) The type of the certificate used for the profile: Vault or Gateway
-- `fail_open_inspection` (Bool)  Allow traffic upon internal failures or high cpu utilization
+- `upgrade_mode` (String) The upgrade mode of the profile: Automatic, Manual or Scheduled.
 The default is Automatic
 - `upgrade_time_days` (Set of Number) The days of the month of the upgrade time schedule
 - `upgrade_time_duration` (Number) The duration of the upgrade in hours
