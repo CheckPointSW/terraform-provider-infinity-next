@@ -91,6 +91,14 @@ func UpdateCloudGuardAppSecGatewayProfileInputFromResourceData(d *schema.Resourc
 		res.ProfileSubType = newProfileSubType
 	}
 
+	if _, newCertificateType, hasChange := utils.MustGetChange[string](d, "certificate_type"); hasChange {
+		res.CertificateType = newCertificateType
+	}
+
+	if _, newFailOpenInspection, hasChange := utils.MustGetChange[bool](d, "fail_open_inspection"); hasChange {
+		res.FailOpenInspection = newFailOpenInspection
+	}
+
 	return res, nil
 }
 

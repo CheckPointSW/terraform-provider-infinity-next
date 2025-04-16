@@ -19,7 +19,7 @@ resource "inext_web_api_practice" "test" {
     }
   }
   schema_validation {
-    data     = data.local_file.schema_validation_file.content
+    data = data.local_file.schema_validation_file.content
   }
   file_security {
     severity_level               = "LowOrAbove"          # enum of ["LowOrAbove", "MediumOrAbove", "HighOrAbove", "Critical"]
