@@ -100,7 +100,7 @@ func TestAccAppsecGatewayProfileFull(t *testing.T) {
 						"max_number_of_agents":                   "100",
 						"reverseproxy_additional_settings_ids.#": "2",
 						"additional_settings_ids.#":              "2",
-						"%":                                      "17",
+						"%":                                      "19",
 						"profile_type":                           "CloudGuardAppSecGateway",
 						"additional_settings.%":                  "2",
 						"upgrade_time_week_days.1":               "Monday",
