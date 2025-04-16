@@ -16,13 +16,13 @@ resource "inext_appsec_gateway_profile" "test2" {
     Key1 = "Value1"
     Key2 = "Value2"
   }
-  certificate_type = "Vault" # enum of ["Vault", "Gateway"]
+  certificate_type     = "Vault" # enum of ["Vault", "Gateway"]
   fail_open_inspection = true
 }
 
 resource "inext_appsec_gateway_profile" "test" {
   name                          = "inext_appsec_gateway_profile-test2"
-  profile_sub_type              = "Azure"        # enum of ["Aws", "Azure", "VMware", "HyperV"]
+  profile_sub_type              = "Azure"      # enum of ["Aws", "Azure", "VMware", "HyperV"]
   upgrade_mode                  = "Automatic"  # enum of ["Automatic", "Manual", "Scheduled"]
   upgrade_time_schedule_type    = "DaysInWeek" # enum of ["DaysInMonth", "DaysInWeek", "Daily"]
   upgrade_time_hour             = "12:00"
@@ -38,7 +38,7 @@ resource "inext_appsec_gateway_profile" "test" {
     Key1 = "Value1"
     Key2 = "Value2"
   }
-  certificate_type = "Gateway" # enum of ["Vault", "Gateway"]
+  certificate_type     = "Gateway" # enum of ["Vault", "Gateway"]
   fail_open_inspection = false
 }
 

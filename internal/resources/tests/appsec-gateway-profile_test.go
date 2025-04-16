@@ -203,7 +203,7 @@ resource "inext_appsec_gateway_profile" %[1]q {
 		Key2 = "Value2"
 	}
 	certificate_type = "Gateway"
-    failOpenInspection = true
+    fail_open_inspection = true
 }
 `, name)
 }
@@ -229,7 +229,7 @@ resource "inext_appsec_gateway_profile" %[1]q {
 		Key2 = "Value2"
 	}
 	certificate_type = "Vault"
-    failOpenInspection = true
+    fail_open_inspection = true
 }
 `, name)
 }
@@ -257,7 +257,7 @@ resource "inext_appsec_gateway_profile" %[1]q {
 		Key6 = "Value6"
 	}
 	certificate_type = "Vault"
-    failOpenInspection = false
+    fail_open_inspection = false
 }
 `, name)
 }
