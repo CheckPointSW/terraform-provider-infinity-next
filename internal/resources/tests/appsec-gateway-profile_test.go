@@ -178,6 +178,7 @@ resource "inext_appsec_gateway_profile" %[1]q {
 	name = %[1]q
 	profile_sub_type = "Aws"
 	max_number_of_agents = 10
+	certificate_type = "Vault"
 }
 `, name)
 }
