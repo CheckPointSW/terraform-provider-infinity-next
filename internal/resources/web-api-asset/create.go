@@ -22,9 +22,8 @@ const (
 	mtlsServerData     = "trustedCAListFile"
 	mtlsServerFileName = "trustedCAListFileName"
 
-	blockTypeLocation    = "location"
-	inputBlockTypeServer = "server"
-	blockTypeServer      = "server_block"
+	blockTypeLocation = "location_instruction"
+	blockTypeServer   = "server_block_instruction"
 
 	locationConfigEnable   = "isLocationConfigFile"
 	locationConfigData     = "locationConfigFile"
@@ -128,6 +127,7 @@ func NewWebAPIAsset(ctx context.Context, c *api.Client, input models.CreateWebAP
 								id
 								URL
 							}
+							assetType
 							sources
 							class
 							category
@@ -309,7 +309,7 @@ func mapBlocksToProxySettingInputs(blocks models.BlockSchemas, proxySettings mod
 			proxySettingEnable.Key = locationConfigEnable
 			proxySettingData.Key = locationConfigData
 			proxySettingFileName.Key = locationConfigFileName
-		case inputBlockTypeServer:
+		case blockTypeServer:
 			proxySettingEnable.Key = serverConfigEnable
 			proxySettingData.Key = serverConfigData
 			proxySettingFileName.Key = serverConfigFileName

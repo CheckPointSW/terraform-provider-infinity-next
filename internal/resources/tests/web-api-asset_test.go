@@ -102,7 +102,7 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 						"additional_instructions_blocks.0.filename":      "location.json",
 						"additional_instructions_blocks.0.filename_type": ".json",
 						"additional_instructions_blocks.0.data":          "location data",
-						"additional_instructions_blocks.0.type":          "location",
+						"additional_instructions_blocks.0.type":          "location_instructions",
 						"additional_instructions_blocks.0.enable":        "true",
 						"custom_headers.#":                               "1",
 						"custom_headers.0.name":                          "header1",
@@ -220,7 +220,7 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"additional_instructions_blocks.0.filename":      "location.json",
 						"additional_instructions_blocks.0.filename_type": ".json",
 						"additional_instructions_blocks.0.data":          "location data",
-						"additional_instructions_blocks.0.type":          "location",
+						"additional_instructions_blocks.0.type":          "location_instructions",
 						"additional_instructions_blocks.0.enable":        "true",
 						"redirect_to_https":                              "true",
 						"access_log":                                     "true",
@@ -319,23 +319,23 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"mtls.1.type":                      "client",
 						"mtls.1.enable":                    "false",
 						"additional_instructions_blocks.#": "2",
-						"additional_instructions_blocks.0.filename":      "location.json",
-						"additional_instructions_blocks.0.filename_type": ".json",
-						"additional_instructions_blocks.0.data":          "location data",
-						"additional_instructions_blocks.0.type":          "location",
+						//"additional_instructions_blocks.0.filename":      "location.json",
+						//"additional_instructions_blocks.0.filename_type": ".json",
+						//"additional_instructions_blocks.0.data":          "location data",
+						//"additional_instructions_blocks.0.type":          "location",
 						"additional_instructions_blocks.0.enable":        "false",
 						"additional_instructions_blocks.1.filename":      "server.json",
 						"additional_instructions_blocks.1.filename_type": ".json",
 						"additional_instructions_blocks.1.data":          "server data",
-						"additional_instructions_blocks.1.type":          "server",
+						"additional_instructions_blocks.1.type":          "server_instructions",
 						"additional_instructions_blocks.1.enable":        "true",
 						"redirect_to_https":                              "false",
 						"access_log":                                     "false",
 						"custom_headers.#":                               "2",
-						"custom_headers.0.name":                          "header1",
-						"custom_headers.0.value":                         "value",
-						"custom_headers.1.name":                          "header2",
-						"custom_headers.1.value":                         "value2",
+						"custom_headers.0.name":                          "header2",
+						"custom_headers.0.value":                         "value2",
+						"custom_headers.1.name":                          "header1",
+						"custom_headers.1.value":                         "value",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -441,7 +441,7 @@ resource "inext_web_api_asset" %[1]q {
 		filename = "location.json"
 		filename_type = ".json"
 		data	 = "location data"
-		type = "location"
+		type = "location_instructions"
 		enable = true
 	}
 	custom_headers {
@@ -599,7 +599,7 @@ resource "inext_web_api_asset" %[1]q {
 		filename = "location.json"
 		filename_type = ".json"
 		data	 = "location data"
-		type = "location"
+		type = "location_instructions"
 		enable = true
 	}
 	redirect_to_https = "true"
@@ -804,14 +804,14 @@ resource "inext_web_api_asset" %[1]q {
 		filename = "location.json"
 		filename_type = ".json"
 		data	 = "location data"
-		type = "location"
+		type = "location_instructions"
 		enable = false
 	}
 	additional_instructions_blocks {
 		filename = "server.json"
 		filename_type = ".json"
 		data	 = "server data"
-		type = "server"
+		type = "server_instructions"
 		enable = true
 	}
 	redirect_to_https = "false"

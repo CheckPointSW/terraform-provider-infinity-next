@@ -84,10 +84,12 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 				if _, ok := blocksSchemaMap[blockType]; !ok {
 					blocksSchemaMap[blockType] = models.BlockSchema{}
 				}
+
 			default:
 				if _, ok := mTLSsSchemaMap[blockType]; !ok {
 					mTLSsSchemaMap[blockType] = models.MTLSSchema{}
 				}
+
 			}
 
 			fmt.Printf("proxySetting: %+v\n", proxySetting)
