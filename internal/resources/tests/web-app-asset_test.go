@@ -166,7 +166,7 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"practice.0.%":                          "5",
 						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
-						"practice.0.sub_practices_modes.WebBot": "AccordingToPractice",
+						"practice.0.sub_practices_modes.WebBot": "Inactive",
 						"practice.0.sub_practices_modes.Snort":  "Disabled",
 						"practice.0.main_mode":                  "Learn",
 						"source_identifier.0.%":                 "4",
@@ -478,7 +478,7 @@ resource "inext_web_app_asset" %[1]q {
 	  main_mode = "Learn"
 	  sub_practices_modes = {
 		IPS    = "AccordingToPractice"
-		WebBot = "AccordingToPractice"
+		WebBot = "Inactive"
 		Snort  = "Disabled"
 	  }
 	  id         = inext_web_app_practice.%[4]s.id
