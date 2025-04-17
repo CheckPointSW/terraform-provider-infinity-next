@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -140,8 +141,6 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 
 					mimeType := strings.SplitN(proxySetting.Value, ":", 2)[1]
 					mimeType = strings.SplitN(mimeType, ";", 2)[0]
-					fmt.Printf("decodedData:%s mimeType: %s, blockType:%s\n", decodedData, mimeType, blockType)
-
 					if blockType == blockTypeLocation || blockType == blockTypeServer {
 						fileExtensionsByType = webAPIAssetModels.MimeTypeToFileExtension(mimeType, false)
 					} else {
@@ -234,6 +233,11 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 		additionalBlocksMap = append(additionalBlocksMap, block)
 	}
 
+	// Sort the blocks by their type
+	sort.Slice(additionalBlocksMap, func(i, j int) bool {
+		return additionalBlocksMap[i]["type"].(string) < additionalBlocksMap[j]["type"].(string)
+	})
+
 	for _, customHeaderSchema := range customHeadersSchemaMap {
 		customHeader, err := utils.UnmarshalAs[map[string]any](customHeaderSchema)
 		if err != nil {
@@ -242,6 +246,11 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 
 		customHeadersMap = append(customHeadersMap, customHeader)
 	}
+
+	// Sort the custom headers by their name
+	sort.Slice(customHeadersMap, func(i, j int) bool {
+		return customHeadersMap[i]["name"].(string) < customHeadersMap[j]["name"].(string)
+	})
 
 	d.Set("proxy_setting", proxySettingsSchemaMap)
 	d.Set("mtls", mTLSsMap)

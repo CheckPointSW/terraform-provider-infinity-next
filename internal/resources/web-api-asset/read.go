@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -230,6 +231,11 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 		additionalBlocksMap = append(additionalBlocksMap, block)
 	}
 
+	// Sort the blocks by their type
+	sort.Slice(additionalBlocksMap, func(i, j int) bool {
+		return additionalBlocksMap[i]["type"].(string) < additionalBlocksMap[j]["type"].(string)
+	})
+
 	for _, customHeaderSchema := range customHeadersSchemaMap {
 		customHeader, err := utils.UnmarshalAs[map[string]any](customHeaderSchema)
 		if err != nil {
@@ -238,6 +244,11 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 
 		customHeadersMap = append(customHeadersMap, customHeader)
 	}
+
+	// Sort the custom headers by their name
+	sort.Slice(customHeadersMap, func(i, j int) bool {
+		return customHeadersMap[i]["name"].(string) < customHeadersMap[j]["name"].(string)
+	})
 
 	d.Set("proxy_setting", proxySettingsSchemaMap)
 	d.Set("mtls", mTLSsMap)
