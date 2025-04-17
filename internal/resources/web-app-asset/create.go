@@ -22,9 +22,9 @@ const (
 	mtlsServerData     = "trustedCAListFile"
 	mtlsServerFileName = "trustedCAListFileName"
 
-	blockTypeLocation    = "location"
-	inputBlockTypeServer = "server"
-	blockTypeServer      = "server_block"
+	blockTypeLocation = "location_instructions"
+	// inputBlockTypeServer = "server_instructions"
+	blockTypeServer = "server_instructions"
 
 	locationConfigEnable   = "isLocationConfigFile"
 	locationConfigData     = "locationConfigFile"
@@ -317,7 +317,7 @@ func mapBlocksToProxySettingInputs(blocks models.BlockSchemas, proxySettings mod
 			proxySettingEnable.Key = locationConfigEnable
 			proxySettingData.Key = locationConfigData
 			proxySettingFileName.Key = locationConfigFileName
-		case inputBlockTypeServer:
+		case blockTypeServer:
 			proxySettingEnable.Key = serverConfigEnable
 			proxySettingData.Key = serverConfigData
 			proxySettingFileName.Key = serverConfigFileName
