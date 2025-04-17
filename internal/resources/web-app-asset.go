@@ -350,11 +350,11 @@ func ResourceWebAppAsset() *schema.Resource {
 							Optional:    true,
 						},
 						"type": {
-							Description: "The type of the additional instructions block - location or server",
+							Description: "The type of the additional instructions block - location_instructions or server_instructions",
 							Type:        schema.TypeString,
 							Required:    true,
 							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice(
-								[]string{"location", "server"}, false)),
+								[]string{"location_instructions", "server_instructions"}, false)),
 						},
 						"enable_id": {
 							Type:     schema.TypeString,
