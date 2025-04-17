@@ -92,7 +92,6 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 
 			}
 
-			fmt.Printf("proxySetting: %+v\n", proxySetting)
 			switch proxySetting.Key {
 			case mtlsClientEnable, mtlsServerEnable, locationConfigEnable, serverConfigEnable:
 				enable := false
@@ -125,26 +124,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 					}
 
 				}
-			//case locationConfigEnable, serverConfigEnable:
-			//	enable := false
-			//	if proxySetting.Value == "true" {
-			//		enable = true
-			//	}
-			//
-			//	if blockType == blockTypeLocation || blockType == blockTypeServer {
-			//	blocksSchemaMap[blockType] = models.BlockSchema{
-			//		FilenameID:   blocksSchemaMap[blockType].FilenameID,
-			//		Filename:     blocksSchemaMap[blockType].Filename,
-			//		FilenameType: blocksSchemaMap[blockType].FilenameType,
-			//		DataID:       blocksSchemaMap[blockType].DataID,
-			//		Data:         blocksSchemaMap[blockType].Data,
-			//		Type:         blockType,
-			//		EnableID:     proxySetting.ID,
-			//		Enable:       enable,
-			//	}
-			//
-			//	continue
-			//}
+
 			case mtlsClientData, mtlsServerData, locationConfigData, serverConfigData:
 				var decodedData string
 				var fileExtensionsByType string
@@ -183,8 +163,6 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 					}
 
 				} else {
-					//switch proxySetting.Key {
-					//case mtlsClientData, mtlsServerData, locationConfigData, serverConfigData:
 					mTLSsSchemaMap[blockType] = models.MTLSSchema{
 						FilenameID:      mTLSsSchemaMap[blockType].FilenameID,
 						Filename:        mTLSsSchemaMap[blockType].Filename,
@@ -197,19 +175,6 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 					}
 
 				}
-
-				//case locationConfigData, serverConfigData:
-				//	blocksSchemaMap[blockType] = models.BlockSchema{
-				//		FilenameID:   blocksSchemaMap[blockType].FilenameID,
-				//		Filename:     blocksSchemaMap[blockType].Filename,
-				//		FilenameType: fileExtensionsByType,
-				//		DataID:       proxySetting.ID,
-				//		Data:         decodedData,
-				//		Type:         blockType,
-				//		EnableID:     blocksSchemaMap[blockType].EnableID,
-				//		Enable:       blocksSchemaMap[blockType].Enable,
-				//	}
-				//}
 
 			case mtlsClientFileName, mtlsServerFileName, locationConfigFileName, serverConfigFileName:
 				if blockType == blockTypeLocation || blockType == blockTypeServer {
@@ -237,28 +202,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 					}
 
 				}
-				//mTLSsSchemaMap[blockType] = models.MTLSSchema{
-				//	FilenameID:      proxySetting.ID,
-				//	Filename:        proxySetting.Value,
-				//	CertificateType: mTLSsSchemaMap[blockType].CertificateType,
-				//	DataID:          mTLSsSchemaMap[blockType].DataID,
-				//	Data:            mTLSsSchemaMap[blockType].Data,
-				//	Type:            blockType,
-				//	EnableID:        mTLSsSchemaMap[blockType].EnableID,
-				//	Enable:          mTLSsSchemaMap[blockType].Enable,
-				//}
-			//case locationConfigFileName, serverConfigFileName:
-			//	blocksSchemaMap[blockType] = models.BlockSchema{
-			//		FilenameID:   proxySetting.ID,
-			//		Filename:     proxySetting.Value,
-			//		FilenameType: blocksSchemaMap[blockType].FilenameType,
-			//		DataID:       blocksSchemaMap[blockType].DataID,
-			//		Data:         blocksSchemaMap[blockType].Data,
-			//		Type:         blockType,
-			//		EnableID:     blocksSchemaMap[blockType].EnableID,
-			//		Enable:       blocksSchemaMap[blockType].Enable,
-			//	}
-			//	fmt.Printf("Here 2 with: %+v\n", blocksSchemaMap[blockType])
+
 			default:
 				continue
 			}
@@ -298,8 +242,6 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 
 		customHeadersMap = append(customHeadersMap, customHeader)
 	}
-
-	fmt.Printf("blocksSchemaMap:%+v, additionalBlocksMap: %+v\n", blocksSchemaMap, additionalBlocksMap)
 
 	d.Set("proxy_setting", proxySettingsSchemaMap)
 	d.Set("mtls", mTLSsMap)

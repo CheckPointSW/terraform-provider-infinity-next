@@ -172,28 +172,31 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 
 				}
 
-			case mtlsClientFileName, mtlsServerFileName:
-				mTLSsSchemaMap[blockType] = models.MTLSSchema{
-					FilenameID:      proxySetting.ID,
-					Filename:        proxySetting.Value,
-					CertificateType: mTLSsSchemaMap[blockType].CertificateType,
-					DataID:          mTLSsSchemaMap[blockType].DataID,
-					Data:            mTLSsSchemaMap[blockType].Data,
-					Type:            blockType,
-					EnableID:        mTLSsSchemaMap[blockType].EnableID,
-					Enable:          mTLSsSchemaMap[blockType].Enable,
-				}
+			case mtlsClientFileName, mtlsServerFileName, locationConfigFileName, serverConfigFileName:
+				if blockType == blockTypeLocation || blockType == blockTypeServer {
+					blocksSchemaMap[blockType] = models.BlockSchema{
+						FilenameID:   proxySetting.ID,
+						Filename:     proxySetting.Value,
+						FilenameType: blocksSchemaMap[blockType].FilenameType,
+						DataID:       blocksSchemaMap[blockType].DataID,
+						Data:         blocksSchemaMap[blockType].Data,
+						Type:         blockType,
+						EnableID:     blocksSchemaMap[blockType].EnableID,
+						Enable:       blocksSchemaMap[blockType].Enable,
+					}
 
-			case locationConfigFileName, serverConfigFileName:
-				blocksSchemaMap[blockType] = models.BlockSchema{
-					FilenameID:   proxySetting.ID,
-					Filename:     proxySetting.Value,
-					FilenameType: blocksSchemaMap[blockType].FilenameType,
-					DataID:       blocksSchemaMap[blockType].DataID,
-					Data:         blocksSchemaMap[blockType].Data,
-					Type:         blockType,
-					EnableID:     blocksSchemaMap[blockType].EnableID,
-					Enable:       blocksSchemaMap[blockType].Enable,
+				} else {
+					mTLSsSchemaMap[blockType] = models.MTLSSchema{
+						FilenameID:      proxySetting.ID,
+						Filename:        proxySetting.Value,
+						CertificateType: mTLSsSchemaMap[blockType].CertificateType,
+						DataID:          mTLSsSchemaMap[blockType].DataID,
+						Data:            mTLSsSchemaMap[blockType].Data,
+						Type:            blockType,
+						EnableID:        mTLSsSchemaMap[blockType].EnableID,
+						Enable:          mTLSsSchemaMap[blockType].Enable,
+					}
+
 				}
 
 			default:
