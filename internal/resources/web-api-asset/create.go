@@ -23,7 +23,7 @@ const (
 	mtlsServerFileName = "trustedCAListFileName"
 
 	blockTypeLocation = "location_instruction"
-	blockTypeServer   = "server_block_instruction"
+	blockTypeServer   = "server_instruction"
 
 	locationConfigEnable   = "isLocationConfigFile"
 	locationConfigData     = "locationConfigFile"
