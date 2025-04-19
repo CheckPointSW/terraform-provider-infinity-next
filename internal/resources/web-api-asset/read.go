@@ -279,6 +279,9 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 	d.Set("additional_instructions_blocks", additionalBlocksMap)
 	d.Set("custom_headers", customHeadersMap)
 
+	fmt.Printf("additionalBlocksMap: %+v\n", additionalBlocksMap)
+	fmt.Printf("customHeadersMap: %+v\n", customHeadersMap)
+
 	sourceIdentifiersSchema := asset.SourceIdentifiers.ToSchema()
 	sourceIdentifiersSchemaMap, err := utils.UnmarshalAs[[]map[string]any](sourceIdentifiersSchema)
 	if err != nil {
