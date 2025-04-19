@@ -225,8 +225,8 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"redirect_to_https":                              "true",
 						"access_log":                                     "true",
 						"custom_headers.#":                               "1",
-						"custom_headers.0.name":                          "header1",
-						"custom_headers.0.value":                         "value1",
+						"custom_headers.0.name":                          "first header",
+						"custom_headers.0.value":                         "first value",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -332,10 +332,10 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"redirect_to_https":                              "false",
 						"access_log":                                     "false",
 						"custom_headers.#":                               "2",
-						"custom_headers.0.name":                          "header1",
-						"custom_headers.0.value":                         "value",
-						"custom_headers.1.name":                          "header2",
-						"custom_headers.1.value":                         "value2",
+						"custom_headers.0.name":                          "first header",
+						"custom_headers.0.value":                         "new first value",
+						"custom_headers.1.name":                          "second header",
+						"custom_headers.1.value":                         "second value",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -605,8 +605,8 @@ resource "inext_web_api_asset" %[1]q {
 	redirect_to_https = "true"
 	access_log = "true"
 	custom_headers {
-		name   = "header1"
-		value  = "value1"
+		name   = "first header"
+		value  = "first value"
 	}
 }
 
@@ -817,12 +817,12 @@ resource "inext_web_api_asset" %[1]q {
 	redirect_to_https = "false"
 	access_log = "false"
 	custom_headers {
-		name   = "header2"
-		value  = "value2"
+		name   = "second header"
+		value  = "second value"
 	}
 	custom_headers {
-		name   = "header1"
-		value  = "value"
+		name   = "first header"
+		value  = "new first value"
 	}
 }
 
