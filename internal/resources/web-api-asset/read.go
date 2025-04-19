@@ -259,9 +259,11 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 	}
 
 	// Sort the custom headers by their name
+	fmt.Printf("Before sorting: %+v\n", customHeaderSchemas)
 	sort.Slice(customHeaderSchemas, func(i, j int) bool {
 		return customHeaderSchemas[i].Name < customHeaderSchemas[j].Name
 	})
+	fmt.Printf("After sorting: %+v\n", customHeaderSchemas)
 
 	for _, customHeaderSchema := range customHeaderSchemas {
 		customHeader, err := utils.UnmarshalAs[map[string]any](customHeaderSchema)

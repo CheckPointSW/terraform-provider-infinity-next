@@ -2,7 +2,6 @@ package resources
 
 import (
 	"context"
-	"fmt"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
@@ -483,8 +482,6 @@ func resourceWebApiAssetRead(ctx context.Context, d *schema.ResourceData, meta a
 		return utils.DiagError("unable to perform get WebAPIAsset", err, diags)
 	}
 
-	fmt.Printf("getWebAPIAsset: %v\n", asset)
-
 	if err := webapiasset.ReadWebAPIAssetToResourceData(asset, d); err != nil {
 		return utils.DiagError("unable to perform WebAPIAsset Read", err, diags)
 	}
@@ -501,8 +498,6 @@ func resourceWebApiAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 	if err != nil {
 		return utils.DiagError("unable to perform WebAPIAsset update", err, diags)
 	}
-
-	fmt.Printf("updateWebAPIAssetInput: %v\n", updateInput)
 
 	result, err := webapiasset.UpdateWebAPIAsset(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
@@ -527,8 +522,6 @@ func resourceWebApiAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 	if err != nil {
 		return utils.DiagError("unable to perform get WebAPIAsset", err, diags)
 	}
-
-	fmt.Printf("getWebAPIAsset after update: %v\n", newAsset)
 
 	if err := webapiasset.ReadWebAPIAssetToResourceData(newAsset, d); err != nil {
 		return utils.DiagError("unable to perform WebAPIAsset Read", err, diags)
