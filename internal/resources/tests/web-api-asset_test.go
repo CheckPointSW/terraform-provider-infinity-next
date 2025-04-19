@@ -322,7 +322,7 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						//"additional_instructions_blocks.0.filename":      "location.json",
 						//"additional_instructions_blocks.0.filename_type": ".json",
 						//"additional_instructions_blocks.0.data":          "location data",
-						//"additional_instructions_blocks.0.type":          "location",
+						//"additional_instructions_blocks.0.type":          "location_instructions",
 						"additional_instructions_blocks.0.enable":        "false",
 						"additional_instructions_blocks.1.filename":      "server.json",
 						"additional_instructions_blocks.1.filename_type": ".json",

@@ -269,6 +269,7 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 				if newBlock.Enable {
 					additionalBlocksToAdd = append(additionalBlocksToAdd, newBlock)
 				}
+
 				continue
 			}
 
