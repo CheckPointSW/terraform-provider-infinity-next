@@ -235,10 +235,8 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 		customHeadersToAdd := models.CustomHeadersSchemas{}
 		for _, newCustomHeader := range newCustomHeaders {
 			nameAndValue := fmt.Sprintf("%s:%s", newCustomHeader.Name, newCustomHeader.Value)
-			_, ok := oldCustomHeadersIndicatorMap[nameAndValue]
-			if !ok {
+			if _, ok := oldCustomHeadersIndicatorMap[nameAndValue]; !ok {
 				customHeadersToAdd = append(customHeadersToAdd, newCustomHeader)
-				continue
 			}
 
 		}
