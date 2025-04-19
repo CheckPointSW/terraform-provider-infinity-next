@@ -222,7 +222,23 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 		mTLSsMap = append(mTLSsMap, mTLS)
 	}
 
+	var blockSchemas models.BlockSchemas
 	for _, blockSchema := range blocksSchemaMap {
+		//block, err := utils.UnmarshalAs[map[string]any](blockSchema)
+		//if err != nil {
+		//	return fmt.Errorf("failed to convert %s block to map. Error: %+v", blockSchema.Type, err)
+		//}
+		//
+		//additionalBlocksMap = append(additionalBlocksMap, block)
+		blockSchemas = append(blockSchemas, blockSchema)
+	}
+
+	// Sort the blocks by their type
+	sort.Slice(blockSchemas, func(i, j int) bool {
+		return blockSchemas[i].Type < blockSchemas[j].Type
+	})
+
+	for _, blockSchema := range blockSchemas {
 		block, err := utils.UnmarshalAs[map[string]any](blockSchema)
 		if err != nil {
 			return fmt.Errorf("failed to convert %s block to map. Error: %+v", blockSchema.Type, err)
@@ -231,12 +247,23 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 		additionalBlocksMap = append(additionalBlocksMap, block)
 	}
 
-	// Sort the blocks by their type
-	sort.Slice(additionalBlocksMap, func(i, j int) bool {
-		return additionalBlocksMap[i]["type"].(string) < additionalBlocksMap[j]["type"].(string)
+	var customHeaderSchemas models.CustomHeadersSchemas
+	for _, customHeaderSchema := range customHeadersSchemaMap {
+		//customHeader, err := utils.UnmarshalAs[map[string]any](customHeaderSchema)
+		//if err != nil {
+		//	return fmt.Errorf("failed to convert custom header to map. Error: %+v", err)
+		//}
+		//
+		//customHeadersMap = append(customHeadersMap, customHeader)
+		customHeaderSchemas = append(customHeaderSchemas, customHeaderSchema)
+	}
+
+	// Sort the custom headers by their name
+	sort.Slice(customHeaderSchemas, func(i, j int) bool {
+		return customHeaderSchemas[i].Name < customHeaderSchemas[j].Name
 	})
 
-	for _, customHeaderSchema := range customHeadersSchemaMap {
+	for _, customHeaderSchema := range customHeaderSchemas {
 		customHeader, err := utils.UnmarshalAs[map[string]any](customHeaderSchema)
 		if err != nil {
 			return fmt.Errorf("failed to convert custom header to map. Error: %+v", err)
@@ -244,11 +271,6 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 
 		customHeadersMap = append(customHeadersMap, customHeader)
 	}
-
-	// Sort the custom headers by their name
-	sort.Slice(customHeadersMap, func(i, j int) bool {
-		return customHeadersMap[i]["name"].(string) < customHeadersMap[j]["name"].(string)
-	})
 
 	d.Set("proxy_setting", proxySettingsSchemaMap)
 	d.Set("mtls", mTLSsMap)
