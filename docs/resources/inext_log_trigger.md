@@ -46,13 +46,13 @@ resource "inext_log_trigger" "mytrigger" {
   log_to_agent                     = false
   log_to_cef                       = false
   cef_ip_address                   = "10.0.0.1"
-  cef_port                     = 2000
+  cef_port                         = 2000
   cef_protocol                     = "TCP" # enum of ["TCP", "UDP"]
   log_to_cloud                     = true
   log_to_syslog                    = true
   syslog_ip_address                = "10.10.10.10"
   syslog_protocol                  = "TCP" # enum of ["TCP", "UDP"]
-  syslog_port                  = 5004
+  syslog_port                      = 5004
   compliance_violations            = true
   compliance_warnings              = true
   verbosity                        = "Standard" # enum of ["Minimal", "Standard", "Extended"]

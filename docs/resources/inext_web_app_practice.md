@@ -64,7 +64,7 @@ resource "inext_web_app_practice" "my-webapp-practice" {
     allow_file_size_limit        = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
     file_size_limit              = 10
     file_size_limit_unit         = "MB"                  # enum of ["Bytes","KB", "MB", "GB"]
-    files_without_name            = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
+    files_without_name           = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice"]
     required_archive_extraction  = true
     archive_file_size_limit      = 100
     archive_file_size_limit_unit = "MB"                  # enum of ["Bytes","KB", "MB", "GB"]

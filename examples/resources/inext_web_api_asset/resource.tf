@@ -49,16 +49,16 @@ resource "inext_web_api_asset" "my-webapi-asset" {
     enable           = true
   }
   additional_instructions_blocks {
-    filename = "location.json"
+    filename      = "location.json"
     filename_type = ".json"
-    data	 = "location data"
-    type = "location_instructions"
-    enable = true
+    data          = "location data"
+    type          = "location_instructions"
+    enable        = true
   }
   redirect_to_https = "true"
-  access_log = "true"
+  access_log        = "true"
   custom_headers {
-    name   = "header1"
-    value  = "value1"
+    name  = "header1"
+    value = "value1"
   }
 }
