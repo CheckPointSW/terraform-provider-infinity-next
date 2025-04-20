@@ -95,11 +95,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 
 			switch proxySetting.Key {
 			case mtlsClientEnable, mtlsServerEnable, locationConfigEnable, serverConfigEnable:
-				enable := false
-				if proxySetting.Value == "true" {
-					enable = true
-				}
-
+				enable := proxySetting.Value == "true"
 				if blockType == blockTypeLocation || blockType == blockTypeServer {
 					blocksSchemaMap[blockType] = models.BlockSchema{
 						FilenameID:   blocksSchemaMap[blockType].FilenameID,

@@ -214,6 +214,13 @@ func mapToTagInput(tagsMap map[string]any) models.TagInput {
 
 }
 
+func convertBooleanToString(value bool) string {
+	if value {
+		return "true"
+	}
+	return "false"
+}
+
 func mapToMTLSInput(mTLSMap map[string]any) models.MTLSSchema {
 	mTLSFile, err := utils.UnmarshalAs[models.MTLSSchema](mTLSMap)
 	if err != nil {
@@ -254,11 +261,7 @@ func mapMTLSToProxySettingInputs(mTLS models.MTLSSchemas, proxySettings models.P
 			continue
 		}
 
-		if mTLSFile.Enable {
-			proxySettingEnable.Value = "true"
-		} else {
-			proxySettingEnable.Value = "false"
-		}
+		proxySettingEnable.Value = convertBooleanToString(mTLSFile.Enable)
 
 		proxySettingData.Value = mTLSFile.Data
 		proxySettingFileName.Value = mTLSFile.Filename
@@ -317,13 +320,7 @@ func mapBlocksToProxySettingInputs(blocks models.BlockSchemas, proxySettings mod
 			continue
 		}
 
-		blockEnable := "false"
-		if block.Enable {
-			blockEnable = "true"
-		}
-
-		proxySettingEnable.Value = blockEnable
-
+		proxySettingEnable.Value = convertBooleanToString(block.Enable)
 		proxySettingData.Value = block.Data
 		proxySettingFileName.Value = block.Filename
 
