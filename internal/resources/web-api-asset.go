@@ -44,6 +44,10 @@ func ResourceWebAPIAsset() *schema.Resource {
 		[]string{mTLSServer, mTLSClient}, false))
 	mTLSFileTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
 		[]string{mTLSFileTypePEM, mTLSFileTypeCRT, mTLSFileTypeDER, mTLSFileTypeP12, mTLSFileTypePFX, mTLSFileTypeP7B, mTLSFileTypeP7C, mTLSFileTypeCER}, false))
+	instructionsBlockFileTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
+		[]string{instructionsBlockFileTypeJSON, instructionsBlockFileTypeYML}, false))
+	instructionsBlockTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
+		[]string{instructionsBlockLocation, instructionsBlockServer}, false))
 
 	return &schema.Resource{
 		Description:   "Web API Asset",
@@ -344,9 +348,10 @@ func ResourceWebAPIAsset() *schema.Resource {
 							Optional:    true,
 						},
 						"filename_type": {
-							Description: "The type of the instructions block file - .conf, .json, .xml, .yaml, .yml",
-							Type:        schema.TypeString,
-							Optional:    true,
+							Description:      "The type of the instructions block file - .json, .yml",
+							Type:             schema.TypeString,
+							Optional:         true,
+							ValidateDiagFunc: instructionsBlockFileTypeValidation,
 						},
 						"data_id": {
 							Type:     schema.TypeString,
@@ -359,11 +364,10 @@ func ResourceWebAPIAsset() *schema.Resource {
 							Optional:    true,
 						},
 						"type": {
-							Description: "The type of the additional instructions block - location_instructions or server_instructions",
-							Type:        schema.TypeString,
-							Required:    true,
-							ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice(
-								[]string{"location_instructions", "server_instructions"}, false)),
+							Description:      "The type of the additional instructions block - location_instructions or server_instructions",
+							Type:             schema.TypeString,
+							Required:         true,
+							ValidateDiagFunc: instructionsBlockTypeValidation,
 						},
 						"enable_id": {
 							Type:     schema.TypeString,

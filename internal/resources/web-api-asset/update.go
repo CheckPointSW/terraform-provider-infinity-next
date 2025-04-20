@@ -372,7 +372,7 @@ func UpdateWebAPIAssetInputFromResourceData(d *schema.ResourceData) (models.Upda
 		}
 
 		var proxySettingsToAdd models.ProxySettingInputs
-		if additionalBlocksToAdd != nil {
+		if len(additionalBlocksToAdd) > 0 {
 			proxySettingsToAdd = mapBlocksToProxySettingInputs(additionalBlocksToAdd, models.ProxySettingInputs{})
 		}
 

@@ -144,8 +144,8 @@ func NewFileSchemaEncode(filename, fileData, mTLSType, certificateType string, f
 	}
 }
 
-// BlockSchema represents a field of web application asset as it is saved in the state file
-// this structure is aligned with the input schema (see web-app-asset.go file)
+// BlockSchema represents a field of web api asset as it is saved in the state file
+// this structure is aligned with the input schema (see web-api-asset.go file)
 type BlockSchema struct {
 	FilenameID   string `json:"filename_id,omitempty"`
 	Filename     string `json:"filename,omitempty"`
@@ -171,8 +171,8 @@ func NewFileSchemaEncodeBlocks(filename, fileData, fileType, blockType string, f
 	}
 }
 
-// CustomHeaderSchema represents a field of web application asset as it is saved in the state file
-// this structure is aligned with the input schema (see web-app-asset.go file)
+// CustomHeaderSchema represents a field of web api asset as it is saved in the state file
+// this structure is aligned with the input schema (see web-api-asset.go file)
 type CustomHeaderSchema struct {
 	HeaderID string `json:"header_id,omitempty"`
 	Name     string `json:"name"`

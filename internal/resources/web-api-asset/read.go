@@ -224,12 +224,6 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 
 	var blockSchemas models.BlockSchemas
 	for _, blockSchema := range blocksSchemaMap {
-		//block, err := utils.UnmarshalAs[map[string]any](blockSchema)
-		//if err != nil {
-		//	return fmt.Errorf("failed to convert %s block to map. Error: %+v", blockSchema.Type, err)
-		//}
-		//
-		//additionalBlocksMap = append(additionalBlocksMap, block)
 		blockSchemas = append(blockSchemas, blockSchema)
 	}
 
@@ -249,12 +243,6 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 
 	var customHeaderSchemas models.CustomHeadersSchemas
 	for _, customHeaderSchema := range customHeadersSchemaMap {
-		//customHeader, err := utils.UnmarshalAs[map[string]any](customHeaderSchema)
-		//if err != nil {
-		//	return fmt.Errorf("failed to convert custom header to map. Error: %+v", err)
-		//}
-		//
-		//customHeadersMap = append(customHeadersMap, customHeader)
 		customHeaderSchemas = append(customHeaderSchemas, customHeaderSchema)
 	}
 

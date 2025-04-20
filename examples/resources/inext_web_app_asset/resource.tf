@@ -52,7 +52,7 @@ resource "inext_web_app_asset" "my-webapp-asset" {
     filename = "location.json"
     filename_type = ".json"
     data	 = "location data"
-    type = "location"
+    type = "location_instructions"
     enable = true
   }
   redirect_to_https = "true"
