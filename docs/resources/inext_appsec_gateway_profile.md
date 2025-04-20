@@ -60,6 +60,8 @@ resource "inext_appsec_gateway_profile" "my-appsec-gateway-profile" {
 ### Optional
 
 - `additional_settings` (Map of String) Controls the settings of the connected agents
+- `certificate_type` (String) The type of the certificate used for the profile: Vault or Gateway
+- `fail_open_inspection` (Boolean) Allow traffic upon internal failures or high CPU utilization: true or false
 - `max_number_of_agents` (Number) Sets the maximum number of agents that can be connected to this profile
 - `reverseproxy_additional_settings` (Map of String) Sets the reverse proxy settings of linked assets
 - `reverseproxy_upstream_timeout` (Number) Sets the reverse proxy upstream timeout in seconds

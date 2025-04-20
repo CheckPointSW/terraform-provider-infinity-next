@@ -47,7 +47,7 @@ func TestAccAppsecGatewayProfileBasic(t *testing.T) {
 						"max_number_of_agents":                   "100",
 						"reverseproxy_additional_settings_ids.#": "2",
 						"additional_settings_ids.#":              "2",
-						"%":                                      "17",
+						"%":                                      "19",
 						"profile_type":                           "CloudGuardAppSecGateway",
 						"additional_settings.%":                  "2",
 						"upgrade_time_week_days.1":               "Monday",
@@ -58,6 +58,8 @@ func TestAccAppsecGatewayProfileBasic(t *testing.T) {
 						"reverseproxy_additional_settings.Key3":  "Value5",
 						"additional_settings.Key1":               "Value1",
 						"additional_settings.Key2":               "Value2",
+						"certificate_type":                       "Gateway",
+						"fail_open_inspection":                   "true",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 						resource.TestCheckResourceAttrSet(resourceName, "authentication_token"),
@@ -98,7 +100,7 @@ func TestAccAppsecGatewayProfileFull(t *testing.T) {
 						"max_number_of_agents":                   "100",
 						"reverseproxy_additional_settings_ids.#": "2",
 						"additional_settings_ids.#":              "2",
-						"%":                                      "17",
+						"%":                                      "19",
 						"profile_type":                           "CloudGuardAppSecGateway",
 						"additional_settings.%":                  "2",
 						"upgrade_time_week_days.1":               "Monday",
@@ -109,6 +111,8 @@ func TestAccAppsecGatewayProfileFull(t *testing.T) {
 						"reverseproxy_additional_settings.Key3":  "Value5",
 						"additional_settings.Key1":               "Value1",
 						"additional_settings.Key2":               "Value2",
+						"certificate_type":                       "Vault",
+						"fail_open_inspection":                   "true",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 						resource.TestCheckResourceAttrSet(resourceName, "authentication_token"),
@@ -152,8 +156,10 @@ func TestAccAppsecGatewayProfileFull(t *testing.T) {
 						"additional_settings_ids.#":              "3",
 						"additional_settings.Key2":               "Value11",
 						"additional_settings.Key5":               "Value5",
-						"%":                                      "17",
+						"%":                                      "19",
 						"upgrade_time_week_days.1":               "Sunday",
+						"certificate_type":                       "Vault",
+						"fail_open_inspection":                   "false",
 					}),
 						resource.TestCheckTypeSetElemAttr(resourceName, "upgrade_time_week_days.*", "Monday"),
 						resource.TestCheckTypeSetElemAttr(resourceName, "upgrade_time_week_days.*", "Sunday"),
@@ -172,6 +178,7 @@ resource "inext_appsec_gateway_profile" %[1]q {
 	name = %[1]q
 	profile_sub_type = "Aws"
 	max_number_of_agents = 10
+	certificate_type = "Vault"
 }
 `, name)
 }
@@ -196,6 +203,8 @@ resource "inext_appsec_gateway_profile" %[1]q {
 		Key1 = "Value1"
 		Key2 = "Value2"
 	}
+	certificate_type = "Gateway"
+    fail_open_inspection = true
 }
 `, name)
 }
@@ -220,6 +229,8 @@ resource "inext_appsec_gateway_profile" %[1]q {
 		Key1 = "Value1"
 		Key2 = "Value2"
 	}
+	certificate_type = "Vault"
+    fail_open_inspection = true
 }
 `, name)
 }
@@ -246,6 +257,8 @@ resource "inext_appsec_gateway_profile" %[1]q {
 		Key5 = "Value5"
 		Key6 = "Value6"
 	}
+	certificate_type = "Vault"
+    fail_open_inspection = false
 }
 `, name)
 }
