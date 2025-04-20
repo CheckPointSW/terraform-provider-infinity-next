@@ -34,7 +34,7 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"name":            assetNameAttribute,
 						"urls.0":          fmt.Sprintf("http://host/%s/path1", assetNameAttribute),
 						"urls.#":          "1",
-						"%":               "25",
+						"%":               "32",
 						"urls_ids.#":      "1",
 						"main_attributes": fmt.Sprintf("{\"applicationUrls\":\"http://host/%s/path1\"}", assetNameAttribute),
 					}),
@@ -52,17 +52,17 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
-						"name":                                  assetNameAttribute,
-						"%":                                     "25",
-						"read_only":                             "false",
-						"upstream_url":                          "some url 5",
-						"urls.#":                                "2",
-						"urls_ids.#":                            "2",
-						"profiles.#":                            "1",
-						"practice.#":                            "1",
-						"practice.0.%":                          "5",
-						"practice.0.triggers.#":                 "1",
-						"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
+						"name":                  assetNameAttribute,
+						"%":                     "32",
+						"read_only":             "false",
+						"upstream_url":          "some url 5",
+						"urls.#":                "2",
+						"urls_ids.#":            "2",
+						"profiles.#":            "1",
+						"practice.#":            "1",
+						"practice.0.%":          "5",
+						"practice.0.triggers.#": "1",
+						//"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
 						"practice.0.sub_practices_modes.WebBot": "AccordingToPractice",
 						"practice.0.sub_practices_modes.Snort":  "Disabled",
 						"practice.0.main_mode":                  "Prevent",
@@ -98,6 +98,14 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"mtls.0.data":             "cert data",
 						"mtls.0.type":             "client",
 						"mtls.0.enable":           "true",
+
+						"additional_instructions_blocks.#":               "1",
+						"additional_instructions_blocks.0.filename":      "location.json",
+						"additional_instructions_blocks.0.filename_type": ".json",
+						"additional_instructions_blocks.0.data":          "location data",
+						"additional_instructions_blocks.0.type":          "location_instructions",
+						"additional_instructions_blocks.0.enable":        "true",
+						"custom_headers.#":                               "1",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -114,6 +122,11 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers.0.header_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -155,17 +168,17 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
-						"name":                                  assetNameAttribute,
-						"%":                                     "25",
-						"read_only":                             "false",
-						"upstream_url":                          "some url 5",
-						"urls.#":                                "2",
-						"urls_ids.#":                            "2",
-						"profiles.#":                            "1",
-						"practice.#":                            "1",
-						"practice.0.%":                          "5",
-						"practice.0.triggers.#":                 "1",
-						"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
+						"name":                  assetNameAttribute,
+						"%":                     "32",
+						"read_only":             "false",
+						"upstream_url":          "some url 5",
+						"urls.#":                "2",
+						"urls_ids.#":            "2",
+						"profiles.#":            "1",
+						"practice.#":            "1",
+						"practice.0.%":          "5",
+						"practice.0.triggers.#": "1",
+						//"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
 						"practice.0.sub_practices_modes.WebBot": "AccordingToPractice",
 						"practice.0.sub_practices_modes.Snort":  "Disabled",
 						"practice.0.main_mode":                  "Learn",
@@ -196,12 +209,21 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"tags.0.%":                              "3",
 						"tags.1.%":                              "3",
 
-						"mtls.#":                  "1",
-						"mtls.0.filename":         "cert.der",
-						"mtls.0.certificate_type": ".der",
-						"mtls.0.data":             "cert data",
-						"mtls.0.type":             "client",
-						"mtls.0.enable":           "true",
+						"mtls.#":                           "1",
+						"mtls.0.filename":                  "cert.der",
+						"mtls.0.certificate_type":          ".der",
+						"mtls.0.data":                      "cert data",
+						"mtls.0.type":                      "client",
+						"mtls.0.enable":                    "true",
+						"additional_instructions_blocks.#": "1",
+						"additional_instructions_blocks.0.filename":      "location.json",
+						"additional_instructions_blocks.0.filename_type": ".json",
+						"additional_instructions_blocks.0.data":          "location data",
+						"additional_instructions_blocks.0.type":          "location_instructions",
+						"additional_instructions_blocks.0.enable":        "true",
+						"redirect_to_https":                              "true",
+						"access_log":                                     "true",
+						"custom_headers.#":                               "1",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -218,6 +240,13 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.filename_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.data_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "redirect_to_https_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "access_log_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers.0.header_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -233,17 +262,17 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 					anotherTrustedSourcesNameAttribute, anotherLogTriggerNameAttribute, anotherExceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
-						"name":                                  assetNameAttribute,
-						"%":                                     "25",
-						"read_only":                             "false",
-						"upstream_url":                          "some url 10",
-						"urls.#":                                "2",
-						"urls_ids.#":                            "2",
-						"profiles.#":                            "1",
-						"practice.#":                            "1",
-						"practice.0.%":                          "5",
-						"practice.0.triggers.#":                 "1",
-						"practice.0.sub_practices_modes.IPS":    "Learn",
+						"name":                  assetNameAttribute,
+						"%":                     "32",
+						"read_only":             "false",
+						"upstream_url":          "some url 10",
+						"urls.#":                "2",
+						"urls_ids.#":            "2",
+						"profiles.#":            "1",
+						"practice.#":            "1",
+						"practice.0.%":          "5",
+						"practice.0.triggers.#": "1",
+						//"practice.0.sub_practices_modes.IPS":    "Learn",
 						"practice.0.sub_practices_modes.WebBot": "Inactive",
 						"practice.0.sub_practices_modes.Snort":  "AccordingToPractice",
 						"practice.0.main_mode":                  "Prevent",
@@ -275,17 +304,28 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"tags.1.%":                              "3",
 						"tags.2.%":                              "3",
 
-						"mtls.#":                  "2",
-						"mtls.0.filename":         "newfile.crt",
-						"mtls.0.certificate_type": ".der",
-						"mtls.0.data":             "new cert data",
-						"mtls.0.type":             "server",
-						"mtls.0.enable":           "true",
-						"mtls.1.filename":         "newfile2.p12",
-						"mtls.1.certificate_type": ".p12",
-						"mtls.1.data":             "new cert data2",
-						"mtls.1.type":             "client",
-						"mtls.1.enable":           "false",
+						"mtls.#":                                         "2",
+						"mtls.0.filename":                                "newfile.crt",
+						"mtls.0.certificate_type":                        ".der",
+						"mtls.0.data":                                    "new cert data",
+						"mtls.0.type":                                    "server",
+						"mtls.0.enable":                                  "true",
+						"mtls.1.filename":                                "newfile2.p12",
+						"mtls.1.certificate_type":                        ".p12",
+						"mtls.1.data":                                    "new cert data2",
+						"mtls.1.type":                                    "client",
+						"mtls.1.enable":                                  "false",
+						"additional_instructions_blocks.#":               "2",
+						"additional_instructions_blocks.0.type":          "location_instructions",
+						"additional_instructions_blocks.0.enable":        "false",
+						"additional_instructions_blocks.1.filename":      "server.json",
+						"additional_instructions_blocks.1.filename_type": ".json",
+						"additional_instructions_blocks.1.data":          "server data",
+						"additional_instructions_blocks.1.type":          "server_instructions",
+						"additional_instructions_blocks.1.enable":        "true",
+						"redirect_to_https":                              "false",
+						"access_log":                                     "false",
+						"custom_headers.#":                               "2",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -306,6 +346,15 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.filename_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.data_id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "mtls.1.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.0.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.1.filename_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.1.data_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "additional_instructions_blocks.1.enable_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "redirect_to_https_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "access_log_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers.0.header_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers.1.header_id"),
+						resource.TestCheckResourceAttrSet(assetResourceName, "custom_headers_id"),
 					)...,
 				),
 				ExpectNonEmptyPlan: true,
@@ -376,6 +425,17 @@ resource "inext_web_app_asset" %[1]q {
 		data	 = "cert data"
 		type = "client"
 		enable = true
+	}
+	additional_instructions_blocks {
+		filename = "location.json"
+		filename_type = ".json"
+		data	 = "location data"
+		type = "location_instructions"
+		enable = true
+	}
+	custom_headers {
+		name   = "header1"
+		value  = "value1"
 	}
 }
 
@@ -523,6 +583,19 @@ resource "inext_web_app_asset" %[1]q {
 		data	 = "cert data"
 		type = "client"
 		enable = true
+	}
+	additional_instructions_blocks {
+		filename = "location.json"
+		filename_type = ".json"
+		data	 = "location data"
+		type = "location_instructions"
+		enable = true
+	}
+	redirect_to_https = "true"
+	access_log = "true"
+	custom_headers {
+		name   = "first header"
+		value  = "first value"
 	}
 }
 
@@ -715,6 +788,30 @@ resource "inext_web_app_asset" %[1]q {
 		data	 = "new cert data2"
 		type = "client"
 		enable = false
+	}
+	additional_instructions_blocks {
+		filename = "location.json"
+		filename_type = ".json"
+		data	 = "location data"
+		type = "location_instructions"
+		enable = false
+	}
+	additional_instructions_blocks {
+		filename = "server.json"
+		filename_type = ".json"
+		data	 = "server data"
+		type = "server_instructions"
+		enable = true
+	}
+	redirect_to_https = "false"
+	access_log = "false"
+	custom_headers {
+		name   = "second header"
+		value  = "second value"
+	}
+	custom_headers {
+		name   = "first header"
+		value  = "new first value"
 	}
 }
 

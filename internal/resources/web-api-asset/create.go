@@ -21,6 +21,22 @@ const (
 	mtlsServerEnable   = "isTrustedCAListFile"
 	mtlsServerData     = "trustedCAListFile"
 	mtlsServerFileName = "trustedCAListFileName"
+
+	blockTypeLocation = "location_instructions"
+	blockTypeServer   = "server_instructions"
+
+	locationConfigEnable   = "isLocationConfigFile"
+	locationConfigData     = "locationConfigFile"
+	locationConfigFileName = "locationConfigFileName"
+
+	serverConfigEnable   = "isServerConfigFile"
+	serverConfigData     = "serverConfigFile"
+	serverConfigFileName = "serverConfigFileName"
+
+	redirectToHTTPSEnable = "redirectToHttps"
+	accessLogEnable       = "accessLog"
+	customHeaderEnable    = "isSetHeader"
+	customHeaderData      = "setHeader"
 )
 
 func CreateWebAPIAssetInputFromResourceData(d *schema.ResourceData) (models.CreateWebAPIAssetInput, error) {
@@ -42,6 +58,15 @@ func CreateWebAPIAssetInputFromResourceData(d *schema.ResourceData) (models.Crea
 	mtls = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "mtls"), mapToMTLSInput)
 
 	res.ProxySettings = mapMTLSToProxySettingInputs(mtls, res.ProxySettings)
+
+	var additionalBlocks models.BlockSchemas
+	additionalBlocks = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "additional_instructions_blocks"), mapToBlocksInput)
+
+	res.ProxySettings = mapBlocksToProxySettingInputs(additionalBlocks, res.ProxySettings)
+
+	var customHeaders models.CustomHeadersSchemas
+	customHeaders = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "custom_headers"), mapToCustomHeaderInput)
+	res.ProxySettings = mapAdvancedToProxySettingInputs(d.Get("redirect_to_https").(bool), d.Get("access_log").(bool), customHeaders, res.ProxySettings)
 
 	return res, nil
 }
@@ -102,6 +127,7 @@ func NewWebAPIAsset(ctx context.Context, c *api.Client, input models.CreateWebAP
 								id
 								URL
 							}
+							assetType
 							sources
 							class
 							category
@@ -188,6 +214,13 @@ func mapToTagInput(tagsMap map[string]any) models.TagInput {
 
 }
 
+func convertBooleanToString(value bool) string {
+	if value {
+		return "true"
+	}
+	return "false"
+}
+
 func mapToMTLSInput(mTLSMap map[string]any) models.MTLSSchema {
 	mTLSFile, err := utils.UnmarshalAs[models.MTLSSchema](mTLSMap)
 	if err != nil {
@@ -228,16 +261,121 @@ func mapMTLSToProxySettingInputs(mTLS models.MTLSSchemas, proxySettings models.P
 			continue
 		}
 
-		if mTLSFile.Enable {
-			proxySettingEnable.Value = "true"
-		} else {
-			proxySettingEnable.Value = "false"
-		}
+		proxySettingEnable.Value = convertBooleanToString(mTLSFile.Enable)
 
 		proxySettingData.Value = mTLSFile.Data
 		proxySettingFileName.Value = mTLSFile.Filename
 
 		proxySettings = append(proxySettings, proxySettingEnable, proxySettingData, proxySettingFileName)
+	}
+
+	return proxySettings
+}
+
+func mapToBlocksInput(blocksMap map[string]any) models.BlockSchema {
+	blockFile, err := utils.UnmarshalAs[models.BlockSchema](blocksMap)
+	if err != nil {
+		fmt.Printf("Failed to convert input schema validation to BlockSchema struct. Error: %+v", err)
+		return models.BlockSchema{}
+	}
+
+	blockFile = models.NewFileSchemaEncodeBlocks(blockFile.Filename, blockFile.Data, blockFile.FilenameType, blockFile.Type, blockFile.Enable)
+
+	if blocksMap["filename_id"] != nil {
+		blockFile.FilenameID = blocksMap["filename_id"].(string)
+	}
+
+	if blocksMap["data_id"] != nil {
+		blockFile.DataID = blocksMap["data_id"].(string)
+	}
+
+	if blocksMap["enable_id"] != nil {
+		blockFile.EnableID = blocksMap["enable_id"].(string)
+	}
+
+	return blockFile
+}
+
+func mapBlocksToProxySettingInputs(blocks models.BlockSchemas, proxySettings models.ProxySettingInputs) models.ProxySettingInputs {
+	blockTypes := make(map[string]bool)
+	for _, block := range blocks {
+		blockType := block.Type
+		if blockTypes[blockType] {
+			continue
+		} else {
+			blockTypes[blockType] = true
+		}
+
+		var proxySettingEnable, proxySettingData, proxySettingFileName models.ProxySettingInput
+		switch blockType {
+		case blockTypeLocation:
+			proxySettingEnable.Key = locationConfigEnable
+			proxySettingData.Key = locationConfigData
+			proxySettingFileName.Key = locationConfigFileName
+		case blockTypeServer:
+			proxySettingEnable.Key = serverConfigEnable
+			proxySettingData.Key = serverConfigData
+			proxySettingFileName.Key = serverConfigFileName
+		default:
+			continue
+		}
+
+		proxySettingEnable.Value = convertBooleanToString(block.Enable)
+		proxySettingData.Value = block.Data
+		proxySettingFileName.Value = block.Filename
+
+		proxySettings = append(proxySettings, proxySettingEnable, proxySettingData, proxySettingFileName)
+	}
+
+	return proxySettings
+}
+
+func mapToCustomHeaderInput(customHeadersMap map[string]any) models.CustomHeaderSchema {
+	var customHeader models.CustomHeaderSchema
+
+	customHeader.Name = customHeadersMap["name"].(string)
+	customHeader.Value = customHeadersMap["value"].(string)
+
+	if id, _ := customHeadersMap["header_id"]; id != nil {
+		customHeader.HeaderID = id.(string)
+	}
+
+	return customHeader
+}
+
+func mapAdvancedToProxySettingInputs(redirectToHTTPS, accessLog bool, customHeaders models.CustomHeadersSchemas, proxySettings models.ProxySettingInputs) models.ProxySettingInputs {
+	if redirectToHTTPS {
+		proxySettingEnable := models.ProxySettingInput{
+			Key:   redirectToHTTPSEnable,
+			Value: "true",
+		}
+		proxySettings = append(proxySettings, proxySettingEnable)
+	}
+
+	if accessLog {
+		proxySettingEnable := models.ProxySettingInput{
+			Key:   accessLogEnable,
+			Value: "true",
+		}
+		proxySettings = append(proxySettings, proxySettingEnable)
+	}
+
+	if len(customHeaders) == 0 {
+		return proxySettings
+	}
+
+	proxySettingEnable := models.ProxySettingInput{
+		Key:   customHeaderEnable,
+		Value: "true",
+	}
+
+	proxySettings = append(proxySettings, proxySettingEnable)
+	for _, customHeader := range customHeaders {
+		var proxySettingData models.ProxySettingInput
+
+		proxySettingData.Key = customHeaderData
+		proxySettingData.Value = fmt.Sprintf("%s:%s", customHeader.Name, customHeader.Value)
+		proxySettings = append(proxySettings, proxySettingData)
 	}
 
 	return proxySettings

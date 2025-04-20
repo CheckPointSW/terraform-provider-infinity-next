@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -14,14 +15,22 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-func proxySettingKeyTomTLSType(proxySettingKey string) string {
-	if proxySettingKey == mtlsClientEnable || proxySettingKey == mtlsClientData || proxySettingKey == mtlsClientFileName {
+func proxySettingKeyToBlockType(proxySettingKey string) string {
+	switch proxySettingKey {
+	case mtlsClientEnable, mtlsClientData, mtlsClientFileName:
 		return mtlsTypeClient
-	}
-	if proxySettingKey == mtlsServerEnable || proxySettingKey == mtlsServerData || proxySettingKey == mtlsServerFileName {
+	case mtlsServerEnable, mtlsServerData, mtlsServerFileName:
 		return mtlsTypeServer
+	case locationConfigEnable, locationConfigData, locationConfigFileName:
+		return blockTypeLocation
+	case serverConfigEnable, serverConfigData, serverConfigFileName:
+		return blockTypeServer
+	case redirectToHTTPSEnable, accessLogEnable, customHeaderEnable, customHeaderData:
+		return proxySettingKey
+	default:
+		return ""
 	}
-	return ""
+
 }
 
 func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *schema.ResourceData) error {
@@ -46,32 +55,74 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	var proxySettingsSchemaMap []map[string]any
 	mTLSsSchemaMap := make(map[string]models.MTLSSchema)
 	var mTLSsMap []map[string]any
+	blocksSchemaMap := make(map[string]models.BlockSchema)
+	var additionalBlocksMap []map[string]any
+	customHeadersSchemaMap := make(map[string]models.CustomHeaderSchema)
+	var customHeadersMap []map[string]any
 
 	for _, proxySetting := range asset.ProxySettings {
-		mTLSType := proxySettingKeyTomTLSType(proxySetting.Key)
-		if mTLSType != "" {
-			if _, ok := mTLSsSchemaMap[mTLSType]; !ok {
-				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{}
+		blockType := proxySettingKeyToBlockType(proxySetting.Key)
+		if blockType != "" {
+			switch blockType {
+			case redirectToHTTPSEnable:
+				d.Set("redirect_to_https", proxySetting.Value == "true")
+				d.Set("redirect_to_https_id", proxySetting.ID)
+			case accessLogEnable:
+				d.Set("access_log", proxySetting.Value == "true")
+				d.Set("access_log_id", proxySetting.ID)
+			case customHeaderEnable:
+				d.Set("custom_headers_id", proxySetting.ID)
+			case customHeaderData:
+				nameAndValue := strings.SplitN(proxySetting.Value, ":", 2)
+				customHeaderSchema := models.CustomHeaderSchema{
+					HeaderID: proxySetting.ID,
+					Name:     nameAndValue[0],
+					Value:    nameAndValue[1],
+				}
+
+				customHeadersSchemaMap[proxySetting.ID] = customHeaderSchema
+			case blockTypeLocation, blockTypeServer:
+				if _, ok := blocksSchemaMap[blockType]; !ok {
+					blocksSchemaMap[blockType] = models.BlockSchema{}
+				}
+
+			default:
+				if _, ok := mTLSsSchemaMap[blockType]; !ok {
+					mTLSsSchemaMap[blockType] = models.MTLSSchema{}
+				}
+
 			}
 
 			switch proxySetting.Key {
-			case mtlsClientEnable, mtlsServerEnable:
-				enable := false
-				if proxySetting.Value == "true" {
-					enable = true
+			case mtlsClientEnable, mtlsServerEnable, locationConfigEnable, serverConfigEnable:
+				enable := proxySetting.Value == "true"
+				if blockType == blockTypeLocation || blockType == blockTypeServer {
+					blocksSchemaMap[blockType] = models.BlockSchema{
+						FilenameID:   blocksSchemaMap[blockType].FilenameID,
+						Filename:     blocksSchemaMap[blockType].Filename,
+						FilenameType: blocksSchemaMap[blockType].FilenameType,
+						DataID:       blocksSchemaMap[blockType].DataID,
+						Data:         blocksSchemaMap[blockType].Data,
+						Type:         blockType,
+						EnableID:     proxySetting.ID,
+						Enable:       enable,
+					}
+
+				} else {
+					mTLSsSchemaMap[blockType] = models.MTLSSchema{
+						FilenameID:      mTLSsSchemaMap[blockType].FilenameID,
+						Filename:        mTLSsSchemaMap[blockType].Filename,
+						CertificateType: mTLSsSchemaMap[blockType].CertificateType,
+						DataID:          mTLSsSchemaMap[blockType].DataID,
+						Data:            mTLSsSchemaMap[blockType].Data,
+						Type:            blockType,
+						EnableID:        proxySetting.ID,
+						Enable:          enable,
+					}
+
 				}
 
-				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{
-					FilenameID:      mTLSsSchemaMap[mTLSType].FilenameID,
-					Filename:        mTLSsSchemaMap[mTLSType].Filename,
-					CertificateType: mTLSsSchemaMap[mTLSType].CertificateType,
-					DataID:          mTLSsSchemaMap[mTLSType].DataID,
-					Data:            mTLSsSchemaMap[mTLSType].Data,
-					Type:            mTLSType,
-					EnableID:        proxySetting.ID,
-					Enable:          enable,
-				}
-			case mtlsClientData, mtlsServerData:
+			case mtlsClientData, mtlsServerData, locationConfigData, serverConfigData:
 				var decodedData string
 				var fileExtensionsByType string
 				// proxySetting.Value format is "data:<mimeType>;base64,<base64Data>"
@@ -86,30 +137,67 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 
 					mimeType := strings.SplitN(proxySetting.Value, ":", 2)[1]
 					mimeType = strings.SplitN(mimeType, ";", 2)[0]
-					fileExtensionsByType = webAPIAssetModels.MimeTypeToFileExtension(mimeType)
+					if blockType == blockTypeLocation || blockType == blockTypeServer {
+						fileExtensionsByType = webAPIAssetModels.MimeTypeToFileExtension(mimeType, false)
+					} else {
+						fileExtensionsByType = webAPIAssetModels.MimeTypeToFileExtension(mimeType, true)
+					}
+
 				}
 
-				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{
-					FilenameID:      mTLSsSchemaMap[mTLSType].FilenameID,
-					Filename:        mTLSsSchemaMap[mTLSType].Filename,
-					CertificateType: fileExtensionsByType,
-					DataID:          proxySetting.ID,
-					Data:            decodedData,
-					Type:            mTLSType,
-					EnableID:        mTLSsSchemaMap[mTLSType].EnableID,
-					Enable:          mTLSsSchemaMap[mTLSType].Enable,
+				if blockType == blockTypeLocation || blockType == blockTypeServer {
+					blocksSchemaMap[blockType] = models.BlockSchema{
+						FilenameID:   blocksSchemaMap[blockType].FilenameID,
+						Filename:     blocksSchemaMap[blockType].Filename,
+						FilenameType: fileExtensionsByType,
+						DataID:       proxySetting.ID,
+						Data:         decodedData,
+						Type:         blockType,
+						EnableID:     blocksSchemaMap[blockType].EnableID,
+						Enable:       blocksSchemaMap[blockType].Enable,
+					}
+
+				} else {
+					mTLSsSchemaMap[blockType] = models.MTLSSchema{
+						FilenameID:      mTLSsSchemaMap[blockType].FilenameID,
+						Filename:        mTLSsSchemaMap[blockType].Filename,
+						CertificateType: fileExtensionsByType,
+						DataID:          proxySetting.ID,
+						Data:            decodedData,
+						Type:            blockType,
+						EnableID:        mTLSsSchemaMap[blockType].EnableID,
+						Enable:          mTLSsSchemaMap[blockType].Enable,
+					}
+
 				}
-			case mtlsClientFileName, mtlsServerFileName:
-				mTLSsSchemaMap[mTLSType] = models.MTLSSchema{
-					FilenameID:      proxySetting.ID,
-					Filename:        proxySetting.Value,
-					CertificateType: mTLSsSchemaMap[mTLSType].CertificateType,
-					DataID:          mTLSsSchemaMap[mTLSType].DataID,
-					Data:            mTLSsSchemaMap[mTLSType].Data,
-					Type:            mTLSType,
-					EnableID:        mTLSsSchemaMap[mTLSType].EnableID,
-					Enable:          mTLSsSchemaMap[mTLSType].Enable,
+
+			case mtlsClientFileName, mtlsServerFileName, locationConfigFileName, serverConfigFileName:
+				if blockType == blockTypeLocation || blockType == blockTypeServer {
+					blocksSchemaMap[blockType] = models.BlockSchema{
+						FilenameID:   proxySetting.ID,
+						Filename:     proxySetting.Value,
+						FilenameType: blocksSchemaMap[blockType].FilenameType,
+						DataID:       blocksSchemaMap[blockType].DataID,
+						Data:         blocksSchemaMap[blockType].Data,
+						Type:         blockType,
+						EnableID:     blocksSchemaMap[blockType].EnableID,
+						Enable:       blocksSchemaMap[blockType].Enable,
+					}
+
+				} else {
+					mTLSsSchemaMap[blockType] = models.MTLSSchema{
+						FilenameID:      proxySetting.ID,
+						Filename:        proxySetting.Value,
+						CertificateType: mTLSsSchemaMap[blockType].CertificateType,
+						DataID:          mTLSsSchemaMap[blockType].DataID,
+						Data:            mTLSsSchemaMap[blockType].Data,
+						Type:            blockType,
+						EnableID:        mTLSsSchemaMap[blockType].EnableID,
+						Enable:          mTLSsSchemaMap[blockType].Enable,
+					}
+
 				}
+
 			default:
 				continue
 			}
@@ -123,8 +211,8 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 		}
 	}
 
-	for _, mTLSscehma := range mTLSsSchemaMap {
-		mTLS, err := utils.UnmarshalAs[map[string]any](mTLSscehma)
+	for _, mTLSSchema := range mTLSsSchemaMap {
+		mTLS, err := utils.UnmarshalAs[map[string]any](mTLSSchema)
 		if err != nil {
 			return fmt.Errorf("failed to convert mTLS to map. Error: %+v", err)
 		}
@@ -132,8 +220,48 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 		mTLSsMap = append(mTLSsMap, mTLS)
 	}
 
+	var blockSchemas models.BlockSchemas
+	for _, blockSchema := range blocksSchemaMap {
+		blockSchemas = append(blockSchemas, blockSchema)
+	}
+
+	// Sort the blocks by their type
+	sort.Slice(blockSchemas, func(i, j int) bool {
+		return blockSchemas[i].Type < blockSchemas[j].Type
+	})
+
+	for _, blockSchema := range blockSchemas {
+		block, err := utils.UnmarshalAs[map[string]any](blockSchema)
+		if err != nil {
+			return fmt.Errorf("failed to convert %s block to map. Error: %+v", blockSchema.Type, err)
+		}
+
+		additionalBlocksMap = append(additionalBlocksMap, block)
+	}
+
+	var customHeaderSchemas models.CustomHeadersSchemas
+	for _, customHeaderSchema := range customHeadersSchemaMap {
+		customHeaderSchemas = append(customHeaderSchemas, customHeaderSchema)
+	}
+
+	// Sort the custom headers by their name
+	sort.Slice(customHeaderSchemas, func(i, j int) bool {
+		return customHeaderSchemas[i].Name < customHeaderSchemas[j].Name
+	})
+
+	for _, customHeaderSchema := range customHeaderSchemas {
+		customHeader, err := utils.UnmarshalAs[map[string]any](customHeaderSchema)
+		if err != nil {
+			return fmt.Errorf("failed to convert custom header to map. Error: %+v", err)
+		}
+
+		customHeadersMap = append(customHeadersMap, customHeader)
+	}
+
 	d.Set("proxy_setting", proxySettingsSchemaMap)
 	d.Set("mtls", mTLSsMap)
+	d.Set("additional_instructions_blocks", additionalBlocksMap)
+	d.Set("custom_headers", customHeadersMap)
 
 	sourceIdentifiersSchema := asset.SourceIdentifiers.ToSchema()
 	sourceIdentifiersSchemaMap, err := utils.UnmarshalAs[[]map[string]any](sourceIdentifiersSchema)

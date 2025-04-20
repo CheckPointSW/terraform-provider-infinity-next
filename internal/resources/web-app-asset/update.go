@@ -85,8 +85,8 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 
 		newProxySettingsIndicators := newProxySettings.ToIndicatorsMap()
 		for _, oldSetting := range oldProxySettings {
-			// if the key is mTLS type - skip it
-			if proxySettingKeyTomTLSType(oldSetting.Key) != "" {
+			// if the key is one of the advanced proxy settings - skip it
+			if proxySettingKeyToBlockType(oldSetting.Key) != "" {
 				continue
 			}
 
@@ -155,6 +155,207 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 		if mTLSsToAdd != nil {
 			proxySettingsToAdd = mapMTLSToProxySettingInputs(mTLSsToAdd, models.ProxySettingInputs{})
 		}
+
+		for _, proxySettingToAdd := range proxySettingsToAdd {
+			updateInput.AddProxySetting = append(updateInput.AddProxySetting, models.AddProxySetting{
+				Key:   proxySettingToAdd.Key,
+				Value: proxySettingToAdd.Value,
+			})
+		}
+
+	}
+
+	if _, newRedirectToHTTPS, hasChange := utils.GetChangeWithParse(d, "redirect_to_https", utils.MustValueAs[bool]); hasChange {
+		value := "false"
+		if newRedirectToHTTPS {
+			value = "true"
+		}
+
+		if id := d.Get("redirect_to_https_id").(string); id != "" {
+			updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+				ID:    id,
+				Key:   redirectToHTTPSEnable,
+				Value: value,
+			})
+		} else {
+			updateInput.AddProxySetting = append(updateInput.AddProxySetting, models.AddProxySetting{
+				Key:   redirectToHTTPSEnable,
+				Value: value,
+			})
+		}
+
+	}
+
+	if _, newAccessLog, hasChange := utils.GetChangeWithParse(d, "access_log", utils.MustValueAs[bool]); hasChange {
+		value := "false"
+		if newAccessLog {
+			value = "true"
+		}
+
+		if id := d.Get("access_log_id").(string); id != "" {
+			updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+				ID:    id,
+				Key:   accessLogEnable,
+				Value: value,
+			})
+		} else {
+			updateInput.AddProxySetting = append(updateInput.AddProxySetting, models.AddProxySetting{
+				Key:   accessLogEnable,
+				Value: value,
+			})
+		}
+
+	}
+
+	if oldCustomHeaders, newCustomHeaders, hasChange := utils.GetChangeWithParse(d, "custom_headers", parseCustomHeaders); hasChange {
+		if len(newCustomHeaders) == 0 {
+			updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+				ID:    d.Get("custom_headers_id").(string),
+				Key:   customHeaderEnable,
+				Value: "false",
+			})
+		}
+
+		if len(oldCustomHeaders) == 0 {
+			if id := d.Get("custom_headers_id").(string); id != "" {
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    id,
+					Key:   customHeaderEnable,
+					Value: "true",
+				})
+			} else {
+				updateInput.AddProxySetting = append(updateInput.AddProxySetting, models.AddProxySetting{
+					Key:   customHeaderEnable,
+					Value: "true",
+				})
+			}
+		}
+
+		oldCustomHeadersIndicatorMap := oldCustomHeaders.ToIndicatorMap()
+		customHeadersToAdd := models.CustomHeadersSchemas{}
+		for _, newCustomHeader := range newCustomHeaders {
+			nameAndValue := fmt.Sprintf("%s:%s", newCustomHeader.Name, newCustomHeader.Value)
+			if _, ok := oldCustomHeadersIndicatorMap[nameAndValue]; !ok {
+				customHeadersToAdd = append(customHeadersToAdd, newCustomHeader)
+			}
+
+		}
+
+		newCustomHeadersIndicatorMap := newCustomHeaders.ToIndicatorMap()
+		for _, oldCustomHeader := range oldCustomHeaders {
+			nameAndValue := fmt.Sprintf("%s:%s", oldCustomHeader.Name, oldCustomHeader.Value)
+			if _, ok := newCustomHeadersIndicatorMap[nameAndValue]; !ok {
+				updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, oldCustomHeader.HeaderID)
+			}
+
+		}
+
+		for _, customHeaderToAdd := range customHeadersToAdd {
+			updateInput.AddProxySetting = append(updateInput.AddProxySetting, models.AddProxySetting{
+				Key:   customHeaderData,
+				Value: fmt.Sprintf("%s:%s", customHeaderToAdd.Name, customHeaderToAdd.Value),
+			})
+		}
+	}
+
+	if oldBlocks, newBlocks, hasChange := utils.GetChangeWithParse(d, "additional_instructions_blocks", parseBlocks); hasChange {
+		oldBlocksIndicatorMap := oldBlocks.ToIndicatorMap()
+		additionalBlocksToAdd := models.BlockSchemas{}
+		for _, newBlock := range newBlocks {
+			oldBlock, ok := oldBlocksIndicatorMap[newBlock.Type]
+			if !ok {
+				if newBlock.Enable {
+					additionalBlocksToAdd = append(additionalBlocksToAdd, newBlock)
+				}
+
+				continue
+			}
+
+			if !newBlock.Enable {
+				key := serverConfigEnable
+				if newBlock.Type == blockTypeLocation {
+					key = locationConfigEnable
+				}
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldBlock.EnableID,
+					Key:   key,
+					Value: "false",
+				})
+
+				if oldBlock.Enable {
+					if oldBlock.FilenameID != "" {
+						updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, oldBlock.FilenameID)
+					}
+
+					if oldBlock.DataID != "" {
+						updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, oldBlock.DataID)
+					}
+
+				}
+
+				continue
+			}
+
+			if oldBlock.Enable != newBlock.Enable {
+				enableKey := serverConfigEnable
+				dataKey := serverConfigData
+				filenameKey := serverConfigFileName
+				if newBlock.Type == blockTypeLocation {
+					enableKey = locationConfigEnable
+					dataKey = locationConfigData
+					filenameKey = locationConfigFileName
+				}
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldBlock.EnableID,
+					Key:   enableKey,
+					Value: "true",
+				})
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldBlock.DataID,
+					Key:   dataKey,
+					Value: newBlock.Data,
+				})
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldBlock.FilenameID,
+					Key:   filenameKey,
+					Value: newBlock.Filename,
+				})
+
+			}
+
+			if oldBlock.Data != newBlock.Data || oldBlock.Filename != newBlock.Filename {
+				dataKey := serverConfigData
+				filenameKey := serverConfigFileName
+				if newBlock.Type == blockTypeLocation {
+					dataKey = locationConfigData
+					filenameKey = locationConfigFileName
+				}
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldBlock.DataID,
+					Key:   dataKey,
+					Value: newBlock.Data,
+				})
+
+				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
+					ID:    oldBlock.FilenameID,
+					Key:   filenameKey,
+					Value: newBlock.Filename,
+				})
+
+			}
+
+		}
+
+		var proxySettingsToAdd models.ProxySettingInputs
+		if len(additionalBlocksToAdd) > 0 {
+			proxySettingsToAdd = mapBlocksToProxySettingInputs(additionalBlocksToAdd, models.ProxySettingInputs{})
+		}
+
 		for _, proxySettingToAdd := range proxySettingsToAdd {
 			updateInput.AddProxySetting = append(updateInput.AddProxySetting, models.AddProxySetting{
 				Key:   proxySettingToAdd.Key,
@@ -301,36 +502,10 @@ func parsemTLSs(mTLSsFromResourceData any) models.MTLSSchemas {
 	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](mTLSsFromResourceData), mapToMTLSInput)
 }
 
-//func RemoveTriggerFromWebAppAsset(ctx context.Context, asset models.WebApplicationAsset, practicesIDs []string, triggerID string) (models.UpdateWebApplicationAssetInput, error) {
-//	updateInput := models.UpdateWebApplicationAssetInput{}
-//
-//	for _, practiceWrapper := range asset.Practices {
-//		for _, practiceID := range practicesIDs {
-//			if practiceWrapper.Practice.ID == practiceID {
-//				var triggerIDs []string
-//				for _, trigger := range practiceWrapper.Triggers {
-//					if trigger.ID != triggerID {
-//						triggerIDs = append(triggerIDs, trigger.ID)
-//					}
-//
-//				}
-//
-//				updateInput.RemovePracticeWrappers = append(updateInput.RemovePracticeWrappers, practiceWrapper.Practice.ID)
-//				practiceWrapperToAdd := utils.Map([]models.PracticeWrapper{practiceWrapper}, utils.MustUnmarshalAs[models.AddPracticeWrapper, models.PracticeWrapper])
-//				if len(practiceWrapperToAdd) != 0 {
-//					updateInput.AddPracticeWrappers = append(updateInput.AddPracticeWrappers, models.AddPracticeWrapper{
-//						PracticeID:       practiceID,
-//						Triggers:         triggerIDs,
-//						MainMode:         practiceWrapper.MainMode,
-//						SubPracticeModes: practiceWrapperToAdd[0].SubPracticeModes,
-//					})
-//				}
-//
-//			}
-//
-//			break
-//		}
-//	}
-//
-//	return updateInput, nil
-//}
+func parseBlocks(blocksFromResourceData any) models.BlockSchemas {
+	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](blocksFromResourceData), mapToBlocksInput)
+}
+
+func parseCustomHeaders(customHeadersFromResourceData any) models.CustomHeadersSchemas {
+	return utils.Map(utils.MustSchemaCollectionToSlice[map[string]any](customHeadersFromResourceData), mapToCustomHeaderInput)
+}
