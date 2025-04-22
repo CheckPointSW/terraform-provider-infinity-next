@@ -260,7 +260,7 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"proxy_setting.#":                       "3",
 						"proxy_setting.0.%":                     "3",
 						"proxy_setting.1.%":                     "3",
-						"proxy_setting.2.%":                     "3", // commit
+						"proxy_setting.2.%":                     "3",
 						"class":                                 "workload",
 						"category":                              "cloud",
 						"group":                                 "",
