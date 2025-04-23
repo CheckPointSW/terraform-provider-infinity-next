@@ -52,16 +52,16 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
-						"name":                  assetNameAttribute,
-						"%":                     "32",
-						"read_only":             "false",
-						"upstream_url":          "some url 5",
-						"urls.#":                "2",
-						"urls_ids.#":            "2",
-						"profiles.#":            "1",
-						"practice.#":            "1",
-						"practice.0.%":          "5",
-						"practice.0.triggers.#": "1",
+						"name":                                  assetNameAttribute,
+						"%":                                     "32",
+						"read_only":                             "false",
+						"upstream_url":                          "some url 5",
+						"urls.#":                                "2",
+						"urls_ids.#":                            "2",
+						"profiles.#":                            "1",
+						"practice.#":                            "1",
+						"practice.0.%":                          "5",
+						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
 						"practice.0.sub_practices_modes.WebBot": "AccordingToPractice",
 						"practice.0.sub_practices_modes.Snort":  "Disabled",
@@ -168,16 +168,16 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 					practiceNameAttribute, logTriggerNameAttribute, exceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
-						"name":                  assetNameAttribute,
-						"%":                     "32",
-						"read_only":             "false",
-						"upstream_url":          "some url 5",
-						"urls.#":                "2",
-						"urls_ids.#":            "2",
-						"profiles.#":            "1",
-						"practice.#":            "1",
-						"practice.0.%":          "5",
-						"practice.0.triggers.#": "1",
+						"name":                                  assetNameAttribute,
+						"%":                                     "32",
+						"read_only":                             "false",
+						"upstream_url":                          "some url 5",
+						"urls.#":                                "2",
+						"urls_ids.#":                            "2",
+						"profiles.#":                            "1",
+						"practice.#":                            "1",
+						"practice.0.%":                          "5",
+						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
 						"practice.0.sub_practices_modes.WebBot": "AccordingToPractice",
 						"practice.0.sub_practices_modes.Snort":  "Disabled",
@@ -262,16 +262,16 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 					anotherTrustedSourcesNameAttribute, anotherLogTriggerNameAttribute, anotherExceptionsNameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(assetResourceName, map[string]string{
-						"name":                  assetNameAttribute,
-						"%":                     "32",
-						"read_only":             "false",
-						"upstream_url":          "some url 10",
-						"urls.#":                "2",
-						"urls_ids.#":            "2",
-						"profiles.#":            "1",
-						"practice.#":            "1",
-						"practice.0.%":          "5",
-						"practice.0.triggers.#": "1",
+						"name":                                  assetNameAttribute,
+						"%":                                     "32",
+						"read_only":                             "false",
+						"upstream_url":                          "some url 10",
+						"urls.#":                                "2",
+						"urls_ids.#":                            "2",
+						"profiles.#":                            "1",
+						"practice.#":                            "1",
+						"practice.0.%":                          "5",
+						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "Learn",
 						"practice.0.sub_practices_modes.WebBot": "Inactive",
 						"practice.0.sub_practices_modes.Snort":  "AccordingToPractice",
@@ -538,7 +538,7 @@ resource "inext_web_app_asset" %[1]q {
 	  main_mode = "Learn"
 	  sub_practices_modes = {
 		IPS    = "AccordingToPractice"
-		WebBot = "Inactive"
+		WebBot = "AccordingToPractice"
 		Snort  = "Disabled"
 	  }
 	  id         = inext_web_app_practice.%[4]s.id
