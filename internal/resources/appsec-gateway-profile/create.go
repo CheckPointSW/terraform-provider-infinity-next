@@ -24,6 +24,9 @@ const (
 	ScheduleTypeDaysInWeek  string = "DaysInWeek"
 	ScheduleTypeDaysInMonth string = "DaysInMonth"
 
+	CertificateTypeVault   string = "Vault"
+	CertificateTypeGateway string = "Gateway"
+
 	WeekDaySunday    string = "Sunday"
 	WeekDayMonday    string = "Monday"
 	WeekDayTuesday   string = "Tuesday"
@@ -46,6 +49,9 @@ func CreateCloudGuardAppSecGatewayProfileInputFromResourceData(d *schema.Resourc
 
 	res.ReverseProxyUpstreamTimeout = d.Get("reverseproxy_upstream_timeout").(int)
 	res.Authentication.MaxNumberOfAgents = d.Get("max_number_of_agents").(int)
+	res.CertificateType = d.Get("certificate_type").(string)
+	res.FailOpenInspection = d.Get("fail_open_inspection").(bool)
+
 	res.ReverseProxyAdditionalSettings = mapToKeyValueInput(d, "reverseproxy_additional_settings")
 	res.AdditionalSettings = mapToKeyValueInput(d, "additional_settings")
 
@@ -115,6 +121,8 @@ func NewAppSecGatewayProfile(ctx context.Context, c *api.Client, input models.Cr
 								key
 								value
 							}
+							certificateType
+							failOpenInspection
 						}
 					}
 				`, "newCloudGuardAppSecGatewayProfile", vars)

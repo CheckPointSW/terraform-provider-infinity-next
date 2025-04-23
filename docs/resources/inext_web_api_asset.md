@@ -63,6 +63,19 @@ resource "inext_web_api_asset" "my-webapi-asset" {
     type             = "client"
     enable           = true
   }
+  additional_instructions_blocks {
+    filename      = "location.json"
+    filename_type = ".json"
+    data          = "location data"
+    type          = "location_instructions"
+    enable        = true
+  }
+  redirect_to_https = "true"
+  access_log        = "true"
+  custom_headers {
+    name  = "header1"
+    value = "value1"
+  }
 }
 ```
 
@@ -76,11 +89,15 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 
 ### Optional
 
+- `access_log` (Boolean) Advanced Proxy Setting - Activate access log on gateway.
+- `additional_instructions_blocks` (Block Set) The additional instructions blocks settings - location or server blocks (see [below for nested schema](#nestedblock--additional_instructions_blocks))
 - `behaviors` (Set of String) behaviors used by the asset
+- `custom_headers` (Block Set) Advanced Proxy Settings - The custom headers settings (see [below for nested schema](#nestedblock--custom_headers))
 - `mtls` (Block Set) The MTLS settings (see [below for nested schema](#nestedblock--mtls))
 - `practice` (Block Set) The practices used by the asset (see [below for nested schema](#nestedblock--practice))
 - `profiles` (Set of String) Profiles linked to the asset
 - `proxy_setting` (Block Set) Settings for the proxy (see [below for nested schema](#nestedblock--proxy_setting))
+- `redirect_to_https` (Boolean) Advanced Proxy Setting - Redirect incoming HTTP requests to the same URL using HTTPS. (The configured application URLs for this asset must include both the HTTP and the HTTPS version of each URL)
 - `source_identifier` (Block Set) Defines how the source identifier values of the asset are retrieved (see [below for nested schema](#nestedblock--source_identifier))
 - `state` (String)
 - `tags` (Block Set) The tags used by the asset (see [below for nested schema](#nestedblock--tags))
@@ -88,9 +105,11 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 
 ### Read-Only
 
+- `access_log_id` (String)
 - `asset_type` (String)
 - `category` (String)
 - `class` (String)
+- `custom_headers_id` (String)
 - `family` (String)
 - `group` (String)
 - `id` (String, Sensitive) The ID of this resource.
@@ -100,8 +119,43 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 - `main_attributes` (String)
 - `order` (String)
 - `read_only` (Boolean)
+- `redirect_to_https_id` (String)
 - `sources` (String)
 - `urls_ids` (Set of String)
+
+<a id="nestedblock--additional_instructions_blocks"></a>
+### Nested Schema for `additional_instructions_blocks`
+
+Required:
+
+- `type` (String) The type of the additional instructions block - location_instructions or server_instructions
+
+Optional:
+
+- `data` (String, Sensitive) The instructions block data
+- `enable` (Boolean) Whether the instructions block is enabled
+- `filename` (String) The name of the instructions block file
+- `filename_type` (String) The type of the instructions block file - .json, .yml
+
+Read-Only:
+
+- `data_id` (String)
+- `enable_id` (String)
+- `filename_id` (String)
+
+
+<a id="nestedblock--custom_headers"></a>
+### Nested Schema for `custom_headers`
+
+Required:
+
+- `name` (String)
+- `value` (String)
+
+Read-Only:
+
+- `header_id` (String)
+
 
 <a id="nestedblock--mtls"></a>
 ### Nested Schema for `mtls`

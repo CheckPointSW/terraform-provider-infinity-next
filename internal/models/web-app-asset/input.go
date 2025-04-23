@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -112,4 +113,23 @@ func (mtlsInputs MTLSSchemas) ToIndicatorMap() map[string]MTLSSchema {
 	}
 
 	return mTLSs
+}
+
+func (blockInputs BlockSchemas) ToIndicatorMap() map[string]BlockSchema {
+	blocks := make(map[string]BlockSchema)
+	for _, block := range blockInputs {
+		blocks[block.Type] = block
+	}
+
+	return blocks
+}
+
+func (customHeadersInputs CustomHeadersSchemas) ToIndicatorMap() map[string]CustomHeaderSchema {
+	customHeaders := make(map[string]CustomHeaderSchema)
+	for _, customHeader := range customHeaders {
+		nameAndValue := fmt.Sprintf("%s:%s", customHeader.Name, customHeader.Value)
+		customHeaders[nameAndValue] = customHeader
+	}
+
+	return customHeaders
 }

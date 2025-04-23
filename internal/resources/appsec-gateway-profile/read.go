@@ -54,6 +54,9 @@ func ReadCloudGuardAppSecGatewayProfileToResourceData(profile models.CloudGuardA
 	d.Set("reverseproxy_additional_settings", reverseProxyAdditionalSettingsKVs)
 	d.Set("reverseproxy_additional_settings_ids", reverseProxyAdditionalSettingsIDs)
 
+	d.Set("certificate_type", profile.CertificateType)
+	d.Set("fail_open_inspection", profile.FailOpenInspection)
+
 	return nil
 }
 
@@ -100,6 +103,8 @@ func GetCloudGuardAppSecGatewayProfile(ctx context.Context, c *api.Client, id st
 					key
 					value
 				}
+				certificateType
+				failOpenInspection
 			}
 		}
 	`, "getCloudGuardAppSecGatewayProfile")
