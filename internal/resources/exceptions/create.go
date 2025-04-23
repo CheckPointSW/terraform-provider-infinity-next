@@ -13,7 +13,6 @@ import (
 
 func ParseSchemaMatchToInput(matchFromSchema models.SchemaMatchExpression) models.Match {
 	var ret models.Match
-
 	// this is a condition match
 	if len(matchFromSchema.Operands) == 0 {
 		ret.Type = "condition"
