@@ -503,15 +503,6 @@ func resourceWebAppPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 
 	result, err := webapppractice.DeleteWebApplicationPractice(ctx, c, d.Id())
 	if err != nil || !result {
-		if _, discardErr := c.DiscardChanges(); discardErr != nil {
-			diags = utils.DiagError("failed to discard changes", discardErr, diags)
-		}
-
-		return utils.DiagError("unable to perform WebAppPractice Delete", err, diags)
-	}
-
-	isValid, err := c.PublishChanges()
-	if err != nil || !isValid {
 		// Check if the error is due to the web app practice being used by other resources
 		if err != nil && strings.Contains(err.Error(), errorMsgPointedObjects) {
 			// Get the resources that are using the web app practice
@@ -537,16 +528,23 @@ func resourceWebAppPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 
 					return utils.DiagError("unable to perform WebAppPractice Delete", err, diags)
 				}
-
 			}
-
 		} else {
 			if _, discardErr := c.DiscardChanges(); discardErr != nil {
 				diags = utils.DiagError("failed to discard changes", discardErr, diags)
 			}
 
-			return utils.DiagError("failed to Publish following WebAppPractice Delete", err, diags)
+			return utils.DiagError("unable to perform WebAppPractice Delete", err, diags)
 		}
+	}
+
+	isValid, err := c.PublishChanges()
+	if err != nil || !isValid {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("failed to Publish following WebAppPractice Delete", err, diags)
 	}
 
 	d.SetId("")
@@ -563,7 +561,7 @@ func handleWebAppPracticeReferences(ctx context.Context, usedBy models.DisplayOb
 		}
 
 		switch usedByResource.SubType {
-		case "WebApp":
+		case "WebApplication":
 			webAppAsset := webAppAssetModels.UpdateWebApplicationAssetInput{
 				RemovePracticeWrappers: []string{practiceID},
 			}
