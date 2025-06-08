@@ -310,7 +310,7 @@ func resourceLogTriggerDelete(ctx context.Context, d *schema.ResourceData, meta 
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("Unable to perform LogTrigger Delete", err, diags)
+				return utils.DiagError("Unable to perform LogTrigger Delete after updating references", err, diags)
 			}
 		} else {
 			if _, discardErr := c.DiscardChanges(); discardErr != nil {
@@ -345,7 +345,7 @@ func handleLogTriggerReferences(ctx context.Context, triggersUsedBy models.Trigg
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("Unable to perform LogTrigger Update", err, diags)
+				return utils.DiagError("Unable to perform UpdatePracticeTriggers", err, diags)
 			}
 		}
 

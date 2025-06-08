@@ -32,7 +32,7 @@ func UsedByLogTrigger(ctx context.Context, c *api.Client, id string) (models.Tri
 }
 
 func UpdatePracticeTriggers(ctx context.Context, c *api.Client, triggerID string, practiceID string, containerID string) (bool, error) {
-	vars := map[string]any{"addTriggers": nil, "removeTriggers": []string{triggerID}, "practiceId": practiceID, "containerId": containerID}
+	vars := map[string]any{"addTriggers": []string{}, "removeTriggers": []string{triggerID}, "practiceId": practiceID, "containerId": containerID}
 	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation updatePracticeTriggers($addTriggers: [ID], $removeTriggers: [ID], $practiceId: ID!, $containerId: ID!)
 					{
