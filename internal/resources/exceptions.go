@@ -289,7 +289,7 @@ func resourceExceptionsDelete(ctx context.Context, d *schema.ResourceData, meta 
 						diags = utils.DiagError("failed to discard changes", discardErr, diags)
 					}
 
-					return utils.DiagError("unable to perform ExceptionBehavior Delete", err, diags)
+					return utils.DiagError("unable to perform ExceptionBehavior Delete after updating references", err, diags)
 				}
 
 			}
@@ -337,7 +337,7 @@ func handleExceptionsReferences(ctx context.Context, usedBy models.DisplayObject
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("failed to update usedByResource", err, diags)
+				return utils.DiagError("failed to update WebAPIAsset exception behavior", err, diags)
 			}
 
 		case "WebApplication":
@@ -351,7 +351,7 @@ func handleExceptionsReferences(ctx context.Context, usedBy models.DisplayObject
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("failed to update usedByResource", err, diags)
+				return utils.DiagError("failed to update WebAppAsset exception behavior", err, diags)
 			}
 
 		default:

@@ -229,7 +229,7 @@ func resourceWebUserResponseDelete(ctx context.Context, d *schema.ResourceData, 
 						diags = utils.DiagError("failed to discard changes", discardErr, diags)
 					}
 
-					return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+					return utils.DiagError("unable to perform WebUserResponse Delete after updating references", err, diags)
 				}
 
 			}
@@ -277,7 +277,7 @@ func handleWebUserResponseReferences(ctx context.Context, usedBy models.DisplayO
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("failed to update usedByResource", err, diags)
+				return utils.DiagError("failed to perform UpdateWebAPIAsset to remove behavior", err, diags)
 			}
 
 		case "WebApplication":
@@ -291,7 +291,7 @@ func handleWebUserResponseReferences(ctx context.Context, usedBy models.DisplayO
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("failed to update usedByResource", err, diags)
+				return utils.DiagError("failed to perform UpdateWebApplicationAsset to remove behavior", err, diags)
 			}
 
 		default:

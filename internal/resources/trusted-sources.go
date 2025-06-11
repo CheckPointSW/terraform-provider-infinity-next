@@ -218,7 +218,7 @@ func resourceTrustedSourcesDelete(ctx context.Context, d *schema.ResourceData, m
 						diags = utils.DiagError("failed to discard changes", discardErr, diags)
 					}
 
-					return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+					return utils.DiagError("unable to perform TrustedSourceBehavior Delete after updating references", err, diags)
 				}
 
 			}
@@ -266,7 +266,7 @@ func handleTrustedSourceReferences(ctx context.Context, usedBy models.DisplayObj
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("failed to update usedByResource", err, diags)
+				return utils.DiagError("failed to perform UpdateWebAPIAsset to remove behavior", err, diags)
 			}
 
 		case "WebApplication":
@@ -280,7 +280,7 @@ func handleTrustedSourceReferences(ctx context.Context, usedBy models.DisplayObj
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("failed to update usedByResource", err, diags)
+				return utils.DiagError("failed to perform UpdateWebApplicationAsset to remove behavior", err, diags)
 			}
 
 		default:
