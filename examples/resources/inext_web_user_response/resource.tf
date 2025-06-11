@@ -2,7 +2,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.1.6"
+      version = "1.1.7"
     }
   }
 }
