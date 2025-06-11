@@ -218,7 +218,7 @@ func resourceTrustedSourcesDelete(ctx context.Context, d *schema.ResourceData, m
 						diags = utils.DiagError("failed to discard changes", discardErr, diags)
 					}
 
-					return utils.DiagError("unable to perform TrustedSourceBehavior Delete", err, diags)
+					return utils.DiagError("unable to perform TrustedSourceBehavior Delete after updating references", err, diags)
 				}
 
 			}

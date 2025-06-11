@@ -526,7 +526,7 @@ func resourceWebAppPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 						diags = utils.DiagError("failed to discard changes", discardErr, diags)
 					}
 
-					return utils.DiagError("unable to perform WebAppPractice Delete", err, diags)
+					return utils.DiagError("unable to perform WebAppPractice Delete after updating references", err, diags)
 				}
 			}
 		} else {
@@ -572,7 +572,7 @@ func handleWebAppPracticeReferences(ctx context.Context, usedBy models.DisplayOb
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("failed to update usedByResource", err, diags)
+				return utils.DiagError("failed to perform UpdateWebApplicationAsset to remove practice", err, diags)
 			}
 
 		default:

@@ -478,7 +478,7 @@ func resourceWebAPIPracticeDelete(ctx context.Context, d *schema.ResourceData, m
 						diags = utils.DiagError("failed to discard changes", discardErr, diags)
 					}
 
-					return utils.DiagError("unable to perform WebAPIPractice Delete", err, diags)
+					return utils.DiagError("unable to perform WebAPIPractice Delete after updating references", err, diags)
 				}
 
 			}
@@ -526,7 +526,7 @@ func handleWebAPIPracticeReferences(ctx context.Context, usedBy models.DisplayOb
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("failed to update usedByResource", err, diags)
+				return utils.DiagError("failed to failed to perform UpdateWebAPIAsset to remove practice", err, diags)
 			}
 
 		default:

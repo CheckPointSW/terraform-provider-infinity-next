@@ -289,7 +289,7 @@ func resourceExceptionsDelete(ctx context.Context, d *schema.ResourceData, meta 
 						diags = utils.DiagError("failed to discard changes", discardErr, diags)
 					}
 
-					return utils.DiagError("unable to perform ExceptionBehavior Delete", err, diags)
+					return utils.DiagError("unable to perform ExceptionBehavior Delete after updating references", err, diags)
 				}
 
 			}

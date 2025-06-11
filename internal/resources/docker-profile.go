@@ -213,7 +213,7 @@ func resourceDockerProfileDelete(ctx context.Context, d *schema.ResourceData, me
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("unable to perform DockerProfile Delete", err, diags)
+				return utils.DiagError("unable to perform DockerProfile Delete after updating references", err, diags)
 			}
 		} else {
 			if _, discardErr := c.DiscardChanges(); discardErr != nil {
@@ -255,7 +255,7 @@ func handleDockerProfileReferences(ctx context.Context, usedBy models.DisplayObj
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("failed to update usedByResource", err, diags)
+				return utils.DiagError("failed to perform UpdateWebAPIAsset to remove profile", err, diags)
 			}
 
 		case "WebApplication":
@@ -269,7 +269,7 @@ func handleDockerProfileReferences(ctx context.Context, usedBy models.DisplayObj
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("failed to update usedByResource", err, diags)
+				return utils.DiagError("failed to perform UpdateWebApplicationAsset to remove profile", err, diags)
 			}
 
 		default:

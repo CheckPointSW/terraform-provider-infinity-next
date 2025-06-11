@@ -255,7 +255,7 @@ func resourceEmbeddedProfileDelete(ctx context.Context, d *schema.ResourceData, 
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("unable to perform EmbeddedProfile Delete", err, diags)
+				return utils.DiagError("unable to perform EmbeddedProfile Delete after updating references", err, diags)
 			}
 		} else {
 			if _, discardErr := c.DiscardChanges(); discardErr != nil {
@@ -297,7 +297,7 @@ func handleEmbeddedProfileReferences(ctx context.Context, usedBy models.DisplayO
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("failed to update usedByResource", err, diags)
+				return utils.DiagError("failed to perform UpdateWebAPIAsset to remove profile", err, diags)
 			}
 
 		case "WebApplication":
@@ -311,7 +311,7 @@ func handleEmbeddedProfileReferences(ctx context.Context, usedBy models.DisplayO
 					diags = utils.DiagError("failed to discard changes", discardErr, diags)
 				}
 
-				return utils.DiagError("failed to update usedByResource", err, diags)
+				return utils.DiagError("failed to perform UpdateWebApplicationAsset to remove profile", err, diags)
 			}
 
 		default:
