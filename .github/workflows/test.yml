@@ -5,7 +5,7 @@ name: Tests
 on:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '0 * * * *'
+    - cron:  '0 7 * * *'
   pull_request:
     paths-ignore:
       - 'README.md'
@@ -118,17 +118,17 @@ jobs:
         go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
 
-    # - name: TF acceptance tests schedule
-    #   if: ${{ github.event_name == 'schedule' }}
-    #   timeout-minutes: 20
-    #   env:
-    #     INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
-    #     INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
-    #     TF_ACC: "1"
-    #   run: |
-    #     cmd/inext discard
-    #     go test --timeout 20m -v -cover ./internal/resources/tests/
-    #     cmd/inext discard
+    - name: TF acceptance tests schedule
+      if: ${{ github.event_name == 'schedule' }}
+      timeout-minutes: 20
+      env:
+        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
+        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
+        TF_ACC: "1"
+      run: |
+        cmd/inext discard
+        go test --timeout 20m -v -cover ./internal/resources/tests/
+        cmd/inext discard
   test-dev:
     name: Test Dev
     needs: build
@@ -363,15 +363,15 @@ jobs:
         go test --timeout 20m -v -cover ./internal/resources/tests/
         cmd/inext discard
 
-    # - name: TF acceptance tests schedule
-    #   if: ${{ github.event_name == 'schedule' }}
-    #   timeout-minutes: 20
-    #   env:
-    #     INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
-    #     INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
-    #     INEXT_REGION: us
-    #     TF_ACC: "1"
-    #   run: |
-    #     cmd/inext discard
-    #     go test --timeout 20m -v -cover ./internal/resources/tests/
-    #     cmd/inext discard
+    - name: TF acceptance tests schedule
+      if: ${{ github.event_name == 'schedule' }}
+      timeout-minutes: 20
+      env:
+        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
+        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
+        INEXT_REGION: us
+        TF_ACC: "1"
+      run: |
+        cmd/inext discard
+        go test --timeout 20m -v -cover ./internal/resources/tests/
+        cmd/inext discard
