@@ -281,7 +281,9 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 		return fmt.Errorf("failed to convert practices to slice of maps. Error: %+v", err)
 	}
 
-	d.Set("practice", schemaPracticeWrappersMap)
+	if err := d.Set("practice", schemaPracticeWrappersMap); err != nil {
+		return fmt.Errorf("failed setting practice. Error: %+v", err)
+	}
 
 	tagsSchemaMap, err := utils.UnmarshalAs[[]map[string]any](asset.Tags)
 	if err != nil {

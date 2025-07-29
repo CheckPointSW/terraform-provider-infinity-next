@@ -149,7 +149,26 @@ func resourceDockerProfileUpdate(ctx context.Context, d *schema.ResourceData, me
 
 	c := meta.(*api.Client)
 
-	updateInput, err := dockerprofile.UpdateDockerProfileInputFromResourceData(d)
+	oldProfile, err := dockerprofile.GetDockerProfile(ctx, c, d.Id())
+	if err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("unable to perform DockerProfile Read before update", err, diags)
+	}
+
+	if err := dockerprofile.ReadDockerProfileToResourceData(oldProfile, d); err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("unable to perform DockerProfile Read before update", err, diags)
+	}
+
+	dWithDiff := ResourceDockerProfile().Data(d.State())
+
+	updateInput, err := dockerprofile.UpdateDockerProfileInputFromResourceData(dWithDiff)
 	if err != nil {
 		return utils.DiagError("unable to perform DockerProfile Update", err, diags)
 	}

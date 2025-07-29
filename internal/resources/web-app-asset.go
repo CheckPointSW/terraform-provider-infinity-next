@@ -500,7 +500,17 @@ func resourceWebAppAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 		return utils.DiagError("unable to perform get WebApplicationAsset for updating", err, diags)
 	}
 
-	updateInput, err := webappasset.UpdateWebApplicationAssetInputFromResourceData(d, oldAsset)
+	if err := webappasset.ReadWebApplicationAssetToResourceData(oldAsset, d); err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("unable to perform get WebApplicationAsset before update", err, diags)
+	}
+
+	dWithDiff := ResourceWebAppAsset().Data(d.State())
+
+	updateInput, err := webappasset.UpdateWebApplicationAssetInputFromResourceData(dWithDiff, oldAsset)
 	if err != nil {
 		return utils.DiagError("unable to perform WebAppAsset Update", err, diags)
 	}

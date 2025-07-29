@@ -191,7 +191,26 @@ func resourceEmbeddedProfileUpdate(ctx context.Context, d *schema.ResourceData, 
 
 	c := meta.(*api.Client)
 
-	updateInput, err := embeddedprofile.UpdateEmbeddedProfileInputFromResourceData(d)
+	oldProfile, err := embeddedprofile.GetEmbeddedProfile(ctx, c, d.Id())
+	if err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("unable to perform EmbeddedProfile Update", err, diags)
+	}
+
+	if err := embeddedprofile.ReadEmbeddedProfileToResourceData(oldProfile, d); err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("unable to perform read EmbeddedProfile read before update", err, diags)
+	}
+
+	dWithDiff := ResourceEmbeddedProfile().Data(d.State())
+
+	updateInput, err := embeddedprofile.UpdateEmbeddedProfileInputFromResourceData(dWithDiff)
 	if err != nil {
 		return utils.DiagError("unable to perform EmbeddedProfile Update", err, diags)
 	}

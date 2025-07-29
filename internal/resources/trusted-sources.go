@@ -146,7 +146,22 @@ func resourceTrustedSourcesUpdate(ctx context.Context, d *schema.ResourceData, m
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	updateInput, err := trustedsources.UpdateTrustedSourceBehaviorInputFromResourceData(d)
+	oldBehavior, err := trustedsources.GetTrustedSourceBehavior(ctx, c, d.Id())
+	if err != nil {
+		return utils.DiagError("Unable to perform TrustedSourceBehavior Get before update", err, diags)
+	}
+
+	if err := trustedsources.ReadTrustedSourceBehaviorToResourceData(oldBehavior, d); err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("Unable to perform TrustedSourceBehavior read to state file before update", err, diags)
+	}
+
+	dWithDiff := ResourceTrustedSources().Data(d.State())
+
+	updateInput, err := trustedsources.UpdateTrustedSourceBehaviorInputFromResourceData(dWithDiff)
 	if err != nil {
 		return utils.DiagError("unable to perform TrustedSourceBehavior Update", err, diags)
 	}

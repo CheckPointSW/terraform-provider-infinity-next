@@ -235,7 +235,26 @@ func resourceAppSecGatewayProfileUpdate(ctx context.Context, d *schema.ResourceD
 
 	c := meta.(*api.Client)
 
-	updateInput, err := appsecgatewayprofile.UpdateCloudGuardAppSecGatewayProfileInputFromResourceData(d)
+	oldProfile, err := appsecgatewayprofile.GetCloudGuardAppSecGatewayProfile(ctx, c, d.Id())
+	if err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("unable to perform AppSecGatewayProfile Read before update", err, diags)
+	}
+
+	if err := appsecgatewayprofile.ReadCloudGuardAppSecGatewayProfileToResourceData(oldProfile, d); err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("unable to perform AppSecGatewayProfile Read before update", err, diags)
+	}
+
+	dWithDiff := ResourceAppSecGatewayProfile().Data(d.State())
+
+	updateInput, err := appsecgatewayprofile.UpdateCloudGuardAppSecGatewayProfileInputFromResourceData(dWithDiff)
 	if err != nil {
 		return utils.DiagError("unable to perform AppSecGatewayProfile Update", err, diags)
 	}

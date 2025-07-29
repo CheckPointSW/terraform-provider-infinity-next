@@ -164,7 +164,26 @@ func resourceKubernetesProfileUpdate(ctx context.Context, d *schema.ResourceData
 
 	c := meta.(*api.Client)
 
-	updateInput, err := kubernetesprofile.UpdateKubernetesProfileInputFromResourceData(d)
+	oldProfile, err := kubernetesprofile.GetKubernetesProfile(ctx, c, d.Id())
+	if err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("unable to perform KubernetesProfile Update", err, diags)
+	}
+
+	if err := kubernetesprofile.ReadKubernetesProfileToResourceData(oldProfile, d); err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("unable to perform read KubernetesProfile read before update", err, diags)
+	}
+
+	dWithDiff := ResourceKubernetesProfile().Data(d.State())
+
+	updateInput, err := kubernetesprofile.UpdateKubernetesProfileInputFromResourceData(dWithDiff)
 	if err != nil {
 		return utils.DiagError("unable to perform KubernetesProfile Update", err, diags)
 	}

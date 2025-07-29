@@ -157,7 +157,26 @@ func resourceWebUserResponseUpdate(ctx context.Context, d *schema.ResourceData, 
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	updateInput, err := webuserresponse.UpdateWebUserResponseBehaviorInputFromResourceData(d)
+	oldBehavior, err := webuserresponse.GetWebUserResponseBehavior(ctx, c, d.Id())
+	if err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("Unable to perform WebUserResponseBehavior Get before update", err, diags)
+	}
+
+	if err := webuserresponse.ReadWebUserResponseBehaviorToResourceData(oldBehavior, d); err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("Unable to perform WebUserResponseBehavior Read before update", err, diags)
+	}
+
+	dWithDiff := ResourceWebUserResponse().Data(d.State())
+
+	updateInput, err := webuserresponse.UpdateWebUserResponseBehaviorInputFromResourceData(dWithDiff)
 	if err != nil {
 		return utils.DiagError("unable to perform WebUserResponseBehavior Update", err, diags)
 	}

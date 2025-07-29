@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
@@ -498,7 +499,22 @@ func resourceWebApiAssetUpdate(ctx context.Context, d *schema.ResourceData, meta
 
 	c := meta.(*api.Client)
 
-	updateInput, err := webapiasset.UpdateWebAPIAssetInputFromResourceData(d)
+	oldAsset, err := webapiasset.GetWebAPIAsset(ctx, c, d.Id())
+	if err != nil {
+		return utils.DiagError("unable to perform get WebAPIAsset for updating", err, diags)
+	}
+
+	if err := webapiasset.ReadWebAPIAssetToResourceData(oldAsset, d); err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return diag.FromErr(err)
+	}
+
+	dWithDiff := ResourceWebAPIAsset().Data(d.State())
+
+	updateInput, err := webapiasset.UpdateWebAPIAssetInputFromResourceData(dWithDiff)
 	if err != nil {
 		return utils.DiagError("unable to perform WebAPIAsset update", err, diags)
 	}

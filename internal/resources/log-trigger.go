@@ -239,7 +239,22 @@ func resourceLogTriggerUpdate(ctx context.Context, d *schema.ResourceData, meta 
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	updateInput, err := logtrigger.UpdateLogTriggerInputFromResourceData(d)
+	oldTrigger, err := logtrigger.GetLogTrigger(ctx, c, d.Id())
+	if err != nil {
+		return utils.DiagError("unable to perform get LogTrigger before update", err, diags)
+	}
+
+	if err := logtrigger.ReadLogTriggerToResourceData(oldTrigger, d); err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("Unable to perform LogTrigger read to state file before update", err, diags)
+	}
+
+	dWithDiff := ResourceLogTrigger().Data(d.State())
+
+	updateInput, err := logtrigger.UpdateLogTriggerInputFromResourceData(dWithDiff)
 	if err != nil {
 		return utils.DiagError("Unable to create log trigger update input struct from resource data", err, diags)
 	}

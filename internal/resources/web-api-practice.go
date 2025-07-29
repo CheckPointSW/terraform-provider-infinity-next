@@ -406,7 +406,26 @@ func resourceWebAPIPracticeUpdate(ctx context.Context, d *schema.ResourceData, m
 
 	c := meta.(*api.Client)
 
-	updateInput, err := webapipractice.UpdateWebAPIPracticeInputFromResourceData(d)
+	oldPractice, err := webapipractice.GetWebAPIPractice(ctx, c, d.Id())
+	if err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("unable to perform WebAPIPractice Read before update", err, diags)
+	}
+
+	if err := webapipractice.ReadWebAPIPracticeToResourceData(oldPractice, d); err != nil {
+		if _, discardErr := c.DiscardChanges(); discardErr != nil {
+			diags = utils.DiagError("failed to discard changes", discardErr, diags)
+		}
+
+		return utils.DiagError("unable to perform WebAPIPractice Read before update", err, diags)
+	}
+
+	dWithDiff := ResourceWebAPIPractice().Data(d.State())
+
+	updateInput, err := webapipractice.UpdateWebAPIPracticeInputFromResourceData(dWithDiff)
 	if err != nil {
 		return utils.DiagError("unable to perform WebAPIPractice Update", err, diags)
 	}
