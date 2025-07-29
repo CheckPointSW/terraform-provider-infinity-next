@@ -448,6 +448,12 @@ func UpdateWebApplicationAsset(ctx context.Context, c *api.Client, id any, input
 				`, "updateWebApplicationAsset", vars)
 
 	if err != nil {
+		if dependencyError := api.CheckDependencyErrorResponse(err); dependencyError != nil {
+			input = fixUpdateInputByDependencyError(input, dependencyError)
+			vars = map[string]any{"assetInput": input, "id": id}
+			return UpdateWebApplicationAsset(ctx, c, id, input)
+		}
+
 		return false, err
 	}
 
@@ -457,6 +463,35 @@ func UpdateWebApplicationAsset(ctx context.Context, c *api.Client, id any, input
 	}
 
 	return isUpdated, err
+}
+
+// fixUpdateInputByDependencyError is used to fix the update input by removing the profile, practice or behavior that caused the dependency error
+// it will make it so that the corresponding "remove" field wouldn't include the profile, practice or behavior that caused the dependency error
+// this is used to avoid the dependency error when updating the asset
+func fixUpdateInputByDependencyError(input models.UpdateWebApplicationAssetInput, dependencyError *api.DependencyErrorResponse) models.UpdateWebApplicationAssetInput {
+	if dependencyError == nil {
+		return input
+	}
+
+	if dependencyError.ProfileID != "" {
+		input.RemoveProfiles = utils.Filter(input.RemoveProfiles, func(profile string) bool {
+			return profile != dependencyError.ProfileID
+		})
+	}
+
+	if dependencyError.PracticeID != "" {
+		input.RemovePracticeWrappers = utils.Filter(input.RemovePracticeWrappers, func(practice string) bool {
+			return practice != dependencyError.PracticeID
+		})
+	}
+
+	if dependencyError.BehaviorID != "" {
+		input.RemoveBehaviors = utils.Filter(input.RemoveBehaviors, func(behavior string) bool {
+			return behavior != dependencyError.BehaviorID
+		})
+	}
+
+	return input
 }
 
 // parseSchemaSourceIdentifiers converts the source identifiers (type schema.TypeSet) to a slice of map[string]any
