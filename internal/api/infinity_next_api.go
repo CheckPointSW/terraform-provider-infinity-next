@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
@@ -48,6 +49,55 @@ type RetryErrorResponse struct {
 	Stop          any `json:"stop"`
 	RC            any `json:"rc"`
 	ReqDidTimeout any `json:"reqDidTimeout"`
+}
+
+type DependencyErrorResponse struct {
+	ProfileID  string
+	TriggerID  string
+	PracticeID string
+	BehaviorID string
+}
+
+func CheckDependencyErrorResponse(err error) *DependencyErrorResponse {
+	if err == nil {
+		return nil
+	}
+
+	errMessage := err.Error()
+	// Check if the error message contains a specific pattern indicating a dependency error
+	// The patterns are:
+	// Profile: %(profileType)sProfile with ID %(profileId)s does not exist
+	// Trigger: Trigger with ID %(triggerId)s does not exist
+	// Practice: Practice with ID %(practiceId)s does not exist OR Practice with ID %(practiceId)s is not connected to this Asset/Zone
+	// Behavior: %(parameterType)sParameter with ID %(parameterId)s does not exist
+	if !strings.Contains(errMessage, "does not exist") && !strings.Contains(errMessage, "is not connected to this Asset/Zone") {
+		return nil
+	}
+
+	// Extract the profile ID, trigger ID, practice ID, and behavior ID from the error message based on the start of the message
+	var profileID, triggerID, practiceID, behaviorID string
+	if strings.Contains(errMessage, "Profile") {
+		profileID = strings.Split(strings.Split(errMessage, "ID ")[1], " ")[0]
+	}
+
+	if strings.Contains(errMessage, "Trigger") {
+		triggerID = strings.Split(strings.Split(errMessage, "ID ")[1], " ")[0]
+	}
+
+	if strings.Contains(errMessage, "Practice") {
+		practiceID = strings.Split(strings.Split(errMessage, "ID ")[1], " ")[0]
+	}
+
+	if strings.Contains(errMessage, "Parameter") {
+		behaviorID = strings.Split(strings.Split(errMessage, "ID ")[1], " ")[0]
+	}
+
+	return &DependencyErrorResponse{
+		ProfileID:  profileID,
+		TriggerID:  triggerID,
+		PracticeID: practiceID,
+		BehaviorID: behaviorID,
+	}
 }
 
 func (c *Client) InfinityPortalAuthentication(clientId string, accessKey string) error {
