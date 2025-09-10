@@ -35,6 +35,7 @@ func GetRateLimitPractice(ctx context.Context, c *api.Client, id string, mustFin
 				id
 				name
 				practiceType
+				visibility
 				category
 				default
 				rules {

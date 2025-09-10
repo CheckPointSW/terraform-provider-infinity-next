@@ -43,6 +43,7 @@ func NewRateLimitPracticePractice(ctx context.Context, c *api.Client, input mode
 							id
 							name
 							practiceType
+							visibility
 							category
 							default
 							rules {
