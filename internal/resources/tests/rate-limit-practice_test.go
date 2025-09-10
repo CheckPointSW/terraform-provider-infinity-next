@@ -21,7 +21,7 @@ func TestAccRateLimitPracticeBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":     nameAttribute,
-						"category": "RateLimit",
+						"category": "AccessControl",
 						"default":  "false",
 						"rule.#":   "0",
 					}),
@@ -38,7 +38,7 @@ func TestAccRateLimitPracticeBasic(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":          nameAttribute,
-						"category":      "RateLimit",
+						"category":      "AccessControl",
 						"default":       "false",
 						"rule.#":        "1",
 						"rule.0.uri":    "/api/v1/test",
@@ -67,7 +67,7 @@ func TestAccRateLimitPracticeFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":           nameAttribute,
-						"category":       "RateLimit",
+						"category":       "AccessControl",
 						"default":        "false",
 						"rule.#":         "2",
 						"rule.0.uri":     "/api/v1/test",
@@ -95,7 +95,7 @@ func TestAccRateLimitPracticeFull(t *testing.T) {
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"name":          nameAttribute,
-						"category":      "RateLimit",
+						"category":      "AccessControl",
 						"default":       "false",
 						"rule.#":        "1",
 						"rule.0.uri":    "/api/v1/updated",
