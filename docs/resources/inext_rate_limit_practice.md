@@ -31,7 +31,7 @@ provider "inext" {
 resource "inext_rate_limit_practice" "my_rate_limit_practice" {
   name       = "my rate limit practice"
   visibility = "Shared"  # Optional: "Shared" (default) or "Local"
-
+  
   # Multiple rate limit rules
   rule {
     uri     = "/api/v1/users"
@@ -40,7 +40,7 @@ resource "inext_rate_limit_practice" "my_rate_limit_practice" {
     action  = "Detect"    # Optional: "Detect", "Prevent", or "AccordingToPractice" (default)
     comment = "User API rate limit"  # Optional: description of the rule
   }
-
+  
   rule {
     uri     = "/api/v1/login"
     scope   = "Second"
@@ -48,7 +48,7 @@ resource "inext_rate_limit_practice" "my_rate_limit_practice" {
     action  = "Prevent"
     comment = "Login endpoint strict rate limit"
   }
-
+  
   rule {
     uri     = "/api/v1/search"
     scope   = "Minute"
@@ -61,7 +61,7 @@ resource "inext_rate_limit_practice" "my_rate_limit_practice" {
 # Example with minimal configuration (only required fields)
 resource "inext_rate_limit_practice" "minimal_example" {
   name = "minimal rate limit practice"
-
+  
   rule {
     uri   = "/api/minimal"
     scope = "Minute"
