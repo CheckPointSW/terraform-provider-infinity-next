@@ -387,6 +387,7 @@ resource "inext_web_api_asset" %[1]q {
 		  IPS    = "AccordingToPractice"
 		  WebBot = "AccordingToPractice"
 		  Snort  = "Disabled"
+		  APIDiscovery = "Active"
 		}
 		id         = inext_web_api_practice.%[4]s.id
 		triggers   = [inext_log_trigger.%[5]s.id]
@@ -540,6 +541,7 @@ resource "inext_web_api_asset" %[1]q {
 		IPS    = "AccordingToPractice"
 		WebBot = "AccordingToPractice"
 		Snort  = "Disabled"
+		APIDiscovery = "Active"
 	  }
 	  id         = inext_web_api_practice.%[4]s.id
 	  triggers   = [inext_log_trigger.%[5]s.id]
@@ -734,6 +736,7 @@ resource "inext_web_api_asset" %[1]q {
 		IPS    = "Learn"
 		WebBot = "Inactive"
 		Snort  = "AccordingToPractice"
+		APIDiscovery = "Disabled"
 	  }
 	  id         = inext_web_api_practice.%[4]s.id
 	  triggers   = [inext_log_trigger.%[9]s.id]

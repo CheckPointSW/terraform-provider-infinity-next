@@ -10,7 +10,7 @@ resource "inext_web_api_asset" "test" {
       IPS    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
       WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
       Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-
+      APIDiscovery = "Active"        # enum of ["Active", "Disabled"]
     }
     id       = inext_web_api_practice.test.id # required
     triggers = [inext_log_trigger.test.id]

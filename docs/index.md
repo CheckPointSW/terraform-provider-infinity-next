@@ -17,15 +17,15 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.1.7"
+      version = "1.2.0"
     }
   }
 }
 
 provider "inext" {
   region = "eu"
-  # client_id  = ""  // can be set with env var INEXT_CLIENT_ID
-  # access_key = "" // can be set with env var INEXT_ACCESS_KEY
+  # client_id  = "f34fd2cbfe9341289a369965db3d630b"  // can be set with env var INEXT_CLIENT_ID
+  # access_key = "88b86823b92a4a7e9f57c94667a57866" // can be set with env var INEXT_ACCESS_KEY
 }
 
 resource "inext_access_token" "access_token" {}
