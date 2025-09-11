@@ -116,7 +116,6 @@ func ResourceRateLimitPractice() *schema.Resource {
 
 func resourceRateLimitPracticeCreate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
-
 	c := meta.(*api.Client)
 
 	createInput, err := ratelimitpractice.CreateRateLimitPracticeInputFromResourceData(d)
@@ -155,9 +154,7 @@ func resourceRateLimitPracticeCreate(ctx context.Context, d *schema.ResourceData
 
 func resourceRateLimitPracticeRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
-
 	c := meta.(*api.Client)
-
 	id := d.Id()
 
 	practice, err := ratelimitpractice.GetRateLimitPractice(ctx, c, id, false)
@@ -174,7 +171,6 @@ func resourceRateLimitPracticeRead(ctx context.Context, d *schema.ResourceData, 
 
 func resourceRateLimitPracticeUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
-
 	c := meta.(*api.Client)
 
 	updateInput, err := ratelimitpractice.UpdateRateLimitPracticeInputFromResourceData(d)
