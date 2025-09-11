@@ -7,10 +7,10 @@ resource "inext_web_api_asset" "test" {
   practice {
     main_mode = "Prevent" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
-      IPS    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      APIDiscovery = "Active"        # enum of ["Active", "Disabled"]
+      IPS          = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      WebBot       = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      Snort        = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      APIDiscovery = "Active"              # enum of ["Active", "Disabled"]
     }
     id       = inext_web_api_practice.test.id # required
     triggers = [inext_log_trigger.test.id]

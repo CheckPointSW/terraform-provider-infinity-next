@@ -1,14 +1,14 @@
 resource "inext_rate_limit_practice" "my_rate_limit_practice" {
   name       = "my rate limit practice"
-  visibility = "Shared"  # Optional: "Shared" (default) or "Local"
+  visibility = "Shared" # Optional: "Shared" (default) or "Local"
 
   # Multiple rate limit rules
   rule {
     uri     = "/api/v1/users"
-    scope   = "Minute"    # Required: "Minute" or "Second"
-    limit   = 100         # Required: number of requests allowed
-    action  = "Detect"    # Optional: "Detect", "Prevent", or "AccordingToPractice" (default)
-    comment = "User API rate limit"  # Optional: description of the rule
+    scope   = "Minute"              # Required: "Minute" or "Second"
+    limit   = 100                   # Required: number of requests allowed
+    action  = "Detect"              # Optional: "Detect", "Prevent", or "AccordingToPractice" (default)
+    comment = "User API rate limit" # Optional: description of the rule
   }
 
   rule {
