@@ -2,7 +2,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.1.7"
+      version = "1.2.0"
     }
   }
 }
@@ -22,9 +22,10 @@ resource "inext_web_api_asset" "my-webapi-asset" {
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
-      IPS    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      IPS          = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      WebBot       = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      Snort        = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      APIDiscovery = "Active"              # enum of ["Active", "Disabled"]
     }
     id       = inext_web_api_practice.my-webapi-practice.id # required
     triggers = [inext_log_trigger.mytrigger.id]

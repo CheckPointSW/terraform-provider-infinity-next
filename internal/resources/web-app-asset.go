@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"

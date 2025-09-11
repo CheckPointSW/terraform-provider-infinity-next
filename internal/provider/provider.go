@@ -53,6 +53,7 @@ func Provider() *schema.Provider {
 			"inext_web_api_asset":          resources.ResourceWebAPIAsset(),
 			"inext_web_app_practice":       resources.ResourceWebAppPractice(),
 			"inext_web_api_practice":       resources.ResourceWebAPIPractice(),
+			"inext_rate_limit_practice":    resources.ResourceRateLimitPractice(),
 			"inext_trusted_sources":        resources.ResourceTrustedSources(),
 			"inext_exceptions":             resources.ResourceExceptions(),
 			"inext_access_token":           resources.ResourceAccessToken(),
