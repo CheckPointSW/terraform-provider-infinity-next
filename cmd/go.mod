@@ -1,6 +1,6 @@
 module github.com/CheckPointSW/infinity-next-cli
 
-go 1.18
+go 1.24
 
 require (
 	github.com/golang-jwt/jwt/v5 v5.2.1
