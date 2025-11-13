@@ -4,6 +4,8 @@
 name: Tests
 on:
   push:
+    branches:
+      - "**" # Trigger on all branches
     paths-ignore:
       - "README.md"
 jobs:
