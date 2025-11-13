@@ -2,8 +2,6 @@ module github.com/CheckPointSW/terraform-provider-infinity-next
 
 go 1.24.0
 
-toolchain go1.24.2
-
 require (
 	github.com/golang-jwt/jwt/v5 v5.3.0
 	github.com/hashicorp/terraform-plugin-docs v0.24.0
