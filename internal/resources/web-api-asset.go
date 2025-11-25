@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
@@ -188,6 +189,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 				Optional:    true,
 				// Remove Computed if default for Set/List is supported - manually edit generated docs and move proxy_setting out of read-only section
 				Computed: true,
+				Set:      proxySettingHash,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"key": {
@@ -336,6 +338,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 				Description: "The additional instructions blocks settings - location or server blocks",
 				Optional:    true,
 				Computed:    true,
+				Set:         additionalInstructionsBlockHash,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"filename_id": {
@@ -387,6 +390,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 				Description: "The MTLS settings",
 				Optional:    true,
 				Computed:    true,
+				Set:         mtlsHash,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"filename_id": {

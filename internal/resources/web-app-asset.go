@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/validation"
 
@@ -31,6 +32,57 @@ const (
 	instructionsBlockFileTypeJSON = ".json"
 	instructionsBlockFileTypeYML  = ".yml"
 )
+
+func proxySettingHash(v interface{}) int {
+	m := v.(map[string]interface{})
+	key := m["key"].(string)
+	value := m["value"].(string)
+	return schema.HashString(key + value)
+}
+
+func additionalInstructionsBlockHash(v interface{}) int {
+	m := v.(map[string]interface{})
+	blockType := m["type"].(string)
+	filename := ""
+	if m["filename"] != nil {
+		filename = m["filename"].(string)
+	}
+	filenameType := ""
+	if m["filename_type"] != nil {
+		filenameType = m["filename_type"].(string)
+	}
+	data := ""
+	if m["data"] != nil {
+		data = m["data"].(string)
+	}
+	enable := "false"
+	if m["enable"] != nil {
+		enable = fmt.Sprintf("%v", m["enable"])
+	}
+	return schema.HashString(blockType + filename + filenameType + data + enable)
+}
+
+func mtlsHash(v interface{}) int {
+	m := v.(map[string]interface{})
+	mtlsType := m["type"].(string)
+	filename := ""
+	if m["filename"] != nil {
+		filename = m["filename"].(string)
+	}
+	certType := ""
+	if m["certificate_type"] != nil {
+		certType = m["certificate_type"].(string)
+	}
+	data := ""
+	if m["data"] != nil {
+		data = m["data"].(string)
+	}
+	enable := "false"
+	if m["enable"] != nil {
+		enable = fmt.Sprintf("%v", m["enable"])
+	}
+	return schema.HashString(mtlsType + filename + certType + data + enable)
+}
 
 func ResourceWebAppAsset() *schema.Resource {
 	validateStateFunc := validation.ToDiagFunc(validation.StringInSlice(
@@ -187,6 +239,7 @@ func ResourceWebAppAsset() *schema.Resource {
 				Optional:    true,
 				// Remove Computed if default for Set/List is supported - manually edit generated docs and move proxy_setting out of read-only section
 				Computed: true,
+				Set:      proxySettingHash,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"key": {
@@ -334,6 +387,7 @@ func ResourceWebAppAsset() *schema.Resource {
 				Description: "The additional instructions blocks settings - location or server blocks",
 				Optional:    true,
 				Computed:    true,
+				Set:         additionalInstructionsBlockHash,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"filename_id": {
@@ -385,6 +439,7 @@ func ResourceWebAppAsset() *schema.Resource {
 				Description: "The mutual TLS settings",
 				Optional:    true,
 				Computed:    true,
+				Set:         mtlsHash,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"filename_id": {
