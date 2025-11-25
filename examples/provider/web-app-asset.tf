@@ -33,6 +33,19 @@ resource "inext_web_app_asset" "test1" {
     type             = "client"
     enable           = true
   }
+  additional_instructions_blocks {
+    filename      = "location.json"
+    filename_type = ".json"
+    data          = "location data"
+    type          = "location_instructions"
+    enable        = true
+  }
+  redirect_to_https = "true"
+  access_log        = "true"
+  custom_headers {
+    name  = "header1"
+    value = "value1"
+  }
 }
 
 resource "inext_web_app_asset" "test2" {
