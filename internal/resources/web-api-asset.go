@@ -283,8 +283,10 @@ func ResourceWebAPIAsset() *schema.Resource {
 				Computed: true,
 			},
 			"is_shares_urls": {
-				Type:     schema.TypeBool,
-				Computed: true,
+				Type:        schema.TypeBool,
+				Description: "Indicates whether the asset shares its URLs with other assets. URL sharing is allowed only between assets linked to different profiles.",
+				Optional:    true,
+				Computed:    true,
 			},
 			"redirect_to_https": {
 				Type:        schema.TypeBool,
