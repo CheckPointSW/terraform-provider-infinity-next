@@ -282,7 +282,7 @@ func ResourceWebAppAsset() *schema.Resource {
 			},
 			"is_shares_urls": {
 				Type:        schema.TypeBool,
-				Description: "Whether the asset shares its URLs with other assets. Each asset can share URLs only if they are connected to different profiles.",
+				Description: "Indicates whether the asset shares its URLs with other assets. URL sharing is allowed only between assets linked to different profiles.",
 				Optional:    true,
 				Computed:    true,
 			},

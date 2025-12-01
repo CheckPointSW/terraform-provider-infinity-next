@@ -94,7 +94,7 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 - `additional_instructions_blocks` (Block Set) The additional instructions blocks settings - location or server blocks (see [below for nested schema](#nestedblock--additional_instructions_blocks))
 - `behaviors` (Set of String) behaviors used by the asset
 - `custom_headers` (Block Set) Advanced Proxy Settings - The custom headers settings (see [below for nested schema](#nestedblock--custom_headers))
-- `is_shares_urls` (Boolean) Whether the asset shares its URLs with other assets. Each asset can share URLs only if they are connected to different profiles.
+- `is_shares_urls` (Boolean) Indicates whether the asset shares its URLs with other assets. URL sharing is allowed only between assets linked to different profiles.
 - `mtls` (Block Set) The MTLS settings (see [below for nested schema](#nestedblock--mtls))
 - `practice` (Block Set) The practices used by the asset (see [below for nested schema](#nestedblock--practice))
 - `profiles` (Set of String) Profiles linked to the asset
