@@ -284,6 +284,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 			},
 			"is_shares_urls": {
 				Type:     schema.TypeBool,
+				Optional: true,
 				Computed: true,
 			},
 			"redirect_to_https": {
