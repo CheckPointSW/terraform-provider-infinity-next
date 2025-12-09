@@ -49,7 +49,7 @@ func UpdateWebAPIAssetInputFromResourceData(d *schema.ResourceData) (models.Upda
 		updateInput.UpstreamURL = newUpstreamURL
 	}
 
-	if _, newIsSharesURLs, hasChange := utils.GetChangeWithParse(d, "is_shared_urls", utils.MustValueAs[bool]); hasChange {
+	if _, newIsSharesURLs, hasChange := utils.GetChangeWithParse(d, "is_shares_urls", utils.MustValueAs[bool]); hasChange {
 		updateInput.IsSharesURLs = newIsSharesURLs
 	}
 
