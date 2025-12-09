@@ -357,6 +357,7 @@ func GetWebAPIAsset(ctx context.Context, c *api.Client, id string) (models.WebAP
 				mainAttributes
 				intelligenceTags
 				readOnly
+				isSharesURLs
 			}
 		}
 	`, "getWebAPIAsset")
