@@ -89,7 +89,7 @@ type UpdateWebAPIAssetInput struct {
 	AddSourceIdentifiers    []AddSourceIdentifier   `json:"addSourceIdentifiers,omitempty"`
 	RemoveSourceIdentifiers []string                `json:"removeSourceIdentifiers,omitempty"`
 	UpdateSourceIdentifiers UpdateSourceIdentifiers `json:"updateSourceIdentifiers,omitempty"`
-	IsSharesURLs            bool                    `json:"isSharesURLs,omitempty"`
+	IsSharesURLs            bool                    `json:"isSharesURLs"`
 }
 
 func (updates UpdateSourceIdentifiers) ToIndicatorsMap() map[string]UpdateSourceIdentifier {
