@@ -13,16 +13,13 @@ import (
 func UpdateWebUserResponseBehaviorInputFromResourceData(d *schema.ResourceData) (models.UpdateWebUserResponseBehaviorInput, error) {
 	var res models.UpdateWebUserResponseBehaviorInput
 
-	if _, newName, hasChange := utils.MustGetChange[string](d, "name"); hasChange {
-		res.Name = newName
-	}
+	// Required fields must always be included
+	res.Name = d.Get("name").(string)
+	res.Mode = d.Get("mode").(string)
 
+	// Optional fields only if changed
 	if _, newVisibility, hasChange := utils.MustGetChange[string](d, "visibility"); hasChange {
 		res.Visibility = newVisibility
-	}
-
-	if _, newMode, hasChange := utils.MustGetChange[string](d, "mode"); hasChange {
-		res.Mode = newMode
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[string](d, "message_title"); hasChange {

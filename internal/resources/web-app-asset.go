@@ -90,7 +90,7 @@ func ResourceWebAppAsset() *schema.Resource {
 			"state": {
 				Type:             schema.TypeString,
 				Optional:         true,
-				Default:          "Active",
+				Default:          activeState,
 				ValidateDiagFunc: validateStateFunc,
 			},
 			"upstream_url": {

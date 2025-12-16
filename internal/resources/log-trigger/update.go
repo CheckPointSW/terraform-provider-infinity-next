@@ -13,13 +13,9 @@ import (
 func UpdateLogTriggerInputFromResourceData(d *schema.ResourceData) (models.UpdateLogTriggerInput, error) {
 	var ret models.UpdateLogTriggerInput
 
-	if _, newName, hasChange := utils.MustGetChange[string](d, "name"); hasChange {
-		ret.Name = newName
-	}
-
-	if _, newVerbosity, hasChange := utils.MustGetChange[string](d, "verbosity"); hasChange {
-		ret.Verbosity = newVerbosity
-	}
+	// Required fields must always be included
+	ret.Name = d.Get("name").(string)
+	ret.Verbosity = d.Get("verbosity").(string)
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "compliance_warnings"); hasChange {
 		ret.ComplianceWarnings = &newVal

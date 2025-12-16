@@ -7,12 +7,12 @@ type KeyValueUpdateInput struct {
 }
 
 type EmbeddedProfileUpdateInput struct {
-	UpgradeTime              *ScheduleTimeInput               `json:"upgradeTime,omitempty"`
-	Name                     string                           `json:"name,omitempty"`
-	UpgradeMode              string                           `json:"upgradeMode,omitempty"`
-	AddAdditionalSettings    []KeyValueInput                  `json:"addAdditionalSettings,omitempty"`
-	UpdateAdditionalSettings []KeyValueUpdateInput            `json:"updateAdditionalSettings,omitempty"`
-	RemoveAdditionalSettings []string                         `json:"removeAdditionalSettings,omitempty"`
-	OnlyDefinedApplications  *bool                            `json:"onlyDefinedApplications,omitempty"`
-	Authentication           ReusableTokenAuthenticationInput `json:"authentication,omitempty"`
+	UpgradeTime              *ScheduleTimeInput                `json:"upgradeTime,omitempty"`
+	Name                     string                            `json:"name,omitempty"`
+	UpgradeMode              string                            `json:"upgradeMode,omitempty"`
+	AddAdditionalSettings    []KeyValueInput                   `json:"addAdditionalSettings,omitempty"`
+	UpdateAdditionalSettings []KeyValueUpdateInput             `json:"updateAdditionalSettings,omitempty"`
+	RemoveAdditionalSettings []string                          `json:"removeAdditionalSettings,omitempty"`
+	OnlyDefinedApplications  *bool                             `json:"onlyDefinedApplications,omitempty"`
+	Authentication           *ReusableTokenAuthenticationInput `json:"authentication,omitempty"`
 }

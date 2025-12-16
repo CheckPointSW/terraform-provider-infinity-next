@@ -48,6 +48,7 @@ func ReadWebApplicationAssetToResourceData(asset models.WebApplicationAsset, d *
 	d.Set("intelligence_tags", asset.IntelligenceTags)
 	d.Set("read_only", asset.ReadOnly)
 	d.Set("upstream_url", asset.UpstreamURL)
+	d.Set("state", asset.State)
 	d.Set("behaviors", asset.Behaviors.ToSchema())
 	d.Set("profiles", asset.Profiles.ToSchema())
 	d.Set("is_shares_urls", asset.IsSharesURLs)

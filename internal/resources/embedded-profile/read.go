@@ -26,6 +26,13 @@ func ReadEmbeddedProfileToResourceData(profile models.EmbeddedProfile, d *schema
 		d.Set("upgrade_time_duration", profile.UpgradeTime.Duration)
 		d.Set("upgrade_time_week_days", profile.UpgradeTime.WeekDays)
 		d.Set("upgrade_time_days", profile.UpgradeTime.Days)
+	} else {
+		// Clear upgrade_time fields when mode is not Scheduled
+		d.Set("upgrade_time_schedule_type", nil)
+		d.Set("upgrade_time_hour", nil)
+		d.Set("upgrade_time_duration", nil)
+		d.Set("upgrade_time_week_days", nil)
+		d.Set("upgrade_time_days", nil)
 	}
 
 	d.Set("max_number_of_agents", profile.Authentication.MaxNumberOfAgents)
