@@ -15,8 +15,10 @@ func CreateDockerProfileInputFromResourceData(d *schema.ResourceData) (models.Cr
 
 	res.Name = d.Get("name").(string)
 
-	res.OnlyDefinedApplications = d.Get("defined_applications_only").(bool)
-	res.Authentication.MaxNumberOfAgents = d.Get("max_number_of_agents").(int)
+	onlyDefinedApplications := d.Get("defined_applications_only").(bool)
+	res.OnlyDefinedApplications = &onlyDefinedApplications
+	maxNumberOfAgents := d.Get("max_number_of_agents").(int)
+	res.Authentication.MaxNumberOfAgents = &maxNumberOfAgents
 	res.AdditionalSettings = mapToKeyValueInput(d, "additional_settings")
 
 	return res, nil

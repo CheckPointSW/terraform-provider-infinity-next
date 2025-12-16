@@ -39,8 +39,10 @@ func CreateEmbeddedProfileInputFromResourceData(d *schema.ResourceData) (models.
 		res.UpgradeTime = &upgradeTime
 	}
 
-	res.OnlyDefinedApplications = d.Get("defined_applications_only").(bool)
-	res.Authentication.MaxNumberOfAgents = d.Get("max_number_of_agents").(int)
+	onlyDefinedApplications := d.Get("defined_applications_only").(bool)
+	res.OnlyDefinedApplications = &onlyDefinedApplications
+	maxNumberOfAgents := d.Get("max_number_of_agents").(int)
+	res.Authentication.MaxNumberOfAgents = &maxNumberOfAgents
 	res.AdditionalSettings = mapToKeyValueInput(d, "additional_settings")
 
 	return res, nil
@@ -64,7 +66,8 @@ func handleScheduledUpgradeMode(d *schema.ResourceData) models.ScheduleTimeInput
 	var res models.ScheduleTimeInput
 	res.ScheduleType = d.Get("upgrade_time_schedule_type").(string)
 	res.Time = d.Get("upgrade_time_hour").(string)
-	res.Duration = d.Get("upgrade_time_duration").(int)
+	duration := d.Get("upgrade_time_duration").(int)
+	res.Duration = &duration
 	if v, ok := d.GetOk("upgrade_time_week_days"); ok {
 		weekDays := v.(*schema.Set).List()
 		res.WeekDays = make([]string, 0, len(weekDays))

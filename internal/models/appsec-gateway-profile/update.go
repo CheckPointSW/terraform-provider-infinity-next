@@ -4,7 +4,7 @@ type UpdateUpgradeTimeInput struct {
 	ScheduleType string   `json:"scheduleType,omitempty"`
 	Time         string   `json:"time,omitempty"`
 	WeekDays     []string `json:"weekDays,omitempty"`
-	Duration     int      `json:"duration,omitempty"`
+	Duration     *int     `json:"duration,omitempty"`
 	Days         []int    `json:"days,omitempty"`
 }
 
@@ -20,7 +20,7 @@ type AddKeyValue struct {
 }
 
 type UpdateAuthenticationInput struct {
-	MaxNumberOfAgents int `json:"maxNumberOfAgents"`
+	MaxNumberOfAgents *int `json:"maxNumberOfAgents,omitempty"`
 }
 
 type UpdateCloudGuardAppSecGatewayProfileInput struct {
@@ -34,8 +34,8 @@ type UpdateCloudGuardAppSecGatewayProfileInput struct {
 	AddReverseProxyAdditionalSettings    []AddKeyValue             `json:"addReverseProxyAdditionalSettings,omitempty"`
 	UpdateReverseProxyAdditionalSettings []UpdateKeyValue          `json:"updateReverseProxyAdditionalSettings,omitempty"`
 	RemoveReverseProxyAdditionalSettings []string                  `json:"removeReverseProxyAdditionalSettings,omitempty"`
-	ReverseProxyUpstreamTimeout          int                       `json:"reverseProxyUpstreamTimeout,omitempty"`
+	ReverseProxyUpstreamTimeout          *int                      `json:"reverseProxyUpstreamTimeout,omitempty"`
 	Authentication                       UpdateAuthenticationInput `json:"authentication,omitempty"`
-	CertificateType                      string                    `json:"certificateType"`
-	FailOpenInspection                   bool                      `json:"failOpenInspection"`
+	CertificateType                      string                    `json:"certificateType,omitempty"`
+	FailOpenInspection                   *bool                     `json:"failOpenInspection,omitempty"`
 }

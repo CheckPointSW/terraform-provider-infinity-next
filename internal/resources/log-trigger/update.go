@@ -22,59 +22,59 @@ func UpdateLogTriggerInputFromResourceData(d *schema.ResourceData) (models.Updat
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "compliance_warnings"); hasChange {
-		ret.ComplianceWarnings = newVal
+		ret.ComplianceWarnings = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "compliance_violations"); hasChange {
-		ret.ComplianceViolations = newVal
+		ret.ComplianceViolations = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "access_control_allow_events"); hasChange {
-		ret.AccessControlAllowEvents = newVal
+		ret.AccessControlAllowEvents = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "access_control_drop_events"); hasChange {
-		ret.AccessControlDropEvents = newVal
+		ret.AccessControlDropEvents = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "threat_prevention_detect_events"); hasChange {
-		ret.ThreatPreventionDetectEvents = newVal
+		ret.ThreatPreventionDetectEvents = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "threat_prevention_prevent_events"); hasChange {
-		ret.ThreatPreventionPreventEvents = newVal
+		ret.ThreatPreventionPreventEvents = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "web_requests"); hasChange {
-		ret.WebRequests = newVal
+		ret.WebRequests = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "web_url_path"); hasChange {
-		ret.WebURLPath = newVal
+		ret.WebURLPath = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "web_url_query"); hasChange {
-		ret.WebURLQuery = newVal
+		ret.WebURLQuery = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "web_headers"); hasChange {
-		ret.WebHeaders = newVal
+		ret.WebHeaders = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "web_body"); hasChange {
-		ret.WebBody = newVal
+		ret.WebBody = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "log_to_cloud"); hasChange {
-		ret.LogToCloud = newVal
+		ret.LogToCloud = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "log_to_agent"); hasChange {
-		ret.LogToAgent = newVal
+		ret.LogToAgent = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "extend_logging"); hasChange {
-		ret.ExtendLogging = newVal
+		ret.ExtendLogging = &newVal
 	}
 
 	if _, extendLoggingMinSeverity, hasChange := utils.MustGetChange[string](d, "extend_logging_min_severity"); hasChange {
@@ -82,15 +82,15 @@ func UpdateLogTriggerInputFromResourceData(d *schema.ResourceData) (models.Updat
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "response_body"); hasChange {
-		ret.ResponseBody = newVal
+		ret.ResponseBody = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "response_code"); hasChange {
-		ret.ResponseCode = newVal
+		ret.ResponseCode = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "log_to_syslog"); hasChange {
-		ret.LogToSyslog = newVal
+		ret.LogToSyslog = &newVal
 	}
 
 	if _, syslogIPAddress, hasChange := utils.MustGetChange[string](d, "syslog_ip_address"); hasChange {
@@ -102,11 +102,11 @@ func UpdateLogTriggerInputFromResourceData(d *schema.ResourceData) (models.Updat
 	}
 
 	if _, syslogPortNum, hasChange := utils.MustGetChange[int](d, "syslog_port"); hasChange {
-		ret.SyslogPort = syslogPortNum
+		ret.SyslogPort = &syslogPortNum
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "log_to_cef"); hasChange {
-		ret.LogToCEF = newVal
+		ret.LogToCEF = &newVal
 	}
 
 	if _, cefIPAddress, hasChange := utils.MustGetChange[string](d, "cef_ip_address"); hasChange {
@@ -114,7 +114,7 @@ func UpdateLogTriggerInputFromResourceData(d *schema.ResourceData) (models.Updat
 	}
 
 	if _, cefPortNum, hasChange := utils.MustGetChange[int](d, "cef_port"); hasChange {
-		ret.CEFPort = cefPortNum
+		ret.CEFPort = &cefPortNum
 	}
 
 	if _, cefProtocol, hasChange := utils.MustGetChange[string](d, "cef_protocol"); hasChange {

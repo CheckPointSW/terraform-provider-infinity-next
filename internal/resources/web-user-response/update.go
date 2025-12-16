@@ -34,7 +34,7 @@ func UpdateWebUserResponseBehaviorInputFromResourceData(d *schema.ResourceData) 
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[int](d, "http_response_code"); hasChange {
-		res.HTTPResponseCode = newVal
+		res.HTTPResponseCode = &newVal
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[string](d, "redirect_url"); hasChange {
@@ -42,7 +42,7 @@ func UpdateWebUserResponseBehaviorInputFromResourceData(d *schema.ResourceData) 
 	}
 
 	if _, newVal, hasChange := utils.MustGetChange[bool](d, "x_event_id"); hasChange {
-		res.XEventID = newVal
+		res.XEventID = &newVal
 	}
 
 	return res, nil

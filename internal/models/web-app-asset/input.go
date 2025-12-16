@@ -64,7 +64,7 @@ type CreateWebApplicationAssetInput struct {
 	UpstreamURL       string                  `json:"upstreamURL,omitempty"`
 	URLs              []string                `json:"URLs,omitempty"`
 	SourceIdentifiers SourceIdentifiersInputs `json:"sourceIdentifiers,omitempty"`
-	IsSharesURLs      bool                    `json:"isSharesURLs,omitempty"`
+	IsSharesURLs      *bool                   `json:"isSharesURLs,omitempty"`
 }
 
 // ToIndicatorsMap converts a ProxySettingInputs to a map from a proxy setting key to the proxy setting struct itself

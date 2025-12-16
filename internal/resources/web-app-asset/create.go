@@ -51,7 +51,8 @@ func CreateWebApplicationAssetInputFromResourceData(d *schema.ResourceData) (mod
 	res.ProxySettings = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "proxy_setting"), mapToProxySettingInput)
 	res.SourceIdentifiers = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "source_identifier"), mapToSourceIdentifierInput)
 	res.Tags = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "tags"), mapToTagsInputs)
-	res.IsSharesURLs = d.Get("is_shares_urls").(bool)
+	isSharesURLs := d.Get("is_shares_urls").(bool)
+	res.IsSharesURLs = &isSharesURLs
 
 	var mtls models.MTLSSchemas
 	mtls = utils.Map(utils.MustResourceDataCollectionToSlice[map[string]any](d, "mtls"), mapToMTLSInput)

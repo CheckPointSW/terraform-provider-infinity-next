@@ -23,7 +23,7 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 	}
 
 	if _, newIsSharesURLs, hasChange := utils.GetChangeWithParse(d, "is_shares_urls", utils.MustValueAs[bool]); hasChange {
-		updateInput.IsSharesURLs = newIsSharesURLs
+		updateInput.IsSharesURLs = &newIsSharesURLs
 	}
 
 	if _, newObjectState, hasChange := utils.GetChangeWithParse(d, "state", utils.MustValueAs[string]); hasChange {

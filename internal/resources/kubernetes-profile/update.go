@@ -45,11 +45,11 @@ func UpdateKubernetesProfileInputFromResourceData(d *schema.ResourceData) (model
 	}
 
 	if _, new, hasChange := utils.MustGetChange[bool](d, "defined_applications_only"); hasChange {
-		res.OnlyDefinedApplications = new
+		res.OnlyDefinedApplications = &new
 	}
 
 	if _, newMaxNumberOfAgents, hasChange := utils.MustGetChange[int](d, "max_number_of_agents"); hasChange {
-		res.Authentication.MaxNumberOfAgents = newMaxNumberOfAgents
+		res.Authentication.MaxNumberOfAgents = &newMaxNumberOfAgents
 	}
 
 	res.AddAdditionalSettings, res.UpdateAdditionalSettings, res.RemoveAdditionalSettings =

@@ -1,7 +1,7 @@
 package models
 
 type ReusableTokenAuthenticationInput struct {
-	MaxNumberOfAgents int `json:"maxNumberOfAgents"`
+	MaxNumberOfAgents *int `json:"maxNumberOfAgents,omitempty"`
 }
 
 type KeyValueInput struct {
@@ -13,7 +13,7 @@ type ScheduleTimeInput struct {
 	ScheduleType string   `json:"scheduleType,omitempty"`
 	Time         string   `json:"time,omitempty"`
 	WeekDays     []string `json:"weekDays,omitempty"`
-	Duration     int      `json:"duration,omitempty"`
+	Duration     *int     `json:"duration,omitempty"`
 	Days         []int    `json:"days,omitempty"`
 }
 
@@ -22,6 +22,6 @@ type CreateEmbeddedProfileInput struct {
 	Name                    string                           `json:"name"`
 	UpgradeMode             string                           `json:"upgradeMode,omitempty"`
 	AdditionalSettings      []KeyValueInput                  `json:"additionalSettings"`
-	OnlyDefinedApplications bool                             `json:"onlyDefinedApplications,omitempty"`
+	OnlyDefinedApplications *bool                            `json:"onlyDefinedApplications,omitempty"`
 	Authentication          ReusableTokenAuthenticationInput `json:"authentication,omitempty"`
 }

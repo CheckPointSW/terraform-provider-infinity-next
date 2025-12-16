@@ -3,30 +3,30 @@ package models
 type UpdateLogTriggerInput struct {
 	Name                          string `json:"name"`
 	Verbosity                     string `json:"verbosity"`
-	ComplianceWarnings            bool   `json:"complianceWarnings"`
-	ComplianceViolations          bool   `json:"complianceViolations"`
-	AccessControlAllowEvents      bool   `json:"acAllow"`
-	AccessControlDropEvents       bool   `json:"acDrop"`
-	ThreatPreventionDetectEvents  bool   `json:"tpDetect"`
-	ThreatPreventionPreventEvents bool   `json:"tpPrevent"`
-	WebRequests                   bool   `json:"webRequests"`
-	WebURLPath                    bool   `json:"webUrlPath"`
-	WebURLQuery                   bool   `json:"webUrlQuery"`
-	WebHeaders                    bool   `json:"webHeaders"`
-	WebBody                       bool   `json:"webBody"`
-	LogToCloud                    bool   `json:"logToCloud"`
-	LogToAgent                    bool   `json:"logToAgent"`
-	ExtendLogging                 bool   `json:"extendLogging"`
+	ComplianceWarnings            *bool  `json:"complianceWarnings,omitempty"`
+	ComplianceViolations          *bool  `json:"complianceViolations,omitempty"`
+	AccessControlAllowEvents      *bool  `json:"acAllow,omitempty"`
+	AccessControlDropEvents       *bool  `json:"acDrop,omitempty"`
+	ThreatPreventionDetectEvents  *bool  `json:"tpDetect,omitempty"`
+	ThreatPreventionPreventEvents *bool  `json:"tpPrevent,omitempty"`
+	WebRequests                   *bool  `json:"webRequests,omitempty"`
+	WebURLPath                    *bool  `json:"webUrlPath,omitempty"`
+	WebURLQuery                   *bool  `json:"webUrlQuery,omitempty"`
+	WebHeaders                    *bool  `json:"webHeaders,omitempty"`
+	WebBody                       *bool  `json:"webBody,omitempty"`
+	LogToCloud                    *bool  `json:"logToCloud,omitempty"`
+	LogToAgent                    *bool  `json:"logToAgent,omitempty"`
+	ExtendLogging                 *bool  `json:"extendLogging,omitempty"`
 	ExtendLoggingMinSeverity      string `json:"extendLoggingMinSeverity,omitempty"`
-	ResponseBody                  bool   `json:"responseBody"`
-	ResponseCode                  bool   `json:"responseCode"`
-	LogToSyslog                   bool   `json:"logToSyslog"`
+	ResponseBody                  *bool  `json:"responseBody,omitempty"`
+	ResponseCode                  *bool  `json:"responseCode,omitempty"`
+	LogToSyslog                   *bool  `json:"logToSyslog,omitempty"`
 	SyslogIPAddress               string `json:"syslogIpAddress,omitempty"`
 	SyslogProtocol                string `json:"syslogProtocol,omitempty"`
-	SyslogPort                    int    `json:"syslogPortNum,omitempty"`
-	LogToCEF                      bool   `json:"logToCef"`
+	SyslogPort                    *int   `json:"syslogPortNum,omitempty"`
+	LogToCEF                      *bool  `json:"logToCef,omitempty"`
 	CEFIPAddress                  string `json:"cefIpAddress,omitempty"`
-	CEFPort                       int    `json:"cefPortNum,omitempty"`
+	CEFPort                       *int   `json:"cefPortNum,omitempty"`
 	CEFProtocol                   string `json:"cefProtocol,omitempty"`
 }
 

@@ -12,6 +12,6 @@ type KubernetesProfileUpdateInput struct {
 	AddAdditionalSettings    []KeyValueInput                  `json:"addAdditionalSettings,omitempty"`
 	UpdateAdditionalSettings []KeyValueUpdateInput            `json:"updateAdditionalSettings,omitempty"`
 	RemoveAdditionalSettings []string                         `json:"removeAdditionalSettings,omitempty"`
-	OnlyDefinedApplications  bool                             `json:"onlyDefinedApplications"`
+	OnlyDefinedApplications  *bool                            `json:"onlyDefinedApplications,omitempty"`
 	Authentication           ReusableTokenAuthenticationInput `json:"authentication,omitempty"`
 }
