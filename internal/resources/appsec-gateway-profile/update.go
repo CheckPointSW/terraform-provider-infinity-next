@@ -80,7 +80,10 @@ func UpdateCloudGuardAppSecGatewayProfileInputFromResourceData(d *schema.Resourc
 		res.ReverseProxyUpstreamTimeout = newReverseProxyTimeout
 	}
 
-	res.Authentication.MaxNumberOfAgents = d.Get("max_number_of_agents").(int)
+	if _, newMaxNumberOfAgents, hasChange := utils.MustGetChange[int](d, "max_number_of_agents"); hasChange {
+		res.Authentication.MaxNumberOfAgents = newMaxNumberOfAgents
+	}
+
 	res.AddReverseProxyAdditionalSettings, res.UpdateReverseProxyAdditionalSettings, res.RemoveReverseProxyAdditionalSettings =
 		handleUpdateAdditionalSetting(d, "reverseproxy_additional_settings", "reverseproxy_additional_settings_ids")
 

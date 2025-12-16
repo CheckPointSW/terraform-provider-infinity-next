@@ -48,8 +48,9 @@ func ResourceDockerProfile() *schema.Resource {
 				Required:    true,
 			},
 			"profile_type": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:        schema.TypeString,
+				Description: "The profile type of the resource",
+				Computed:    true,
 			},
 			"additional_settings": {
 				Type:        schema.TypeMap,
@@ -67,14 +68,16 @@ func ResourceDockerProfile() *schema.Resource {
 				},
 			},
 			"defined_applications_only": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Computed: true,
+				Type:        schema.TypeBool,
+				Description: "Sets whether reverse proxy will block undefined applications or not",
+				Optional:    true,
+				Default:     false,
 			},
 			"max_number_of_agents": {
 				Type:             schema.TypeInt,
 				Description:      "Sets the maximum number of agents that can be connected to this profile",
 				Optional:         true,
+				Default:          10,
 				ValidateDiagFunc: validation.ToDiagFunc(validation.IntAtMost(1000)),
 			},
 			"authentication_token": {

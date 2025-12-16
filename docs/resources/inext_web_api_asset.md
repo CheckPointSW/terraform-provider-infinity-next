@@ -17,7 +17,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.3.0"
+      version = "1.4.0"
     }
   }
 }
@@ -92,7 +92,7 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 
 - `access_log` (Boolean) Advanced Proxy Setting - Activate access log on gateway.
 - `additional_instructions_blocks` (Block Set) The additional instructions blocks settings - location or server blocks (see [below for nested schema](#nestedblock--additional_instructions_blocks))
-- `behaviors` (Set of String) behaviors used by the asset
+- `behaviors` (Set of String) Behaviors used by the asset
 - `custom_headers` (Block Set) Advanced Proxy Settings - The custom headers settings (see [below for nested schema](#nestedblock--custom_headers))
 - `is_shares_urls` (Boolean) Indicates whether the asset shares its URLs with other assets. URL sharing is allowed only between assets linked to different profiles.
 - `mtls` (Block Set) The MTLS settings (see [below for nested schema](#nestedblock--mtls))
@@ -133,7 +133,7 @@ Required:
 
 Optional:
 
-- `data` (String, Sensitive) The instructions block data
+- `data` (String, Sensitive) The instructions block file content. use file() function to read the file content
 - `enable` (Boolean) Whether the instructions block is enabled
 - `filename` (String) The name of the instructions block file
 - `filename_type` (String) The type of the instructions block file - .json, .yml
@@ -168,7 +168,7 @@ Required:
 Optional:
 
 - `certificate_type` (String) The type of the certificate file - .pem, .crt, .der, .p12, .pfx, .p7b, .p7c, .cer
-- `data` (String, Sensitive) The certificate data
+- `data` (String, Sensitive) The certificate file content. use file() function to read the file content
 - `enable` (Boolean) Whether the mTLS is enabled
 - `filename` (String) The name of the certificate file
 

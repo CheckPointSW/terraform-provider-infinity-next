@@ -52,16 +52,16 @@ type UpdateFileSecurity struct {
 	MediumConfidence          string `json:"mediumConfidence,omitempty"`
 	LowConfidence             string `json:"lowConfidence,omitempty"`
 	AllowFileSizeLimit        string `json:"allowFileSizeLimit,omitempty"`
-	FileSizeLimit             int    `json:"fileSizeLimit,omitempty"`
+	FileSizeLimit             int    `json:"fileSizeLimit"`
 	FileSizeLimitUnit         string `json:"fileSizeLimitUnit,omitempty"`
 	FilesWithoutName          string `json:"filesWithoutName,omitempty"`
-	RequiredArchiveExtraction bool   `json:"requiredArchiveExtraction,omitempty"`
+	RequiredArchiveExtraction bool   `json:"requiredArchiveExtraction"`
 	ArchiveFileSizeLimit      int    `json:"archiveFileSizeLimit,omitempty"`
 	ArchiveFileSizeLimitUnit  string `json:"archiveFileSizeLimitUnit,omitempty"`
 	AllowArchiveWithinArchive string `json:"allowArchiveWithinArchive,omitempty"`
 	AllowAnUnopenedArchive    string `json:"allowAnUnopenedArchive,omitempty"`
-	AllowFileType             bool   `json:"allowFileType,omitempty"`
-	RequiredThreatEmulation   bool   `json:"requiredThreatEmulation,omitempty"`
+	AllowFileType             bool   `json:"allowFileType"`
+	RequiredThreatEmulation   bool   `json:"requiredThreatEmulation"`
 }
 
 type UpdateWebApplicationPracticeInput struct {

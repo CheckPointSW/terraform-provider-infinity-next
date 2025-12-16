@@ -87,7 +87,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 			// top level behaviors
 			"behaviors": {
 				Type:        schema.TypeSet,
-				Description: "behaviors used by the asset",
+				Description: "Behaviors used by the asset",
 				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -96,6 +96,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 			"state": {
 				Type:             schema.TypeString,
 				Optional:         true,
+				Default:          "Active",
 				ValidateDiagFunc: validateStateFunc,
 			},
 			"upstream_url": {
@@ -186,8 +187,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 				Type:        schema.TypeSet,
 				Description: "Settings for the proxy",
 				Optional:    true,
-				// Remove Computed if default for Set/List is supported - manually edit generated docs and move proxy_setting out of read-only section
-				Computed: true,
+				Computed:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"key": {
@@ -360,7 +360,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 							Computed: true,
 						},
 						"data": {
-							Description: "The instructions block data",
+							Description: "The instructions block file content. use file() function to read the file content",
 							Type:        schema.TypeString,
 							Sensitive:   true,
 							Optional:    true,
@@ -411,7 +411,7 @@ func ResourceWebAPIAsset() *schema.Resource {
 							Computed: true,
 						},
 						"data": {
-							Description: "The certificate data",
+							Description: "The certificate file content. use file() function to read the file content",
 							Type:        schema.TypeString,
 							Sensitive:   true,
 							Optional:    true,

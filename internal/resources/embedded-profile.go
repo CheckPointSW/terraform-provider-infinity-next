@@ -69,9 +69,10 @@ func ResourceEmbeddedProfile() *schema.Resource {
 				},
 			},
 			"defined_applications_only": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Computed: true,
+				Type:        schema.TypeBool,
+				Description: "Sets whether reverse proxy will block undefined applications or not",
+				Optional:    true,
+				Default:     false,
 			},
 			"upgrade_mode": {
 				Type: schema.TypeString,
@@ -85,17 +86,20 @@ func ResourceEmbeddedProfile() *schema.Resource {
 				Type:             schema.TypeString,
 				Description:      "The schedule type in case upgrade mode is scheduled: DaysInWeek, DaysInMonth or Daily",
 				Optional:         true,
+				Default:          embeddedprofile.ScheduleTypeDaysInWeek,
 				ValidateDiagFunc: validateUpgradeTimeType,
 			},
 			"upgrade_time_hour": {
 				Type:        schema.TypeString,
 				Description: "The hour of the upgrade time start, for example: 10:00 or 20:00",
 				Optional:    true,
+				Default:     "0:00",
 			},
 			"upgrade_time_duration": {
 				Type:        schema.TypeInt,
 				Description: "The duration of the upgrade in hours",
 				Optional:    true,
+				Default:     4,
 			},
 			"upgrade_time_week_days": {
 				Type:        schema.TypeSet,
@@ -117,6 +121,7 @@ func ResourceEmbeddedProfile() *schema.Resource {
 				Type:             schema.TypeInt,
 				Description:      "Sets the maximum number of agents that can be connected to this profile",
 				Optional:         true,
+				Default:          10,
 				ValidateDiagFunc: validation.ToDiagFunc(validation.IntAtMost(1000)),
 			},
 			"authentication_token": {

@@ -20,7 +20,7 @@ type AddKeyValue struct {
 }
 
 type UpdateAuthenticationInput struct {
-	MaxNumberOfAgents int `json:"maxNumberOfAgents,omitempty"`
+	MaxNumberOfAgents int `json:"maxNumberOfAgents"`
 }
 
 type UpdateCloudGuardAppSecGatewayProfileInput struct {
@@ -36,6 +36,6 @@ type UpdateCloudGuardAppSecGatewayProfileInput struct {
 	RemoveReverseProxyAdditionalSettings []string                  `json:"removeReverseProxyAdditionalSettings,omitempty"`
 	ReverseProxyUpstreamTimeout          int                       `json:"reverseProxyUpstreamTimeout,omitempty"`
 	Authentication                       UpdateAuthenticationInput `json:"authentication,omitempty"`
-	CertificateType                      string                    `json:"certificateType,omitempty"`
+	CertificateType                      string                    `json:"certificateType"`
 	FailOpenInspection                   bool                      `json:"failOpenInspection"`
 }

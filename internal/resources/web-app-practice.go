@@ -125,7 +125,7 @@ func ResourceWebAppPractice() *schema.Resource {
 						"protections_from_year": {
 							Type:        schema.TypeString,
 							Description: "The year to apply protections from: 1999, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020",
-							Default:     "2020",
+							Default:     "Y2016",
 							Optional:    true,
 						},
 						"high_confidence": {
@@ -325,9 +325,10 @@ func ResourceWebAppPractice() *schema.Resource {
 							ValidateDiagFunc: validationFileSecurityMode,
 						},
 						"file_size_limit": {
-							Type:     schema.TypeInt,
-							Default:  10,
-							Optional: true,
+							Type:         schema.TypeInt,
+							Default:      10,
+							Optional:     true,
+							ValidateFunc: validation.IntAtLeast(0),
 						},
 						"file_size_limit_unit": {
 							Type:             schema.TypeString,

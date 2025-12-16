@@ -17,7 +17,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "~>1.3.0"
+      version = "~>1.4.0"
     }
   }
 }
@@ -51,7 +51,7 @@ resource "inext_kubernetes_profile" "my-kubernetes-profile" {
 ### Optional
 
 - `additional_settings` (Map of String) Controls the settings of the connected agents
-- `defined_applications_only` (Boolean)
+- `defined_applications_only` (Boolean) Sets whether reverse proxy will block undefined applications or not
 - `max_number_of_agents` (Number) Sets the maximum number of agents that can be connected to this profile
 
 ### Read-Only

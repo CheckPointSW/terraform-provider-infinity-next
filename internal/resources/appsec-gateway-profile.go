@@ -98,17 +98,20 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Type:             schema.TypeString,
 				Description:      "The schedule type in case upgrade mode is scheduled: DaysInWeek, DaysInMonth or Daily",
 				Optional:         true,
+				Default:          appsecgatewayprofile.ScheduleTypeDaysInWeek,
 				ValidateDiagFunc: validateUpgradeTimeType,
 			},
 			"upgrade_time_hour": {
 				Type:        schema.TypeString,
 				Description: "The hour of the upgrade time start, for example: 10:00 or 20:00",
 				Optional:    true,
+				Default:     "0:00",
 			},
 			"upgrade_time_duration": {
 				Type:        schema.TypeInt,
 				Description: "The duration of the upgrade in hours",
 				Optional:    true,
+				Default:     4,
 			},
 			"upgrade_time_week_days": {
 				Type:        schema.TypeSet,
@@ -150,6 +153,7 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Type:             schema.TypeInt,
 				Description:      "Sets the maximum number of agents that can be connected to this profile",
 				Optional:         true,
+				Default:          10,
 				ValidateDiagFunc: validation.ToDiagFunc(validation.IntAtMost(1000)),
 			},
 			"authentication_token": {
@@ -161,12 +165,14 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Type:             schema.TypeString,
 				Description:      "The type of the certificate used for the profile: Vault or Gateway",
 				Optional:         true,
+				Default:          appsecgatewayprofile.CertificateTypeVault,
 				ValidateDiagFunc: validateCertificateType,
 			},
 			"fail_open_inspection": {
 				Type:        schema.TypeBool,
 				Description: "Allow traffic upon internal failures or high CPU utilization: true or false",
 				Optional:    true,
+				Default:     true,
 			},
 		},
 	}

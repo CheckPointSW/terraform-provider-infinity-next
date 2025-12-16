@@ -1,7 +1,7 @@
 package models
 
 type AuthenticationInput struct {
-	MaxNumberOfAgents int `json:"maxNumberOfAgents"`
+	MaxNumberOfAgents int `json:"maxNumberOfAgents,omitempty"`
 }
 
 type KeyValueInput struct {

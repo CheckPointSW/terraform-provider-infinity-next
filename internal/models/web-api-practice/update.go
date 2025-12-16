@@ -31,13 +31,13 @@ type UpdateWebAPIFileSecurityInput struct {
 	FileSizeLimit             int    `json:"fileSizeLimit,omitempty"`
 	FileSizeLimitUnit         string `json:"fileSizeLimitUnit,omitempty"`
 	FilesWithoutName          string `json:"filesWithoutName,omitempty"`
-	RequiredArchiveExtraction bool   `json:"requiredArchiveExtraction,omitempty"`
+	RequiredArchiveExtraction bool   `json:"requiredArchiveExtraction"`
 	ArchiveFileSizeLimit      int    `json:"archiveFileSizeLimit,omitempty"`
 	ArchiveFileSizeLimitUnit  string `json:"archiveFileSizeLimitUnit,omitempty"`
 	AllowArchiveWithinArchive string `json:"allowArchiveWithinArchive,omitempty"`
 	AllowAnUnopenedArchive    string `json:"allowAnUnopenedArchive,omitempty"`
-	AllowFileType             bool   `json:"allowFileType,omitempty"`
-	RequiredThreatEmulation   bool   `json:"requiredThreatEmulation,omitempty"`
+	AllowFileType             bool   `json:"allowFileType"`
+	RequiredThreatEmulation   bool   `json:"requiredThreatEmulation"`
 }
 
 type UpdatePracticeInput struct {
