@@ -165,6 +165,8 @@ func mapToSchemaValidationInput(schemaValidationFromResourceData any) models.Sch
 }
 
 func mapToFileSecurityInput(fileSecurityMap map[string]any) models.WebAPIFileSecurityInput {
+	fileSizeLimit := fileSecurityMap["file_size_limit"].(int)
+	archiveFileSizeLimit := fileSecurityMap["archive_file_size_limit"].(int)
 	return models.WebAPIFileSecurityInput{
 		SeverityLevel:             fileSecurityMap["severity_level"].(string),
 		HighConfidence:            fileSecurityMap["high_confidence"].(string),
