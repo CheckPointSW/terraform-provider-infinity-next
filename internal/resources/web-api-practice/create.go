@@ -165,17 +165,19 @@ func mapToSchemaValidationInput(schemaValidationFromResourceData any) models.Sch
 }
 
 func mapToFileSecurityInput(fileSecurityMap map[string]any) models.WebAPIFileSecurityInput {
+	fileSizeLimit := fileSecurityMap["file_size_limit"].(int)
+	archiveFileSizeLimit := fileSecurityMap["archive_file_size_limit"].(int)
 	return models.WebAPIFileSecurityInput{
 		SeverityLevel:             fileSecurityMap["severity_level"].(string),
 		HighConfidence:            fileSecurityMap["high_confidence"].(string),
 		MediumConfidence:          fileSecurityMap["medium_confidence"].(string),
 		LowConfidence:             fileSecurityMap["low_confidence"].(string),
 		AllowFileSizeLimit:        fileSecurityMap["allow_file_size_limit"].(string),
-		FileSizeLimit:             fileSecurityMap["file_size_limit"].(int),
+		FileSizeLimit:             &fileSizeLimit,
 		FileSizeLimitUnit:         fileSecurityMap["file_size_limit_unit"].(string),
 		FilesWithoutName:          fileSecurityMap["files_without_name"].(string),
 		RequiredArchiveExtraction: fileSecurityMap["required_archive_extraction"].(bool),
-		ArchiveFileSizeLimit:      fileSecurityMap["archive_file_size_limit"].(int),
+		ArchiveFileSizeLimit:      &archiveFileSizeLimit,
 		ArchiveFileSizeLimitUnit:  fileSecurityMap["archive_file_size_limit_unit"].(string),
 		AllowArchiveWithinArchive: fileSecurityMap["allow_archive_within_archive"].(string),
 		AllowAnUnopenedArchive:    fileSecurityMap["allow_an_unopened_archive"].(string),

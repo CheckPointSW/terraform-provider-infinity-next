@@ -37,11 +37,11 @@ type WebAPIFileSecurityInput struct {
 	MediumConfidence          string `json:"mediumConfidence,omitempty"`
 	LowConfidence             string `json:"lowConfidence,omitempty"`
 	AllowFileSizeLimit        string `json:"allowFileSizeLimit,omitempty"`
-	FileSizeLimit             int    `json:"fileSizeLimit,omitempty"`
+	FileSizeLimit             *int   `json:"fileSizeLimit,omitempty"`
 	FileSizeLimitUnit         string `json:"fileSizeLimitUnit,omitempty"`
 	FilesWithoutName          string `json:"filesWithoutName,omitempty"`
 	RequiredArchiveExtraction bool   `json:"requiredArchiveExtraction,omitempty"`
-	ArchiveFileSizeLimit      int    `json:"archiveFileSizeLimit,omitempty"`
+	ArchiveFileSizeLimit      *int   `json:"archiveFileSizeLimit,omitempty"`
 	ArchiveFileSizeLimitUnit  string `json:"archiveFileSizeLimitUnit,omitempty"`
 	AllowArchiveWithinArchive string `json:"allowArchiveWithinArchive,omitempty"`
 	AllowAnUnopenedArchive    string `json:"allowAnUnopenedArchive,omitempty"`
