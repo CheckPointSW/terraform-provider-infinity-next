@@ -81,7 +81,7 @@ func UpdateCloudGuardAppSecGatewayProfileInputFromResourceData(d *schema.Resourc
 	}
 
 	if _, newMaxNumberOfAgents, hasChange := utils.MustGetChange[int](d, "max_number_of_agents"); hasChange {
-		res.Authentication = &models.UpdateAuthenticationInput{
+		res.Authentication = &models.AuthenticationInput{
 			MaxNumberOfAgents: &newMaxNumberOfAgents,
 		}
 	}
