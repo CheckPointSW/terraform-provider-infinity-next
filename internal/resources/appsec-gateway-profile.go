@@ -100,18 +100,30 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Optional:         true,
 				Default:          appsecgatewayprofile.ScheduleTypeDaysInWeek,
 				ValidateDiagFunc: validateUpgradeTimeType,
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
+				},
 			},
 			"upgrade_time_hour": {
 				Type:        schema.TypeString,
 				Description: "The hour of the upgrade time start, for example: 10:00 or 20:00",
 				Optional:    true,
 				Default:     "0:00",
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
+				},
 			},
 			"upgrade_time_duration": {
 				Type:        schema.TypeInt,
 				Description: "The duration of the upgrade in hours",
 				Optional:    true,
 				Default:     4,
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
+				},
 			},
 			"upgrade_time_week_days": {
 				Type:        schema.TypeSet,
@@ -120,6 +132,10 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
+				},
 			},
 			"upgrade_time_days": {
 				Type:        schema.TypeSet,
@@ -127,6 +143,10 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeInt,
+				},
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
 				},
 			},
 			"reverseproxy_upstream_timeout": {
