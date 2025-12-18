@@ -8,13 +8,13 @@ resource "inext_appsec_gateway_profile" "test2" {
   upgrade_time_week_days        = ["Monday", "Thursday", "Friday"]
   reverseproxy_upstream_timeout = 3600
   reverseproxy_additional_settings = {
-    Key3 = "Value3"
-    Key4 = "Value4"
+    "Key3" = "Value3"
+    "Key4" = "Value4"
   }
   max_number_of_agents = 100
   additional_settings = {
-    Key1 = "Value1"
-    Key2 = "Value2"
+    "Key1" = "Value1"
+    "Key2" = "Value2"
   }
   certificate_type     = "Vault" # enum of ["Vault", "Gateway"]
   fail_open_inspection = true
@@ -30,13 +30,13 @@ resource "inext_appsec_gateway_profile" "test" {
   upgrade_time_week_days        = ["Thursday", "Friday", "Monday"]
   reverseproxy_upstream_timeout = 3600
   reverseproxy_additional_settings = {
-    Key3 = "Value5"
-    Key4 = "Value4"
+    "Key3" = "Value5"
+    "Key4" = "Value4"
   }
   max_number_of_agents = 100
   additional_settings = {
-    Key1 = "Value1"
-    Key2 = "Value2"
+    "Key1" = "Value1"
+    "Key2" = "Value2"
   }
   certificate_type     = "Gateway" # enum of ["Vault", "Gateway"]
   fail_open_inspection = false
@@ -52,12 +52,14 @@ resource "inext_appsec_gateway_profile" "test3" {
   upgrade_time_days             = [1, 2, 3, 4, 5, 6, 7]
   reverseproxy_upstream_timeout = 3600
   reverseproxy_additional_settings = {
-    Key3 = "Value5"
-    Key4 = "Value4"
+    "Key3" = "Value5"
+    "Key4" = "Value4"
   }
   max_number_of_agents = 100
   additional_settings = {
-    Key1 = "Value1"
-    Key2 = "Value2"
+    "Key1" = "Value1"
+    "Key2" = "Value2"
   }
+  fail_open_inspection = true
+  certificate_type     = "Vault" # enum of ["Vault", "Gateway"]
 }

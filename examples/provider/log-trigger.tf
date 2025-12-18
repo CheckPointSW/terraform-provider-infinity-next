@@ -17,7 +17,7 @@ resource "inext_log_trigger" "test" {
   response_body                    = true
   response_code                    = true
   syslog_ip_address                = "10.0.0.2"
-  sys_log_protocol                 = "TCP" # enum of ["TCP", "UDP"]
+  syslog_protocol                  = "TCP" # enum of ["TCP", "UDP"]
   syslog_port                      = 82
   threat_prevention_detect_events  = true
   threat_prevention_prevent_events = true

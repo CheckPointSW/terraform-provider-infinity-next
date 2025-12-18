@@ -2,7 +2,7 @@ resource "inext_web_api_asset" "test" {
   name         = "inext_web_api_asset-test1"
   profiles     = [inext_appsec_gateway_profile.test2.id]
   behaviors    = [inext_trusted_sources.test.id, inext_exceptions.test.id]
-  upstream_url = "some url 5"
+  upstream_url = "http://some url 5"
   urls         = ["http://host5/path"]
   practice {
     main_mode = "Prevent" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
@@ -51,15 +51,15 @@ resource "inext_web_api_asset" "test" {
   mtls {
     filename         = "cert.der"
     certificate_type = ".der"
-    data             = "cert data"
-    type             = "client"
+    data             = file("${path.module}/cert.der") # file content - change path to your file
+    type             = "client"                        # enum of ["client", "server"]
     enable           = true
   }
   additional_instructions_blocks {
     filename      = "location.json"
     filename_type = ".json"
     data          = file("${path.module}/location.json") # file content - change path to your file
-    type          = "location_instructions"
+    type          = "location_instructions"              # enum of ["location_instructions", "server_instructions"]
     enable        = true
   }
   redirect_to_https = "true"
@@ -68,13 +68,14 @@ resource "inext_web_api_asset" "test" {
     name  = "header1"
     value = "value1"
   }
+  is_shares_urls = "true"
 }
 
 resource "inext_web_api_asset" "test2" {
   name         = "inext_web_api_asset-test2"
   profiles     = [inext_appsec_gateway_profile.test2.id]
   behaviors    = [inext_trusted_sources.test.id, inext_exceptions.test.id]
-  upstream_url = "some url 5"
+  upstream_url = "http://some url 5"
   urls         = ["http://host5/path"]
   practice {
     main_mode = "Prevent" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
@@ -123,15 +124,15 @@ resource "inext_web_api_asset" "test2" {
   mtls {
     filename         = "cert.der"
     certificate_type = ".der"
-    data             = "cert data"
-    type             = "client"
+    data             = file("${path.module}/cert.der") # file content - change path to your file
+    type             = "client"                        # enum of ["client", "server"]
     enable           = true
   }
   additional_instructions_blocks {
     filename      = "server.json"
     filename_type = ".json"
     data          = file("${path.module}/server.json") # file content - change path to your file
-    type          = "server_instructions"
+    type          = "server_instructions"              # enum of ["location_instructions", "server_instructions"]
     enable        = true
   }
   redirect_to_https = "true"

@@ -29,15 +29,15 @@ resource "inext_web_app_asset" "test1" {
   mtls {
     filename         = "cert.der"
     certificate_type = ".der"
-    data             = " cert data"
-    type             = "client"
+    data             = file("${path.module}/cert.der") # file content - change path to your file
+    type             = "client"                        # enum of ["client", "server"]
     enable           = true
   }
   additional_instructions_blocks {
     filename      = "location.json"
     filename_type = ".json"
     data          = file("${path.module}/location.json") # file content - change path to your file
-    type          = "location_instructions"
+    type          = "location_instructions"              # enum of ["location_instructions", "server_instructions"]
     enable        = true
   }
   redirect_to_https = "true"
@@ -79,15 +79,15 @@ resource "inext_web_app_asset" "test-server-instructions" {
   mtls {
     filename         = "cert.der"
     certificate_type = ".der"
-    data             = " cert data"
-    type             = "client"
+    data             = file("${path.module}/cert.der") # file content - change path to your file
+    type             = "client"                        # enum of ["client", "server"]
     enable           = true
   }
   additional_instructions_blocks {
     filename      = "server.json"
     filename_type = ".json"
-    data          = "server data"
-    type          = file("${path.module}/server.json") # file content - change path to your file
+    data          = file("${path.module}/server.json") # file content - change path to your file
+    type          = "server_instructions"              # enum of ["location_instructions", "server_instructions"]
     enable        = true
   }
   redirect_to_https = "true"
@@ -129,8 +129,8 @@ resource "inext_web_app_asset" "test2" {
   mtls {
     filename         = "cert2.der"
     certificate_type = ".der"
-    data             = " cert data2"
-    type             = "server"
+    data             = file("${path.module}/cert.der") # file content - change path to your file
+    type             = "server"                        # enum of ["client", "server"]
     enable           = true
   }
 }

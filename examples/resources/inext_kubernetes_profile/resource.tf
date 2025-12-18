@@ -17,9 +17,9 @@ resource "inext_kubernetes_profile" "my-kubernetes-profile" {
   name                      = "my-kubernetes-profile"
   profile_sub_type          = "AppSec"
   max_number_of_agents      = 100
-  only_defined_applications = true
+  defined_applications_only = true
   additional_settings = {
-    Key1 = "Value"
-    Key2 = "Value2"
+    "Key1" = "Value"
+    "Key2" = "Value2"
   }
 }

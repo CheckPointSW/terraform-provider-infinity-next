@@ -38,14 +38,16 @@ resource "inext_appsec_gateway_profile" "my-appsec-gateway-profile" {
   upgrade_time_week_days        = ["Monday", "Thursday"]
   reverseproxy_upstream_timeout = 3600
   reverseproxy_additional_settings = {
-    Key1 = "Value"
-    Key2 = "Value2"
+    "Key1" = "Value"
+    "Key2" = "Value2"
   }
   max_number_of_agents = 100
   additional_settings = {
-    Key1 = "Value"
-    Key2 = "Value2"
+    "Key1" = "Value"
+    "Key2" = "Value2"
   }
+  fail_open_inspection = true
+  certificate_type     = "Vault" # enum of ["Vault", "Gateway"]
 }
 ```
 

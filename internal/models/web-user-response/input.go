@@ -2,7 +2,7 @@ package models
 
 type CreateWebUserResponseBehaviorInput struct {
 	Name             string `json:"name"`
-	Visibility       string `json:"visibility"`
+	Visibility       string `json:"visibility,omitempty"`
 	Mode             string `json:"mode"`
 	MessageTitle     string `json:"messageTitle"`
 	MessageBody      string `json:"messageBody"`

@@ -18,11 +18,16 @@ func CreateWebUserResponseBehaviorInputFromResourceData(d *schema.ResourceData) 
 	input.Mode = d.Get("mode").(string)
 	input.MessageTitle = d.Get("message_title").(string)
 	input.MessageBody = d.Get("message_body").(string)
-	httpResponseCode := d.Get("http_response_code").(int)
-	input.HTTPResponseCode = &httpResponseCode
 	input.RedirectURL = d.Get("redirect_url").(string)
-	xEventID := d.Get("x_event_id").(bool)
-	input.XEventID = &xEventID
+	if v, ok := d.GetOk("http_response_code"); ok {
+		val := v.(int)
+		input.HTTPResponseCode = &val
+	}
+
+	if v, ok := d.GetOk("x_event_id"); ok {
+		val := v.(bool)
+		input.XEventID = &val
+	}
 
 	return input, nil
 }

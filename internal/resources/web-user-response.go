@@ -72,9 +72,10 @@ func ResourceWebUserResponse() *schema.Resource {
 				Optional:    true,
 			},
 			"http_response_code": {
-				Type:        schema.TypeInt,
-				Description: "It is recommended to use a 403 (Forbidden) as a response code",
-				Optional:    true,
+				Type:         schema.TypeInt,
+				Description:  "It is recommended to use a 403 (Forbidden) as a response code",
+				Optional:     true,
+				ValidateFunc: validation.IntAtLeast(100),
 			},
 			"redirect_url": {
 				Type:        schema.TypeString,

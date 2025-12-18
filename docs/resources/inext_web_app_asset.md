@@ -59,15 +59,22 @@ resource "inext_web_app_asset" "my-webapp-asset" {
   mtls {
     filename         = "cert.der"
     certificate_type = ".der"
-    data             = " cert data"
+    data             = file("${path.module}/cert.der") # file content - change path to your file
     type             = "client"
     enable           = true
   }
   additional_instructions_blocks {
     filename      = "location.json"
     filename_type = ".json"
-    data          = "location data"
-    type          = "location_instructions"
+    data          = file("${path.module}/location.json") # file content - change path to your file
+    type          = "location_instructions"              # enum of ["location_instructions", "server_instructions"]
+    enable        = true
+  }
+  additional_instructions_blocks {
+    filename      = "server.json"
+    filename_type = ".json"
+    data          = file("${path.module}/server.json") # file content - change path to your file
+    type          = "server_instructions"              # enum of ["location_instructions", "server_instructions"]
     enable        = true
   }
   redirect_to_https = "true"
