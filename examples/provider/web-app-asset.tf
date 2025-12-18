@@ -46,7 +46,7 @@ resource "inext_web_app_asset" "test1" {
     name  = "header1"
     value = "value1"
   }
-    is_shares_urls = "true"
+  is_shares_urls = "true"
 }
 
 resource "inext_web_app_asset" "test-server-instructions" {
@@ -97,7 +97,7 @@ resource "inext_web_app_asset" "test-server-instructions" {
     name  = "header1"
     value = "value1"
   }
-    is_shares_urls = "true"
+  is_shares_urls = "true"
 }
 
 resource "inext_web_app_asset" "test2" {

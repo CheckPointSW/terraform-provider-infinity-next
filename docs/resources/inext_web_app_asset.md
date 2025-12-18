@@ -32,7 +32,7 @@ resource "inext_web_app_asset" "my-webapp-asset" {
   name         = "some name"
   profiles     = [inext_appsec_gateway_profile.my-appsec-gateway-profile.id, inext_docker_profile.my-docker-profile.id, inext_embedded_profile.my-embedded-profile.id, inext_kubernetes_profile.my-kubernetes-profile.id]
   behaviors    = [inext_trusted_sources.my-trusted-source-behavior.id, inext_exceptions.my-exceptions-behavior.id]
-  upstream_url = "some url"
+  upstream_url = "http://some url.com"
   urls         = ["http://host/path"]
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
@@ -83,6 +83,7 @@ resource "inext_web_app_asset" "my-webapp-asset" {
     name  = "header1"
     value = "value1"
   }
+  is_shares_urls = "false"
 }
 ```
 
