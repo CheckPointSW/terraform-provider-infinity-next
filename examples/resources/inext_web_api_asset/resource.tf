@@ -17,8 +17,8 @@ resource "inext_web_api_asset" "my-webapi-asset" {
   name         = "some name"
   profiles     = [inext_appsec_gateway_profile.my-appsec-gateway-profile.id, inext_docker_profile.my-docker-profile.id, inext_embedded_profile.my-embedded-profile.id, inext_kubernetes_profile.my-kubernetes-profile.id]
   behaviors    = [inext_trusted_sources.my-trusted-source-behavior.id, inext_exceptions.my-exceptions-behavior.id]
-  upstream_url = "some url"
-  urls         = ["some url"]
+  upstream_url = "http://some url.com"
+  urls         = ["http://some url.com"]
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {

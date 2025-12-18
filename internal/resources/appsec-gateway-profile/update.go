@@ -14,6 +14,7 @@ import (
 
 func UpdateAppSecGatewayProfile(ctx context.Context, c *api.Client, id any, input models.UpdateCloudGuardAppSecGatewayProfileInput) (bool, error) {
 	vars := map[string]any{"profileInput": input, "id": id}
+	fmt.Printf("UpdateAppSecGatewayProfile: %v\n", vars)
 	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation updateCloudGuardAppSecGatewayProfile($profileInput: CloudGuardAppSecGatewayProfileUpdateInput, $id: ID!)
 					{
