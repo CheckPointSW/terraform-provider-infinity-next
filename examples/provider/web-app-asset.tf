@@ -2,7 +2,7 @@ resource "inext_web_app_asset" "test1" {
   name         = "inext_web_app_asset-test1"
   profiles     = [inext_appsec_gateway_profile.test.id]
   behaviors    = [inext_trusted_sources.test.id, inext_exceptions.test.id]
-  upstream_url = "some url5"
+  upstream_url = "http://some url5.com"
   urls         = ["http://host/path5"]
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
@@ -46,13 +46,14 @@ resource "inext_web_app_asset" "test1" {
     name  = "header1"
     value = "value1"
   }
+    is_shares_urls = "true"
 }
 
 resource "inext_web_app_asset" "test-server-instructions" {
   name         = "inext_web_app_asset-test-server-instructions"
   profiles     = [inext_appsec_gateway_profile.test.id]
   behaviors    = [inext_trusted_sources.test.id, inext_exceptions.test.id]
-  upstream_url = "some url5"
+  upstream_url = "http://some url5.com"
   urls         = ["http://host/path5"]
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
@@ -96,13 +97,14 @@ resource "inext_web_app_asset" "test-server-instructions" {
     name  = "header1"
     value = "value1"
   }
+    is_shares_urls = "true"
 }
 
 resource "inext_web_app_asset" "test2" {
   name         = "inext_web_app_asset-test2"
   profiles     = [inext_appsec_gateway_profile.test.id]
   behaviors    = [inext_trusted_sources.test.id, inext_exceptions.test.id]
-  upstream_url = "some url6"
+  upstream_url = "https://some url6.com"
   urls         = ["http://host/path6"]
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
@@ -139,7 +141,7 @@ resource "inext_web_app_asset" "test3" {
   name         = "inext_web_app_asset-test3"
   profiles     = [inext_appsec_gateway_profile.test.id]
   behaviors    = [inext_trusted_sources.test.id, inext_exceptions.test.id]
-  upstream_url = "some url7"
+  upstream_url = "http://some url7.com"
   urls         = ["http://host/path7"]
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
@@ -165,7 +167,7 @@ resource "inext_web_app_asset" "test4" {
   name         = "inext_web_app_asset-test4"
   profiles     = [inext_appsec_gateway_profile.test.id]
   behaviors    = [inext_trusted_sources.test.id, inext_exceptions.test.id]
-  upstream_url = "some url8"
+  upstream_url = "http://some url8.com"
   urls         = ["http://host/path8"]
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
@@ -217,7 +219,7 @@ resource "inext_web_app_asset" "test6" {
   name         = "inext_web_app_asset-test6"
   profiles     = [inext_appsec_gateway_profile.test.id]
   behaviors    = [inext_trusted_sources.test.id, inext_exceptions.test.id]
-  upstream_url = "some url10"
+  upstream_url = "http://some url10.com"
   urls         = ["http://host/path10"]
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
@@ -243,7 +245,7 @@ resource "inext_web_app_asset" "test7" {
   name         = "inext_web_app_asset-test7"
   profiles     = [inext_appsec_gateway_profile.test.id]
   behaviors    = [inext_trusted_sources.test.id, inext_exceptions.test.id]
-  upstream_url = "some url11"
+  upstream_url = "http://some url11.com"
   urls         = ["http://host/path11"]
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]

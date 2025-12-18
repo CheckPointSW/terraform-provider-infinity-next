@@ -2,7 +2,6 @@ package resources
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -267,8 +266,6 @@ func resourceAppSecGatewayProfileUpdate(ctx context.Context, d *schema.ResourceD
 		return utils.DiagError("unable to perform AppSecGatewayProfile Update", err, diags)
 	}
 
-	fmt.Println("Update input: ", updateInput)
-
 	result, err := appsecgatewayprofile.UpdateAppSecGatewayProfile(ctx, c, d.Id(), updateInput)
 	if err != nil || !result {
 		if _, discardErr := c.DiscardChanges(); discardErr != nil {
@@ -291,8 +288,6 @@ func resourceAppSecGatewayProfileUpdate(ctx context.Context, d *schema.ResourceD
 	if err != nil {
 		return utils.DiagError("failed get AppSecGatewayProfile after update", err, diags)
 	}
-
-	fmt.Println("Update profile: ", profile)
 
 	if err := appsecgatewayprofile.ReadCloudGuardAppSecGatewayProfileToResourceData(profile, d); err != nil {
 		return utils.DiagError("unable to perform read AppSecGatewayProfile read after update", err, diags)

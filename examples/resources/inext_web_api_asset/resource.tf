@@ -69,4 +69,5 @@ resource "inext_web_api_asset" "my-webapi-asset" {
     name  = "header1"
     value = "value1"
   }
+  is_shares_urls = "false"
 }

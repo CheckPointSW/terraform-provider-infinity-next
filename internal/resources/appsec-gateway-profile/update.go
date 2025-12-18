@@ -14,7 +14,6 @@ import (
 
 func UpdateAppSecGatewayProfile(ctx context.Context, c *api.Client, id any, input models.UpdateCloudGuardAppSecGatewayProfileInput) (bool, error) {
 	vars := map[string]any{"profileInput": input, "id": id}
-	fmt.Printf("UpdateAppSecGatewayProfile: %v\n", vars)
 	res, err := c.MakeGraphQLRequest(ctx, `
 				mutation updateCloudGuardAppSecGatewayProfile($profileInput: CloudGuardAppSecGatewayProfileUpdateInput, $id: ID!)
 					{
@@ -81,7 +80,8 @@ func UpdateCloudGuardAppSecGatewayProfileInputFromResourceData(d *schema.Resourc
 		res.ReverseProxyUpstreamTimeout = &newReverseProxyTimeout
 	}
 
-	if _, newMaxNumberOfAgents, hasChange := utils.MustGetChange[int](d, "max_number_of_agents"); hasChange {
+	if v, ok := d.GetOk("max_number_of_agents"); ok {
+		newMaxNumberOfAgents := v.(int)
 		res.Authentication = &models.AuthenticationInput{
 			MaxNumberOfAgents: &newMaxNumberOfAgents,
 		}

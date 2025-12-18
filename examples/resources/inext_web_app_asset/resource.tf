@@ -68,4 +68,5 @@ resource "inext_web_app_asset" "my-webapp-asset" {
     name  = "header1"
     value = "value1"
   }
+  is_shares_urls = "false"
 }

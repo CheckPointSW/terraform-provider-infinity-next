@@ -48,7 +48,8 @@ func UpdateKubernetesProfileInputFromResourceData(d *schema.ResourceData) (model
 		res.OnlyDefinedApplications = &new
 	}
 
-	if _, newMaxNumberOfAgents, hasChange := utils.MustGetChange[int](d, "max_number_of_agents"); hasChange {
+	if v, ok := d.GetOk("max_number_of_agents"); ok {
+		newMaxNumberOfAgents := v.(int)
 		res.Authentication = &models.ReusableTokenAuthenticationInput{
 			MaxNumberOfAgents: &newMaxNumberOfAgents,
 		}

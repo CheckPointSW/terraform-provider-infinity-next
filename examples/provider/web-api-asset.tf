@@ -141,4 +141,5 @@ resource "inext_web_api_asset" "test2" {
     name  = "header1"
     value = "value1"
   }
+    is_shares_urls = "false"
 }
