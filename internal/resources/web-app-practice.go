@@ -350,9 +350,10 @@ func ResourceWebAppPractice() *schema.Resource {
 							Optional: true,
 						},
 						"archive_file_size_limit": {
-							Type:     schema.TypeInt,
-							Default:  10,
-							Optional: true,
+							Type:         schema.TypeInt,
+							Default:      10,
+							Optional:     true,
+							ValidateFunc: validation.IntAtLeast(0),
 						},
 						"archive_file_size_limit_unit": {
 							Type:             schema.TypeString,

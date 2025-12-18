@@ -76,7 +76,7 @@ func mapToFileSecurityInput(fileSecurityMap map[string]any) models.FileSecurityI
 		MediumConfidence:          fileSecurityMap["medium_confidence"].(string),
 		LowConfidence:             fileSecurityMap["low_confidence"].(string),
 		AllowFileSizeLimit:        fileSecurityMap["allow_file_size_limit"].(string),
-		FileSizeLimit:             &fileSizeLimit,
+		FileSizeLimit:             fileSecurityMap["file_size_limit"].(int),
 		FileSizeLimitUnit:         fileSecurityMap["file_size_limit_unit"].(string),
 		FilesWithoutName:          fileSecurityMap["files_without_name"].(string),
 		RequiredArchiveExtraction: &requiredArchiveExtraction,
