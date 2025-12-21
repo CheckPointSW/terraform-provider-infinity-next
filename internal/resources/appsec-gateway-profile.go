@@ -100,6 +100,7 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Optional:         true,
 				Default:          appsecgatewayprofile.ScheduleTypeDaysInWeek,
 				ValidateDiagFunc: validateUpgradeTimeType,
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					// Ignore differences when upgrade_mode is not Scheduled
 					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
@@ -110,6 +111,7 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Description: "The hour of the upgrade time start, for example: 10:00 or 20:00",
 				Optional:    true,
 				Default:     "0:00",
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					// Ignore differences when upgrade_mode is not Scheduled
 					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
@@ -120,6 +122,7 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Description: "The duration of the upgrade in hours",
 				Optional:    true,
 				Default:     4,
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					// Ignore differences when upgrade_mode is not Scheduled
 					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
@@ -132,6 +135,7 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					// Ignore differences when upgrade_mode is not Scheduled
 					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
@@ -144,6 +148,7 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeInt,
 				},
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					// Ignore differences when upgrade_mode is not Scheduled
 					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled

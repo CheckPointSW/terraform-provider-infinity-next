@@ -13,11 +13,9 @@ import (
 func UpdateWebUserResponseBehaviorInputFromResourceData(d *schema.ResourceData) (models.UpdateWebUserResponseBehaviorInput, error) {
 	var res models.UpdateWebUserResponseBehaviorInput
 
-	// Required fields must always be included
 	res.Name = d.Get("name").(string)
 	res.Mode = d.Get("mode").(string)
 
-	// Optional fields only if changed
 	if _, newVisibility, hasChange := utils.MustGetChange[string](d, "visibility"); hasChange {
 		res.Visibility = newVisibility
 	}
@@ -31,6 +29,7 @@ func UpdateWebUserResponseBehaviorInputFromResourceData(d *schema.ResourceData) 
 	}
 
 	// Only include http_response_code if explicitly set in config
+	// This is to avoid sending the default int value of 0 which is not valid in the API
 	if v, ok := d.GetOk("http_response_code"); ok {
 		val := v.(int)
 		res.HTTPResponseCode = &val
@@ -41,6 +40,7 @@ func UpdateWebUserResponseBehaviorInputFromResourceData(d *schema.ResourceData) 
 	}
 
 	// Only include x_event_id if explicitly set in config
+	// As there is no default value for this field, we assume that if it is not set, it should not be included in the request
 	if v, ok := d.GetOk("x_event_id"); ok {
 		val := v.(bool)
 		res.XEventID = &val
