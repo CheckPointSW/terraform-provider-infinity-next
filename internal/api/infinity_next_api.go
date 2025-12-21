@@ -248,7 +248,7 @@ func (c *Client) MakeGraphQLRequest(ctx context.Context, gql, responseKey string
 				}
 
 				res.Body.Close()
-				fmt.Printf("[WARN] GraphQL request failed with status %s and errors %+v, retrying...\n", res.Status, graphResponse.Errors)
+				fmt.Printf("[WARN] GraphQL request failed with status %s and errors %+v, and headers %+v, retrying...\n", res.Status, graphResponse.Errors, res.Header)
 				time.Sleep(time.Second * 2 * time.Duration(retryCount))
 				continue
 			}
