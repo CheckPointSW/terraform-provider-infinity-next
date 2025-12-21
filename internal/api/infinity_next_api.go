@@ -300,6 +300,7 @@ func (c *Client) MakeGraphQLRequest(ctx context.Context, gql, responseKey string
 		case http.StatusTooManyRequests, http.StatusGatewayTimeout, http.StatusBadGateway, http.StatusRequestTimeout:
 			res.Body.Close()
 			fmt.Println("[WARN] GraphQL request failed with status " + res.Status + ", retrying...")
+			fmt.Printf("headers: %+v\n", res.Header)
 			time.Sleep(time.Second * 2 * time.Duration(retryCount))
 			continue
 		default:
