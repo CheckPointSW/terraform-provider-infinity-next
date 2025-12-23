@@ -37,9 +37,9 @@ resource "inext_web_app_asset" "my-webapp-asset" {
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
-      IPS           = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      WebBot        = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      FileSecurity  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      IPS          = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      WebBot       = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      FileSecurity = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
     }
     id       = inext_web_app_practice.my-webapp-practice.id # required
     triggers = [inext_log_trigger.mytrigger.id]
