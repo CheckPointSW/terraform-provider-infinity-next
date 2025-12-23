@@ -9,7 +9,7 @@ resource "inext_web_api_asset" "test" {
     sub_practices_modes = {
       IPS          = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
       WebBot       = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort        = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      FileSecurity = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
       APIDiscovery = "Active"              # enum of ["Active", "Disabled"]
     }
     id       = inext_web_api_practice.test.id # required
@@ -82,7 +82,7 @@ resource "inext_web_api_asset" "test2" {
     sub_practices_modes = {
       IPS          = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
       WebBot       = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort        = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      FileSecurity = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
       APIDiscovery = "Active"              # enum of ["Active", "Disabled"]
     }
     id       = inext_web_api_practice.test.id # required

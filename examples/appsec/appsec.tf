@@ -25,7 +25,7 @@ resource "inext_web_app_asset" "prod_eu_acme" {
       IPS              = "AccordingToPractice"
       APIAttacks       = "AccordingToPractice"
       SchemaValidation = "Disabled"
-      Snort            = "AccordingToPractice"
+      FileSecurity     = "AccordingToPractice"
     }
     id       = inext_web_app_practice.eu_acme_protection.id # required
     triggers = [inext_log_trigger.log_trigger.id]

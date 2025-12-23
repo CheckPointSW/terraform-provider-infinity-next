@@ -64,7 +64,7 @@ func TestAccWebAPIAssetBasic(t *testing.T) {
 						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
 						"practice.0.sub_practices_modes.WebBot": "AccordingToPractice",
-						"practice.0.sub_practices_modes.Snort":  "Disabled",
+						"practice.0.sub_practices_modes.FileSecurity": "Disabled",
 						"practice.0.sub_practices_modes.APIDiscovery": "Active",
 						"practice.0.main_mode":                        "Prevent",
 						"source_identifier.0.%":                       "4",
@@ -180,7 +180,7 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "AccordingToPractice",
 						"practice.0.sub_practices_modes.WebBot": "AccordingToPractice",
-						"practice.0.sub_practices_modes.Snort":  "Disabled",
+						"practice.0.sub_practices_modes.FileSecurity": "Disabled",
 						"practice.0.sub_practices_modes.APIDiscovery": "Active",
 						"practice.0.main_mode":                        "Learn",
 						"source_identifier.0.%":                       "4",
@@ -275,7 +275,7 @@ func TestAccWebAPIAssetFull(t *testing.T) {
 						"practice.0.triggers.#":                 "1",
 						"practice.0.sub_practices_modes.IPS":    "Learn",
 						"practice.0.sub_practices_modes.WebBot": "Inactive",
-						"practice.0.sub_practices_modes.Snort":  "AccordingToPractice",
+						"practice.0.sub_practices_modes.FileSecurity": "AccordingToPractice",
 						"practice.0.sub_practices_modes.APIDiscovery": "Disabled",
 						"practice.0.main_mode":                        "Prevent",
 						"source_identifier.0.%":                       "4",
@@ -389,7 +389,7 @@ resource "inext_web_api_asset" %[1]q {
 		sub_practices_modes = {
 		  IPS    = "AccordingToPractice"
 		  WebBot = "AccordingToPractice"
-		  Snort  = "Disabled"
+		  FileSecurity  = "Disabled"
 		  APIDiscovery = "Active"
 		}
 		id         = inext_web_api_practice.%[4]s.id
@@ -543,7 +543,7 @@ resource "inext_web_api_asset" %[1]q {
 	  sub_practices_modes = {
 		IPS    = "AccordingToPractice"
 		WebBot = "AccordingToPractice"
-		Snort  = "Disabled"
+		FileSecurity  = "Disabled"
 		APIDiscovery = "Active"
 	  }
 	  id         = inext_web_api_practice.%[4]s.id
@@ -738,7 +738,7 @@ resource "inext_web_api_asset" %[1]q {
 	  sub_practices_modes = {
 		IPS    = "Learn"
 		WebBot = "Inactive"
-		Snort  = "AccordingToPractice"
+		FileSecurity  = "AccordingToPractice"
 		APIDiscovery = "Disabled"
 	  }
 	  id         = inext_web_api_practice.%[4]s.id

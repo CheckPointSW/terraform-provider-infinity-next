@@ -7,9 +7,9 @@ resource "inext_web_app_asset" "test1" {
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
-      IPS    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      IPS           = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      WebBot        = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      FileSecurity  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
     }
     id       = inext_web_app_practice.test.id # required
     triggers = [inext_log_trigger.test.id]
@@ -58,9 +58,9 @@ resource "inext_web_app_asset" "test-server-instructions" {
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
-      IPS    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      IPS           = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      WebBot        = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      FileSecurity  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
     }
     id       = inext_web_app_practice.test.id # required
     triggers = [inext_log_trigger.test.id]
@@ -109,9 +109,9 @@ resource "inext_web_app_asset" "test2" {
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
-      IPS    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      IPS           = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      WebBot        = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      FileSecurity  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
     }
     id       = inext_web_app_practice.test.id # required
     triggers = [inext_log_trigger.test.id]
@@ -146,9 +146,9 @@ resource "inext_web_app_asset" "test3" {
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
-      IPS    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      IPS           = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      WebBot        = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      FileSecurity  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
     }
     id       = inext_web_app_practice.test.id # required
     triggers = [inext_log_trigger.test.id]
@@ -172,9 +172,9 @@ resource "inext_web_app_asset" "test4" {
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
-      IPS    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      IPS           = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      WebBot        = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      FileSecurity  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
     }
     id       = inext_web_app_practice.test.id # required
     triggers = [inext_log_trigger.test.id]
@@ -198,9 +198,9 @@ resource "inext_web_app_asset" "test5" {
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
-      IPS    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      IPS           = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      WebBot        = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      FileSecurity  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
     }
     id       = inext_web_app_practice.test.id # required
     triggers = [inext_log_trigger.test.id]
@@ -224,9 +224,9 @@ resource "inext_web_app_asset" "test6" {
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
-      IPS    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      IPS           = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      WebBot        = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      FileSecurity  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
     }
     id       = inext_web_app_practice.test.id # required
     triggers = [inext_log_trigger.test.id]
@@ -250,9 +250,9 @@ resource "inext_web_app_asset" "test7" {
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
-      IPS    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      IPS           = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      WebBot        = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      FileSecurity  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
     }
     id       = inext_web_app_practice.test.id # required
     triggers = [inext_log_trigger.test.id]
