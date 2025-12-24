@@ -8,7 +8,7 @@ type TrustedSourceUpdateInput struct {
 type UpdateTrustedSourceBehaviorInput struct {
 	Name                        string                     `json:"name,omitempty"`
 	Visibility                  string                     `json:"visibility,omitempty"`
-	NumOfSources                int                        `json:"numOfSources,omitempty"`
+	NumOfSources                int                        `json:"numOfSources"`
 	AddSourcesIdentifiers       []string                   `json:"addSourcesIdentifiers,omitempty"`
 	RemoveSourcesIdentifiersIDs []string                   `json:"removeSourcesIdentifiers,omitempty"`
 	UpdateSourcesIdentifiers    []TrustedSourceUpdateInput `json:"updateSourcesIdentifiers,omitempty"`

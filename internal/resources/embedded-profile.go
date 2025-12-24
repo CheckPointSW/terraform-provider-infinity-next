@@ -69,9 +69,10 @@ func ResourceEmbeddedProfile() *schema.Resource {
 				},
 			},
 			"defined_applications_only": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Computed: true,
+				Type:        schema.TypeBool,
+				Description: "Sets whether reverse proxy will block undefined applications or not",
+				Optional:    true,
+				Default:     false,
 			},
 			"upgrade_mode": {
 				Type: schema.TypeString,
@@ -85,17 +86,35 @@ func ResourceEmbeddedProfile() *schema.Resource {
 				Type:             schema.TypeString,
 				Description:      "The schedule type in case upgrade mode is scheduled: DaysInWeek, DaysInMonth or Daily",
 				Optional:         true,
+				Default:          embeddedprofile.ScheduleTypeDaysInWeek,
 				ValidateDiagFunc: validateUpgradeTimeType,
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != embeddedprofile.UpgradeModeScheduled
+				},
 			},
 			"upgrade_time_hour": {
 				Type:        schema.TypeString,
 				Description: "The hour of the upgrade time start, for example: 10:00 or 20:00",
 				Optional:    true,
+				Default:     "0:00",
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != embeddedprofile.UpgradeModeScheduled
+				},
 			},
 			"upgrade_time_duration": {
 				Type:        schema.TypeInt,
 				Description: "The duration of the upgrade in hours",
 				Optional:    true,
+				Default:     4,
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != embeddedprofile.UpgradeModeScheduled
+				},
 			},
 			"upgrade_time_week_days": {
 				Type:        schema.TypeSet,
@@ -103,6 +122,11 @@ func ResourceEmbeddedProfile() *schema.Resource {
 				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
+				},
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != embeddedprofile.UpgradeModeScheduled
 				},
 			},
 			"upgrade_time_days": {
@@ -112,11 +136,17 @@ func ResourceEmbeddedProfile() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeInt,
 				},
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != embeddedprofile.UpgradeModeScheduled
+				},
 			},
 			"max_number_of_agents": {
 				Type:             schema.TypeInt,
 				Description:      "Sets the maximum number of agents that can be connected to this profile",
 				Optional:         true,
+				Default:          10,
 				ValidateDiagFunc: validation.ToDiagFunc(validation.IntAtMost(1000)),
 			},
 			"authentication_token": {

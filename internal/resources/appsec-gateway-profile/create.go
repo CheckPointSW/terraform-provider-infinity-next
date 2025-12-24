@@ -47,10 +47,13 @@ func CreateCloudGuardAppSecGatewayProfileInputFromResourceData(d *schema.Resourc
 		res.UpgradeTime = &upgradeTime
 	}
 
-	res.ReverseProxyUpstreamTimeout = d.Get("reverseproxy_upstream_timeout").(int)
-	res.Authentication.MaxNumberOfAgents = d.Get("max_number_of_agents").(int)
+	reverseProxyUpstreamTimeout := d.Get("reverseproxy_upstream_timeout").(int)
+	res.ReverseProxyUpstreamTimeout = &reverseProxyUpstreamTimeout
+	maxNumberOfAgents := d.Get("max_number_of_agents").(int)
+	res.Authentication.MaxNumberOfAgents = &maxNumberOfAgents
 	res.CertificateType = d.Get("certificate_type").(string)
-	res.FailOpenInspection = d.Get("fail_open_inspection").(bool)
+	failOpenInspection := d.Get("fail_open_inspection").(bool)
+	res.FailOpenInspection = &failOpenInspection
 
 	res.ReverseProxyAdditionalSettings = mapToKeyValueInput(d, "reverseproxy_additional_settings")
 	res.AdditionalSettings = mapToKeyValueInput(d, "additional_settings")
@@ -76,7 +79,8 @@ func handleScheduledUpgradeMode(d *schema.ResourceData) models.UpgradeTimeInput 
 	var res models.UpgradeTimeInput
 	res.ScheduleType = d.Get("upgrade_time_schedule_type").(string)
 	res.Time = d.Get("upgrade_time_hour").(string)
-	res.Duration = d.Get("upgrade_time_duration").(int)
+	duration := d.Get("upgrade_time_duration").(int)
+	res.Duration = &duration
 	res.WeekDays = utils.MustResourceDataCollectionToSlice[string](d, "upgrade_time_week_days")
 	res.Days = utils.MustResourceDataCollectionToSlice[int](d, "upgrade_time_days")
 

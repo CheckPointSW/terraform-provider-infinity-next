@@ -54,6 +54,7 @@ func ResourceLogTrigger() *schema.Resource {
 				Description: "Log Access Control accepts",
 				Type:        schema.TypeBool,
 				Optional:    true,
+				Default:     false,
 			},
 			"access_control_drop_events": {
 				Description: "Log Access Control drops",
@@ -76,6 +77,7 @@ func ResourceLogTrigger() *schema.Resource {
 			"web_requests": {
 				Type:     schema.TypeBool,
 				Optional: true,
+				Default:  false,
 			},
 			"web_url_path": {
 				Type:     schema.TypeBool,
@@ -90,10 +92,12 @@ func ResourceLogTrigger() *schema.Resource {
 			"web_headers": {
 				Type:     schema.TypeBool,
 				Optional: true,
+				Default:  false,
 			},
 			"web_body": {
 				Type:     schema.TypeBool,
 				Optional: true,
+				Default:  false,
 			},
 			"log_to_cloud": {
 				Type:     schema.TypeBool,
@@ -103,6 +107,7 @@ func ResourceLogTrigger() *schema.Resource {
 			"log_to_agent": {
 				Type:     schema.TypeBool,
 				Optional: true,
+				Default:  false,
 			},
 			"extend_logging": {
 				Type:     schema.TypeBool,
@@ -120,6 +125,7 @@ func ResourceLogTrigger() *schema.Resource {
 				Type:        schema.TypeBool,
 				Description: "Add response body to log if true",
 				Optional:    true,
+				Default:     false,
 			},
 			"response_code": {
 				Type:        schema.TypeBool,
@@ -130,6 +136,7 @@ func ResourceLogTrigger() *schema.Resource {
 			"log_to_syslog": {
 				Type:     schema.TypeBool,
 				Optional: true,
+				Default:  false,
 			},
 			"syslog_ip_address": {
 				Type:     schema.TypeString,
@@ -149,6 +156,7 @@ func ResourceLogTrigger() *schema.Resource {
 			"log_to_cef": {
 				Type:     schema.TypeBool,
 				Optional: true,
+				Default:  false,
 			},
 			"cef_ip_address": {
 				Type:     schema.TypeString,

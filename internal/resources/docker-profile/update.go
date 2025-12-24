@@ -41,10 +41,16 @@ func UpdateDockerProfileInputFromResourceData(d *schema.ResourceData) (models.Do
 	}
 
 	if _, new, hasChange := utils.MustGetChange[bool](d, "defined_applications_only"); hasChange {
-		res.OnlyDefinedApplications = new
+		res.OnlyDefinedApplications = &new
 	}
 
-	res.Authentication.MaxNumberOfAgents = d.Get("max_number_of_agents").(int)
+	if v, ok := d.GetOk("max_number_of_agents"); ok {
+		newMaxNumberOfAgents := v.(int)
+		res.Authentication = &models.ReusableTokenAuthenticationInput{
+			MaxNumberOfAgents: &newMaxNumberOfAgents,
+		}
+	}
+
 	res.AddAdditionalSettings, res.UpdateAdditionalSettings, res.RemoveAdditionalSettings =
 		handleUpdateAdditionalSetting(d, "additional_settings", "additional_settings_ids")
 

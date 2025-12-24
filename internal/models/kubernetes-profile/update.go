@@ -7,11 +7,11 @@ type KeyValueUpdateInput struct {
 }
 
 type KubernetesProfileUpdateInput struct {
-	Name                     string                           `json:"name,omitempty"`
-	ProfileSubType           string                           `json:"profileSubType,omitempty"`
-	AddAdditionalSettings    []KeyValueInput                  `json:"addAdditionalSettings,omitempty"`
-	UpdateAdditionalSettings []KeyValueUpdateInput            `json:"updateAdditionalSettings,omitempty"`
-	RemoveAdditionalSettings []string                         `json:"removeAdditionalSettings,omitempty"`
-	OnlyDefinedApplications  bool                             `json:"onlyDefinedApplications"`
-	Authentication           ReusableTokenAuthenticationInput `json:"authentication,omitempty"`
+	Name                     string                            `json:"name,omitempty"`
+	ProfileSubType           string                            `json:"profileSubType,omitempty"`
+	AddAdditionalSettings    []KeyValueInput                   `json:"addAdditionalSettings,omitempty"`
+	UpdateAdditionalSettings []KeyValueUpdateInput             `json:"updateAdditionalSettings,omitempty"`
+	RemoveAdditionalSettings []string                          `json:"removeAdditionalSettings,omitempty"`
+	OnlyDefinedApplications  *bool                             `json:"onlyDefinedApplications,omitempty"`
+	Authentication           *ReusableTokenAuthenticationInput `json:"authentication,omitempty"`
 }

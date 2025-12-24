@@ -6,19 +6,45 @@ import (
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-user-response"
+	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 func UpdateWebUserResponseBehaviorInputFromResourceData(d *schema.ResourceData) (models.UpdateWebUserResponseBehaviorInput, error) {
 	var res models.UpdateWebUserResponseBehaviorInput
+
 	res.Name = d.Get("name").(string)
-	res.Visibility = d.Get("visibility").(string)
 	res.Mode = d.Get("mode").(string)
-	res.MessageTitle = d.Get("message_title").(string)
-	res.MessageBody = d.Get("message_body").(string)
-	res.HTTPResponseCode = d.Get("http_response_code").(int)
-	res.RedirectURL = d.Get("redirect_url").(string)
-	res.XEventID = d.Get("x_event_id").(bool)
+
+	if _, newVisibility, hasChange := utils.MustGetChange[string](d, "visibility"); hasChange {
+		res.Visibility = newVisibility
+	}
+
+	if _, newVal, hasChange := utils.MustGetChange[string](d, "message_title"); hasChange {
+		res.MessageTitle = newVal
+	}
+
+	if _, newVal, hasChange := utils.MustGetChange[string](d, "message_body"); hasChange {
+		res.MessageBody = newVal
+	}
+
+	// Only include http_response_code if explicitly set in config
+	// This is to avoid sending the default int value of 0 which is not valid in the API
+	if v, ok := d.GetOk("http_response_code"); ok {
+		val := v.(int)
+		res.HTTPResponseCode = &val
+	}
+
+	if _, newVal, hasChange := utils.MustGetChange[string](d, "redirect_url"); hasChange {
+		res.RedirectURL = newVal
+	}
+
+	// Only include x_event_id if explicitly set in config
+	// As there is no default value for this field, we assume that if it is not set, it should not be included in the request
+	if v, ok := d.GetOk("x_event_id"); ok {
+		val := v.(bool)
+		res.XEventID = &val
+	}
 
 	return res, nil
 }

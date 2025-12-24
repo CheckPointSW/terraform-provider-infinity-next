@@ -1,7 +1,7 @@
 package models
 
 type AuthenticationInput struct {
-	MaxNumberOfAgents int `json:"maxNumberOfAgents"`
+	MaxNumberOfAgents *int `json:"maxNumberOfAgents,omitempty"`
 }
 
 type KeyValueInput struct {
@@ -13,7 +13,7 @@ type UpgradeTimeInput struct {
 	ScheduleType string   `json:"scheduleType,omitempty"`
 	Time         string   `json:"time,omitempty"`
 	WeekDays     []string `json:"weekDays,omitempty"`
-	Duration     int      `json:"duration,omitempty"`
+	Duration     *int     `json:"duration,omitempty"`
 	Days         []int    `json:"days,omitempty"`
 }
 
@@ -24,8 +24,8 @@ type CreateCloudGuardAppSecGatewayProfileInput struct {
 	UpgradeMode                    string              `json:"upgradeMode,omitempty"`
 	AdditionalSettings             []KeyValueInput     `json:"additionalSettings"`
 	ReverseProxyAdditionalSettings []KeyValueInput     `json:"reverseProxyAdditionalSettings,omitempty"`
-	ReverseProxyUpstreamTimeout    int                 `json:"reverseProxyUpstreamTimeout,omitempty"`
+	ReverseProxyUpstreamTimeout    *int                `json:"reverseProxyUpstreamTimeout,omitempty"`
 	Authentication                 AuthenticationInput `json:"authentication,omitempty"`
 	CertificateType                string              `json:"certificateType,omitempty"`
-	FailOpenInspection             bool                `json:"failOpenInspection"`
+	FailOpenInspection             *bool               `json:"failOpenInspection,omitempty"`
 }

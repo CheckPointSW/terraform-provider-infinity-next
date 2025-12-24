@@ -17,7 +17,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "~>1.3.2"
+      version = "~>1.4.0"
     }
   }
 }
@@ -36,10 +36,10 @@ resource "inext_embedded_profile" "my-embedded-profile" {
   upgrade_time_hour          = "22:00"
   upgrade_time_duration      = 2
   upgrade_time_week_days     = ["Monday", "Thursday"]
-  only_defined_applications  = true
+  defined_applications_only  = true
   additional_settings = {
-    Key1 = "Value"
-    Key2 = "Value2"
+    "Key1" = "Value"
+    "Key2" = "Value2"
   }
 }
 ```
@@ -54,7 +54,7 @@ resource "inext_embedded_profile" "my-embedded-profile" {
 ### Optional
 
 - `additional_settings` (Map of String) Controls the settings of the connected agents
-- `defined_applications_only` (Boolean)
+- `defined_applications_only` (Boolean) Sets whether reverse proxy will block undefined applications or not
 - `max_number_of_agents` (Number) Sets the maximum number of agents that can be connected to this profile
 - `upgrade_mode` (String) The upgrade mode of the profile: Automatic, Manual or Scheduled.
 The default is Automatic

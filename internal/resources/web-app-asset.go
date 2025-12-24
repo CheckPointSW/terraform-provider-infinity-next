@@ -81,7 +81,7 @@ func ResourceWebAppAsset() *schema.Resource {
 			},
 			"behaviors": {
 				Type:        schema.TypeSet,
-				Description: "behaviors used by the asset",
+				Description: "Behaviors used by the asset",
 				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
@@ -90,6 +90,7 @@ func ResourceWebAppAsset() *schema.Resource {
 			"state": {
 				Type:             schema.TypeString,
 				Optional:         true,
+				Default:          activeState,
 				ValidateDiagFunc: validateStateFunc,
 			},
 			"upstream_url": {
@@ -358,7 +359,7 @@ func ResourceWebAppAsset() *schema.Resource {
 							Computed: true,
 						},
 						"data": {
-							Description: "The instructions block data",
+							Description: "The instructions block file content. use file() function to read the file content",
 							Type:        schema.TypeString,
 							Sensitive:   true,
 							Optional:    true,
@@ -409,7 +410,7 @@ func ResourceWebAppAsset() *schema.Resource {
 							Computed: true,
 						},
 						"data": {
-							Description: "The certificate data",
+							Description: "The certificate file content. use file() function to read the file content",
 							Type:        schema.TypeString,
 							Sensitive:   true,
 							Optional:    true,

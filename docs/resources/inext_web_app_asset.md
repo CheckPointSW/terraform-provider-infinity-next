@@ -17,7 +17,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.3.2"
+      version = "1.4.0"
     }
   }
 }
@@ -32,14 +32,14 @@ resource "inext_web_app_asset" "my-webapp-asset" {
   name         = "some name"
   profiles     = [inext_appsec_gateway_profile.my-appsec-gateway-profile.id, inext_docker_profile.my-docker-profile.id, inext_embedded_profile.my-embedded-profile.id, inext_kubernetes_profile.my-kubernetes-profile.id]
   behaviors    = [inext_trusted_sources.my-trusted-source-behavior.id, inext_exceptions.my-exceptions-behavior.id]
-  upstream_url = "some url"
+  upstream_url = "http://some url.com"
   urls         = ["http://host/path"]
   practice {
     main_mode = "Learn" # enum of ["Prevent", "Inactive", "Disabled", "Learn"]
     sub_practices_modes = {
-      IPS    = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      WebBot = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
-      Snort  = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      IPS          = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      WebBot       = "AccordingToPractice" # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
+      FileSecurity = "Disabled"            # enum of ["Detect", "Prevent", "Inactive", "AccordingToPractice", "Disabled", "Learn", "Active"]
     }
     id       = inext_web_app_practice.my-webapp-practice.id # required
     triggers = [inext_log_trigger.mytrigger.id]
@@ -59,15 +59,22 @@ resource "inext_web_app_asset" "my-webapp-asset" {
   mtls {
     filename         = "cert.der"
     certificate_type = ".der"
-    data             = " cert data"
+    data             = file("${path.module}/cert.der") # file content - change path to your file
     type             = "client"
     enable           = true
   }
   additional_instructions_blocks {
     filename      = "location.json"
     filename_type = ".json"
-    data          = "location data"
-    type          = "location_instructions"
+    data          = file("${path.module}/location.json") # file content - change path to your file
+    type          = "location_instructions"              # enum of ["location_instructions", "server_instructions"]
+    enable        = true
+  }
+  additional_instructions_blocks {
+    filename      = "server.json"
+    filename_type = ".json"
+    data          = file("${path.module}/server.json") # file content - change path to your file
+    type          = "server_instructions"              # enum of ["location_instructions", "server_instructions"]
     enable        = true
   }
   redirect_to_https = "true"
@@ -76,6 +83,7 @@ resource "inext_web_app_asset" "my-webapp-asset" {
     name  = "header1"
     value = "value1"
   }
+  is_shares_urls = "false"
 }
 ```
 
@@ -91,7 +99,7 @@ resource "inext_web_app_asset" "my-webapp-asset" {
 
 - `access_log` (Boolean) Advanced Proxy Setting - Activate access log on gateway.
 - `additional_instructions_blocks` (Block Set) The additional instructions blocks settings - location or server blocks (see [below for nested schema](#nestedblock--additional_instructions_blocks))
-- `behaviors` (Set of String) behaviors used by the asset
+- `behaviors` (Set of String) Behaviors used by the asset
 - `custom_headers` (Block Set) Advanced Proxy Settings - The custom headers settings (see [below for nested schema](#nestedblock--custom_headers))
 - `is_shares_urls` (Boolean) Indicates whether the asset shares its URLs with other assets. URL sharing is allowed only between assets linked to different profiles.
 - `mtls` (Block Set) The mutual TLS settings (see [below for nested schema](#nestedblock--mtls))
@@ -132,7 +140,7 @@ Required:
 
 Optional:
 
-- `data` (String, Sensitive) The instructions block data
+- `data` (String, Sensitive) The instructions block file content. use file() function to read the file content
 - `enable` (Boolean) Whether the instructions block is enabled
 - `filename` (String) The name of the instructions block file
 - `filename_type` (String) The type of the instructions block file - .json, .yml
@@ -167,7 +175,7 @@ Required:
 Optional:
 
 - `certificate_type` (String) The type of the certificate file - .pem, .crt, .der, .p12, .pfx, .p7b, .p7c, .cer
-- `data` (String, Sensitive) The certificate data
+- `data` (String, Sensitive) The certificate file content. use file() function to read the file content
 - `enable` (Boolean) Whether the mTLS is enabled
 - `filename` (String) The name of the certificate file
 

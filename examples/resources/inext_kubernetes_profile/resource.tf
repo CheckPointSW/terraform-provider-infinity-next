@@ -2,7 +2,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "~>1.3.2"
+      version = "~>1.4.0"
     }
   }
 }
@@ -17,9 +17,9 @@ resource "inext_kubernetes_profile" "my-kubernetes-profile" {
   name                      = "my-kubernetes-profile"
   profile_sub_type          = "AppSec"
   max_number_of_agents      = 100
-  only_defined_applications = true
+  defined_applications_only = true
   additional_settings = {
-    Key1 = "Value"
-    Key2 = "Value2"
+    "Key1" = "Value"
+    "Key2" = "Value2"
   }
 }

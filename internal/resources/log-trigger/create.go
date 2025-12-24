@@ -11,34 +11,55 @@ import (
 )
 
 func CreateLogTriggerInputFromResourceData(d *schema.ResourceData) (models.CreateLogTriggerInput, error) {
+	accessControlAllowEvents := d.Get("access_control_allow_events").(bool)
+	accessControlDropEvents := d.Get("access_control_drop_events").(bool)
+	threatPreventionDetectEvents := d.Get("threat_prevention_detect_events").(bool)
+	threatPreventionPreventEvents := d.Get("threat_prevention_prevent_events").(bool)
+	webRequests := d.Get("web_requests").(bool)
+	webURLPath := d.Get("web_url_path").(bool)
+	webURLQuery := d.Get("web_url_query").(bool)
+	webHeaders := d.Get("web_headers").(bool)
+	webBody := d.Get("web_body").(bool)
+	logToCloud := d.Get("log_to_cloud").(bool)
+	logToAgent := d.Get("log_to_agent").(bool)
+	extendLogging := d.Get("extend_logging").(bool)
+	responseBody := d.Get("response_body").(bool)
+	responseCode := d.Get("response_code").(bool)
+	logToSyslog := d.Get("log_to_syslog").(bool)
+	syslogPort := d.Get("syslog_port").(int)
+	logToCEF := d.Get("log_to_cef").(bool)
+	cefPort := d.Get("cef_port").(int)
+	complianceWarnings := d.Get("compliance_warnings").(bool)
+	complianceViolations := d.Get("compliance_violations").(bool)
+
 	var res models.CreateLogTriggerInput
 	res.Name = d.Get("name").(string)
 	res.Verbosity = d.Get("verbosity").(string)
-	res.AccessControlAllowEvents = d.Get("access_control_allow_events").(bool)
-	res.AccessControlDropEvents = d.Get("access_control_drop_events").(bool)
-	res.ThreatPreventionDetectEvents = d.Get("threat_prevention_detect_events").(bool)
-	res.ThreatPreventionPreventEvents = d.Get("threat_prevention_prevent_events").(bool)
-	res.WebRequests = d.Get("web_requests").(bool)
-	res.WebURLPath = d.Get("web_url_path").(bool)
-	res.WebURLQuery = d.Get("web_url_query").(bool)
-	res.WebHeaders = d.Get("web_headers").(bool)
-	res.WebBody = d.Get("web_body").(bool)
-	res.LogToCloud = d.Get("log_to_cloud").(bool)
-	res.LogToAgent = d.Get("log_to_agent").(bool)
-	res.ExtendLogging = d.Get("extend_logging").(bool)
+	res.AccessControlAllowEvents = &accessControlAllowEvents
+	res.AccessControlDropEvents = &accessControlDropEvents
+	res.ThreatPreventionDetectEvents = &threatPreventionDetectEvents
+	res.ThreatPreventionPreventEvents = &threatPreventionPreventEvents
+	res.WebRequests = &webRequests
+	res.WebURLPath = &webURLPath
+	res.WebURLQuery = &webURLQuery
+	res.WebHeaders = &webHeaders
+	res.WebBody = &webBody
+	res.LogToCloud = &logToCloud
+	res.LogToAgent = &logToAgent
+	res.ExtendLogging = &extendLogging
 	res.ExtendLoggingMinSeverity = d.Get("extend_logging_min_severity").(string)
-	res.ResponseBody = d.Get("response_body").(bool)
-	res.ResponseCode = d.Get("response_code").(bool)
-	res.LogToSyslog = d.Get("log_to_syslog").(bool)
+	res.ResponseBody = &responseBody
+	res.ResponseCode = &responseCode
+	res.LogToSyslog = &logToSyslog
 	res.SyslogIPAddress = d.Get("syslog_ip_address").(string)
 	res.SyslogProtocol = d.Get("syslog_protocol").(string)
-	res.SyslogPort = d.Get("syslog_port").(int)
-	res.LogToCEF = d.Get("log_to_cef").(bool)
+	res.SyslogPort = &syslogPort
+	res.LogToCEF = &logToCEF
 	res.CEFIPAddress = d.Get("cef_ip_address").(string)
-	res.CEFPort = d.Get("cef_port").(int)
+	res.CEFPort = &cefPort
 	res.CEFProtocol = d.Get("cef_protocol").(string)
-	res.ComplianceWarnings = d.Get("compliance_warnings").(bool)
-	res.ComplianceViolations = d.Get("compliance_violations").(bool)
+	res.ComplianceWarnings = &complianceWarnings
+	res.ComplianceViolations = &complianceViolations
 
 	return res, nil
 }

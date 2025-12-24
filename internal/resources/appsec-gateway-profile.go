@@ -98,17 +98,35 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Type:             schema.TypeString,
 				Description:      "The schedule type in case upgrade mode is scheduled: DaysInWeek, DaysInMonth or Daily",
 				Optional:         true,
+				Default:          appsecgatewayprofile.ScheduleTypeDaysInWeek,
 				ValidateDiagFunc: validateUpgradeTimeType,
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
+				},
 			},
 			"upgrade_time_hour": {
 				Type:        schema.TypeString,
 				Description: "The hour of the upgrade time start, for example: 10:00 or 20:00",
 				Optional:    true,
+				Default:     "0:00",
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
+				},
 			},
 			"upgrade_time_duration": {
 				Type:        schema.TypeInt,
 				Description: "The duration of the upgrade in hours",
 				Optional:    true,
+				Default:     4,
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
+				},
 			},
 			"upgrade_time_week_days": {
 				Type:        schema.TypeSet,
@@ -117,6 +135,11 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
 				},
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
+				},
 			},
 			"upgrade_time_days": {
 				Type:        schema.TypeSet,
@@ -124,6 +147,11 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeInt,
+				},
+				// We suppress the diff for this field when upgrade_mode is not Scheduled to avoid unnecessary changes because of default values.
+				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
+					// Ignore differences when upgrade_mode is not Scheduled
+					return d.Get("upgrade_mode").(string) != appsecgatewayprofile.UpgradeModeScheduled
 				},
 			},
 			"reverseproxy_upstream_timeout": {
@@ -150,6 +178,7 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Type:             schema.TypeInt,
 				Description:      "Sets the maximum number of agents that can be connected to this profile",
 				Optional:         true,
+				Default:          10,
 				ValidateDiagFunc: validation.ToDiagFunc(validation.IntAtMost(1000)),
 			},
 			"authentication_token": {
@@ -161,12 +190,14 @@ func ResourceAppSecGatewayProfile() *schema.Resource {
 				Type:             schema.TypeString,
 				Description:      "The type of the certificate used for the profile: Vault or Gateway",
 				Optional:         true,
+				Default:          appsecgatewayprofile.CertificateTypeVault,
 				ValidateDiagFunc: validateCertificateType,
 			},
 			"fail_open_inspection": {
 				Type:        schema.TypeBool,
 				Description: "Allow traffic upon internal failures or high CPU utilization: true or false",
 				Optional:    true,
+				Default:     true,
 			},
 		},
 	}

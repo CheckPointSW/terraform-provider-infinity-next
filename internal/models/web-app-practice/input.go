@@ -6,10 +6,10 @@ type WebApplicationPracticeAdvancedSettingInput struct {
 	OpenRedirect       string `json:"openRedirect,omitempty"`
 	ErrorDisclosure    string `json:"errorDisclosure,omitempty"`
 	IllegalHttpMethods string `json:"illegalHttpMethods,omitempty"`
-	BodySize           int    `json:"bodySize,omitempty"`
-	URLSize            int    `json:"urlSize,omitempty"`
-	HeaderSize         int    `json:"headerSize,omitempty"`
-	MaxObjectDepth     int    `json:"maxObjectDepth,omitempty"`
+	BodySize           *int   `json:"bodySize,omitempty"`
+	URLSize            *int   `json:"urlSize,omitempty"`
+	HeaderSize         *int   `json:"headerSize,omitempty"`
+	MaxObjectDepth     *int   `json:"maxObjectDepth,omitempty"`
 }
 
 type WebApplicationPracticeWebAttacksInput struct {
@@ -44,13 +44,13 @@ type FileSecurityInput struct {
 	FileSizeLimit             *int   `json:"fileSizeLimit,omitempty"`
 	FileSizeLimitUnit         string `json:"fileSizeLimitUnit,omitempty"`
 	FilesWithoutName          string `json:"filesWithoutName,omitempty"`
-	RequiredArchiveExtraction bool   `json:"requiredArchiveExtraction,omitempty"`
+	RequiredArchiveExtraction *bool  `json:"requiredArchiveExtraction,omitempty"`
 	ArchiveFileSizeLimit      *int   `json:"archiveFileSizeLimit,omitempty"`
 	ArchiveFileSizeLimitUnit  string `json:"archiveFileSizeLimitUnit,omitempty"`
 	AllowArchiveWithinArchive string `json:"allowArchiveWithinArchive,omitempty"`
 	AllowAnUnopenedArchive    string `json:"allowAnUnopenedArchive,omitempty"`
-	AllowFileType             bool   `json:"allowFileType,omitempty"`
-	RequiredThreatEmulation   bool   `json:"requiredThreatEmulation,omitempty"`
+	AllowFileType             *bool  `json:"allowFileType,omitempty"`
+	RequiredThreatEmulation   *bool  `json:"requiredThreatEmulation,omitempty"`
 }
 
 type CreateWebApplicationPracticeInput struct {

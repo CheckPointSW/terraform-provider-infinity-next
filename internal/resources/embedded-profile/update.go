@@ -45,7 +45,7 @@ func UpdateEmbeddedProfileInputFromResourceData(d *schema.ResourceData) (models.
 	}
 
 	if _, new, hasChange := utils.MustGetChange[bool](d, "defined_applications_only"); hasChange {
-		res.OnlyDefinedApplications = new
+		res.OnlyDefinedApplications = &new
 	}
 
 	var currUpgradeMode string
@@ -66,7 +66,7 @@ func UpdateEmbeddedProfileInputFromResourceData(d *schema.ResourceData) (models.
 		}
 
 		if _, newUpgradeTimeDuration, hasChange := utils.MustGetChange[int](d, "upgrade_time_duration"); hasChange {
-			upgradeTime.Duration = newUpgradeTimeDuration
+			upgradeTime.Duration = &newUpgradeTimeDuration
 		}
 
 		if _, newUpgradeTimeWeekDays, hasChange := utils.GetChangeWithParse(d, "upgrade_time_week_days", utils.MustSchemaCollectionToSlice[string]); hasChange {
@@ -80,7 +80,13 @@ func UpdateEmbeddedProfileInputFromResourceData(d *schema.ResourceData) (models.
 		res.UpgradeTime = &upgradeTime
 	}
 
-	res.Authentication.MaxNumberOfAgents = d.Get("max_number_of_agents").(int)
+	if v, ok := d.GetOk("max_number_of_agents"); ok {
+		newMaxNumberOfAgents := v.(int)
+		res.Authentication = &models.ReusableTokenAuthenticationInput{
+			MaxNumberOfAgents: &newMaxNumberOfAgents,
+		}
+	}
+
 	res.AddAdditionalSettings, res.UpdateAdditionalSettings, res.RemoveAdditionalSettings =
 		handleUpdateAdditionalSetting(d, "additional_settings", "additional_settings_ids")
 

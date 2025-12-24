@@ -131,11 +131,16 @@ func mapToAdvancedSettingInput(advancedSettingMap map[string]any) models.Advance
 		illegalHttpMethods = "Yes"
 	}
 
+	bodySize := advancedSettingMap["body_size"].(int)
+	urlSize := advancedSettingMap["url_size"].(int)
+	headerSize := advancedSettingMap["header_size"].(int)
+	maxObjectDepth := advancedSettingMap["max_object_depth"].(int)
+
 	return models.AdvancedSettingInput{
-		BodySize:           advancedSettingMap["body_size"].(int),
-		URLSize:            advancedSettingMap["url_size"].(int),
-		HeaderSize:         advancedSettingMap["header_size"].(int),
-		MaxObjectDepth:     advancedSettingMap["max_object_depth"].(int),
+		BodySize:           &bodySize,
+		URLSize:            &urlSize,
+		HeaderSize:         &headerSize,
+		MaxObjectDepth:     &maxObjectDepth,
 		IllegalHttpMethods: illegalHttpMethods,
 	}
 }
@@ -166,7 +171,11 @@ func mapToSchemaValidationInput(schemaValidationFromResourceData any) models.Sch
 
 func mapToFileSecurityInput(fileSecurityMap map[string]any) models.WebAPIFileSecurityInput {
 	fileSizeLimit := fileSecurityMap["file_size_limit"].(int)
+	requiredArchiveExtraction := fileSecurityMap["required_archive_extraction"].(bool)
 	archiveFileSizeLimit := fileSecurityMap["archive_file_size_limit"].(int)
+	allowFileType := fileSecurityMap["allow_file_type"].(bool)
+	requiredThreatEmulation := fileSecurityMap["required_threat_emulation"].(bool)
+
 	return models.WebAPIFileSecurityInput{
 		SeverityLevel:             fileSecurityMap["severity_level"].(string),
 		HighConfidence:            fileSecurityMap["high_confidence"].(string),
@@ -176,12 +185,12 @@ func mapToFileSecurityInput(fileSecurityMap map[string]any) models.WebAPIFileSec
 		FileSizeLimit:             &fileSizeLimit,
 		FileSizeLimitUnit:         fileSecurityMap["file_size_limit_unit"].(string),
 		FilesWithoutName:          fileSecurityMap["files_without_name"].(string),
-		RequiredArchiveExtraction: fileSecurityMap["required_archive_extraction"].(bool),
+		RequiredArchiveExtraction: &requiredArchiveExtraction,
 		ArchiveFileSizeLimit:      &archiveFileSizeLimit,
 		ArchiveFileSizeLimitUnit:  fileSecurityMap["archive_file_size_limit_unit"].(string),
 		AllowArchiveWithinArchive: fileSecurityMap["allow_archive_within_archive"].(string),
 		AllowAnUnopenedArchive:    fileSecurityMap["allow_an_unopened_archive"].(string),
-		AllowFileType:             fileSecurityMap["allow_file_type"].(bool),
-		RequiredThreatEmulation:   fileSecurityMap["required_threat_emulation"].(bool),
+		AllowFileType:             &allowFileType,
+		RequiredThreatEmulation:   &requiredThreatEmulation,
 	}
 }

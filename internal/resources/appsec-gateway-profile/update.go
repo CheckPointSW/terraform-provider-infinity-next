@@ -62,7 +62,7 @@ func UpdateCloudGuardAppSecGatewayProfileInputFromResourceData(d *schema.Resourc
 		}
 
 		if _, newUpgradeTimeDuration, hasChange := utils.MustGetChange[int](d, "upgrade_time_duration"); hasChange {
-			upgradeTime.Duration = newUpgradeTimeDuration
+			upgradeTime.Duration = &newUpgradeTimeDuration
 		}
 
 		if _, newUpgradeTimeWeekDays, hasChange := utils.GetChangeWithParse(d, "upgrade_time_week_days", utils.MustSchemaCollectionToSlice[string]); hasChange {
@@ -77,10 +77,16 @@ func UpdateCloudGuardAppSecGatewayProfileInputFromResourceData(d *schema.Resourc
 	}
 
 	if _, newReverseProxyTimeout, hasChange := utils.MustGetChange[int](d, "reverseproxy_upstream_timeout"); hasChange {
-		res.ReverseProxyUpstreamTimeout = newReverseProxyTimeout
+		res.ReverseProxyUpstreamTimeout = &newReverseProxyTimeout
 	}
 
-	res.Authentication.MaxNumberOfAgents = d.Get("max_number_of_agents").(int)
+	if v, ok := d.GetOk("max_number_of_agents"); ok {
+		newMaxNumberOfAgents := v.(int)
+		res.Authentication = &models.AuthenticationInput{
+			MaxNumberOfAgents: &newMaxNumberOfAgents,
+		}
+	}
+
 	res.AddReverseProxyAdditionalSettings, res.UpdateReverseProxyAdditionalSettings, res.RemoveReverseProxyAdditionalSettings =
 		handleUpdateAdditionalSetting(d, "reverseproxy_additional_settings", "reverseproxy_additional_settings_ids")
 
@@ -96,7 +102,7 @@ func UpdateCloudGuardAppSecGatewayProfileInputFromResourceData(d *schema.Resourc
 	}
 
 	if _, newFailOpenInspection, hasChange := utils.MustGetChange[bool](d, "fail_open_inspection"); hasChange {
-		res.FailOpenInspection = newFailOpenInspection
+		res.FailOpenInspection = &newFailOpenInspection
 	}
 
 	return res, nil

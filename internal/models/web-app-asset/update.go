@@ -85,5 +85,5 @@ type UpdateWebApplicationAssetInput struct {
 	AddSourceIdentifiers    []AddSourceIdentifier    `json:"addSourceIdentifiers,omitempty"`
 	RemoveSourceIdentifiers []string                 `json:"removeSourceIdentifiers,omitempty"`
 	UpdateSourceIdentifiers []UpdateSourceIdentifier `json:"updateSourceIdentifiers,omitempty"`
-	IsSharesURLs            bool                     `json:"isSharesURLs"`
+	IsSharesURLs            *bool                    `json:"isSharesURLs,omitempty"`
 }
