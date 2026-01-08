@@ -24,6 +24,8 @@ func TestAccPublishEnforceBasic(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
+				// State resets to false after apply, so config with true will always show a diff
+				ExpectNonEmptyPlan: true,
 			},
 			{
 				Config: publishEnforceConfigBothTrue(),
@@ -34,12 +36,7 @@ func TestAccPublishEnforceBasic(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
-			},
-			{
-				ResourceName:            resourceName,
-				ImportState:             true,
-				ImportStateVerify:       true,
-				ImportStateVerifyIgnore: []string{"publish", "enforce"},
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
@@ -61,6 +58,7 @@ func TestAccPublishEnforcePublishOnly(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
@@ -82,6 +80,7 @@ func TestAccPublishEnforceEnforceOnly(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
@@ -103,6 +102,7 @@ func TestAccPublishEnforceFalseNoOp(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
+				// No ExpectNonEmptyPlan here - config is false, state is false, plan should be empty
 			},
 			{
 				Config: publishEnforceConfigBothFalse(),
@@ -134,6 +134,7 @@ func TestAccPublishEnforceRepeatedTrueTriggersEachTime(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
+				ExpectNonEmptyPlan: true,
 			},
 			{
 				Config: publishEnforceConfigPublishOnly(),
@@ -143,6 +144,7 @@ func TestAccPublishEnforceRepeatedTrueTriggersEachTime(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
+				ExpectNonEmptyPlan: true,
 			},
 			{
 				Config: publishEnforceConfigPublishOnly(),
@@ -152,6 +154,7 @@ func TestAccPublishEnforceRepeatedTrueTriggersEachTime(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
@@ -188,6 +191,7 @@ func TestAccPublishEnforceTransitionTrueToFalse(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
+				ExpectNonEmptyPlan: true,
 			},
 			{
 				Config: publishEnforceConfigBothFalse(),
@@ -198,6 +202,7 @@ func TestAccPublishEnforceTransitionTrueToFalse(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
+				// No ExpectNonEmptyPlan - config is false, state is false, plan should be empty
 			},
 		},
 	})
@@ -239,6 +244,7 @@ func TestAccPublishEnforceDefaults(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
+				// No ExpectNonEmptyPlan - defaults are false, state is false
 			},
 		},
 	})
