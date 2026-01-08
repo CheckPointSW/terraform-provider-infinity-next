@@ -7,6 +7,8 @@ import (
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/publish-enforce"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 const (
@@ -16,6 +18,12 @@ const (
 	enforceTimeout       = 10 * time.Second
 	pollInterval         = 200 * time.Millisecond
 )
+
+// ShouldEnforceFromResourceData reads the enforce value from ResourceData
+// Returns true if enforce should be executed
+func ShouldEnforceFromResourceData(d *schema.ResourceData) bool {
+	return d.Get("enforce").(bool)
+}
 
 // ExecuteEnforce triggers an enforce operation and waits for completion (same as `inext enforce`)
 func ExecuteEnforce(ctx context.Context, c *api.Client) error {

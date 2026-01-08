@@ -42,37 +42,45 @@ func ResourcePublishEnforce() *schema.Resource {
 }
 
 // resourcePublishEnforceCreateOrUpdate handles both create and update operations
-// since they perform identical logic: trigger publish/enforce based on current values
+// since they perform identical logic: trigger publish/enforce based on new values
 func resourcePublishEnforceCreateOrUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	publish := d.Get("publish").(bool)
-	enforce := d.Get("enforce").(bool)
-
 	// Use singleton ID - only one instance of this resource allowed
 	d.SetId(publishEnforceSingletonID)
 
+	// Get new values from ResourceData
+	shouldPublish := publishenforce.ShouldPublishFromResourceData(d)
+	shouldEnforce := publishenforce.ShouldEnforceFromResourceData(d)
+
 	// Execute publish if requested (same as `inext publish`)
-	if publish {
+	if shouldPublish {
 		if err := publishenforce.ExecutePublish(ctx, c); err != nil {
 			return utils.DiagError("failed to publish changes", err, diags)
 		}
 	}
 
 	// Execute enforce if requested (same as `inext enforce`)
-	if enforce {
+	if shouldEnforce {
 		if err := publishenforce.ExecuteEnforce(ctx, c); err != nil {
 			return utils.DiagError("failed to enforce policy", err, diags)
 		}
 	}
+
+	// Reset state to false so that next apply with true will trigger a change
+	// This ensures publish/enforce runs every time user sets the value to true
+	d.Set("publish", false)
+	d.Set("enforce", false)
 
 	return diags
 }
 
 func resourcePublishEnforceRead(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	// This is a trigger-only resource, nothing to read from the API
-	// Just return current state
+	// Always report state as false so that config with true triggers an update
+	d.Set("publish", false)
+	d.Set("enforce", false)
 	return nil
 }
 

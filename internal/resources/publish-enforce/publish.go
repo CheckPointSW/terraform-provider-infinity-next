@@ -7,6 +7,8 @@ import (
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/publish-enforce"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 // ExecutePublish triggers a publish operation (same as `inext publish`)
@@ -25,6 +27,12 @@ func ExecutePublish(ctx context.Context, c *api.Client) error {
 	}
 
 	return nil
+}
+
+// ShouldPublishFromResourceData reads the publish value from ResourceData
+// Returns true if publish should be executed
+func ShouldPublishFromResourceData(d *schema.ResourceData) bool {
+	return d.Get("publish").(bool)
 }
 
 // PublishChanges triggers a publish operation for the session
