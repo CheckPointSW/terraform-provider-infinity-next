@@ -56,19 +56,16 @@ variable "enforce" {
   default = false
 }
 
-variable "profile_ids" {
-  type        = list(string)
-  default     = []
-  description = "List of profile IDs to enforce. If empty, all profiles will be enforced."
-}
-
 resource "inext_publish_enforce" "publish-and-enforce" {
   publish     = var.publish
   enforce     = var.enforce
-  profile_ids = var.profile_ids  # Optional: if empty, all profiles will be enforced
+
+  # Optional: specify profile IDs to enforce directly in the resource
+  # If empty or not provided, all profiles will be enforced
+  # profile_ids = ["profile-id-1", "profile-id-2"]
 
   depends_on = [
-    # List all your resources here that should be created before publish/enforce
+    # IMPORTANT: List ALL your resources here to ensure publish/enforce runs last
     inext_web_app_asset.my-webapp-asset,
     inext_web_app_practice.my-webapp-practice,
     # ... add all other resources
@@ -76,14 +73,12 @@ resource "inext_publish_enforce" "publish-and-enforce" {
 }
 ```
 
+~> **Important:** The `depends_on` block **must include all other resources** in your configuration. This ensures that the publish and enforce operations only run after all resources have been successfully created or updated. Failing to include all resources may cause conflicts or result in incomplete enforcement.
+
 Then run the following command to apply your configuration and trigger publish/enforce:
 
 ```bash
-# Publish and enforce all profiles
 terraform apply -var="publish=true" -var="enforce=true"
-
-# Publish and enforce specific profiles only
-terraform apply -var="publish=true" -var="enforce=true" -var='profile_ids=["profile-id-1", "profile-id-2"]'
 ```
 
 The `depends_on` block ensures that the publish and enforce operations only run after all other resources have been successfully created or updated.

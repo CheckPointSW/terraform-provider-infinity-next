@@ -8,7 +8,7 @@ description: |-
 
 # inext_publish_enforce (Resource)
 
-Publish and Enforce resource - triggers publish and/or enforce operations. Works the same as running `inext publish` and `inext enforce` CLI commands.
+Publish and Enforce resource - triggers publish and/or enforce operations. Works the same as running `inext publish` and `inext enforce` CLI commands. **Note: Only ONE instance of this resource is allowed per provider/account.**
 
 ## Example Usage
 
@@ -40,12 +40,6 @@ variable "enforce" {
   description = "Set to true to trigger enforce operation"
 }
 
-variable "profile_ids" {
-  type        = list(string)
-  default     = []
-  description = "List of profile IDs to enforce. If empty, all profiles will be enforced."
-}
-
 # Example resources that would be created before publish/enforce
 resource "inext_web_app_asset" "my-webapp-asset" {
   name = "my web app"
@@ -64,11 +58,12 @@ resource "inext_publish_enforce" "publish-and-enforce" {
   publish = var.publish
   enforce = var.enforce
 
-  # Optional: specify profile IDs to enforce
+  # Optional: specify profile IDs to enforce directly in the resource
   # If empty or not provided, all profiles will be enforced
-  profile_ids = var.profile_ids
+  # profile_ids = ["profile-id-1", "profile-id-2"]
 
-  # This resource should depend on all other resources
+  # IMPORTANT: depends_on MUST include ALL other resources to ensure
+  # publish/enforce runs last and avoids conflicts
   depends_on = [
     inext_web_app_asset.my-webapp-asset,
     inext_appsec_gateway_profile.my-appsec-gateway-profile,
