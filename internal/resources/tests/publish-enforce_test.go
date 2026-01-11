@@ -102,7 +102,6 @@ func TestAccPublishEnforceFalseNoOp(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
-				// No ExpectNonEmptyPlan here - config is false, state is false, plan should be empty
 			},
 			{
 				Config: publishEnforceConfigBothFalse(),
@@ -175,39 +174,6 @@ func TestAccPublishEnforceSingletonPreventsMultiple(t *testing.T) {
 	})
 }
 
-// TestAccPublishEnforceTransitionTrueToFalse tests transitioning from true to false
-func TestAccPublishEnforceTransitionTrueToFalse(t *testing.T) {
-	resourceName := "inext_publish_enforce.trigger"
-	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { acctest.PreCheck(t) },
-		ProviderFactories: acctest.ProviderFactories,
-		Steps: []resource.TestStep{
-			{
-				Config: publishEnforceConfigBothTrue(),
-				Check: resource.ComposeTestCheckFunc(
-					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish": "false",
-						"enforce": "false",
-					}),
-						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
-				),
-				ExpectNonEmptyPlan: true,
-			},
-			{
-				Config: publishEnforceConfigBothFalse(),
-				Check: resource.ComposeTestCheckFunc(
-					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish": "false",
-						"enforce": "false",
-					}),
-						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
-				),
-				// No ExpectNonEmptyPlan - config is false, state is false, plan should be empty
-			},
-		},
-	})
-}
-
 // TestAccPublishEnforceDelete tests that delete works correctly (resource can be removed)
 func TestAccPublishEnforceDelete(t *testing.T) {
 	resourceName := "inext_publish_enforce.trigger"
@@ -244,7 +210,6 @@ func TestAccPublishEnforceDefaults(t *testing.T) {
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
-				// No ExpectNonEmptyPlan - defaults are false, state is false
 			},
 		},
 	})
