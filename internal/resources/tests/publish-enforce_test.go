@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/acctest"
@@ -91,21 +92,27 @@ func TestAccPublishEnforceEnforceOnly(t *testing.T) {
 // TestAccPublishEnforceWithProfileIds tests that enforce works with specific profile IDs
 func TestAccPublishEnforceWithProfileIds(t *testing.T) {
 	resourceName := "inext_publish_enforce.trigger"
+	profileName1 := acctest.GenerateResourceName()
+	profileName2 := acctest.GenerateResourceName()
+	profileResourceName1 := "inext_appsec_gateway_profile." + profileName1
+	profileResourceName2 := "inext_appsec_gateway_profile." + profileName2
 	resource.Test(t, resource.TestCase{
 		PreCheck:          func() { acctest.PreCheck(t) },
 		ProviderFactories: acctest.ProviderFactories,
+		CheckDestroy:      acctest.CheckResourceDestroyed([]string{profileResourceName1, profileResourceName2}),
 		Steps: []resource.TestStep{
 			{
-				Config: publishEnforceConfigWithProfileIds(),
+				Config: publishEnforceConfigWithProfileIds(profileName1, profileName2),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"publish":       "false",
 						"enforce":       "false",
 						"profile_ids.#": "2",
-						"profile_ids.0": "profile-id-1",
-						"profile_ids.1": "profile-id-2",
 					}),
-						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
+						resource.TestCheckResourceAttrSet(resourceName, "id"),
+						resource.TestCheckResourceAttrSet(resourceName, "profile_ids.0"),
+						resource.TestCheckResourceAttrSet(resourceName, "profile_ids.1"),
+					)...,
 				),
 				ExpectNonEmptyPlan: true,
 			},
@@ -296,14 +303,31 @@ resource "inext_publish_enforce" "trigger" {
 `
 }
 
-func publishEnforceConfigWithProfileIds() string {
-	return `
+func publishEnforceConfigWithProfileIds(profileName1, profileName2 string) string {
+	return fmt.Sprintf(`
+resource "inext_appsec_gateway_profile" %[1]q {
+	name             = %[1]q
+	profile_sub_type = "Aws"
+	max_number_of_agents = 10
+}
+
+resource "inext_appsec_gateway_profile" %[2]q {
+	name             = %[2]q
+	profile_sub_type = "Aws"
+	max_number_of_agents = 10
+}
+
 resource "inext_publish_enforce" "trigger" {
 	publish     = true
 	enforce     = true
-	profile_ids = ["profile-id-1", "profile-id-2"]
+	profile_ids = [inext_appsec_gateway_profile.%[1]s.id, inext_appsec_gateway_profile.%[2]s.id]
+
+	depends_on = [
+		inext_appsec_gateway_profile.%[1]s,
+		inext_appsec_gateway_profile.%[2]s,
+	]
 }
-`
+`, profileName1, profileName2)
 }
 
 func publishEnforceConfigWithEmptyProfileIds() string {
