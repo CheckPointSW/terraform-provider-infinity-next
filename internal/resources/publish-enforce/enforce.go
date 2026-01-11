@@ -3,10 +3,12 @@ package publishenforce
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	models "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/publish-enforce"
+	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -25,9 +27,21 @@ func ShouldEnforceFromResourceData(d *schema.ResourceData) bool {
 	return d.Get("enforce").(bool)
 }
 
+// GetProfileIDsFromResourceData reads the profile_ids value from ResourceData
+// Returns an empty slice if not set
+func GetProfileIDsFromResourceData(d *schema.ResourceData) []string {
+	_, newVal, _ := utils.MustGetChange[[]any](d, "profile_ids")
+	if newVal == nil {
+		return []string{}
+	}
+
+	return utils.MustSliceAs[string](newVal)
+}
+
 // ExecuteEnforce triggers an enforce operation and waits for completion (same as `inext enforce`)
-func ExecuteEnforce(ctx context.Context, c *api.Client) error {
-	result, err := EnforcePolicy(ctx, c)
+// If profileIDs is empty, all profiles will be enforced; otherwise only the specified profiles
+func ExecuteEnforce(ctx context.Context, c *api.Client, profileIDs []string) error {
+	result, err := EnforcePolicy(ctx, c, profileIDs)
 	if err != nil {
 		return err
 	}
@@ -53,8 +67,20 @@ func ExecuteEnforce(ctx context.Context, c *api.Client) error {
 }
 
 // EnforcePolicy triggers an enforce operation
-func EnforcePolicy(ctx context.Context, c *api.Client) (*models.EnforcePolicyResult, error) {
-	query := `mutation {enforcePolicy {id}}`
+// If profileIDs is empty, all profiles will be enforced; otherwise only the specified profiles
+func EnforcePolicy(ctx context.Context, c *api.Client, profileIDs []string) (*models.EnforcePolicyResult, error) {
+	var query string
+	if len(profileIDs) == 0 {
+		query = `mutation {enforcePolicy {id}}`
+	} else {
+		// Build the profilesIds array for the GraphQL query
+		quotedIDs := make([]string, len(profileIDs))
+		for i, id := range profileIDs {
+			quotedIDs[i] = fmt.Sprintf(`"%s"`, id)
+		}
+
+		query = fmt.Sprintf(`mutation {enforcePolicy(profilesIds: [%s]) {id}}`, strings.Join(quotedIDs, ", "))
+	}
 
 	response, err := c.MakeGraphQLRequest(ctx, query, "enforcePolicy")
 	if err != nil {

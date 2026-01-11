@@ -11,13 +11,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
-// To ensure a single resource like this we use the same id for all resources
-const publishEnforceSingletonID = "publish-enforce-singleton"
-
 func ResourcePublishEnforce() *schema.Resource {
 	return &schema.Resource{
 		Description: "Publish and Enforce resource - triggers publish and/or enforce operations. " +
-			"Works the same as running `inext publish` and `inext enforce` CLI commands.",
+			"Works the same as running `inext publish` and `inext enforce` CLI commands. " +
+			"**Note: Only ONE instance of this resource is allowed per provider/account.**",
 
 		CreateContext: resourcePublishEnforceCreateOrUpdate,
 		ReadContext:   resourcePublishEnforceRead,
@@ -37,6 +35,14 @@ func ResourcePublishEnforce() *schema.Resource {
 				Optional:    true,
 				Default:     false,
 			},
+			"profile_ids": {
+				Type:        schema.TypeList,
+				Description: "List of profile IDs to enforce. If empty, all profiles will be enforced.",
+				Optional:    true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 		},
 	}
 }
@@ -47,8 +53,10 @@ func resourcePublishEnforceCreateOrUpdate(ctx context.Context, d *schema.Resourc
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
 
-	// Use singleton ID - only one instance of this resource allowed
-	d.SetId(publishEnforceSingletonID)
+	// Set a unique ID for this resource if it's new
+	if d.Id() == "" {
+		d.SetId("publish-enforce")
+	}
 
 	// Get new values from ResourceData
 	shouldPublish := publishenforce.ShouldPublishFromResourceData(d)
@@ -63,7 +71,8 @@ func resourcePublishEnforceCreateOrUpdate(ctx context.Context, d *schema.Resourc
 
 	// Execute enforce if requested (same as `inext enforce`)
 	if shouldEnforce {
-		if err := publishenforce.ExecuteEnforce(ctx, c); err != nil {
+		profileIDs := publishenforce.GetProfileIDsFromResourceData(d)
+		if err := publishenforce.ExecuteEnforce(ctx, c, profileIDs); err != nil {
 			return utils.DiagError("failed to enforce policy", err, diags)
 		}
 	}

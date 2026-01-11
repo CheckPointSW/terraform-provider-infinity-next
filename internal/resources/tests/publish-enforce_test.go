@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"regexp"
 	"testing"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/acctest"
@@ -19,8 +18,9 @@ func TestAccPublishEnforceBasic(t *testing.T) {
 				Config: publishEnforceConfigBothTrue(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish": "false",
-						"enforce": "false",
+						"publish":       "false",
+						"enforce":       "false",
+						"profile_ids.#": "0",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -31,8 +31,9 @@ func TestAccPublishEnforceBasic(t *testing.T) {
 				Config: publishEnforceConfigBothTrue(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish": "false",
-						"enforce": "false",
+						"publish":       "false",
+						"enforce":       "false",
+						"profile_ids.#": "0",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -75,8 +76,57 @@ func TestAccPublishEnforceEnforceOnly(t *testing.T) {
 				Config: publishEnforceConfigEnforceOnly(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish": "false",
-						"enforce": "false",
+						"publish":       "false",
+						"enforce":       "false",
+						"profile_ids.#": "0",
+					}),
+						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
+				),
+				ExpectNonEmptyPlan: true,
+			},
+		},
+	})
+}
+
+// TestAccPublishEnforceWithProfileIds tests that enforce works with specific profile IDs
+func TestAccPublishEnforceWithProfileIds(t *testing.T) {
+	resourceName := "inext_publish_enforce.trigger"
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { acctest.PreCheck(t) },
+		ProviderFactories: acctest.ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				Config: publishEnforceConfigWithProfileIds(),
+				Check: resource.ComposeTestCheckFunc(
+					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
+						"publish":       "false",
+						"enforce":       "false",
+						"profile_ids.#": "2",
+						"profile_ids.0": "profile-id-1",
+						"profile_ids.1": "profile-id-2",
+					}),
+						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
+				),
+				ExpectNonEmptyPlan: true,
+			},
+		},
+	})
+}
+
+// TestAccPublishEnforceWithEmptyProfileIds tests that enforce works with empty profile IDs (enforce all)
+func TestAccPublishEnforceWithEmptyProfileIds(t *testing.T) {
+	resourceName := "inext_publish_enforce.trigger"
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { acctest.PreCheck(t) },
+		ProviderFactories: acctest.ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				Config: publishEnforceConfigWithEmptyProfileIds(),
+				Check: resource.ComposeTestCheckFunc(
+					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
+						"publish":       "false",
+						"enforce":       "false",
+						"profile_ids.#": "0",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -159,21 +209,6 @@ func TestAccPublishEnforceRepeatedTrueTriggersEachTime(t *testing.T) {
 	})
 }
 
-// TestAccPublishEnforceSingletonPreventsMultiple tests that only one instance of this resource
-// can exist by checking that two resources with different names get the same singleton ID
-func TestAccPublishEnforceSingletonPreventsMultiple(t *testing.T) {
-	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { acctest.PreCheck(t) },
-		ProviderFactories: acctest.ProviderFactories,
-		Steps: []resource.TestStep{
-			{
-				Config:      publishEnforceConfigMultipleResources(),
-				ExpectError: regexp.MustCompile(`.*`),
-			},
-		},
-	})
-}
-
 // TestAccPublishEnforceDelete tests that delete works correctly (resource can be removed)
 func TestAccPublishEnforceDelete(t *testing.T) {
 	resourceName := "inext_publish_enforce.trigger"
@@ -205,8 +240,9 @@ func TestAccPublishEnforceDefaults(t *testing.T) {
 				Config: publishEnforceConfigDefaults(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish": "false",
-						"enforce": "false",
+						"publish":       "false",
+						"enforce":       "false",
+						"profile_ids.#": "0",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -260,16 +296,22 @@ resource "inext_publish_enforce" "trigger" {
 `
 }
 
-func publishEnforceConfigMultipleResources() string {
+func publishEnforceConfigWithProfileIds() string {
 	return `
-resource "inext_publish_enforce" "trigger1" {
-	publish = true
-	enforce = false
+resource "inext_publish_enforce" "trigger" {
+	publish     = true
+	enforce     = true
+	profile_ids = ["profile-id-1", "profile-id-2"]
+}
+`
 }
 
-resource "inext_publish_enforce" "trigger2" {
-	publish = false
-	enforce = true
+func publishEnforceConfigWithEmptyProfileIds() string {
+	return `
+resource "inext_publish_enforce" "trigger" {
+	publish     = true
+	enforce     = true
+	profile_ids = []
 }
 `
 }

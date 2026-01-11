@@ -37,6 +37,59 @@ Due to Terraform's lack of concept of session management/commiting changes at th
 
 This repository includes a CLI utility for this exact use case, which includes 2 commands: `publish` and `enforce`.
 
+### Using terraform resource
+
+You can use the `inext_publish_enforce` resource to trigger publish and enforce operations directly from Terraform.
+
+~> **Important:** There should be only **one** `inext_publish_enforce` resource in your configuration.
+
+Add the following to your Terraform configuration:
+
+```terraform
+variable "publish" {
+  type    = bool
+  default = false
+}
+
+variable "enforce" {
+  type    = bool
+  default = false
+}
+
+variable "profile_ids" {
+  type        = list(string)
+  default     = []
+  description = "List of profile IDs to enforce. If empty, all profiles will be enforced."
+}
+
+resource "inext_publish_enforce" "publish-and-enforce" {
+  publish     = var.publish
+  enforce     = var.enforce
+  profile_ids = var.profile_ids  # Optional: if empty, all profiles will be enforced
+
+  depends_on = [
+    # List all your resources here that should be created before publish/enforce
+    inext_web_app_asset.my-webapp-asset,
+    inext_web_app_practice.my-webapp-practice,
+    # ... add all other resources
+  ]
+}
+```
+
+Then run the following command to apply your configuration and trigger publish/enforce:
+
+```bash
+# Publish and enforce all profiles
+terraform apply -var="publish=true" -var="enforce=true"
+
+# Publish and enforce specific profiles only
+terraform apply -var="publish=true" -var="enforce=true" -var='profile_ids=["profile-id-1", "profile-id-2"]'
+```
+
+The `depends_on` block ensures that the publish and enforce operations only run after all other resources have been successfully created or updated.
+
+After each run the values are defaulted to false so using this must be **explicit**
+
 ### Using the `inext` CLI
 
 Download and install the CLI found in the [latest release](https://github.com/CheckPointSW/infinity-next-terraform-cli/releases/latest)
