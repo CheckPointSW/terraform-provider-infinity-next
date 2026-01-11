@@ -17,8 +17,8 @@ const (
 	taskStatusInProgress = "InProgress"
 	taskStatusSucceeded  = "Succeeded"
 	taskStatusFailed     = "Failed"
-	enforceTimeout       = 10 * time.Second
-	pollInterval         = 200 * time.Millisecond
+	enforceTimeout       = 20 * time.Second
+	pollInterval         = 300 * time.Millisecond
 )
 
 // ShouldEnforceFromResourceData reads the enforce value from ResourceData
