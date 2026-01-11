@@ -52,13 +52,10 @@ func ResourcePublishEnforce() *schema.Resource {
 func resourcePublishEnforceCreateOrUpdate(ctx context.Context, d *schema.ResourceData, meta any) diag.Diagnostics {
 	var diags diag.Diagnostics
 	c := meta.(*api.Client)
-
-	// Set a unique ID for this resource if it's new
 	if d.Id() == "" {
 		d.SetId("publish-enforce")
 	}
 
-	// Get new values from ResourceData
 	shouldPublish := publishenforce.ShouldPublishFromResourceData(d)
 	shouldEnforce := publishenforce.ShouldEnforceFromResourceData(d)
 
@@ -69,7 +66,6 @@ func resourcePublishEnforceCreateOrUpdate(ctx context.Context, d *schema.Resourc
 		}
 	}
 
-	// Execute enforce if requested (same as `inext enforce`)
 	if shouldEnforce {
 		profileIDs := publishenforce.GetProfileIDsFromResourceData(d)
 		if err := publishenforce.ExecuteEnforce(ctx, c, profileIDs); err != nil {
@@ -77,8 +73,6 @@ func resourcePublishEnforceCreateOrUpdate(ctx context.Context, d *schema.Resourc
 		}
 	}
 
-	// Reset state to false so that next apply with true will trigger a change
-	// This ensures publish/enforce runs every time user sets the value to true
 	d.Set("publish", false)
 	d.Set("enforce", false)
 
