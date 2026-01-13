@@ -37,7 +37,7 @@ func ResourcePublishEnforce() *schema.Resource {
 			},
 			"profile_ids": {
 				Type:        schema.TypeList,
-				Description: "List of profile IDs to enforce. If empty, all profiles will be enforced.",
+				Description: "List of profile IDs to enforce. If empty, all profiles will be enforced",
 				Optional:    true,
 				Elem: &schema.Schema{
 					Type: schema.TypeString,
