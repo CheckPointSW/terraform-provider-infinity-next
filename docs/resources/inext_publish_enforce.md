@@ -79,7 +79,7 @@ resource "inext_publish_enforce" "publish-and-enforce" {
 
 - `enforce` (Boolean) When true, triggers an enforce operation (same as `inext enforce`)
 - `id` (String) The ID of this resource.
-- `profile_ids` (List of String) List of profile IDs to enforce. If empty, all profiles will be enforced.
+- `profile_ids` (List of String) List of profile IDs to enforce. If empty, all profiles will be enforced
 - `publish` (Boolean) When true, triggers a publish operation (same as `inext publish`)
 
 
