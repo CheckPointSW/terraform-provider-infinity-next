@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
 	webapiasset "github.com/CheckPointSW/terraform-provider-infinity-next/internal/resources/web-api-asset"
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/utils"
@@ -44,8 +45,6 @@ func ResourceWebAPIAsset() *schema.Resource {
 		[]string{mTLSServer, mTLSClient}, false))
 	mTLSFileTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
 		[]string{mTLSFileTypePEM, mTLSFileTypeCRT, mTLSFileTypeDER, mTLSFileTypeP12, mTLSFileTypePFX, mTLSFileTypeP7B, mTLSFileTypeP7C, mTLSFileTypeCER}, false))
-	instructionsBlockFileTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
-		[]string{instructionsBlockFileTypeJSON, instructionsBlockFileTypeYML}, false))
 	instructionsBlockTypeValidation := validation.ToDiagFunc(validation.StringInSlice(
 		[]string{instructionsBlockLocation, instructionsBlockServer}, false))
 
@@ -187,7 +186,6 @@ func ResourceWebAPIAsset() *schema.Resource {
 				Type:        schema.TypeSet,
 				Description: "Settings for the proxy",
 				Optional:    true,
-				Computed:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"key": {
@@ -335,9 +333,8 @@ func ResourceWebAPIAsset() *schema.Resource {
 			},
 			"additional_instructions_blocks": {
 				Type:        schema.TypeSet,
-				Description: "The additional instructions blocks settings - location or server blocks",
+				Description: "(Use this instead of adding proxy settings with same data) The additional instructions blocks settings - location or server blocks. Allows to upload a file with a set of instructions to be inserted into the location/server blocks of underlying NGINX configuration of the appsec-gateway-profile.",
 				Optional:    true,
-				Computed:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"filename_id": {
@@ -349,18 +346,12 @@ func ResourceWebAPIAsset() *schema.Resource {
 							Type:        schema.TypeString,
 							Optional:    true,
 						},
-						"filename_type": {
-							Description:      "The type of the instructions block file - .json, .yml",
-							Type:             schema.TypeString,
-							Optional:         true,
-							ValidateDiagFunc: instructionsBlockFileTypeValidation,
-						},
 						"data_id": {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
 						"data": {
-							Description: "The instructions block file content. use file() function to read the file content",
+							Description: "The instructions block file content. use file() function to read the file content. use typical NGINX configuration syntax for the file content and file types",
 							Type:        schema.TypeString,
 							Sensitive:   true,
 							Optional:    true,
@@ -388,7 +379,6 @@ func ResourceWebAPIAsset() *schema.Resource {
 				Type:        schema.TypeSet,
 				Description: "The MTLS settings",
 				Optional:    true,
-				Computed:    true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"filename_id": {

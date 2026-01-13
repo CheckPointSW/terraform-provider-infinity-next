@@ -97,14 +97,13 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 				enable := proxySetting.Value == "true"
 				if blockType == blockTypeLocation || blockType == blockTypeServer {
 					blocksSchemaMap[blockType] = models.BlockSchema{
-						FilenameID:   blocksSchemaMap[blockType].FilenameID,
-						Filename:     blocksSchemaMap[blockType].Filename,
-						FilenameType: blocksSchemaMap[blockType].FilenameType,
-						DataID:       blocksSchemaMap[blockType].DataID,
-						Data:         blocksSchemaMap[blockType].Data,
-						Type:         blockType,
-						EnableID:     proxySetting.ID,
-						Enable:       enable,
+						FilenameID: blocksSchemaMap[blockType].FilenameID,
+						Filename:   blocksSchemaMap[blockType].Filename,
+						DataID:     blocksSchemaMap[blockType].DataID,
+						Data:       blocksSchemaMap[blockType].Data,
+						Type:       blockType,
+						EnableID:   proxySetting.ID,
+						Enable:     enable,
 					}
 
 				} else {
@@ -135,24 +134,18 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 
 					mimeType := strings.SplitN(proxySetting.Value, ":", 2)[1]
 					mimeType = strings.SplitN(mimeType, ";", 2)[0]
-					if blockType == blockTypeLocation || blockType == blockTypeServer {
-						fileExtensionsByType = models.MimeTypeToFileExtension(mimeType, false)
-					} else {
-						fileExtensionsByType = models.MimeTypeToFileExtension(mimeType, true)
-					}
-
+					fileExtensionsByType = models.MimeTypeToFileExtension(mimeType)
 				}
 
 				if blockType == blockTypeLocation || blockType == blockTypeServer {
 					blocksSchemaMap[blockType] = models.BlockSchema{
-						FilenameID:   blocksSchemaMap[blockType].FilenameID,
-						Filename:     blocksSchemaMap[blockType].Filename,
-						FilenameType: fileExtensionsByType,
-						DataID:       proxySetting.ID,
-						Data:         decodedData,
-						Type:         blockType,
-						EnableID:     blocksSchemaMap[blockType].EnableID,
-						Enable:       blocksSchemaMap[blockType].Enable,
+						FilenameID: blocksSchemaMap[blockType].FilenameID,
+						Filename:   blocksSchemaMap[blockType].Filename,
+						DataID:     proxySetting.ID,
+						Data:       decodedData,
+						Type:       blockType,
+						EnableID:   blocksSchemaMap[blockType].EnableID,
+						Enable:     blocksSchemaMap[blockType].Enable,
 					}
 
 				} else {
@@ -172,14 +165,13 @@ func ReadWebAPIAssetToResourceData(asset models.WebAPIAsset, d *schema.ResourceD
 			case mtlsClientFileName, mtlsServerFileName, locationConfigFileName, serverConfigFileName:
 				if blockType == blockTypeLocation || blockType == blockTypeServer {
 					blocksSchemaMap[blockType] = models.BlockSchema{
-						FilenameID:   proxySetting.ID,
-						Filename:     proxySetting.Value,
-						FilenameType: blocksSchemaMap[blockType].FilenameType,
-						DataID:       blocksSchemaMap[blockType].DataID,
-						Data:         blocksSchemaMap[blockType].Data,
-						Type:         blockType,
-						EnableID:     blocksSchemaMap[blockType].EnableID,
-						Enable:       blocksSchemaMap[blockType].Enable,
+						FilenameID: proxySetting.ID,
+						Filename:   proxySetting.Value,
+						DataID:     blocksSchemaMap[blockType].DataID,
+						Data:       blocksSchemaMap[blockType].Data,
+						Type:       blockType,
+						EnableID:   blocksSchemaMap[blockType].EnableID,
+						Enable:     blocksSchemaMap[blockType].Enable,
 					}
 
 				} else {

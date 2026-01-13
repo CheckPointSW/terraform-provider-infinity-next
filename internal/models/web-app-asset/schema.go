@@ -3,12 +3,15 @@ package models
 import (
 	"encoding/base64"
 	"fmt"
+
 	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
 )
 
 const (
 	SourceIdentifierValueIDSeparator = ";;;"
 	FileDataFormat                   = "data:%s;base64,%s"
+
+	mimeTypeDefault = "application/octet-stream"
 )
 
 // SchemaPracticeMode represents a PracticeMode field of a practice field of a
@@ -73,27 +76,25 @@ func NewFileSchemaEncode(filename, fileData, mTLSType, certificateType string, f
 // BlockSchema represents a field of web application asset as it is saved in the state file
 // this structure is aligned with the input schema (see web-app-asset.go file)
 type BlockSchema struct {
-	FilenameID   string `json:"filename_id,omitempty"`
-	Filename     string `json:"filename,omitempty"`
-	FilenameType string `json:"filename_type,omitempty"`
-	DataID       string `json:"data_id,omitempty"`
-	Data         string `json:"data"`
-	Type         string `json:"type,omitempty"`
-	EnableID     string `json:"enable_id,omitempty"`
-	Enable       bool   `json:"enable,omitempty"`
+	FilenameID string `json:"filename_id,omitempty"`
+	Filename   string `json:"filename,omitempty"`
+	DataID     string `json:"data_id,omitempty"`
+	Data       string `json:"data"`
+	Type       string `json:"type,omitempty"`
+	EnableID   string `json:"enable_id,omitempty"`
+	Enable     bool   `json:"enable,omitempty"`
 }
 
 type BlockSchemas []BlockSchema
 
-func NewFileSchemaEncodeBlocks(filename, fileData, fileType, blockType string, fileEnable bool) BlockSchema {
+func NewFileSchemaEncodeBlocks(filename, fileData, blockType string, fileEnable bool) BlockSchema {
 	b64Data := base64.StdEncoding.EncodeToString([]byte(fileData))
-	data := fmt.Sprintf(FileDataFormat, webAPIAssetModels.FileExtensionToMimeType(fileType), b64Data)
+	data := fmt.Sprintf(FileDataFormat, mimeTypeDefault, b64Data)
 	return BlockSchema{
-		Filename:     filename,
-		Data:         data,
-		FilenameType: fileType,
-		Type:         blockType,
-		Enable:       fileEnable,
+		Filename: filename,
+		Data:     data,
+		Type:     blockType,
+		Enable:   fileEnable,
 	}
 }
 
