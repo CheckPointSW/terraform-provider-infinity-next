@@ -99,7 +99,7 @@ resource "inext_web_api_asset" "my-webapi-asset" {
 ### Optional
 
 - `access_log` (Boolean) Advanced Proxy Setting - Activate access log on gateway.
-- `additional_instructions_blocks` (Block Set) The additional instructions blocks settings - location or server blocks (see [below for nested schema](#nestedblock--additional_instructions_blocks))
+- `additional_instructions_blocks` (Block Set) (Use this instead of adding proxy settings with same data) The additional instructions blocks settings - location or server blocks. Allows to upload a file with a set of instructions to be inserted into the location/server blocks of underlying NGINX configuration of the appsec-gateway-profile. (see [below for nested schema](#nestedblock--additional_instructions_blocks))
 - `behaviors` (Set of String) Behaviors used by the asset
 - `custom_headers` (Block Set) Advanced Proxy Settings - The custom headers settings (see [below for nested schema](#nestedblock--custom_headers))
 - `is_shares_urls` (Boolean) Indicates whether the asset shares its URLs with other assets. URL sharing is allowed only between assets linked to different profiles.
@@ -141,10 +141,9 @@ Required:
 
 Optional:
 
-- `data` (String, Sensitive) The instructions block file content. use file() function to read the file content
+- `data` (String, Sensitive) The instructions block file content. use file() function to read the file content. use typical NGINX configuration syntax for the file content and file types
 - `enable` (Boolean) Whether the instructions block is enabled
 - `filename` (String) The name of the instructions block file
-- `filename_type` (String) The type of the instructions block file - .json, .yml
 
 Read-Only:
 

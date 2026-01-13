@@ -24,12 +24,12 @@ provider "inext" {
 }
 
 resource "inext_web_app_asset" "compelte_proxy_settings_example" {
-  name  = "complete-web-app-example"
+  name = "complete-web-app-example"
   urls = [
     "https://app.example.com",
     "https://www.example.com",
-    "http://app.example.com",  # HTTP version for redirect to HTTPS
-    "http://www.example.com"   # HTTP version for redirect to HTTPS
+    "http://app.example.com", # HTTP version for redirect to HTTPS
+    "http://www.example.com"  # HTTP version for redirect to HTTPS
   ]
   upstream_url = "https://backend.example.com"
 
@@ -147,7 +147,7 @@ resource "inext_web_app_asset" "compelte_proxy_settings_example" {
   # -------------------------------------------------------------------------
 
   redirect_to_https = true
-  access_log = true
+  access_log        = true
   custom_headers {
     name  = "X-Custom-Security-Token"
     value = "SecureToken123"
