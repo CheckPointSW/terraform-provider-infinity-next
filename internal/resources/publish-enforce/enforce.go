@@ -3,6 +3,7 @@ package publishenforce
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/api"
@@ -68,18 +69,20 @@ func ExecuteEnforce(ctx context.Context, c *api.Client, profileIDs []string) err
 // EnforcePolicy triggers an enforce operation
 // If profileIDs is empty, all profiles will be enforced; otherwise only the specified profiles
 func EnforcePolicy(ctx context.Context, c *api.Client, profileIDs []string) (*models.EnforcePolicyResult, error) {
-	query := `mutation enforcePolicy($profilesIds: [ID!], $profileTypes: [ProfileType!]) {
-		enforcePolicy(profilesIds: $profilesIds, profileTypes: $profileTypes) {
-			id
+	var query string
+	if len(profileIDs) == 0 {
+		query = `mutation {enforcePolicy {id}}`
+	} else {
+		// Build the profilesIds array for the GraphQL query
+		quotedIDs := make([]string, len(profileIDs))
+		for i, id := range profileIDs {
+			quotedIDs[i] = fmt.Sprintf(`"%s"`, id)
 		}
-	}`
 
-	variables := map[string]any{
-		"profilesIds":  profileIDs,
-		"profileTypes": []string{},
+		query = fmt.Sprintf(`mutation {enforcePolicy(profilesIds: [%s]) {id}}`, strings.Join(quotedIDs, ", "))
 	}
 
-	response, err := c.MakeGraphQLRequest(ctx, query, "enforcePolicy", variables)
+	response, err := c.MakeGraphQLRequest(ctx, query, "enforcePolicy")
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute enforcePolicy mutation: %w", err)
 	}

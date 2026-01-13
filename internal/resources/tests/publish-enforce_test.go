@@ -3,16 +3,29 @@ package tests
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/acctest"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
+// publishEnforceSessionDelay is the delay between publish/enforce tests to prevent
+// overlapping sessions which can cause conflicts in the API
+const publishEnforceSessionDelay = 5 * time.Second
+
+// waitForPublishSession waits before starting a test to ensure previous publish/enforce
+// sessions have completed and don't overlap
+func waitForPublishSession(t *testing.T) {
+	t.Helper()
+	t.Logf("Waiting %v before test to prevent publish session overlap...", publishEnforceSessionDelay)
+	time.Sleep(publishEnforceSessionDelay)
+}
+
 // TestAccPublishEnforceBasic tests that publish and enforce work when set to true
 func TestAccPublishEnforceBasic(t *testing.T) {
 	resourceName := "inext_publish_enforce.trigger"
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { acctest.PreCheck(t) },
+		PreCheck:          func() { acctest.PreCheck(t); waitForPublishSession(t) },
 		ProviderFactories: acctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
@@ -48,7 +61,7 @@ func TestAccPublishEnforceBasic(t *testing.T) {
 func TestAccPublishEnforcePublishOnly(t *testing.T) {
 	resourceName := "inext_publish_enforce.trigger"
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { acctest.PreCheck(t) },
+		PreCheck:          func() { acctest.PreCheck(t); waitForPublishSession(t) },
 		ProviderFactories: acctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
@@ -70,7 +83,7 @@ func TestAccPublishEnforcePublishOnly(t *testing.T) {
 func TestAccPublishEnforceEnforceOnly(t *testing.T) {
 	resourceName := "inext_publish_enforce.trigger"
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { acctest.PreCheck(t) },
+		PreCheck:          func() { acctest.PreCheck(t); waitForPublishSession(t) },
 		ProviderFactories: acctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
@@ -97,7 +110,7 @@ func TestAccPublishEnforceWithProfileIds(t *testing.T) {
 	profileResourceName1 := "inext_appsec_gateway_profile." + profileName1
 	profileResourceName2 := "inext_appsec_gateway_profile." + profileName2
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { acctest.PreCheck(t) },
+		PreCheck:          func() { acctest.PreCheck(t); waitForPublishSession(t) },
 		ProviderFactories: acctest.ProviderFactories,
 		CheckDestroy:      acctest.CheckResourceDestroyed([]string{profileResourceName1, profileResourceName2}),
 		Steps: []resource.TestStep{
@@ -124,7 +137,7 @@ func TestAccPublishEnforceWithProfileIds(t *testing.T) {
 func TestAccPublishEnforceWithEmptyProfileIds(t *testing.T) {
 	resourceName := "inext_publish_enforce.trigger"
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { acctest.PreCheck(t) },
+		PreCheck:          func() { acctest.PreCheck(t); waitForPublishSession(t) },
 		ProviderFactories: acctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
@@ -147,7 +160,7 @@ func TestAccPublishEnforceWithEmptyProfileIds(t *testing.T) {
 func TestAccPublishEnforceFalseNoOp(t *testing.T) {
 	resourceName := "inext_publish_enforce.trigger"
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { acctest.PreCheck(t) },
+		PreCheck:          func() { acctest.PreCheck(t); waitForPublishSession(t) },
 		ProviderFactories: acctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
@@ -179,7 +192,7 @@ func TestAccPublishEnforceFalseNoOp(t *testing.T) {
 func TestAccPublishEnforceRepeatedTrueTriggersEachTime(t *testing.T) {
 	resourceName := "inext_publish_enforce.trigger"
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { acctest.PreCheck(t) },
+		PreCheck:          func() { acctest.PreCheck(t); waitForPublishSession(t) },
 		ProviderFactories: acctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
@@ -220,7 +233,7 @@ func TestAccPublishEnforceRepeatedTrueTriggersEachTime(t *testing.T) {
 func TestAccPublishEnforceDelete(t *testing.T) {
 	resourceName := "inext_publish_enforce.trigger"
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { acctest.PreCheck(t) },
+		PreCheck:          func() { acctest.PreCheck(t); waitForPublishSession(t) },
 		ProviderFactories: acctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
@@ -240,7 +253,7 @@ func TestAccPublishEnforceDelete(t *testing.T) {
 func TestAccPublishEnforceDefaults(t *testing.T) {
 	resourceName := "inext_publish_enforce.trigger"
 	resource.Test(t, resource.TestCase{
-		PreCheck:          func() { acctest.PreCheck(t) },
+		PreCheck:          func() { acctest.PreCheck(t); waitForPublishSession(t) },
 		ProviderFactories: acctest.ProviderFactories,
 		Steps: []resource.TestStep{
 			{
