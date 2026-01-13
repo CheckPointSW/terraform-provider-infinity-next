@@ -99,13 +99,12 @@ func TestAccWebApplicationAssetBasic(t *testing.T) {
 						"mtls.0.type":             "client",
 						"mtls.0.enable":           "true",
 
-						"additional_instructions_blocks.#":               "1",
-						"additional_instructions_blocks.0.filename":      "location.json",
-						"additional_instructions_blocks.0.filename_type": ".json",
-						"additional_instructions_blocks.0.data":          "location data",
-						"additional_instructions_blocks.0.type":          "location_instructions",
-						"additional_instructions_blocks.0.enable":        "true",
-						"custom_headers.#":                               "1",
+						"additional_instructions_blocks.#":          "1",
+						"additional_instructions_blocks.0.filename": "location.conf",
+						"additional_instructions_blocks.0.data":     "location data",
+						"additional_instructions_blocks.0.type":     "location_instructions",
+						"additional_instructions_blocks.0.enable":   "true",
+						"custom_headers.#":                          "1",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -216,14 +215,13 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"mtls.0.type":                      "client",
 						"mtls.0.enable":                    "true",
 						"additional_instructions_blocks.#": "1",
-						"additional_instructions_blocks.0.filename":      "location.json",
-						"additional_instructions_blocks.0.filename_type": ".json",
-						"additional_instructions_blocks.0.data":          "location data",
-						"additional_instructions_blocks.0.type":          "location_instructions",
-						"additional_instructions_blocks.0.enable":        "true",
-						"redirect_to_https":                              "true",
-						"access_log":                                     "true",
-						"custom_headers.#":                               "1",
+						"additional_instructions_blocks.0.filename": "location.conf",
+						"additional_instructions_blocks.0.data":     "location data",
+						"additional_instructions_blocks.0.type":     "location_instructions",
+						"additional_instructions_blocks.0.enable":   "true",
+						"redirect_to_https":                         "true",
+						"access_log":                                "true",
+						"custom_headers.#":                          "1",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -304,28 +302,27 @@ func TestAccWebApplicationAssetFull(t *testing.T) {
 						"tags.1.%":                                    "3",
 						"tags.2.%":                                    "3",
 
-						"mtls.#":                                         "2",
-						"mtls.0.filename":                                "newfile.crt",
-						"mtls.0.certificate_type":                        ".der",
-						"mtls.0.data":                                    "new cert data",
-						"mtls.0.type":                                    "server",
-						"mtls.0.enable":                                  "true",
-						"mtls.1.filename":                                "newfile2.p12",
-						"mtls.1.certificate_type":                        ".p12",
-						"mtls.1.data":                                    "new cert data2",
-						"mtls.1.type":                                    "client",
-						"mtls.1.enable":                                  "false",
-						"additional_instructions_blocks.#":               "2",
-						"additional_instructions_blocks.0.type":          "location_instructions",
-						"additional_instructions_blocks.0.enable":        "false",
-						"additional_instructions_blocks.1.filename":      "server.json",
-						"additional_instructions_blocks.1.filename_type": ".json",
-						"additional_instructions_blocks.1.data":          "server data",
-						"additional_instructions_blocks.1.type":          "server_instructions",
-						"additional_instructions_blocks.1.enable":        "true",
-						"redirect_to_https":                              "false",
-						"access_log":                                     "false",
-						"custom_headers.#":                               "2",
+						"mtls.#":                                    "2",
+						"mtls.0.filename":                           "newfile.crt",
+						"mtls.0.certificate_type":                   ".der",
+						"mtls.0.data":                               "new cert data",
+						"mtls.0.type":                               "server",
+						"mtls.0.enable":                             "true",
+						"mtls.1.filename":                           "newfile2.p12",
+						"mtls.1.certificate_type":                   ".p12",
+						"mtls.1.data":                               "new cert data2",
+						"mtls.1.type":                               "client",
+						"mtls.1.enable":                             "false",
+						"additional_instructions_blocks.#":          "2",
+						"additional_instructions_blocks.0.type":     "location_instructions",
+						"additional_instructions_blocks.0.enable":   "false",
+						"additional_instructions_blocks.1.filename": "server.conf",
+						"additional_instructions_blocks.1.data":     "server data",
+						"additional_instructions_blocks.1.type":     "server_instructions",
+						"additional_instructions_blocks.1.enable":   "true",
+						"redirect_to_https":                         "false",
+						"access_log":                                "false",
+						"custom_headers.#":                          "2",
 					}),
 						resource.TestCheckResourceAttrSet(assetResourceName, "id"),
 						resource.TestCheckResourceAttrSet(assetResourceName, "practice.0.id"),
@@ -427,8 +424,7 @@ resource "inext_web_app_asset" %[1]q {
 		enable = true
 	}
 	additional_instructions_blocks {
-		filename = "location.json"
-		filename_type = ".json"
+		filename = "location.conf"
 		data	 = "location data"
 		type = "location_instructions"
 		enable = true
@@ -585,8 +581,7 @@ resource "inext_web_app_asset" %[1]q {
 		enable = true
 	}
 	additional_instructions_blocks {
-		filename = "location.json"
-		filename_type = ".json"
+		filename = "location.conf"
 		data	 = "location data"
 		type = "location_instructions"
 		enable = true
@@ -790,15 +785,13 @@ resource "inext_web_app_asset" %[1]q {
 		enable = false
 	}
 	additional_instructions_blocks {
-		filename = "location.json"
-		filename_type = ".json"
+		filename = "location.conf"
 		data	 = "location data"
 		type = "location_instructions"
 		enable = false
 	}
 	additional_instructions_blocks {
-		filename = "server.json"
-		filename_type = ".json"
+		filename = "server.conf"
 		data	 = "server data"
 		type = "server_instructions"
 		enable = true
