@@ -21,6 +21,14 @@ func waitForPublishSession(t *testing.T) {
 	time.Sleep(publishEnforceSessionDelay)
 }
 
+// delayBetweenSteps returns a PreConfig function that adds a delay between test steps
+func delayBetweenSteps() func() {
+	return func() {
+		fmt.Printf("Waiting %v between steps to prevent publish session overlap...\n", publishEnforceSessionDelay)
+		time.Sleep(publishEnforceSessionDelay)
+	}
+}
+
 // TestAccPublishEnforceBasic tests that publish and enforce work when set to true
 func TestAccPublishEnforceBasic(t *testing.T) {
 	resourceName := "inext_publish_enforce.trigger"
@@ -42,7 +50,8 @@ func TestAccPublishEnforceBasic(t *testing.T) {
 				ExpectNonEmptyPlan: true,
 			},
 			{
-				Config: publishEnforceConfigBothTrue(),
+				PreConfig: delayBetweenSteps(),
+				Config:    publishEnforceConfigBothTrue(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"publish":       "false",
@@ -174,7 +183,8 @@ func TestAccPublishEnforceFalseNoOp(t *testing.T) {
 				),
 			},
 			{
-				Config: publishEnforceConfigBothFalse(),
+				PreConfig: delayBetweenSteps(),
+				Config:    publishEnforceConfigBothFalse(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"publish": "false",
@@ -206,7 +216,8 @@ func TestAccPublishEnforceRepeatedTrueTriggersEachTime(t *testing.T) {
 				ExpectNonEmptyPlan: true,
 			},
 			{
-				Config: publishEnforceConfigPublishOnly(),
+				PreConfig: delayBetweenSteps(),
+				Config:    publishEnforceConfigPublishOnly(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"publish": "false",
@@ -216,7 +227,8 @@ func TestAccPublishEnforceRepeatedTrueTriggersEachTime(t *testing.T) {
 				ExpectNonEmptyPlan: true,
 			},
 			{
-				Config: publishEnforceConfigPublishOnly(),
+				PreConfig: delayBetweenSteps(),
+				Config:    publishEnforceConfigPublishOnly(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
 						"publish": "false",
@@ -243,7 +255,8 @@ func TestAccPublishEnforceDelete(t *testing.T) {
 				),
 			},
 			{
-				Config: `# Empty config to trigger destroy`,
+				PreConfig: delayBetweenSteps(),
+				Config:    `# Empty config to trigger destroy`,
 			},
 		},
 	})
