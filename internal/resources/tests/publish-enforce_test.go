@@ -11,7 +11,7 @@ import (
 
 // publishEnforceSessionDelay is the delay between publish/enforce tests to prevent
 // overlapping sessions which can cause conflicts in the API
-const publishEnforceSessionDelay = 30 * time.Second
+const publishEnforceSessionDelay = 1 * time.Minute
 
 // waitForPublishSession waits before starting a test to ensure previous publish/enforce
 // sessions have completed and don't overlap
