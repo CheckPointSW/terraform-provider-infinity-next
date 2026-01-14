@@ -58,6 +58,7 @@ func Provider() *schema.Provider {
 			"inext_exceptions":             resources.ResourceExceptions(),
 			"inext_access_token":           resources.ResourceAccessToken(),
 			"inext_web_user_response":      resources.ResourceWebUserResponse(),
+			"inext_publish_enforce":        resources.ResourcePublishEnforce(),
 		},
 		ConfigureContextFunc: providerConfigure,
 	}

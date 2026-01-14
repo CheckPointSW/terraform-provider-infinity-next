@@ -3,6 +3,7 @@ package models
 import (
 	"encoding/base64"
 	"fmt"
+
 	webAPIAssetModels "github.com/CheckPointSW/terraform-provider-infinity-next/internal/models/web-api-asset"
 )
 
