@@ -37,6 +37,54 @@ Due to Terraform's lack of concept of session management/commiting changes at th
 
 This repository includes a CLI utility for this exact use case, which includes 2 commands: `publish` and `enforce`.
 
+### Using terraform resource
+
+You can use the `inext_publish_enforce` resource to trigger publish and enforce operations directly from Terraform.
+
+~> **Important:** There should be only **one** `inext_publish_enforce` resource in your configuration.
+
+Add the following to your Terraform configuration:
+
+```terraform
+variable "publish" {
+  type    = bool
+  default = false
+}
+
+variable "enforce" {
+  type    = bool
+  default = false
+}
+
+resource "inext_publish_enforce" "publish-and-enforce" {
+  publish     = var.publish
+  enforce     = var.enforce
+
+  # Optional: specify profile IDs to enforce directly in the resource
+  # If empty or not provided, all profiles will be enforced
+  # profile_ids = ["profile-id-1", "profile-id-2"]
+
+  depends_on = [
+    # IMPORTANT: List ALL your resources here to ensure publish/enforce runs last
+    inext_web_app_asset.my-webapp-asset,
+    inext_web_app_practice.my-webapp-practice,
+    # ... add all other resources
+  ]
+}
+```
+
+~> **Important:** The `depends_on` block **must include all other resources** in your configuration. This ensures that the publish and enforce operations only run after all resources have been successfully created or updated. Failing to include all resources may cause conflicts or result in incomplete enforcement.
+
+Then run the following command to apply your configuration and trigger publish/enforce:
+
+```bash
+terraform apply -var="publish=true" -var="enforce=true"
+```
+
+The `depends_on` block ensures that the publish and enforce operations only run after all other resources have been successfully created or updated.
+
+After each run the values are defaulted to false so using this must be **explicit**
+
 ### Using the `inext` CLI
 
 Download and install the CLI found in the [latest release](https://github.com/CheckPointSW/infinity-next-terraform-cli/releases/latest)
