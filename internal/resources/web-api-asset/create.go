@@ -280,7 +280,7 @@ func mapToBlocksInput(blocksMap map[string]any) models.BlockSchema {
 		return models.BlockSchema{}
 	}
 
-	blockFile = models.NewFileSchemaEncodeBlocks(blockFile.Filename, blockFile.Data, blockFile.FilenameType, blockFile.Type, blockFile.Enable)
+	blockFile = models.NewFileSchemaEncodeBlocks(blockFile.Filename, blockFile.Data, blockFile.Type, blockFile.Enable)
 
 	if blocksMap["filename_id"] != nil {
 		blockFile.FilenameID = blocksMap["filename_id"].(string)

@@ -101,6 +101,23 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 	}
 
 	if oldMTLSs, newMTLSs, hasChange := utils.GetChangeWithParse(d, "mtls", parsemTLSs); hasChange {
+		newMTLSsIndicators := newMTLSs.ToIndicatorMap()
+		for _, old := range oldMTLSs {
+			if _, ok := newMTLSsIndicators[old.Type]; !ok {
+				if old.EnableID != "" {
+					updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, old.EnableID)
+				}
+
+				if old.DataID != "" {
+					updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, old.DataID)
+				}
+
+				if old.FilenameID != "" {
+					updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, old.FilenameID)
+				}
+			}
+		}
+
 		oldMTLSsIndicators := oldMTLSs.ToIndicatorMap()
 		mTLSsToAdd := models.MTLSSchemas{}
 		for _, newMTLS := range newMTLSs {
@@ -109,6 +126,7 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 				mTLSsToAdd = append(mTLSsToAdd, newMTLS)
 				continue
 			}
+
 			if oldMTLS.Enable != newMTLS.Enable {
 				var enableToString string
 				if newMTLS.Enable {
@@ -121,6 +139,7 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 				if oldMTLS.Type == mtlsTypeServer {
 					key = mtlsServerEnable
 				}
+
 				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
 					ID:    oldMTLS.EnableID,
 					Key:   key,
@@ -242,7 +261,6 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 			if _, ok := oldCustomHeadersIndicatorMap[nameAndValue]; !ok {
 				customHeadersToAdd = append(customHeadersToAdd, newCustomHeader)
 			}
-
 		}
 
 		newCustomHeadersIndicatorMap := newCustomHeaders.ToIndicatorMap()
@@ -251,7 +269,6 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 			if _, ok := newCustomHeadersIndicatorMap[nameAndValue]; !ok {
 				updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, oldCustomHeader.HeaderID)
 			}
-
 		}
 
 		for _, customHeaderToAdd := range customHeadersToAdd {
@@ -263,6 +280,23 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 	}
 
 	if oldBlocks, newBlocks, hasChange := utils.GetChangeWithParse(d, "additional_instructions_blocks", parseBlocks); hasChange {
+		newBlocksIndicatorMap := newBlocks.ToIndicatorMap()
+		for _, old := range oldBlocks {
+			if _, ok := newBlocksIndicatorMap[old.Type]; !ok {
+				if old.EnableID != "" {
+					updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, old.EnableID)
+				}
+
+				if old.DataID != "" {
+					updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, old.DataID)
+				}
+
+				if old.FilenameID != "" {
+					updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, old.FilenameID)
+				}
+			}
+		}
+
 		oldBlocksIndicatorMap := oldBlocks.ToIndicatorMap()
 		additionalBlocksToAdd := models.BlockSchemas{}
 		for _, newBlock := range newBlocks {
@@ -287,28 +321,13 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 					Value: "false",
 				})
 
-				if oldBlock.Enable {
-					if oldBlock.FilenameID != "" {
-						updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, oldBlock.FilenameID)
-					}
-
-					if oldBlock.DataID != "" {
-						updateInput.RemoveProxySetting = append(updateInput.RemoveProxySetting, oldBlock.DataID)
-					}
-
-				}
-
 				continue
 			}
 
 			if oldBlock.Enable != newBlock.Enable {
 				enableKey := serverConfigEnable
-				dataKey := serverConfigData
-				filenameKey := serverConfigFileName
 				if newBlock.Type == blockTypeLocation {
 					enableKey = locationConfigEnable
-					dataKey = locationConfigData
-					filenameKey = locationConfigFileName
 				}
 
 				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
@@ -316,19 +335,6 @@ func UpdateWebApplicationAssetInputFromResourceData(d *schema.ResourceData, asse
 					Key:   enableKey,
 					Value: "true",
 				})
-
-				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
-					ID:    oldBlock.DataID,
-					Key:   dataKey,
-					Value: newBlock.Data,
-				})
-
-				updateInput.UpdateProxySetting = append(updateInput.UpdateProxySetting, models.UpdateProxySetting{
-					ID:    oldBlock.FilenameID,
-					Key:   filenameKey,
-					Value: newBlock.Filename,
-				})
-
 			}
 
 			if oldBlock.Data != newBlock.Data || oldBlock.Filename != newBlock.Filename {

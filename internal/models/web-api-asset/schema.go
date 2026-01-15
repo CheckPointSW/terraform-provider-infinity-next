@@ -18,16 +18,11 @@ const (
 	mTLSFileTypeP7C = ".p7c"
 	mTLSFileTypeCER = ".cer"
 
-	instructionsBlockTypeJSON = ".json"
-	instructionsBlockTypeYAML = ".yaml"
-
-	mimeTypePEM  = "application/octet-stream"
-	mimeTypeDER  = "application/x-x509-ca-cert"
-	mimeTypeP12  = "application/x-pkcs12"
-	mimeTypeP7B  = "application/x-pkcs7-certificates"
-	mimeTypeP7C  = "application/pkcs7-mime"
-	mimeTypeJSON = "application/json"
-	mimeTypeYAML = "application/octet-stream"
+	mimeTypeDefault = "application/octet-stream"
+	mimeTypeDER     = "application/x-x509-ca-cert"
+	mimeTypeP12     = "application/x-pkcs12"
+	mimeTypeP7B     = "application/x-pkcs7-certificates"
+	mimeTypeP7C     = "application/pkcs7-mime"
 )
 
 // SchemaPracticeMode represents a PracticeMode field of a practice field of a web API asset as it is saved in the state file
@@ -84,7 +79,7 @@ type MTLSSchemas []MTLSSchema
 func FileExtensionToMimeType(extension string) string {
 	switch extension {
 	case mTLSFileTypePEM:
-		return mimeTypePEM
+		return mimeTypeDefault
 	case mTLSFileTypeDER, mTLSFileTypeCER, mTLSFileTypeCRT:
 		return mimeTypeDER
 	case mTLSFileTypeP12, mTLSFileTypePFX:
@@ -93,31 +88,16 @@ func FileExtensionToMimeType(extension string) string {
 		return mimeTypeP7B
 	case mTLSFileTypeP7C:
 		return mimeTypeP7C
-	case instructionsBlockTypeJSON:
-		return mimeTypeJSON
-	case instructionsBlockTypeYAML:
-		return mimeTypeYAML
 	default:
-		return mimeTypePEM
+		return mimeTypeDefault
 	}
 }
 
 // MimeTypeToFileExtension returns the file extension for a given MIME type
 // the function is used to set the certificate type in the MTLSSchema
-func MimeTypeToFileExtension(mimeType string, isMTLS bool) string {
-	if !isMTLS {
-		switch mimeType {
-		case mimeTypeJSON:
-			return instructionsBlockTypeJSON
-		case mimeTypeYAML:
-			return instructionsBlockTypeYAML
-		default:
-			return instructionsBlockTypeYAML
-		}
-	}
-
+func MimeTypeToFileExtension(mimeType string) string {
 	switch mimeType {
-	case mimeTypePEM:
+	case mimeTypeDefault:
 		return mTLSFileTypePEM
 	case mimeTypeDER:
 		return mTLSFileTypeDER
@@ -147,27 +127,25 @@ func NewFileSchemaEncode(filename, fileData, mTLSType, certificateType string, f
 // BlockSchema represents a field of web api asset as it is saved in the state file
 // this structure is aligned with the input schema (see web-api-asset.go file)
 type BlockSchema struct {
-	FilenameID   string `json:"filename_id,omitempty"`
-	Filename     string `json:"filename,omitempty"`
-	FilenameType string `json:"filename_type,omitempty"`
-	DataID       string `json:"data_id,omitempty"`
-	Data         string `json:"data"`
-	Type         string `json:"type,omitempty"`
-	EnableID     string `json:"enable_id,omitempty"`
-	Enable       bool   `json:"enable,omitempty"`
+	FilenameID string `json:"filename_id,omitempty"`
+	Filename   string `json:"filename,omitempty"`
+	DataID     string `json:"data_id,omitempty"`
+	Data       string `json:"data"`
+	Type       string `json:"type,omitempty"`
+	EnableID   string `json:"enable_id,omitempty"`
+	Enable     bool   `json:"enable,omitempty"`
 }
 
 type BlockSchemas []BlockSchema
 
-func NewFileSchemaEncodeBlocks(filename, fileData, fileType, blockType string, fileEnable bool) BlockSchema {
+func NewFileSchemaEncodeBlocks(filename, fileData, blockType string, fileEnable bool) BlockSchema {
 	b64Data := base64.StdEncoding.EncodeToString([]byte(fileData))
-	data := fmt.Sprintf(FileDataFormat, FileExtensionToMimeType(fileType), b64Data)
+	data := fmt.Sprintf(FileDataFormat, mimeTypeDefault, b64Data)
 	return BlockSchema{
-		Filename:     filename,
-		Data:         data,
-		FilenameType: fileType,
-		Type:         blockType,
-		Enable:       fileEnable,
+		Filename: filename,
+		Data:     data,
+		Type:     blockType,
+		Enable:   fileEnable,
 	}
 }
 

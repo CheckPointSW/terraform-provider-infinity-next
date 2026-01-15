@@ -138,3 +138,7 @@ cd cmd
 go build -o inext
 cp inext /usr/local/bin
 ```
+
+## Note
+
+Do not edit objects both from the Infinity Next portal and using this provider, as it may cause conflicts and unexpected behavior.

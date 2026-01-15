@@ -95,38 +95,38 @@ jobs:
 
       - name: TF acceptance tests push
         if: ${{ github.event_name == 'push' }}
-        timeout-minutes: 20
+        timeout-minutes: 100
         env:
           INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
           INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
           TF_ACC: "1"
         run: |
           cmd/inext discard
-          go test --timeout 20m -v -cover ./internal/resources/tests/
+          go test --timeout 100m -v -cover ./internal/resources/tests/
           cmd/inext discard
 
       - name: TF acceptance tests pull request
         if: ${{ github.event_name == 'pull_request' }}
-        timeout-minutes: 20
+        timeout-minutes: 100
         env:
           INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
           INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
           TF_ACC: "1"
         run: |
           cmd/inext discard
-          go test --timeout 20m -v -cover ./internal/resources/tests/
+          go test --timeout 100m -v -cover ./internal/resources/tests/
           cmd/inext discard
 
       - name: TF acceptance tests schedule
         if: ${{ github.event_name == 'schedule' }}
-        timeout-minutes: 20
+        timeout-minutes: 100
         env:
           INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
           INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
           TF_ACC: "1"
         run: |
           cmd/inext discard
-          go test --timeout 20m -v -cover ./internal/resources/tests/
+          go test --timeout 100m -v -cover ./internal/resources/tests/
           cmd/inext discard
   test-dev:
     name: Test Dev
@@ -174,7 +174,7 @@ jobs:
 
       - name: TF acceptance tests push
         if: ${{ github.event_name == 'push' }}
-        timeout-minutes: 20
+        timeout-minutes: 100
         env:
           INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
           INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
@@ -182,12 +182,12 @@ jobs:
           TF_ACC: "1"
         run: |
           cmd/inext discard
-          go test --timeout 20m -v -cover ./internal/resources/tests/
+          go test --timeout 100m -v -cover ./internal/resources/tests/
           cmd/inext discard
 
       - name: TF acceptance tests pull request
         if: ${{ github.event_name == 'pull_request' }}
-        timeout-minutes: 20
+        timeout-minutes: 100
         env:
           INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
           INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
@@ -195,12 +195,12 @@ jobs:
           TF_ACC: "1"
         run: |
           cmd/inext discard
-          go test --timeout 20m -v -cover ./internal/resources/tests/
+          go test --timeout 100m -v -cover ./internal/resources/tests/
           cmd/inext discard
 
       - name: TF acceptance tests schedule
         if: ${{ github.event_name == 'schedule' }}
-        timeout-minutes: 20
+        timeout-minutes: 100
         env:
           INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
           INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
@@ -208,7 +208,7 @@ jobs:
           TF_ACC: "1"
         run: |
           cmd/inext discard
-          go test --timeout 20m -v -cover ./internal/resources/tests/
+          go test --timeout 100m -v -cover ./internal/resources/tests/
           cmd/inext discard
   #  test-preprod:
   #    name: Test PreProd
@@ -256,7 +256,7 @@ jobs:
   #
   #    - name: TF acceptance tests push
   #      if: ${{ github.event_name == 'push' }}
-  #      timeout-minutes: 20
+  #      timeout-minutes: 100
   #      env:
   #        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
   #        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
@@ -264,12 +264,12 @@ jobs:
   #        TF_ACC: "1"
   #      run: |
   #        cmd/inext discard
-  #        go test --timeout 20m -v -cover ./internal/resources/tests/
+  #        go test --timeout 100m -v -cover ./internal/resources/tests/
   #        cmd/inext discard
   #
   #    - name: TF acceptance tests pull request
   #      if: ${{ github.event_name == 'pull_request' }}
-  #      timeout-minutes: 20
+  #      timeout-minutes: 100
   #      env:
   #        INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
   #        INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
@@ -277,12 +277,12 @@ jobs:
   #        TF_ACC: "1"
   #      run: |
   #        cmd/inext discard
-  #        go test --timeout 20m -v -cover ./internal/resources/tests/
+  #        go test --timeout 100m -v -cover ./internal/resources/tests/
   #        cmd/inext discard
 
   # - name: TF acceptance tests schedule
   #   if: ${{ github.event_name == 'schedule' }}
-  #   timeout-minutes: 20
+  #   timeout-minutes: 100
   #   env:
   #     INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
   #     INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
@@ -290,7 +290,7 @@ jobs:
   #     TF_ACC: "1"
   #   run: |
   #     cmd/inext discard
-  #     go test --timeout 20m -v -cover ./internal/resources/tests/
+  #     go test --timeout 100m -v -cover ./internal/resources/tests/
   #     cmd/inext discard
   test-produs:
     name: Test Prod US
@@ -338,7 +338,7 @@ jobs:
 
       - name: TF acceptance tests push
         if: ${{ github.event_name == 'push' }}
-        timeout-minutes: 20
+        timeout-minutes: 100
         env:
           INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PUSH }}
           INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PUSH }}
@@ -346,12 +346,12 @@ jobs:
           TF_ACC: "1"
         run: |
           cmd/inext discard
-          go test --timeout 20m -v -cover ./internal/resources/tests/
+          go test --timeout 100m -v -cover ./internal/resources/tests/
           cmd/inext discard
 
       - name: TF acceptance tests pull request
         if: ${{ github.event_name == 'pull_request' }}
-        timeout-minutes: 20
+        timeout-minutes: 100
         env:
           INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_PR }}
           INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_PR }}
@@ -359,12 +359,12 @@ jobs:
           TF_ACC: "1"
         run: |
           cmd/inext discard
-          go test --timeout 20m -v -cover ./internal/resources/tests/
+          go test --timeout 100m -v -cover ./internal/resources/tests/
           cmd/inext discard
 
       - name: TF acceptance tests schedule
         if: ${{ github.event_name == 'schedule' }}
-        timeout-minutes: 20
+        timeout-minutes: 100
         env:
           INEXT_CLIENT_ID: ${{ secrets.INEXT_CLIENT_ID_SCHEDULE }}
           INEXT_ACCESS_KEY: ${{ secrets.INEXT_ACCESS_KEY_SCHEDULE }}
@@ -372,5 +372,5 @@ jobs:
           TF_ACC: "1"
         run: |
           cmd/inext discard
-          go test --timeout 20m -v -cover ./internal/resources/tests/
+          go test --timeout 100m -v -cover ./internal/resources/tests/
           cmd/inext discard
