@@ -16,3 +16,8 @@ type ValidationMessage struct {
 type EnforcePolicyResult struct {
 	ID string
 }
+
+// AsyncPublishResult represents the result of an async publish operation
+type AsyncPublishResult struct {
+	ID string
+}

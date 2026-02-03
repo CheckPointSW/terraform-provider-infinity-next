@@ -43,6 +43,20 @@ func ResourcePublishEnforce() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"profile_types": {
+				Type:        schema.TypeList,
+				Description: "List of profile types to publish (e.g., WebApplication, WebAPI, Kubernetes, Embedded)",
+				Optional:    true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"skip_nginx_validation": {
+				Type:        schema.TypeBool,
+				Description: "When true, skips nginx validation during publish",
+				Optional:    true,
+				Default:     false,
+			},
 		},
 	}
 }
