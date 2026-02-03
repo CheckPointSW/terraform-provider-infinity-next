@@ -76,12 +76,7 @@ func AsyncPublishChanges(ctx context.Context, c *api.Client, opts *PublishOption
 	var args []string
 	if opts != nil {
 		if len(opts.ProfileTypes) > 0 {
-			quotedTypes := make([]string, len(opts.ProfileTypes))
-			for i, pt := range opts.ProfileTypes {
-				quotedTypes[i] = fmt.Sprintf(`"%s"`, pt)
-			}
-
-			args = append(args, fmt.Sprintf("profileTypes: [%s]", strings.Join(quotedTypes, ", ")))
+			args = append(args, fmt.Sprintf("profileTypes: [%s]", strings.Join(opts.ProfileTypes, ", ")))
 		}
 
 		if opts.SkipNginxValidation {

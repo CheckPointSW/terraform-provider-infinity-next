@@ -17,7 +17,7 @@ const (
 	taskStatusInProgress = "InProgress"
 	taskStatusSucceeded  = "Succeeded"
 	taskStatusFailed     = "Failed"
-	enforceTimeout       = 20 * time.Second
+	enforceTimeout       = 5 * time.Minute
 	pollInterval         = 300 * time.Millisecond
 )
 
