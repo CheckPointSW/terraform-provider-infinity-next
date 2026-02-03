@@ -13,7 +13,7 @@ import (
 
 func ResourcePublishEnforce() *schema.Resource {
 	return &schema.Resource{
-		Description: "Publish and Enforce resource - triggers publish and/or enforce operations. " +
+		Description: "Publish and Enforce resource - triggers publish and / or enforce operations. " +
 			"Works the same as running `inext publish` and `inext enforce` CLI commands. " +
 			"**Note: Only ONE instance of this resource is allowed per provider/account.**",
 
