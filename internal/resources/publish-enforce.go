@@ -75,7 +75,8 @@ func resourcePublishEnforceCreateOrUpdate(ctx context.Context, d *schema.Resourc
 
 	// Execute publish if requested (same as `inext publish`)
 	if shouldPublish {
-		if err := publishenforce.ExecutePublish(ctx, c); err != nil {
+		publishOpts := publishenforce.GetPublishOptionsFromResourceData(d)
+		if err := publishenforce.ExecutePublish(ctx, c, publishOpts); err != nil {
 			return utils.DiagError("failed to publish changes", err, diags)
 		}
 	}
