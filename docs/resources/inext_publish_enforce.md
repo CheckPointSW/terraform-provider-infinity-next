@@ -3,12 +3,12 @@
 page_title: "inext_publish_enforce Resource - terraform-provider-infinity-next"
 subcategory: ""
 description: |-
-  Publish and Enforce resource - triggers publish and/or enforce operations. Works the same as running inext publish and inext enforce CLI commands. Note: Only ONE instance of this resource is allowed per provider/account.
+  Publish and Enforce resource - triggers publish and / or enforce operations. Works the same as running inext publish and inext enforce CLI commands. Note: Only ONE instance of this resource is allowed per provider/account.
 ---
 
 # inext_publish_enforce (Resource)
 
-Publish and Enforce resource - triggers publish and/or enforce operations. Works the same as running `inext publish` and `inext enforce` CLI commands. **Note: Only ONE instance of this resource is allowed per provider/account.**
+Publish and Enforce resource - triggers publish and / or enforce operations. Works the same as running `inext publish` and `inext enforce` CLI commands. **Note: Only ONE instance of this resource is allowed per provider/account.**
 
 ## Example Usage
 
