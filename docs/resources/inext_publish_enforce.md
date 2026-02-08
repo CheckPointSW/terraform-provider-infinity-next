@@ -80,8 +80,8 @@ resource "inext_publish_enforce" "publish-and-enforce" {
 - `enforce` (Boolean) When true, triggers an enforce operation (same as `inext enforce`)
 - `id` (String) The ID of this resource.
 - `profile_ids` (List of String) List of profile IDs to enforce. If empty, all profiles will be enforced
-- `profile_types` (List of String) List of profile types to publish (e.g., WebApplication, WebAPI, Kubernetes, Embedded)
+- `profile_types` (List of String) List of profile types to publish (e.g., Kubernetes, Embedded). If empty, all profiles will be published
 - `publish` (Boolean) When true, triggers a publish operation (same as `inext publish`)
-- `skip_nginx_validation` (Boolean) When true, skips nginx validation during publish
+- `skip_nginx_validation` (Boolean) When true, skips nginx configuration validation during publish. Useful when publishing policies that include custom nginx configurations that may not pass standard validation
 
 

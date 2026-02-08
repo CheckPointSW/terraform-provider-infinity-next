@@ -69,8 +69,8 @@ func GetPublishOptionsFromResourceData(d *schema.ResourceData) *PublishOptions {
 
 // AsyncPublishChanges triggers an async publish operation for the session
 func AsyncPublishChanges(ctx context.Context, c *api.Client, opts *PublishOptions) (*models.AsyncPublishResult, error) {
-	var queryBuilder strings.Builder
-	queryBuilder.WriteString(`mutation {asyncPublishChanges`)
+	var mutationBuilder strings.Builder
+	mutationBuilder.WriteString(`mutation {asyncPublishChanges`)
 
 	// Build arguments if any options are provided
 	var args []string
@@ -85,16 +85,14 @@ func AsyncPublishChanges(ctx context.Context, c *api.Client, opts *PublishOption
 	}
 
 	if len(args) > 0 {
-		queryBuilder.WriteString("(")
-		queryBuilder.WriteString(strings.Join(args, ", "))
-		queryBuilder.WriteString(")")
+		mutationBuilder.WriteString("(")
+		mutationBuilder.WriteString(strings.Join(args, ", "))
+		mutationBuilder.WriteString(")")
 	}
 
-	queryBuilder.WriteString("}")
-
-	query := queryBuilder.String()
-
-	response, err := c.MakeGraphQLRequest(ctx, query, "asyncPublishChanges")
+	mutationBuilder.WriteString("}")
+	mutation := mutationBuilder.String()
+	response, err := c.MakeGraphQLRequest(ctx, mutation, "asyncPublishChanges")
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute asyncPublishChanges mutation: %w", err)
 	}
