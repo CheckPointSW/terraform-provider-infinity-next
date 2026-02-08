@@ -19,6 +19,7 @@ const (
 	taskStatusFailed     = "Failed"
 	enforceTimeout       = 5 * time.Minute
 	pollInterval         = 300 * time.Millisecond
+	maxTransientErrors   = 5
 )
 
 // ShouldEnforceFromResourceData reads the enforce value from ResourceData
@@ -113,12 +114,26 @@ func waitForTaskCompletion(ctx context.Context, c *api.Client, taskID string) (s
 	statusch := make(chan string, 1)
 
 	go func() {
+		consecutiveErrors := 0
+		var lastErr error
+
 		for taskStatus == taskStatusInProgress {
 			status, err := getTaskStatus(ctx, c, taskID)
 			if err != nil {
-				errch <- err
-				return
+				consecutiveErrors++
+				lastErr = err
+				// Retry on transient errors
+				if consecutiveErrors >= maxTransientErrors {
+					errch <- fmt.Errorf("failed after %d consecutive errors, last error: %w", consecutiveErrors, lastErr)
+					return
+				}
+
+				time.Sleep(pollInterval * 3)
+				continue
 			}
+
+			// Reset error counter on success
+			consecutiveErrors = 0
 
 			taskStatus = status
 			if taskStatus != taskStatusInProgress {
