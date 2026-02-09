@@ -13,7 +13,7 @@ import (
 
 func ResourcePublishEnforce() *schema.Resource {
 	return &schema.Resource{
-		Description: "Publish and Enforce resource - triggers publish and/or enforce operations. " +
+		Description: "Publish and Enforce resource - triggers publish and / or enforce operations. " +
 			"Works the same as running `inext publish` and `inext enforce` CLI commands. " +
 			"**Note: Only ONE instance of this resource is allowed per provider/account.**",
 
@@ -43,6 +43,20 @@ func ResourcePublishEnforce() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"profile_types": {
+				Type:        schema.TypeList,
+				Description: "List of profile types to publish (e.g., Kubernetes, Embedded). If empty, all profiles will be published",
+				Optional:    true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"skip_nginx_validation": {
+				Type:        schema.TypeBool,
+				Description: "When true, skips nginx configuration validation during publish. Useful when publishing policies that include custom nginx configurations that may not pass standard validation",
+				Optional:    true,
+				Default:     false,
+			},
 		},
 	}
 }
@@ -61,7 +75,8 @@ func resourcePublishEnforceCreateOrUpdate(ctx context.Context, d *schema.Resourc
 
 	// Execute publish if requested (same as `inext publish`)
 	if shouldPublish {
-		if err := publishenforce.ExecutePublish(ctx, c); err != nil {
+		publishOpts := publishenforce.GetPublishOptionsFromResourceData(d)
+		if err := publishenforce.ExecutePublish(ctx, c, publishOpts); err != nil {
 			return utils.DiagError("failed to publish changes", err, diags)
 		}
 	}

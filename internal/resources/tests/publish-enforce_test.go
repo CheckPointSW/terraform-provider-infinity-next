@@ -40,9 +40,10 @@ func TestAccPublishEnforceBasic(t *testing.T) {
 				Config: publishEnforceConfigBothTrue(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish":       "false",
-						"enforce":       "false",
-						"profile_ids.#": "0",
+						"publish":               "false",
+						"enforce":               "false",
+						"profile_ids.#":         "0",
+						"skip_nginx_validation": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -54,9 +55,10 @@ func TestAccPublishEnforceBasic(t *testing.T) {
 				Config:    publishEnforceConfigBothTrue(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish":       "false",
-						"enforce":       "false",
-						"profile_ids.#": "0",
+						"publish":               "false",
+						"enforce":               "false",
+						"profile_ids.#":         "0",
+						"skip_nginx_validation": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -77,8 +79,9 @@ func TestAccPublishEnforcePublishOnly(t *testing.T) {
 				Config: publishEnforceConfigPublishOnly(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish": "false",
-						"enforce": "false",
+						"publish":               "false",
+						"enforce":               "false",
+						"skip_nginx_validation": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -99,9 +102,10 @@ func TestAccPublishEnforceEnforceOnly(t *testing.T) {
 				Config: publishEnforceConfigEnforceOnly(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish":       "false",
-						"enforce":       "false",
-						"profile_ids.#": "0",
+						"publish":               "false",
+						"enforce":               "false",
+						"profile_ids.#":         "0",
+						"skip_nginx_validation": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -127,9 +131,10 @@ func TestAccPublishEnforceWithProfileIds(t *testing.T) {
 				Config: publishEnforceConfigWithProfileIds(profileName1, profileName2),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish":       "false",
-						"enforce":       "false",
-						"profile_ids.#": "2",
+						"publish":               "false",
+						"enforce":               "false",
+						"profile_ids.#":         "2",
+						"skip_nginx_validation": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
 						resource.TestCheckResourceAttrSet(resourceName, "profile_ids.0"),
@@ -153,9 +158,10 @@ func TestAccPublishEnforceWithEmptyProfileIds(t *testing.T) {
 				Config: publishEnforceConfigWithEmptyProfileIds(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish":       "false",
-						"enforce":       "false",
-						"profile_ids.#": "0",
+						"publish":               "false",
+						"enforce":               "false",
+						"profile_ids.#":         "0",
+						"skip_nginx_validation": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -176,8 +182,9 @@ func TestAccPublishEnforceFalseNoOp(t *testing.T) {
 				Config: publishEnforceConfigBothFalse(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish": "false",
-						"enforce": "false",
+						"publish":               "false",
+						"enforce":               "false",
+						"skip_nginx_validation": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -187,8 +194,9 @@ func TestAccPublishEnforceFalseNoOp(t *testing.T) {
 				Config:    publishEnforceConfigBothFalse(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish": "false",
-						"enforce": "false",
+						"publish":               "false",
+						"enforce":               "false",
+						"skip_nginx_validation": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -209,7 +217,8 @@ func TestAccPublishEnforceRepeatedTrueTriggersEachTime(t *testing.T) {
 				Config: publishEnforceConfigPublishOnly(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish": "false",
+						"publish":               "false",
+						"skip_nginx_validation": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -220,7 +229,8 @@ func TestAccPublishEnforceRepeatedTrueTriggersEachTime(t *testing.T) {
 				Config:    publishEnforceConfigPublishOnly(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish": "false",
+						"publish":               "false",
+						"skip_nginx_validation": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -231,7 +241,8 @@ func TestAccPublishEnforceRepeatedTrueTriggersEachTime(t *testing.T) {
 				Config:    publishEnforceConfigPublishOnly(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish": "false",
+						"publish":               "false",
+						"skip_nginx_validation": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
@@ -273,12 +284,36 @@ func TestAccPublishEnforceDefaults(t *testing.T) {
 				Config: publishEnforceConfigDefaults(),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"publish":       "false",
-						"enforce":       "false",
-						"profile_ids.#": "0",
+						"publish":               "false",
+						"enforce":               "false",
+						"profile_ids.#":         "0",
+						"skip_nginx_validation": "false",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
 				),
+			},
+		},
+	})
+}
+
+// TestAccPublishEnforceWithSkipNginxValidation tests that publish works with skip_nginx_validation
+func TestAccPublishEnforceWithSkipNginxValidation(t *testing.T) {
+	resourceName := "inext_publish_enforce.trigger"
+	resource.Test(t, resource.TestCase{
+		PreCheck:          func() { acctest.PreCheck(t); waitForPublishSession(t) },
+		ProviderFactories: acctest.ProviderFactories,
+		Steps: []resource.TestStep{
+			{
+				Config: publishEnforceConfigWithSkipNginxValidation(),
+				Check: resource.ComposeTestCheckFunc(
+					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
+						"publish":               "false",
+						"enforce":               "false",
+						"skip_nginx_validation": "true",
+					}),
+						resource.TestCheckResourceAttrSet(resourceName, "id"))...,
+				),
+				ExpectNonEmptyPlan: true,
 			},
 		},
 	})
@@ -362,6 +397,15 @@ resource "inext_publish_enforce" "trigger" {
 	publish     = true
 	enforce     = true
 	profile_ids = []
+}
+`
+}
+
+func publishEnforceConfigWithSkipNginxValidation() string {
+	return `
+resource "inext_publish_enforce" "trigger" {
+	publish               = true
+	skip_nginx_validation = true
 }
 `
 }
