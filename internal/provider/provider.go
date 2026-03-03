@@ -20,11 +20,11 @@ func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
 			"region": {
-				Description:      "The region where Infinity Policy operations will take place. Options are: us, eu",
+				Description:      "The region where Infinity Policy operations will take place. Options are: eu, us, au, in, ae, ca",
 				Type:             schema.TypeString,
 				Optional:         true,
 				ForceNew:         true,
-				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"eu", "us", "dev", "preprod"}, false)),
+				ValidateDiagFunc: validation.ToDiagFunc(validation.StringInSlice([]string{"eu", "us", "au", "in", "ae", "ca", "dev", "preprod"}, false)),
 				DefaultFunc:      schema.EnvDefaultFunc("INEXT_REGION", "eu"),
 			},
 			"client_id": {
@@ -90,6 +90,18 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (any, diag.D
 	case "us":
 		client.SetHost("https://cloudinfra-gw-us.portal.checkpoint.com")
 		client.SetEndpoint("/app/i2/graphql/V1")
+	case "au":
+		client.SetHost("https://cloudinfra-gw.ap.portal.checkpoint.com")
+		client.SetEndpoint("/app/i2/graphql/V1")
+	case "in":
+		client.SetHost("https://cloudinfra-gw.in.portal.checkpoint.com")
+		client.SetEndpoint("/app/i2/graphql/V1")
+	case "ae":
+		client.SetHost("https://cloudinfra-gw.ae.portal.checkpoint.com")
+		client.SetEndpoint("/app/i2/graphql/V1")
+	case "ca":
+		client.SetHost("https://cloudinfra-gw.ca.portal.checkpoint.com")
+		client.SetEndpoint("/app/i2/graphql/V1")
 	case "dev":
 		client.SetHost("https://dev-cloudinfra-gw.kube1.iaas.checkpoint.com")
 		client.SetEndpoint("/app/infinity2gem/graphql/V1")
@@ -100,7 +112,7 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (any, diag.D
 		diags = append(diags, diag.Diagnostic{
 			Severity: diag.Error,
 			Summary:  "Invalid region",
-			Detail:   "region must be eu or us",
+			Detail:   "region must be one of: eu, us, au, in, ae, ca",
 		})
 		return nil, diags
 	}

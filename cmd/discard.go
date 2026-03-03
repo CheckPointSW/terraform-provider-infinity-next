@@ -63,13 +63,21 @@ var discardCmd = &cobra.Command{
 			URL = EUCIURL
 		case "us":
 			URL = USCIURL
+		case "au":
+			URL = AUCIURL
+		case "in":
+			URL = INCIURL
+		case "ae":
+			URL = AECIURL
+		case "ca":
+			URL = CACIURL
 		case "dev":
 			URL = DevCIURL
 			API = DevCIAPIV1
 		case "preprod":
 			URL = DevCIURL
 		default:
-			fmt.Printf("Invalid region %s, expected eu or us\n", region)
+			fmt.Printf("Invalid region %s, expected eu, us, au, in, ae or ca\n", region)
 			os.Exit(1)
 		}
 
