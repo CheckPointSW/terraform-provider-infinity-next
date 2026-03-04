@@ -26,7 +26,7 @@ There are 2 options to set the credentials to be used by the provider:
 
 - Set the credentials explicitly or through input variables, in the `.tf` file that defines the `provider` block using the fields `client_id` and `access_key`
 
-Note that credentials are per region, which can be configured with the `region` field of the provider's definition. It defaults to "eu" and currently it accepts either "eu" or "us".
+Note that credentials are per region, which can be configured with the `region` field of the provider's definition. It defaults to "eu" and currently it accepts: "eu", "us", "in", "au", "ae" and "ca".
 
 ### Publish and Enforce your changes _(Required)_
 
