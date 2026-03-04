@@ -40,4 +40,4 @@ resource "inext_access_token" "access_token" {}
 from the 'Global Settings -> API Keys' section of the Infinity Next portal
 - `client_id` (String) The client id for API operations, You can retrieve this
 from the 'Global Settings -> API Keys' section of the Infinity Next portal
-- `region` (String) The region where Infinity Policy operations will take place. Options are: us, eu
+- `region` (String) The region where Infinity Policy operations will take place. Options are: eu, us, au, in, ae, ca
