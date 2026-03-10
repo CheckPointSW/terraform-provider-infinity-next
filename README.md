@@ -139,6 +139,10 @@ go build -o inext
 cp inext /usr/local/bin
 ```
 
+## WAF SaaS
+
+For guidance on deploying and managing WAF SaaS assets with this provider — including the required UI steps, Terraform configuration examples, and known limitations — see [docs/waf-saas.md](docs/waf-saas.md).
+
 ## Note
 
 Do not edit objects both from the Infinity Next portal and using this provider, as it may cause conflicts and unexpected behavior.
