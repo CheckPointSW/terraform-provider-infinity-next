@@ -52,18 +52,18 @@ func ExecuteEnforce(ctx context.Context, c *api.Client, profileIDs []string) err
 	}
 
 	// Poll for task completion
-	taskStatus, err := waitForTaskCompletion(ctx, c, result.ID)
+	taskResult, err := waitForTaskCompletion(ctx, c, result.ID)
 	if err != nil {
 		return err
 	}
 
-	switch taskStatus {
+	switch taskResult.Status {
 	case taskStatusSucceeded:
 		return nil
 	case taskStatusFailed:
 		return fmt.Errorf("enforce policy task %s failed", result.ID)
 	default:
-		return fmt.Errorf("enforce policy task %s done with unknown status %s", result.ID, taskStatus)
+		return fmt.Errorf("enforce policy task %s done with unknown status %s", result.ID, taskResult.Status)
 	}
 }
 
@@ -106,19 +106,17 @@ func EnforcePolicy(ctx context.Context, c *api.Client, profileIDs []string) (*mo
 	return result, nil
 }
 
-// waitForTaskCompletion polls the task status until completion or timeout
-func waitForTaskCompletion(ctx context.Context, c *api.Client, taskID string) (string, error) {
-	taskStatus := taskStatusInProgress
-
+// waitForTaskCompletion polls the task until completion or timeout and returns the full task result
+func waitForTaskCompletion(ctx context.Context, c *api.Client, taskID string) (*models.TaskResult, error) {
 	errch := make(chan error, 1)
-	statusch := make(chan string, 1)
+	resultch := make(chan *models.TaskResult, 1)
 
 	go func() {
 		consecutiveErrors := 0
 		var lastErr error
 
-		for taskStatus == taskStatusInProgress {
-			status, err := getTaskStatus(ctx, c, taskID)
+		for {
+			result, err := getTask(ctx, c, taskID)
 			if err != nil {
 				consecutiveErrors++
 				lastErr = err
@@ -135,9 +133,8 @@ func waitForTaskCompletion(ctx context.Context, c *api.Client, taskID string) (s
 			// Reset error counter on success
 			consecutiveErrors = 0
 
-			taskStatus = status
-			if taskStatus != taskStatusInProgress {
-				statusch <- taskStatus
+			if result.Status != taskStatusInProgress {
+				resultch <- result
 				return
 			}
 
@@ -148,38 +145,68 @@ func waitForTaskCompletion(ctx context.Context, c *api.Client, taskID string) (s
 	// Timeout for the polling routine to finish
 	select {
 	case err := <-errch:
-		return "", err
-	case status := <-statusch:
-		return status, nil
+		return nil, err
+	case result := <-resultch:
+		return result, nil
 	case <-time.After(enforceTimeout):
-		return "", fmt.Errorf("enforce policy task did not finish after %v, quitting", enforceTimeout)
+		return nil, fmt.Errorf("enforce policy task did not finish after %v, quitting", enforceTimeout)
 	case <-ctx.Done():
-		return "", ctx.Err()
+		return nil, ctx.Err()
 	}
 }
 
-// getTaskStatus queries the status of a task
-func getTaskStatus(ctx context.Context, c *api.Client, taskID string) (string, error) {
-	query := fmt.Sprintf(`query {getTask(id: "%s") {id status}}`, taskID)
+// getTask queries the full result of a task including publish validation data
+func getTask(ctx context.Context, c *api.Client, taskID string) (*models.TaskResult, error) {
+	query := fmt.Sprintf(`query {getTask(id: "%s") {id status taskData {publishData {isValid errors {message}}}}}`, taskID)
 
 	response, err := c.MakeGraphQLRequest(ctx, query, "getTask")
 	if err != nil {
-		return "", fmt.Errorf("failed to get task status: %w", err)
+		return nil, fmt.Errorf("failed to get task: %w", err)
 	}
 
 	if response == nil {
-		return "", fmt.Errorf("received nil response from getTask query")
+		return nil, fmt.Errorf("received nil response from getTask query")
 	}
 
 	responseMap, ok := response.(map[string]any)
 	if !ok {
-		return "", fmt.Errorf("unexpected response type: %T", response)
+		return nil, fmt.Errorf("unexpected response type: %T", response)
 	}
 
 	status, ok := responseMap["status"].(string)
 	if !ok {
-		return "", fmt.Errorf("status not found in response")
+		return nil, fmt.Errorf("status not found in response")
 	}
 
-	return status, nil
+	result := &models.TaskResult{
+		Status: status,
+	}
+
+	if id, ok := responseMap["id"].(string); ok {
+		result.ID = id
+	}
+
+	if taskData, ok := responseMap["taskData"].(map[string]any); ok {
+		if publishData, ok := taskData["publishData"].(map[string]any); ok {
+			pd := &models.TaskPublishData{}
+
+			if isValid, ok := publishData["isValid"].(bool); ok {
+				pd.IsValid = isValid
+			}
+
+			if errs, ok := publishData["errors"].([]any); ok {
+				for _, e := range errs {
+					if errMap, ok := e.(map[string]any); ok {
+						if msg, ok := errMap["message"].(string); ok {
+							pd.Errors = append(pd.Errors, models.ValidationMessage{Message: msg})
+						}
+					}
+				}
+			}
+
+			result.TaskData = &models.TaskData{PublishData: pd}
+		}
+	}
+
+	return result, nil
 }

@@ -21,3 +21,21 @@ type EnforcePolicyResult struct {
 type AsyncPublishResult struct {
 	ID string
 }
+
+// TaskResult represents the full result of a getTask query
+type TaskResult struct {
+	ID       string
+	Status   string
+	TaskData *TaskData
+}
+
+// TaskData contains task-specific data returned from getTask
+type TaskData struct {
+	PublishData *TaskPublishData
+}
+
+// TaskPublishData holds the publish validation result nested inside TaskData
+type TaskPublishData struct {
+	IsValid bool
+	Errors  []ValidationMessage
+}

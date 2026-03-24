@@ -30,18 +30,27 @@ func ExecutePublish(ctx context.Context, c *api.Client, opts *PublishOptions) er
 	}
 
 	// Poll for task completion
-	taskStatus, err := waitForTaskCompletion(ctx, c, result.ID)
+	taskResult, err := waitForTaskCompletion(ctx, c, result.ID)
 	if err != nil {
 		return err
 	}
 
-	switch taskStatus {
+	switch taskResult.Status {
 	case taskStatusSucceeded:
+		if taskResult.TaskData != nil && taskResult.TaskData.PublishData != nil && !taskResult.TaskData.PublishData.IsValid {
+			var errMsgs []string
+			for _, e := range taskResult.TaskData.PublishData.Errors {
+				errMsgs = append(errMsgs, e.Message)
+			}
+
+			return fmt.Errorf("publish task %s succeeded but validation failed: %s", result.ID, strings.Join(errMsgs, "; "))
+		}
+
 		return nil
 	case taskStatusFailed:
 		return fmt.Errorf("publish task %s failed", result.ID)
 	default:
-		return fmt.Errorf("publish task %s done with unknown status %s", result.ID, taskStatus)
+		return fmt.Errorf("publish task %s done with unknown status %s", result.ID, taskResult.Status)
 	}
 }
 
