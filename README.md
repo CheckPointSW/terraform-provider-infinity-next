@@ -141,7 +141,7 @@ cp inext /usr/local/bin
 
 ## WAF SaaS
 
-For guidance on deploying and managing WAF SaaS assets with this provider — including the required UI steps, Terraform configuration examples, and known limitations — see [docs/waf-saas.md](docs/waf-saas.md).
+For guidance on deploying and managing WAF SaaS assets with this provider — including the required UI steps, Terraform configuration examples, and known limitations — see [additionalDocs/waf-saas.md](additionalDocs/waf-saas.md).
 
 ## Note
 
