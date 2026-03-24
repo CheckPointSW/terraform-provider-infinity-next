@@ -37,13 +37,8 @@ func ExecutePublish(ctx context.Context, c *api.Client, opts *PublishOptions) er
 
 	switch taskResult.Status {
 	case taskStatusSucceeded:
-		if taskResult.TaskData != nil && taskResult.TaskData.PublishData != nil && !taskResult.TaskData.PublishData.IsValid {
-			var errMsgs []string
-			for _, e := range taskResult.TaskData.PublishData.Errors {
-				errMsgs = append(errMsgs, e.Message)
-			}
-
-			return fmt.Errorf("publish task %s succeeded but validation failed: %s", result.ID, strings.Join(errMsgs, "; "))
+		if taskResult.HasValidationErrors() {
+			return fmt.Errorf("publish task %s succeeded but validation failed: %s", result.ID, strings.Join(taskResult.ValidationErrors(), "; "))
 		}
 
 		return nil

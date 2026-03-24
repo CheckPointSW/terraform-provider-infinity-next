@@ -145,13 +145,13 @@ func waitForTaskCompletion(ctx context.Context, c *api.Client, taskID string) (*
 	// Timeout for the polling routine to finish
 	select {
 	case err := <-errch:
-		return nil, err
+		return &models.TaskResult{}, err
 	case result := <-resultch:
 		return result, nil
 	case <-time.After(enforceTimeout):
-		return nil, fmt.Errorf("enforce policy task did not finish after %v, quitting", enforceTimeout)
+		return &models.TaskResult{}, fmt.Errorf("enforce policy task did not finish after %v, quitting", enforceTimeout)
 	case <-ctx.Done():
-		return nil, ctx.Err()
+		return &models.TaskResult{}, ctx.Err()
 	}
 }
 
@@ -161,21 +161,21 @@ func getTask(ctx context.Context, c *api.Client, taskID string) (*models.TaskRes
 
 	response, err := c.MakeGraphQLRequest(ctx, query, "getTask")
 	if err != nil {
-		return nil, fmt.Errorf("failed to get task: %w", err)
+		return &models.TaskResult{}, fmt.Errorf("failed to get task: %w", err)
 	}
 
 	if response == nil {
-		return nil, fmt.Errorf("received nil response from getTask query")
+		return &models.TaskResult{}, fmt.Errorf("received nil response from getTask query")
 	}
 
 	responseMap, ok := response.(map[string]any)
 	if !ok {
-		return nil, fmt.Errorf("unexpected response type: %T", response)
+		return &models.TaskResult{}, fmt.Errorf("unexpected response type: %T", response)
 	}
 
 	status, ok := responseMap["status"].(string)
 	if !ok {
-		return nil, fmt.Errorf("status not found in response")
+		return &models.TaskResult{}, fmt.Errorf("status not found in response")
 	}
 
 	result := &models.TaskResult{
