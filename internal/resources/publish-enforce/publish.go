@@ -37,8 +37,8 @@ func ExecutePublish(ctx context.Context, c *api.Client, opts *PublishOptions) er
 
 	switch taskResult.Status {
 	case taskStatusSucceeded:
-		if taskResult.HasValidationErrors() {
-			return fmt.Errorf("publish task %s succeeded but validation failed: %s", result.ID, strings.Join(taskResult.ValidationErrors(), "; "))
+		if taskResult.HasPublishValidationErrors() {
+			return fmt.Errorf("publish task %s succeeded but validation failed: %s", result.ID, strings.Join(taskResult.PublishValidationErrors(), "; "))
 		}
 
 		return nil

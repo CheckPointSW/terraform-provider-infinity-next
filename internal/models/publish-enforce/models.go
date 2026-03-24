@@ -40,13 +40,13 @@ type TaskPublishData struct {
 	Errors  []ValidationMessage
 }
 
-// HasValidationErrors returns true if the task result contains publish validation errors
-func (r *TaskResult) HasValidationErrors() bool {
+// HasPublishValidationErrors returns true if the task result contains publish validation errors
+func (r *TaskResult) HasPublishValidationErrors() bool {
 	return r.TaskData != nil && r.TaskData.PublishData != nil && !r.TaskData.PublishData.IsValid
 }
 
-// ValidationErrors returns the publish validation error messages
-func (r *TaskResult) ValidationErrors() []string {
+// PublishValidationErrors returns the publish validation error messages
+func (r *TaskResult) PublishValidationErrors() []string {
 	if r.TaskData == nil || r.TaskData.PublishData == nil {
 		return nil
 	}
