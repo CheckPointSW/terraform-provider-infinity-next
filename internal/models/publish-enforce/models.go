@@ -21,3 +21,40 @@ type EnforcePolicyResult struct {
 type AsyncPublishResult struct {
 	ID string
 }
+
+// TaskResult represents the full result of a getTask query
+type TaskResult struct {
+	ID       string
+	Status   string
+	TaskData *TaskData
+}
+
+// TaskData contains task-specific data returned from getTask
+type TaskData struct {
+	PublishData *TaskPublishData
+}
+
+// TaskPublishData holds the publish validation result nested inside TaskData
+type TaskPublishData struct {
+	IsValid bool
+	Errors  []ValidationMessage
+}
+
+// HasPublishValidationErrors returns true if the task result contains publish validation errors
+func (r *TaskResult) HasPublishValidationErrors() bool {
+	return r.TaskData != nil && r.TaskData.PublishData != nil && !r.TaskData.PublishData.IsValid
+}
+
+// PublishValidationErrors returns the publish validation error messages
+func (r *TaskResult) PublishValidationErrors() []string {
+	if r.TaskData == nil || r.TaskData.PublishData == nil {
+		return nil
+	}
+
+	msgs := make([]string, 0, len(r.TaskData.PublishData.Errors))
+	for _, e := range r.TaskData.PublishData.Errors {
+		msgs = append(msgs, e.Message)
+	}
+
+	return msgs
+}
