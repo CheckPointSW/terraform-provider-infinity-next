@@ -51,14 +51,12 @@ resource "inext_web_api_asset" "my-webapi-asset" {
   }
   additional_instructions_blocks {
     filename      = "location.json"
-    filename_type = ".json"
     data          = file("${path.module}/location.json") # file content - change path to your file
     type          = "location_instructions"              # enum of ["location_instructions", "server_instructions"]
     enable        = true
   }
   additional_instructions_blocks {
     filename      = "server.json"
-    filename_type = ".json"
     data          = file("${path.module}/server.json") # file content - change path to your file
     type          = "server_instructions"              # enum of ["location_instructions", "server_instructions"]
     enable        = true
