@@ -56,10 +56,10 @@ resource "inext_web_api_asset" "test" {
     enable           = true
   }
   additional_instructions_blocks {
-    filename      = "location.json"
-    data          = file("${path.module}/location.json") # file content - change path to your file
-    type          = "location_instructions"              # enum of ["location_instructions", "server_instructions"]
-    enable        = true
+    filename = "location.json"
+    data     = file("${path.module}/location.json") # file content - change path to your file
+    type     = "location_instructions"              # enum of ["location_instructions", "server_instructions"]
+    enable   = true
   }
   redirect_to_https = "true"
   access_log        = "true"
@@ -128,10 +128,10 @@ resource "inext_web_api_asset" "test2" {
     enable           = true
   }
   additional_instructions_blocks {
-    filename      = "server.json"
-    data          = file("${path.module}/server.json") # file content - change path to your file
-    type          = "server_instructions"              # enum of ["location_instructions", "server_instructions"]
-    enable        = true
+    filename = "server.json"
+    data     = file("${path.module}/server.json") # file content - change path to your file
+    type     = "server_instructions"              # enum of ["location_instructions", "server_instructions"]
+    enable   = true
   }
   redirect_to_https = "true"
   access_log        = "true"

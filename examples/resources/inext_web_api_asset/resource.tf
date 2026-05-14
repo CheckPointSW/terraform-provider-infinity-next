@@ -2,7 +2,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.5.4"
+      version = "1.5.5"
     }
   }
 }
@@ -50,16 +50,16 @@ resource "inext_web_api_asset" "my-webapi-asset" {
     enable           = true
   }
   additional_instructions_blocks {
-    filename      = "location.json"
-    data          = file("${path.module}/location.json") # file content - change path to your file
-    type          = "location_instructions"              # enum of ["location_instructions", "server_instructions"]
-    enable        = true
+    filename = "location.json"
+    data     = file("${path.module}/location.json") # file content - change path to your file
+    type     = "location_instructions"              # enum of ["location_instructions", "server_instructions"]
+    enable   = true
   }
   additional_instructions_blocks {
-    filename      = "server.json"
-    data          = file("${path.module}/server.json") # file content - change path to your file
-    type          = "server_instructions"              # enum of ["location_instructions", "server_instructions"]
-    enable        = true
+    filename = "server.json"
+    data     = file("${path.module}/server.json") # file content - change path to your file
+    type     = "server_instructions"              # enum of ["location_instructions", "server_instructions"]
+    enable   = true
   }
   redirect_to_https = "true"
   access_log        = "true"
