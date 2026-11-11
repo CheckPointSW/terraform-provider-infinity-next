@@ -41,10 +41,11 @@ type SchemaIPS struct {
 }
 
 type FileSchema struct {
-	ID       string `json:"id,omitempty"`
-	Filename string `json:"name,omitempty"`
-	Data     string `json:"data"`
-	Size     uint64 `json:"size,omitempty"`
+	ID           string `json:"id,omitempty"`
+	Filename     string `json:"name,omitempty"`
+	Data         string `json:"data"`
+	Size         uint64 `json:"size,omitempty"`
+	EnforceLevel string `json:"enforce_level,omitempty"`
 }
 
 type WebAPIFileSecuritySchema struct {

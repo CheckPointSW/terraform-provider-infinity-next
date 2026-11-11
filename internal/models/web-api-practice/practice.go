@@ -10,8 +10,9 @@ type FileWrapper struct {
 
 // SchemaValidation represents the SchemaValidation field of the WebAPIPractice returned from the API
 type SchemaValidation struct {
-	ID        string      `json:"id"`
-	OASSchema FileWrapper `json:"OasSchema"`
+	ID           string      `json:"id"`
+	OASSchema    FileWrapper `json:"OasSchema"`
+	EnforceLevel string      `json:"enforceLevel"`
 }
 
 // AdvancedSetting represents the AdvancedSetting field of the APIAttacks field of the WebAPIPractice returned from the API
