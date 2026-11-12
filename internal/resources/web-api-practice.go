@@ -25,6 +25,9 @@ const (
 	performanceImpactMediumOrLower = "MediumOrLower"
 	performanceImpactHighOrLower   = "HighOrLower"
 
+	webAPIEnforceLevelFullSchema   = "fullSchema"
+	webAPIEnforceLevelEndpointOnly = "endpointOnly"
+
 	visibilityShared = "Shared"
 	visibilityLocal  = "Local"
 )
@@ -42,6 +45,8 @@ func ResourceWebAPIPractice() *schema.Resource {
 		validation.StringInSlice([]string{performanceImpactVeryLow, performanceImpactLowOrLower, performanceImpactMediumOrLower, performanceImpactHighOrLower}, false))
 	validationMinimumSeverity := validation.ToDiagFunc(
 		validation.StringInSlice([]string{severityLevelCritical, severityLevelHigh, severityLevelMedium}, false))
+	validationEnforceLevel := validation.ToDiagFunc(
+		validation.StringInSlice([]string{webAPIEnforceLevelFullSchema, webAPIEnforceLevelEndpointOnly}, false))
 	return &schema.Resource{
 		Description: "Practice for securing a web API",
 
@@ -211,22 +216,27 @@ func ResourceWebAPIPractice() *schema.Resource {
 						},
 						"name": {
 							Type:     schema.TypeString,
-							Optional: true,
 							Computed: true,
 						},
 						"data": {
-							Type:      schema.TypeString,
-							Sensitive: true,
-							Required:  true,
+							Type:        schema.TypeString,
+							Description: "OpenAPI schema content. Set to an empty string or omit this field from an existing schema_validation block to detach the schema.",
+							Sensitive:   true,
+							Optional:    true,
+						},
+						"enforce_level": {
+							Type:             schema.TypeString,
+							Description:      "Schema validation enforcement level: fullSchema or endpointOnly. Defaults to fullSchema when omitted.",
+							Optional:         true,
+							ValidateDiagFunc: validationEnforceLevel,
+							Default:          "fullSchema",
 						},
 						"size": {
 							Type:     schema.TypeInt,
-							Optional: true,
 							Computed: true,
 						},
 						"is_file_exist": {
 							Type:     schema.TypeBool,
-							Optional: true,
 							Computed: true,
 						},
 					},

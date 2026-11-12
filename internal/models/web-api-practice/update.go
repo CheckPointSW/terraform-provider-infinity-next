@@ -1,8 +1,9 @@
 package models
 
 type UpdateSchemaValidationInput struct {
-	ID        string `json:"id,omitempty"`
-	OASSchema string `json:"OasSchema"`
+	ID           string `json:"id,omitempty"`
+	OASSchema    string `json:"OasSchema"`
+	EnforceLevel string `json:"enforceLevel,omitempty"`
 }
 
 type UpdateAPIAttacksInput struct {

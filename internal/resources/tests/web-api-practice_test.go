@@ -3,7 +3,6 @@ package tests
 import (
 	"fmt"
 	"path"
-	"strings"
 	"testing"
 
 	"github.com/CheckPointSW/terraform-provider-infinity-next/internal/acctest"
@@ -11,15 +10,11 @@ import (
 )
 
 const (
-	webAPIPracticeTestdataPath     = "testdata/web-api-practice"
-	schemaValidationFilename       = "oasschema"
-	schemaValidationFilenameUpdate = "oasschemaupdate"
+	webAPIPracticeTestdataPath = "testdata/web-api-practice"
+	schemaValidationFilename   = "oasschema"
 )
 
-var (
-	schemaValidationData       = acctest.MustReadFile(path.Join(webAPIPracticeTestdataPath, schemaValidationFilename))
-	schemaValidationDataUpdate = strings.Replace(schemaValidationData, "Intelligence", "update", 1)
-)
+var schemaValidationData = acctest.MustReadFile(path.Join(webAPIPracticeTestdataPath, schemaValidationFilename))
 
 func TestAccWebAPIPracticeBasic(t *testing.T) {
 	nameAttribute := acctest.GenerateResourceName()
@@ -30,28 +25,28 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 		CheckDestroy:      acctest.CheckResourceDestroyed([]string{resourceName}),
 		Steps: []resource.TestStep{
 			{
-				Config: webAPIPracticeBasicConfig(nameAttribute),
+				Config: webAPIPracticeBasicConfig(nameAttribute, schemaValidationData),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                           nameAttribute,
-						"schema_validation.#":            "1",
-						"ips.0.protections_from_year":    "2016",
-						"ips.#":                          "1",
-						"api_attacks.0.minimum_severity": "High",
-						"ips.0.low_confidence":           "Detect",
-						"ips.0.performance_impact":       "MediumOrLower",
-						"ips.0.%":                        "7",
-						"schema_validation.0.name":       "",
-						"api_attacks.#":                  "1",
-						"ips.0.severity_level":           "MediumOrAbove",
-						"schema_validation.0.data":       "",
-						"practice_type":                  "WebAPI",
-						"default":                        "false",
-						"ips.0.medium_confidence":        "AccordingToPractice",
-						"schema_validation.0.%":          "5",
-						"category":                       "ThreatPrevention",
-						"api_attacks.0.%":                "3",
-						"ips.0.high_confidence":          "AccordingToPractice",
+						"name":                              nameAttribute,
+						"schema_validation.#":               "1",
+						"ips.0.protections_from_year":       "2016",
+						"ips.#":                             "1",
+						"api_attacks.0.minimum_severity":    "High",
+						"ips.0.low_confidence":              "Detect",
+						"ips.0.performance_impact":          "MediumOrLower",
+						"ips.0.%":                           "7",
+						"api_attacks.#":                     "1",
+						"ips.0.severity_level":              "MediumOrAbove",
+						"schema_validation.0.enforce_level": "fullSchema",
+						"schema_validation.0.data":          schemaValidationData,
+						"practice_type":                     "WebAPI",
+						"default":                           "false",
+						"ips.0.medium_confidence":           "AccordingToPractice",
+						"schema_validation.0.%":             "6",
+						"category":                          "ThreatPrevention",
+						"api_attacks.0.%":                   "3",
+						"ips.0.high_confidence":             "AccordingToPractice",
 						"api_attacks.0.advanced_setting.0.body_size":            "1000000",
 						"api_attacks.0.advanced_setting.0.url_size":             "32768",
 						"api_attacks.0.advanced_setting.0.header_size":          "102400",
@@ -78,6 +73,7 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 						"file_security.#":                              "1",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
+						resource.TestCheckResourceAttrSet(resourceName, "schema_validation.0.name"),
 						resource.TestCheckResourceAttrSet(resourceName, "api_attacks.0.advanced_setting.0.id"),
 						resource.TestCheckResourceAttrSet(resourceName, "api_attacks.0.id"),
 						resource.TestCheckResourceAttrSet(resourceName, "ips.0.id"),
@@ -91,17 +87,18 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
-				Config: webAPIPracticeUpdateBasicConfig(nameAttribute, schemaValidationData),
+				Config: webAPIPracticeUpdateBasicConfig(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                                         nameAttribute,
-						"schema_validation.0.data":                     schemaValidationData,
-						"api_attacks.0.minimum_severity":               "Critical",
-						"ips.0.high_confidence":                        "Detect",
-						"practice_type":                                "WebAPI",
-						"ips.0.medium_confidence":                      "Detect",
-						"ips.0.performance_impact":                     "LowOrLower",
-						"api_attacks.0.advanced_setting.0.header_size": "1000",
+						"name":                                                  nameAttribute,
+						"schema_validation.0.enforce_level":                     "endpointOnly",
+						"schema_validation.0.data":                              "",
+						"api_attacks.0.minimum_severity":                        "Critical",
+						"ips.0.high_confidence":                                 "Detect",
+						"practice_type":                                         "WebAPI",
+						"ips.0.medium_confidence":                               "Detect",
+						"ips.0.performance_impact":                              "LowOrLower",
+						"api_attacks.0.advanced_setting.0.header_size":          "1000",
 						"api_attacks.0.advanced_setting.0.illegal_http_methods": "true",
 						"api_attacks.0.advanced_setting.0.body_size":            "1000",
 						"api_attacks.0.advanced_setting.0.url_size":             "1000",
@@ -114,7 +111,7 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 						"ips.0.low_confidence":                                  "Detect",
 						"ips.0.protections_from_year":                           "2016",
 						"ips.0.%":                                               "7",
-						"schema_validation.0.%":                                 "5",
+						"schema_validation.0.%":                                 "6",
 						"api_attacks.#":                                         "1",
 						"ips.0.severity_level":                                  "LowOrAbove",
 						"ips.#":                                                 "1",
@@ -139,6 +136,7 @@ func TestAccWebAPIPracticeBasic(t *testing.T) {
 						"file_security.#":                              "1",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
+						resource.TestCheckResourceAttr(resourceName, "schema_validation.0.name", ""),
 						resource.TestCheckResourceAttrSet(resourceName, "schema_validation.0.id"),
 						resource.TestCheckResourceAttrSet(resourceName, "api_attacks.0.id"),
 						resource.TestCheckResourceAttrSet(resourceName, "ips.0.id"),
@@ -163,12 +161,13 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 				Config: webAPIPracticeFullConfig(nameAttribute, schemaValidationData),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                           nameAttribute,
-						"visibility":                     "Shared",
-						"schema_validation.0.data":       schemaValidationData,
-						"api_attacks.0.minimum_severity": "Critical",
-						"ips.0.high_confidence":          "AccordingToPractice",
-						"practice_type":                  "WebAPI",
+						"name":                                                  nameAttribute,
+						"visibility":                                            "Shared",
+						"schema_validation.0.enforce_level":                     "endpointOnly",
+						"schema_validation.0.data":                              schemaValidationData,
+						"api_attacks.0.minimum_severity":                        "Critical",
+						"ips.0.high_confidence":                                 "AccordingToPractice",
+						"practice_type":                                         "WebAPI",
 						"api_attacks.0.advanced_setting.0.url_size":             "1000",
 						"api_attacks.0.advanced_setting.0.%":                    "6",
 						"ips.0.medium_confidence":                               "AccordingToPractice",
@@ -184,7 +183,7 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 						"ips.0.low_confidence":                         "Detect",
 						"ips.0.protections_from_year":                  "2016",
 						"ips.0.%":                                      "7",
-						"schema_validation.0.%":                        "5",
+						"schema_validation.0.%":                        "6",
 						"api_attacks.#":                                "1",
 						"ips.0.severity_level":                         "LowOrAbove",
 						"ips.#":                                        "1",
@@ -222,17 +221,18 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 				ImportStateVerify: true,
 			},
 			{
-				Config: webAPIPracticeUpdateFullConfig(nameAttribute, schemaValidationFilenameUpdate, schemaValidationDataUpdate),
+				Config: webAPIPracticeUpdateFullConfig(nameAttribute),
 				Check: resource.ComposeTestCheckFunc(
 					append(acctest.ComposeTestCheckResourceAttrsFromMap(resourceName, map[string]string{
-						"name":                     nameAttribute,
-						"schema_validation.0.data": schemaValidationDataUpdate,
-						"api_attacks.#":            "1",
-						"category":                 "ThreatPrevention",
-						"default":                  "false",
-						"ips.0.high_confidence":    "Prevent",
+						"name":                              nameAttribute,
+						"schema_validation.0.enforce_level": "fullSchema",
+						"schema_validation.0.data":          "",
+						"api_attacks.#":                     "1",
+						"category":                          "ThreatPrevention",
+						"default":                           "false",
+						"ips.0.high_confidence":             "Prevent",
 						"api_attacks.0.advanced_setting.0.body_size":            "1001",
-						"schema_validation.0.%":                                 "5",
+						"schema_validation.0.%":                                 "6",
 						"api_attacks.0.minimum_severity":                        "High",
 						"ips.0.protections_from_year":                           "2020",
 						"ips.0.severity_level":                                  "Critical",
@@ -269,6 +269,7 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 						"file_security.#":                                       "1",
 					}),
 						resource.TestCheckResourceAttrSet(resourceName, "id"),
+						resource.TestCheckResourceAttr(resourceName, "schema_validation.0.name", ""),
 						resource.TestCheckResourceAttrSet(resourceName, "schema_validation.0.id"),
 						resource.TestCheckResourceAttrSet(resourceName, "api_attacks.0.id"),
 						resource.TestCheckResourceAttrSet(resourceName, "ips.0.id"),
@@ -281,7 +282,7 @@ func TestAccWebAPIPracticeFull(t *testing.T) {
 	})
 }
 
-func webAPIPracticeBasicConfig(name string) string {
+func webAPIPracticeBasicConfig(name, data string) string {
 	return fmt.Sprintf(`
 resource "inext_web_api_practice" %[1]q {
 	name = %[1]q
@@ -303,11 +304,14 @@ resource "inext_web_api_practice" %[1]q {
 			illegal_http_methods = false
 		}
 	}
+	schema_validation {
+		data = %[2]q
+	}
 }
-`, name)
+`, name, data)
 }
 
-func webAPIPracticeUpdateBasicConfig(name, data string) string {
+func webAPIPracticeUpdateBasicConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_web_api_practice" %[1]q {
 	name                          = %[1]q
@@ -330,7 +334,7 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		data     = %[2]q
+		enforce_level = "endpointOnly"
 	}
 	file_security {
 		severity_level             = "Critical"
@@ -338,7 +342,7 @@ resource "inext_web_api_practice" %[1]q {
 		medium_confidence          = "Prevent"
 	}
 }
-`, name, data)
+`, name)
 }
 
 func webAPIPracticeFullConfig(name, data string) string {
@@ -364,7 +368,8 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		data     = %[2]q
+		data          = %[2]q
+		enforce_level = "endpointOnly"
 	}
 	file_security {
 		severity_level             = "MediumOrAbove"
@@ -387,16 +392,16 @@ resource "inext_web_api_practice" %[1]q {
 `, name, data)
 }
 
-func webAPIPracticeUpdateFullConfig(name, filename, data string) string {
+func webAPIPracticeUpdateFullConfig(name string) string {
 	return fmt.Sprintf(`
 resource "inext_web_api_practice" %[1]q {
 	name                          = %[1]q
 	ips {
-		performance_impact    = "MediumOrLower"   
+		performance_impact    = "MediumOrLower"
 		severity_level        = "Critical"
-		protections_from_year = "2020"      
-		high_confidence       = "Prevent"    
-		medium_confidence     = "Inactive"    
+		protections_from_year = "2020"
+		high_confidence       = "Prevent"
+		medium_confidence     = "Inactive"
 		low_confidence        = "Detect"
 	}
 	api_attacks {
@@ -410,7 +415,7 @@ resource "inext_web_api_practice" %[1]q {
 		}
 	}
 	schema_validation {
-		data = %[3]q
+		data = ""
 	}
 	file_security {
 		severity_level             = "LowOrAbove"
@@ -430,5 +435,5 @@ resource "inext_web_api_practice" %[1]q {
 		required_threat_emulation    = "true"
 	}
 }
-`, name, filename, data)
+`, name)
 }

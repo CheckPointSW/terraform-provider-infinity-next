@@ -73,6 +73,7 @@ func NewWebAPIPractice(ctx context.Context, c *api.Client, input models.CreateWe
 							}
 							SchemaValidation {
 								id
+								enforceLevel
 								OasSchema {
 									data
 									name
@@ -163,9 +164,13 @@ func mapToSchemaValidationInput(schemaValidationFromResourceData any) models.Sch
 		return models.SchemaValidationInput{}
 	}
 
-	schemaValidation = models.NewFileSchemaEncode(schemaValidation.Data)
+	var oasSchema string
+	if schemaValidation.Data != "" {
+		oasSchema = models.NewFileSchemaEncode(schemaValidation.Data).Data
+	}
 	return models.SchemaValidationInput{
-		OASSchema: schemaValidation.Data,
+		OASSchema:    oasSchema,
+		EnforceLevel: schemaValidation.EnforceLevel,
 	}
 }
 

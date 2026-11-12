@@ -17,7 +17,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.5.4"
+      version = "1.6.0"
     }
   }
 }
@@ -50,7 +50,8 @@ resource "inext_web_api_practice" "my-webapi-practice" {
     }
   }
   schema_validation {
-    data = data.local_file.schema_validation_file.content
+    data          = data.local_file.schema_validation_file.content
+    enforce_level = "endpointOnly" # fullSchema or endpointOnly
   }
   file_security {
     severity_level               = "LowOrAbove"          # enum of ["LowOrAbove", "MediumOrAbove", "HighOrAbove", "Critical"]
@@ -169,18 +170,16 @@ Read-Only:
 <a id="nestedblock--schema_validation"></a>
 ### Nested Schema for `schema_validation`
 
-Required:
-
-- `data` (String, Sensitive)
-
 Optional:
 
-- `is_file_exist` (Boolean)
-- `name` (String)
-- `size` (Number)
+- `data` (String, Sensitive) OpenAPI schema content. Set to an empty string or omit this field from an existing schema_validation block to detach the schema.
+- `enforce_level` (String) Schema validation enforcement level: fullSchema or endpointOnly. Defaults to fullSchema when omitted.
 
 Read-Only:
 
 - `id` (String) The ID of this resource.
+- `is_file_exist` (Boolean)
+- `name` (String)
+- `size` (Number)
 
 

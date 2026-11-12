@@ -2,7 +2,7 @@ terraform {
   required_providers {
     inext = {
       source  = "CheckPointSW/infinity-next"
-      version = "1.5.4"
+      version = "1.6.0"
     }
   }
 }
@@ -35,7 +35,8 @@ resource "inext_web_api_practice" "my-webapi-practice" {
     }
   }
   schema_validation {
-    data = data.local_file.schema_validation_file.content
+    data          = data.local_file.schema_validation_file.content
+    enforce_level = "endpointOnly" # fullSchema or endpointOnly
   }
   file_security {
     severity_level               = "LowOrAbove"          # enum of ["LowOrAbove", "MediumOrAbove", "HighOrAbove", "Critical"]

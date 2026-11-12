@@ -79,10 +79,11 @@ func ReadWebAPIPracticeToResourceData(practice models.WebAPIPractice, d *schema.
 		decodedData = string(bDecodedData)
 	}
 	schemaValidation := models.FileSchema{
-		ID:       practice.SchemaValidation.ID,
-		Filename: practice.SchemaValidation.OASSchema.Name,
-		Data:     decodedData,
-		Size:     practice.SchemaValidation.OASSchema.Size,
+		ID:           practice.SchemaValidation.ID,
+		Filename:     practice.SchemaValidation.OASSchema.Name,
+		Data:         decodedData,
+		Size:         practice.SchemaValidation.OASSchema.Size,
+		EnforceLevel: practice.SchemaValidation.EnforceLevel,
 		//IsFileExist: practice.SchemaValidation.OASSchema.IsFileExist,
 	}
 
@@ -155,6 +156,7 @@ func GetWebAPIPractice(ctx context.Context, c *api.Client, id string) (models.We
 				}
 				SchemaValidation {
 					id
+					enforceLevel
 					OasSchema {
 						data
 						name
